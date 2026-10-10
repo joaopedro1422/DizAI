@@ -5,7 +5,7 @@ import { filter, map, of, switchMap, timer } from 'rxjs';
 
 import { CarregandoComponent } from './shared/components/carregando/carregando.component';
 import { ToastHostComponent } from './shared/components/toast-host/toast-host.component';
-
+import { VercelAnalyticsService } from './core/services/vercelAnalyticsService'; 
 /** Só mostra o carregando de troca de tela se ela demorar mais que isso (evita piscar). */
 const ESPERA_PARA_MOSTRAR_CARREGANDO_MS = 250;
 
@@ -16,6 +16,11 @@ const ESPERA_PARA_MOSTRAR_CARREGANDO_MS = 250;
   styleUrl: './app.component.css',
 })
 export class AppComponent {
+  private readonly analytics = inject(VercelAnalyticsService);
+
+  constructor() {
+    this.analytics.init();
+  }
   /** Verdadeiro enquanto uma tela (carregada sob demanda) ainda está sendo baixada. */
   protected readonly trocandoDeTela = toSignal(
     inject(Router).events.pipe(
