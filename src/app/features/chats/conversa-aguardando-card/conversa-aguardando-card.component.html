@@ -1,0 +1,46 @@
+<div class="cliente">
+  <app-avatar [nome]="nomeExibicao()" />
+  <span class="cliente__textos">
+    <span class="cliente__nome">{{ nomeExibicao() }}</span>
+    <span class="cliente__detalhe">
+      @if (mostrarTelefone()) {
+        {{ conversa().whatsapp }} ·
+      }
+      esperando há {{ conversa().atualizadaEm | tempoDecorrido }}
+    </span>
+  </span>
+</div>
+
+@if (motivo(); as apresentacao) {
+  <span class="motivo" [class]="'motivo--' + apresentacao.tom">{{ apresentacao.rotulo }}</span>
+}
+
+<p class="mensagem">"{{ conversa().ultimaMensagem }}"</p>
+
+@if (conversa().resumoPedido.length > 0) {
+  <div class="resumo caixa-suave">
+    <span class="rotulo-maiusculo">Resumo do pedido</span>
+    <dl class="resumo__lista">
+      @for (item of conversa().resumoPedido; track item.campo) {
+        <div class="resumo__item">
+          <dt class="resumo__campo">{{ item.campo }}</dt>
+          <dd class="resumo__valor">{{ item.valor }}</dd>
+        </div>
+      }
+    </dl>
+  </div>
+}
+
+<div class="acoes">
+  <a class="btn btn--primario acoes__responder" [href]="linkWhatsapp()" target="_blank" rel="noopener">
+    <app-icone nome="conversa" [tamanho]="16" [espessura]="2" />
+    Responder no WhatsApp
+  </a>
+  <button type="button" class="btn btn--secundario acoes__resolvido" [disabled]="resolvendo()" [attr.aria-busy]="resolvendo()" (click)="resolvida.emit()">
+    @if (resolvendo()) {
+      <app-carregando modo="inline" [tamanho]="20" />
+    } @else {
+      Resolvido
+    }
+  </button>
+</div>

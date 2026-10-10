@@ -1,0 +1,78 @@
+<div class="identidade">
+  <button
+    type="button"
+    class="avatar"
+    [attr.aria-label]="perfil().fotoPerfilUrl ? 'Trocar foto da loja' : 'Adicionar foto da loja'"
+    [attr.aria-busy]="enviandoFoto()"
+    [disabled]="enviandoFoto()"
+    (click)="seletorFoto.click()"
+  >
+    @if (perfil().fotoPerfilUrl; as foto) {
+      <img class="avatar__foto" [src]="foto | urlImagem" alt="">
+    } @else {
+      <span class="avatar__inicial" [style.background]="corMarca()" aria-hidden="true">{{ inicial() }}</span>
+    }
+    @if (enviandoFoto()) {
+      <span class="avatar__enviando">
+        <app-carregando modo="inline" variante="claro" [tamanho]="26" />
+      </span>
+    }
+    <span class="avatar__editar" aria-hidden="true">
+      <app-icone nome="editar" [tamanho]="12" [espessura]="2.4" />
+    </span>
+  </button>
+  <input #seletorFoto type="file" accept="image/*" class="somente-leitor-tela" tabindex="-1" aria-hidden="true" (change)="aoEscolherFoto($event)">
+
+  <div class="identidade__textos">
+    <span class="identidade__saudacao">{{ saudacao() }}</span>
+    <h1 class="identidade__nome">{{ perfil().nomeLoja }}</h1>
+    <p class="identidade__descricao">{{ perfil().descricao }}</p>
+  </div>
+
+  <app-menu-acoes rotuloBotao="Opções da conta" [itens]="itensMenu" (escolher)="aoEscolherNoMenu($event)" />
+</div>
+
+@if (etiquetas().length > 0) {
+  <ul class="etiquetas" aria-label="Sobre o negócio">
+    @for (etiqueta of etiquetas(); track etiqueta) {
+      <li class="etiqueta">{{ etiqueta }}</li>
+    }
+  </ul>
+}
+
+<button type="button" class="editar-dados" appAlvoTour="perfil" (click)="editarDados.emit()">
+  <app-icone nome="editar" [tamanho]="16" [espessura]="2" />
+  Editar dados da loja
+</button>
+<div class="cartao-status">
+  <div class="status">
+    <span class="status__indicador">
+      <span class="status__ponto" [class.status__ponto--ativo]="assistenteRespondendo()"></span>
+      {{ textoStatus() }}
+    </span>
+    <span class="status__telefone">{{ perfil().whatsapp }}</span>
+  </div>
+
+  @if (perfil().whatsappConectado) {
+    <div class="ia-ativa">
+      <div class="ia-ativa__textos">
+        <span class="ia-ativa__titulo">Respostas automáticas</span>
+        <span class="ia-ativa__descricao">
+          {{ perfil().iaAtiva ? 'O assistente responde seus clientes.' : 'Pausado: ninguém responde por você.' }}
+        </span>
+      </div>
+      <app-interruptor
+        rotulo="Respostas automáticas do assistente"
+        [ligado]="perfil().iaAtiva"
+        [ocupado]="salvandoIaAtiva()"
+        (alternar)="definirIaAtiva($event)"
+      />
+    </div>
+  }
+
+  <div class="link-publico">
+    <app-icone nome="link" [tamanho]="16" class="link-publico__icone" />
+    <span class="link-publico__endereco">{{ linkPublicoExibicao() }}</span>
+    <button type="button" class="link-publico__copiar" (click)="copiarLinkPublico()">Copiar</button>
+  </div>
+</div>

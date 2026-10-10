@@ -1,0 +1,67 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+}
+
+.album__cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.album__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.album__nome {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.album__contagem {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.album__descricao {
+  margin-top: -4px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+.album__chamada {
+  color: var(--cor-primaria);
+  font-weight: 700;
+}
+
+.album__grade {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.album__foto {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--raio-pequeno);
+  object-fit: cover;
+}
+
+.album__restante {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cor-desabilitado);
+  color: var(--cor-texto-secundario);
+  font-size: 13px;
+  font-weight: 700;
+}

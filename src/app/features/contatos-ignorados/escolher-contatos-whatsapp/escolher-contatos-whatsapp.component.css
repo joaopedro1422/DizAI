@@ -1,0 +1,131 @@
+.escolher {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.escolher__intro {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.busca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  background: #FFFFFF;
+  color: var(--cor-texto-suave);
+}
+
+.busca:focus-within {
+  border-color: var(--cor-primaria);
+}
+
+.busca__entrada {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  color: var(--cor-texto);
+}
+
+.contatos {
+  display: flex;
+  flex-direction: column;
+  max-height: min(48vh, 420px);
+  overflow-y: auto;
+  margin: 0 -6px;
+  padding: 0;
+  list-style: none;
+}
+
+.contatos__vazio {
+  padding: 24px 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--cor-texto-suave);
+}
+
+.contato {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 6px;
+  border: 0;
+  border-radius: var(--raio-medio);
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.contato:hover:not([aria-disabled='true']) {
+  background: var(--cor-fundo-suave);
+}
+
+.contato[aria-disabled='true'] {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.contato__textos {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.contato__nome {
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cor-texto);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contato__numero {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.contato__caixa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--cor-borda-forte);
+  border-radius: 7px;
+  color: #FFFFFF;
+}
+
+.contato--marcado .contato__caixa {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria);
+}
+
+.contato__selo {
+  flex: none;
+  padding: 4px 9px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo-suave);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cor-texto-secundario);
+}
+
+.escolher__confirmar {
+  margin-top: 4px;
+}

@@ -1,0 +1,211 @@
+.bloqueio {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+}
+
+/* Recorte iluminado: a sombra gigante escurece todo o resto da tela. */
+.destaque {
+  position: fixed;
+  z-index: 201;
+  border-radius: 24px;
+  pointer-events: none;
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.9),
+    0 0 0 4000px rgba(15, 23, 42, 0.68);
+  animation: aparecer 0.3s ease both;
+}
+
+/* Só nas trocas de passo: acompanha a rolagem suave até a próxima seção */
+.destaque--animado {
+  transition:
+    top 0.65s cubic-bezier(0.45, 0, 0.2, 1),
+    left 0.65s cubic-bezier(0.45, 0, 0.2, 1),
+    width 0.65s cubic-bezier(0.45, 0, 0.2, 1),
+    height 0.65s cubic-bezier(0.45, 0, 0.2, 1);
+}
+
+.balao {
+  position: fixed;
+  z-index: 202;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 18px;
+  background: var(--cor-fundo);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.balao--visivel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: none;
+}
+
+.balao__seta {
+  position: absolute;
+  bottom: -7px;
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--cor-fundo);
+  transform: rotate(45deg);
+}
+
+.balao__seta--cima {
+  top: -7px;
+  bottom: auto;
+}
+
+.balao__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.balao__contador {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cor-texto-suave);
+}
+
+.balao__pontos {
+  display: flex;
+  gap: 5px;
+}
+
+.balao__ponto {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--raio-pilula);
+  background: #d5dbe6;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.balao__ponto--visto {
+  background: var(--cor-primaria);
+}
+
+.balao__ponto--atual {
+  width: 18px;
+}
+
+.balao__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.balao__titulo {
+  font-family: var(--fonte-titulo);
+  font-weight: 500;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+
+.balao__texto {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
+}
+
+.balao__acoes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.balao__navegacao {
+  display: flex;
+  gap: 8px;
+}
+
+.balao__navegacao .btn {
+  border-radius: 12px;
+}
+
+/* Aviso "Sua loja foi criada!" */
+.aviso-inicial {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 202;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(448px, calc(100vw - 32px));
+  padding: 16px 18px 14px;
+  border-radius: 18px;
+  background: var(--cor-primaria);
+  color: #ffffff;
+  box-shadow: var(--sombra-flutuante);
+  transform: translateX(-50%);
+  animation: surgir-centralizado 0.35s ease-out both;
+}
+
+.aviso-inicial__linha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.aviso-inicial__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.aviso-inicial__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.aviso-inicial__titulo {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.aviso-inicial__subtitulo {
+  font-size: 13px;
+  color: var(--cor-texto-sobre-escuro);
+}
+
+.aviso-inicial__barra {
+  height: 3px;
+  overflow: hidden;
+  border-radius: var(--raio-pilula);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.aviso-inicial__preenchimento {
+  display: block;
+  height: 3px;
+  background: #ffffff;
+  animation: encher 2.5s linear forwards;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes surgir-centralizado {
+  from { opacity: 0; transform: translate(-50%, 12px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+@keyframes encher {
+  from { width: 0; }
+  to { width: 100%; }
+}

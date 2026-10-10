@@ -1,0 +1,82 @@
+@if (exibirCabecalho()) {
+  <div class="etapa__cabecalho">
+    <h1 class="etapa__titulo">Como seus clientes pagam e recebem?</h1>
+    <p class="etapa__descricao">Marque tudo o que vale para o seu negócio.</p>
+  </div>
+}
+
+@let controles = grupo().controls;
+
+<fieldset class="etapa__grupo">
+  <legend class="etapa__legenda">Formas de pagamento</legend>
+  <div class="grupo-chips">
+    @for (forma of formasPagamento; track forma.valor) {
+      @let marcado = controles.formasPagamento.value.includes(forma.valor);
+      <button
+        type="button"
+        class="chip"
+        [class.chip--ativo]="marcado"
+        [attr.aria-pressed]="marcado"
+        (click)="alternar(controles.formasPagamento, forma.valor)"
+      >
+        {{ forma.rotulo }}
+      </button>
+    }
+  </div>
+  @if (temErro(controles.formasPagamento)) {
+    <span class="campo__erro" role="alert">Escolha pelo menos uma forma de pagamento.</span>
+  }
+</fieldset>
+
+<fieldset class="etapa__grupo">
+  <legend class="etapa__legenda">Como o cliente recebe</legend>
+  <div class="grupo-chips">
+    @for (forma of formasRecebimento; track forma.valor) {
+      @let marcado = controles.formasRecebimento.value.includes(forma.valor);
+      <button
+        type="button"
+        class="chip"
+        [class.chip--ativo]="marcado"
+        [attr.aria-pressed]="marcado"
+        (click)="alternar(controles.formasRecebimento, forma.valor)"
+      >
+        {{ forma.rotulo }}
+      </button>
+    }
+  </div>
+  @if (temErro(controles.formasRecebimento)) {
+    <span class="campo__erro" role="alert">Escolha pelo menos uma opção.</span>
+  }
+
+  @if (ofereceEntrega()) {
+    <div class="etapa__entrega caixa-suave" [formGroup]="grupo()">
+      <div class="campo">
+        <label for="distancia" class="campo__rotulo">Entrega até</label>
+        <input id="distancia" class="campo__entrada" type="text" inputmode="numeric" formControlName="distanciaMaximaKm" placeholder="Ex.: 10 km">
+      </div>
+      <div class="campo">
+        <label for="taxa" class="campo__rotulo">Taxa de entrega</label>
+        <input id="taxa" class="campo__entrada" type="text" formControlName="taxaEntrega" placeholder="Ex.: R$ 8 ou a combinar">
+      </div>
+    </div>
+  }
+</fieldset>
+
+<fieldset class="etapa__grupo">
+  <legend class="etapa__legenda">Antecedência mínima para pedidos</legend>
+  <div class="grupo-chips" role="radiogroup">
+    @for (prazo of prazos; track prazo.valor) {
+      @let selecionado = controles.prazoMinimo.value === prazo.valor;
+      <button
+        type="button"
+        role="radio"
+        class="chip"
+        [class.chip--ativo]="selecionado"
+        [attr.aria-checked]="selecionado"
+        (click)="escolherPrazo(prazo.valor)"
+      >
+        {{ prazo.rotulo }}
+      </button>
+    }
+  </div>
+</fieldset>

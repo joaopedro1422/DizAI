@@ -1,0 +1,92 @@
+<section id="galeria" class="galeria" aria-labelledby="galeria-titulo">
+  <div class="container galeria__grade">
+    <div class="galeria__texto">
+      <span class="galeria__sobretitulo">Galeria de trabalhos</span>
+      <h2 id="galeria-titulo" class="galeria__titulo">Seus trabalhos vendem por você.</h2>
+      <p class="galeria__descricao">
+        Monte uma página com as fotos do que você já fez, organizadas por serviço.
+        Quando o cliente pede para ver, o assistente manda o link na hora.
+      </p>
+
+      <ul class="beneficios">
+        @for (beneficio of beneficios; track beneficio) {
+          <li class="beneficios__item">
+            <span class="beneficios__icone">
+              <app-icone nome="check" [tamanho]="14" [espessura]="3" />
+            </span>
+            {{ beneficio }}
+          </li>
+        }
+      </ul>
+
+      <a routerLink="/cadastro" class="btn btn--primario btn--grande galeria__acao">
+        Criar minha galeria grátis
+        <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
+      </a>
+    </div>
+
+    <div
+      class="galeria__demonstracao"
+      [style.--galeria-marca]="exemploAtual().corMarca"
+      (mouseenter)="pausado.set(true)"
+      (mouseleave)="pausado.set(false)"
+      (focusin)="pausado.set(true)"
+      (focusout)="pausado.set(false)"
+    >
+      @for (exemplo of [exemploAtual()]; track exemplo.id) {
+        <div class="conversa" aria-hidden="true">
+          <span class="conversa__balao conversa__balao--cliente">{{ exemplo.pergunta }}</span>
+          <span class="conversa__balao conversa__balao--resposta">
+            {{ exemplo.resposta }}
+            <span class="conversa__link">{{ exemplo.link }}</span>
+          </span>
+        </div>
+      }
+
+      <figure class="celular" [attr.aria-label]="'Exemplo da galeria pública de ' + exemploAtual().nomeLoja + ' no celular'">
+        <div class="celular__tela">
+          @for (exemplo of [exemploAtual()]; track exemplo.id) {
+            <div class="navegador" aria-hidden="true">
+              <app-icone nome="escudo" [tamanho]="12" [espessura]="2" />
+              {{ exemplo.link }}
+            </div>
+
+            <div class="vitrine">
+              <div class="vitrine__loja">
+                <span class="vitrine__logo" aria-hidden="true">{{ inicialLoja() }}</span>
+                <span class="vitrine__nome">{{ exemplo.nomeLoja }}</span>
+                <span class="vitrine__descricao">{{ exemplo.descricao }}</span>
+              </div>
+
+              <div class="vitrine__categorias" aria-hidden="true">
+                @for (categoria of exemplo.categorias; track categoria; let primeira = $first) {
+                  <span class="vitrine__categoria" [class.vitrine__categoria--ativa]="primeira">{{ categoria }}</span>
+                }
+              </div>
+
+              <div class="vitrine__album">
+                <span class="vitrine__album-nome">{{ exemplo.nomeAlbum }}</span>
+                <span class="vitrine__album-contagem">{{ exemplo.quantidadeFotos }} fotos</span>
+              </div>
+
+              <div class="vitrine__fotos" aria-hidden="true">
+                @for (foto of exemplo.fotos; track $index; let ordem = $index) {
+                  <span class="vitrine__foto" [style.background]="fundoDaFoto(foto)" [style.animation-delay.ms]="ordem * 40">
+                    @if (foto.url) {
+                      <img class="vitrine__imagem" [src]="foto.url" alt="" loading="lazy" decoding="async">
+                    }
+                  </span>
+                }
+              </div>
+            </div>
+          }
+
+          <span class="vitrine__whatsapp" aria-hidden="true">
+            <app-icone nome="conversa" [tamanho]="16" [espessura]="2" />
+            Falar pelo WhatsApp
+          </span>
+        </div>
+      </figure>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,23 @@
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.bloco {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.bloco + .bloco {
+  padding-top: 24px;
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+.bloco__dica {
+  margin-top: -6px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}

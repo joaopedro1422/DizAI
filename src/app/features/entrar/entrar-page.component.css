@@ -1,0 +1,71 @@
+.tela-entrar {
+  display: flex;
+  flex-direction: column;
+}
+
+.topo {
+  padding: 16px 24px 0;
+}
+
+.topo__voltar {
+  margin-left: -10px;
+  color: var(--cor-texto);
+}
+
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 24px 24px 40px;
+}
+
+.textos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.titulo {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+}
+
+.descricao {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.cadastro {
+  font-size: 14px;
+  color: var(--cor-texto-suave);
+  text-align: center;
+}
+
+.cadastro__link {
+  color: var(--cor-primaria);
+  font-weight: 700;
+}
+
+.aviso {
+  padding: 12px 14px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-ambar);
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+.aviso--erro {
+  background: #FDECEA;
+  color: var(--cor-erro);
+}

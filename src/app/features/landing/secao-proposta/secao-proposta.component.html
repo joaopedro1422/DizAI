@@ -1,0 +1,29 @@
+<section class="proposta" aria-labelledby="proposta-titulo">
+  <div class="container proposta__grade">
+    <div class="proposta__texto">
+      <span class="proposta__sobretitulo">Seu negócio continua do seu jeito</span>
+      <h2 id="proposta-titulo" class="proposta__titulo">
+        Não muda o seu modelo de negócio. Só otimiza o seu tempo e a qualidade do seu atendimento.
+      </h2>
+      <p class="proposta__descricao">
+        <strong>Vendas e agendamentos continuam passando por você.</strong>
+        O DizAI cuida das perguntas triviais e te entrega o cliente pronto para fechar.
+      </p>
+    </div>
+
+    <ol class="fluxo">
+      @for (etapa of etapas; track etapa.titulo; let indice = $index) {
+        <li class="fluxo__etapa" [class.fluxo__etapa--lojista]="etapa.ehDoLojista">
+          <span class="fluxo__icone">
+            <app-icone [nome]="etapa.icone" [tamanho]="20" [espessura]="2" />
+          </span>
+          <span class="fluxo__textos">
+            <span class="fluxo__titulo">{{ etapa.titulo }}</span>
+            <span class="fluxo__texto">{{ etapa.texto }}</span>
+          </span>
+          <span class="fluxo__numero" aria-hidden="true">{{ indice + 1 }}</span>
+        </li>
+      }
+    </ol>
+  </div>
+</section>

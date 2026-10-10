@@ -1,0 +1,387 @@
+<nav class="nav container" aria-label="Principal">
+  <a routerLink="/" class="nav__marca" aria-label="DizAI, início">
+    <app-logo />
+  </a>
+  <a routerLink="/" class="btn btn--secundario nav__voltar">
+    <app-icone nome="voltar" [tamanho]="18" [espessura]="2" />
+    Voltar ao início
+  </a>
+</nav>
+
+<main class="politica container">
+  <header class="politica__cabecalho">
+    <span class="politica__sobretitulo">Privacidade e proteção de dados</span>
+    <h1 class="politica__titulo">Política de Privacidade</h1>
+    <p class="politica__resumo">
+      Explicamos aqui, em linguagem direta, quais dados o DizAI trata, por que, com quem compartilha e como
+      você exerce os seus direitos previstos na Lei Geral de Proteção de Dados (Lei nº 13.709/2018, a LGPD).
+    </p>
+    <p class="politica__data">Última atualização: {{ atualizadaEm }}</p>
+  </header>
+
+  <aside class="indice" aria-labelledby="indice-titulo">
+    <h2 id="indice-titulo" class="indice__titulo">Nesta página</h2>
+    <ol class="indice__lista">
+      @for (secao of indice; track secao.id) {
+        <li><a routerLink="/privacidade" [fragment]="secao.id">{{ secao.titulo }}</a></li>
+      }
+    </ol>
+  </aside>
+
+  <section id="quem-somos" class="secao">
+    <h2>1. Quem somos e a quem esta política se aplica</h2>
+    <p>
+      O DizAI é uma plataforma que ajuda pequenos e médios negócios a atender clientes no WhatsApp com um
+      assistente de inteligência artificial. O lojista cadastra a loja, os produtos ou serviços, as perguntas
+      frequentes e as regras do negócio, conecta o número de WhatsApp Business e o assistente passa a responder
+      os clientes com base nessas informações.
+    </p>
+    <p>Esta política vale para três grupos de pessoas:</p>
+    <ul>
+      <li><strong>Lojistas:</strong> quem cria uma conta e usa o painel do DizAI.</li>
+      <li>
+        <strong>Clientes das lojas:</strong> quem envia mensagens no WhatsApp para uma loja que usa o DizAI.
+      </li>
+      <li>
+        <strong>Visitantes:</strong> quem acessa este site ou a galeria pública de trabalhos de uma loja.
+      </li>
+    </ul>
+  </section>
+
+  <section id="papeis" class="secao">
+    <h2>2. Quem decide sobre cada dado</h2>
+    <p>A LGPD separa quem decide como os dados são usados (controlador) de quem os trata em nome dele (operador).</p>
+    <ul>
+      <li>
+        <strong>Dados da conta do lojista</strong> (cadastro, login e configurações): o DizAI é o controlador.
+      </li>
+      <li>
+        <strong>Conversas com os clientes da loja, agenda de contatos e lista de contatos ignorados:</strong> a loja
+        é a controladora, porque decide atender pelo WhatsApp e quais regras o assistente segue. O DizAI atua como
+        operador e trata esses dados somente para prestar o serviço contratado pela loja.
+      </li>
+    </ul>
+  </section>
+
+  <section id="dados-coletados" class="secao">
+    <h2>3. Quais dados tratamos</h2>
+
+    <h3>3.1 Dados do lojista</h3>
+    <ul>
+      <li>Nome do responsável, nome da loja, descrição do negócio e ramo de atuação.</li>
+      <li>Número de WhatsApp do negócio, usado também como login.</li>
+      <li>
+        Senha de acesso, guardada apenas em formato criptografado irreversível (hash). Nem a equipe do DizAI
+        consegue ver a senha.
+      </li>
+      <li>
+        Configurações do atendimento: formas de pagamento e de entrega, antecedência dos pedidos, modo de pedido,
+        saudação, instruções do assistente, cor da marca e se o assistente está ligado ou desligado.
+      </li>
+      <li>
+        Conteúdo cadastrado: produtos e serviços (nome, descrição, preço e opções), perguntas frequentes, logotipo
+        e fotos da galeria de trabalhos.
+      </li>
+    </ul>
+
+    <h3>3.2 Dados da conexão com o WhatsApp</h3>
+    <p>
+      A conexão é feita pelo fluxo oficial da Meta (WhatsApp Business Platform). Com a autorização do lojista,
+      recebemos e guardamos o identificador da conta do WhatsApp Business, o identificador do número de telefone,
+      um código de acesso (token) que permite enviar e receber mensagens em nome da loja e a situação da conexão.
+    </p>
+
+    <h3>3.3 Dados das conversas com os clientes da loja</h3>
+    <ul>
+      <li>Número de WhatsApp e nome de perfil do cliente, como aparecem no WhatsApp.</li>
+      <li>
+        Conteúdo das mensagens trocadas com a loja, data e hora, e situação de entrega e leitura das respostas.
+      </li>
+      <li>
+        Mensagens que o próprio lojista envia pelo celular, usadas para saber que ele assumiu a conversa e o
+        assistente deve parar de responder.
+      </li>
+      <li>
+        Histórico de conversas anteriores à conexão (até 180 dias), apenas se o lojista autorizar o compartilhamento
+        do histórico no momento de conectar o WhatsApp.
+      </li>
+      <li>
+        Resumo do pedido coletado pelo assistente (por exemplo, sabor, tamanho, data e endereço de entrega), quando a
+        loja ativa a coleta de dados do pedido.
+      </li>
+    </ul>
+
+    <h3>3.4 Agenda de contatos e contatos ignorados</h3>
+    <p>
+      Se o lojista usa o mesmo número para a vida pessoal e para o trabalho, ele pode marcar contatos que o
+      assistente nunca deve responder, como família e amigos. Para isso tratamos:
+    </p>
+    <ul>
+      <li>
+        Nome e número dos contatos salvos no WhatsApp Business do lojista, sincronizados pela Meta quando ele autoriza,
+        usados só para que ele escolha quem ignorar.
+      </li>
+      <li>Nome (opcional) e número dos contatos que o lojista adiciona à lista de ignorados.</li>
+      <li>
+        No Android, o lojista também pode escolher contatos da agenda do celular. O navegador entrega apenas os contatos
+        que ele selecionar; o DizAI não acessa o restante da agenda.
+      </li>
+    </ul>
+    <p>
+      Esses números não recebem nenhum aviso e não são usados para nenhuma outra finalidade, como envio de mensagens
+      ou marketing.
+    </p>
+
+    <h3>3.5 Dados técnicos</h3>
+    <p>
+      Registros de acesso ao painel (endereço IP, data e hora, navegador) e registros de funcionamento do sistema,
+      usados para segurança e para corrigir falhas.
+    </p>
+  </section>
+
+  <section id="finalidades" class="secao">
+    <h2>4. Para que usamos os dados</h2>
+    <div class="tabela-rolagem">
+      <table class="tabela">
+        <thead>
+          <tr>
+            <th scope="col">Finalidade</th>
+            <th scope="col">Base legal (LGPD, art. 7º)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Criar e manter a conta, permitir o login e mostrar o painel ao lojista</td>
+            <td>Execução de contrato</td>
+          </tr>
+          <tr>
+            <td>Receber as mensagens dos clientes, gerar as respostas do assistente e enviá-las pelo WhatsApp</td>
+            <td>Execução de contrato com a loja</td>
+          </tr>
+          <tr>
+            <td>Avisar o lojista quando uma conversa precisa dele e mostrar o resumo do pedido</td>
+            <td>Execução de contrato com a loja</td>
+          </tr>
+          <tr>
+            <td>Impedir que o assistente responda os contatos marcados como ignorados</td>
+            <td>Execução de contrato com a loja e legítimo interesse dos contatos</td>
+          </tr>
+          <tr>
+            <td>Exibir a galeria pública de trabalhos da loja</td>
+            <td>Execução de contrato</td>
+          </tr>
+          <tr>
+            <td>Guardar registros de acesso pelo prazo legal</td>
+            <td>Cumprimento de obrigação legal (Marco Civil da Internet, art. 15)</td>
+          </tr>
+          <tr>
+            <td>Proteger a plataforma contra fraudes, abusos e acessos indevidos</td>
+            <td>Legítimo interesse</td>
+          </tr>
+          <tr>
+            <td>Enviar comunicações sobre a conta, como avisos de desconexão do WhatsApp</td>
+            <td>Execução de contrato</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      O DizAI <strong>não vende dados</strong>, não usa as conversas para publicidade e não usa os dados das lojas
+      ou dos clientes para treinar modelos de inteligência artificial.
+    </p>
+  </section>
+
+  <section id="inteligencia-artificial" class="secao">
+    <h2>5. Como a inteligência artificial usa os dados</h2>
+    <p>
+      Para responder um cliente, o DizAI envia a um provedor de inteligência artificial (atualmente a OpenAI, por meio
+      da sua API) as informações cadastradas pela loja, as últimas mensagens da conversa e a data e hora atuais. A
+      resposta gerada volta para o DizAI e é enviada ao cliente pelo WhatsApp.
+    </p>
+    <ul>
+      <li>
+        Pelos termos do provedor, os dados enviados pela API não são usados para treinar os modelos dele e podem ficar
+        guardados por um período curto apenas para monitoramento de abuso.
+      </li>
+      <li>
+        O assistente se apresenta como assistente virtual da loja e responde apenas com o que a loja cadastrou. Quando
+        não sabe a resposta ou quando o cliente quer fechar um pedido, a conversa é passada para o lojista.
+      </li>
+      <li>
+        O lojista pode desligar o assistente a qualquer momento no painel e assumir qualquer conversa respondendo pelo
+        próprio celular.
+      </li>
+      <li>
+        Respostas automáticas podem conter erros. A loja continua responsável pelas informações sobre os seus produtos,
+        preços e condições.
+      </li>
+    </ul>
+  </section>
+
+  <section id="compartilhamento" class="secao">
+    <h2>6. Com quem compartilhamos</h2>
+    <p>Compartilhamos dados apenas com empresas que nos ajudam a prestar o serviço, e só na medida necessária:</p>
+    <ul>
+      <li>
+        <strong>Meta Platforms (WhatsApp Business Platform):</strong> as mensagens trafegam pela infraestrutura do
+        WhatsApp, que também aplica as próprias políticas de privacidade.
+      </li>
+      <li><strong>OpenAI:</strong> geração das respostas do assistente, como descrito na seção 5.</li>
+      <li><strong>Google (Firebase Storage):</strong> armazenamento do logotipo e das fotos da galeria.</li>
+      <li><strong>Provedores de hospedagem e banco de dados:</strong> onde o sistema do DizAI funciona.</li>
+      <li>
+        <strong>Autoridades públicas:</strong> quando houver obrigação legal ou ordem judicial.
+      </li>
+    </ul>
+    <p>
+      As fotos e o nome da loja publicados na galeria de trabalhos ficam visíveis para qualquer pessoa que tenha o link,
+      pois essa é a finalidade da galeria.
+    </p>
+  </section>
+
+  <section id="transferencia-internacional" class="secao">
+    <h2>7. Transferência internacional</h2>
+    <p>
+      Alguns desses fornecedores processam dados em servidores fora do Brasil, principalmente nos Estados Unidos. Essas
+      transferências seguem o artigo 33 da LGPD e ocorrem com fornecedores que adotam cláusulas contratuais e medidas de
+      segurança compatíveis com a proteção exigida pela lei brasileira.
+    </p>
+  </section>
+
+  <section id="retencao" class="secao">
+    <h2>8. Por quanto tempo guardamos</h2>
+    <ul>
+      <li>
+        <strong>Dados da conta, catálogo, galeria, conversas e contatos ignorados:</strong> enquanto a conta estiver
+        ativa.
+      </li>
+      <li>
+        <strong>Código de acesso ao WhatsApp e agenda de contatos sincronizada:</strong> apagados quando o lojista
+        desconecta o WhatsApp ou exclui a conta.
+      </li>
+      <li>
+        <strong>Após a exclusão da conta:</strong> os dados são apagados em até 30 dias, exceto o que a lei obriga a
+        guardar.
+      </li>
+      <li><strong>Registros de acesso:</strong> 6 meses, como exige o Marco Civil da Internet.</li>
+    </ul>
+  </section>
+
+  <section id="seguranca" class="secao">
+    <h2>9. Como protegemos os dados</h2>
+    <ul>
+      <li>Conexões criptografadas (HTTPS) entre o navegador, o DizAI e os fornecedores.</li>
+      <li>Senhas guardadas com hash criptográfico; códigos de acesso ao WhatsApp guardados criptografados.</li>
+      <li>Acesso ao painel protegido por login, e cada lojista vê apenas os dados da própria loja.</li>
+      <li>
+        Verificação da assinatura digital de cada notificação recebida da Meta, para garantir que ela veio de fato do
+        WhatsApp.
+      </li>
+      <li>Acesso interno restrito às pessoas que precisam dos dados para manter o serviço funcionando.</li>
+    </ul>
+    <p>
+      Se ocorrer um incidente de segurança que possa causar risco ou dano relevante, avisaremos os afetados e a
+      Autoridade Nacional de Proteção de Dados (ANPD), como determina a LGPD.
+    </p>
+  </section>
+
+  <section id="direitos" class="secao">
+    <h2>10. Seus direitos</h2>
+    <p>Pelo artigo 18 da LGPD, você pode pedir a qualquer momento:</p>
+    <ul>
+      <li>confirmação de que tratamos dados seus e acesso a eles;</li>
+      <li>correção de dados incompletos, inexatos ou desatualizados;</li>
+      <li>anonimização, bloqueio ou eliminação de dados desnecessários ou tratados em desacordo com a lei;</li>
+      <li>portabilidade dos dados a outro fornecedor;</li>
+      <li>eliminação dos dados tratados com base no seu consentimento;</li>
+      <li>informação sobre com quem compartilhamos os seus dados;</li>
+      <li>revogação do consentimento e oposição a tratamentos que você considere irregulares.</li>
+    </ul>
+    <p>
+      Para exercer qualquer um desses direitos, escreva para
+      <a [href]="'mailto:' + emailContato">{{ emailContato }}</a>. Respondemos em até 15 dias. Você também pode
+      apresentar reclamação à ANPD.
+    </p>
+  </section>
+
+  <section id="clientes-das-lojas" class="secao">
+    <h2>11. Para quem conversa com uma loja</h2>
+    <p>
+      Se você mandou mensagem para uma loja que usa o DizAI, as suas mensagens são tratadas em nome dessa loja, que é
+      quem decide como atender você. Você pode:
+    </p>
+    <ul>
+      <li>pedir para falar com uma pessoa a qualquer momento da conversa;</li>
+      <li>pedir à loja que pare de usar o assistente automático com você;</li>
+      <li>
+        pedir à loja ou ao DizAI o acesso ou a exclusão das suas mensagens. Se o pedido chegar a nós, encaminhamos à loja
+        e cumprimos o que for decidido conforme a LGPD.
+      </li>
+    </ul>
+  </section>
+
+  <section id="exclusao-de-dados" class="secao secao--destaque">
+    <h2>12. Como excluir seus dados</h2>
+    <h3>Lojistas</h3>
+    <ol>
+      <li>Para parar o atendimento automático, desligue o assistente no painel.</li>
+      <li>
+        Para remover o acesso do DizAI ao seu WhatsApp, desconecte o número nas configurações da sua conta do WhatsApp
+        Business (Configurações › Contas › Plataforma de negócios) ou peça para nós. O código de acesso e a agenda de
+        contatos sincronizada são apagados.
+      </li>
+      <li>
+        Para excluir a conta e todos os dados (loja, catálogo, galeria, conversas e contatos), envie um e-mail para
+        <a [href]="'mailto:' + emailContato">{{ emailContato }}</a> a partir do contato cadastrado, informando o WhatsApp
+        da loja. A exclusão é concluída em até 30 dias, e avisamos quando terminar.
+      </li>
+    </ol>
+    <h3>Clientes das lojas</h3>
+    <p>
+      Envie um e-mail para <a [href]="'mailto:' + emailContato">{{ emailContato }}</a> informando o seu número de
+      WhatsApp e o nome da loja com que conversou. Apagaremos as mensagens associadas ao seu número naquela loja, salvo
+      o que a lei obrigar a manter.
+    </p>
+  </section>
+
+  <section id="navegador" class="secao">
+    <h2>13. Armazenamento no navegador</h2>
+    <p>
+      O painel guarda no seu navegador apenas o necessário para funcionar: a sessão de login e preferências simples,
+      como as dicas que você já viu. O DizAI não usa cookies de publicidade nem ferramentas de rastreamento de terceiros.
+      Ao sair da conta, a sessão é apagada.
+    </p>
+  </section>
+
+  <section id="menores" class="secao">
+    <h2>14. Menores de idade</h2>
+    <p>
+      A conta de lojista é destinada a maiores de 18 anos. Não coletamos intencionalmente dados de crianças. Se você
+      acredita que isso aconteceu, fale conosco para que os dados sejam excluídos.
+    </p>
+  </section>
+
+  <section id="alteracoes" class="secao">
+    <h2>15. Alterações desta política</h2>
+    <p>
+      Podemos atualizar esta política quando o serviço mudar ou quando a lei exigir. A data no topo indica a versão em
+      vigor, e mudanças importantes serão avisadas no painel.
+    </p>
+  </section>
+
+  <section id="contato" class="secao">
+    <h2>16. Contato</h2>
+    <p>
+      Dúvidas sobre privacidade ou pedidos relacionados aos seus dados podem ser enviados ao encarregado pelo tratamento
+      de dados do DizAI pelo e-mail <a [href]="'mailto:' + emailContato">{{ emailContato }}</a>.
+    </p>
+  </section>
+</main>
+
+<footer class="rodape container">
+  <span class="rodape__marca">
+    <app-logo [mostrarNome]="false" [tamanhoSimbolo]="20" />
+    DizAI · Atendimento com IA para pequenos e médios negócios
+  </span>
+  <a routerLink="/" class="rodape__link">Voltar ao início</a>
+</footer>

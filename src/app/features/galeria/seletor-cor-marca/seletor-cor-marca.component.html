@@ -1,0 +1,27 @@
+<p class="descricao">
+  Usada na categoria selecionada e no botão "Falar pelo WhatsApp" que seus clientes veem.
+  Cor atual: <strong>{{ nomeCorAtual() }}</strong>.
+</p>
+
+<div class="cores" role="radiogroup" aria-label="Cor da página pública">
+  @for (cor of cores; track cor.valor) {
+    @let selecionada = cor.valor === corAtual();
+    <button
+      type="button"
+      role="radio"
+      class="cor"
+      [class.cor--selecionada]="selecionada"
+      [style.background]="cor.hex"
+      [attr.aria-checked]="selecionada"
+      [attr.aria-label]="cor.nome"
+      [title]="cor.nome"
+      (click)="escolher(cor.valor)"
+    >
+      @if (salvando() === cor.valor) {
+        <app-carregando modo="inline" variante="claro" [tamanho]="18" />
+      } @else if (selecionada) {
+        <app-icone nome="check" [tamanho]="16" [espessura]="3" />
+      }
+    </button>
+  }
+</div>

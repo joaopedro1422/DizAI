@@ -1,0 +1,49 @@
+<div class="tela-app">
+  <app-cabecalho-pagina titulo="Perguntas frequentes" [subtitulo]="subtitulo()" [comDivisor]="true">
+    <button type="button" class="btn btn--primario btn--bloco btn--acao-principal" (click)="abrirModal()">
+      <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
+      Adicionar pergunta
+    </button>
+  </app-cabecalho-pagina>
+
+  <main class="perguntas">
+    @if (carregando()) {
+      <app-carregando texto="Carregando suas perguntas…" />
+    } @else {
+      @for (item of perguntas(); track item.id) {
+        <article class="pergunta">
+          <div class="pergunta__textos">
+            <h2 class="pergunta__titulo">{{ item.pergunta }}</h2>
+            <p class="pergunta__resposta">{{ item.resposta }}</p>
+          </div>
+          <button type="button" class="btn-icone btn-icone--sem-borda pergunta__editar" aria-label="Editar pergunta">
+            <app-icone nome="editar" [tamanho]="17" />
+          </button>
+        </article>
+      } @empty {
+        <app-estado-vazio
+          icone="pergunta"
+          titulo="Nenhuma pergunta ainda"
+          descricao="Escreva as dúvidas que seus clientes sempre mandam, como horário, pagamento e prazo."
+        />
+      }
+
+      @if (ideiasPerguntas().length > 0) {
+        <app-ideias-ramo
+          class="perguntas__ideias"
+          titulo="Perguntas que clientes do seu ramo costumam fazer"
+          descricao="Toque em uma para abrir já com uma resposta de exemplo. É só ajustar para o seu negócio."
+          [ideias]="ideiasPerguntas()"
+          rotuloAcao="Responder"
+          (escolher)="usarIdeia($event)"
+        />
+      }
+    }
+  </main>
+</div>
+
+@if (modalAberto()) {
+  <app-bottom-sheet titulo="Nova pergunta" (fechar)="fecharModal()">
+    <app-pergunta-formulario [modelo]="modeloEscolhido()" [salvando]="salvando()" (salvo)="adicionarPergunta($event)" />
+  </app-bottom-sheet>
+}

@@ -1,0 +1,36 @@
+<div class="fundo" aria-hidden="true"></div>
+
+<section class="janela" role="dialog" aria-modal="true" [attr.aria-labelledby]="idTitulo">
+  <div class="janela__cabecalho">
+    <span class="janela__icone" aria-hidden="true">
+      <app-icone [nome]="icone()" [tamanho]="22" [espessura]="1.9" />
+    </span>
+    @if (sobretitulo()) {
+      <span class="janela__sobretitulo">{{ sobretitulo() }}</span>
+    }
+    <h2 class="janela__titulo" [id]="idTitulo">{{ titulo() }}</h2>
+    @if (descricao()) {
+      <p class="janela__descricao">{{ descricao() }}</p>
+    }
+  </div>
+
+  @if (itens().length > 0) {
+    <ul class="dicas">
+      @for (item of itens(); track item.titulo) {
+        <li class="dica">
+          <span class="dica__icone">
+            <app-icone [nome]="item.icone" [tamanho]="18" [espessura]="1.9" />
+          </span>
+          <span class="dica__textos">
+            <span class="dica__titulo">{{ item.titulo }}</span>
+            <span class="dica__texto">{{ item.texto }}</span>
+          </span>
+        </li>
+      }
+    </ul>
+  }
+
+  <button #botao type="button" class="btn btn--primario btn--grande btn--bloco" (click)="confirmar.emit()">
+    {{ rotuloBotao() }}
+  </button>
+</section>

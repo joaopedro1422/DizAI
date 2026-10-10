@@ -1,0 +1,101 @@
+<form class="formulario" [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
+  <div class="campo">
+    <label for="produto-nome" class="campo__rotulo">Nome do {{ conteudo().termoItem }}</label>
+    <input id="produto-nome" class="campo__entrada" type="text" formControlName="nome" [placeholder]="conteudo().produto.nome">
+    @if (temErro('nome')) {
+      <span class="campo__erro" role="alert">Dê um nome para o produto.</span>
+    }
+  </div>
+
+  <div class="campo">
+    <span id="rotulo-categoria" class="campo__rotulo">Categoria</span>
+    <div class="grupo-chips" role="radiogroup" aria-labelledby="rotulo-categoria">
+      @for (categoria of categoriasExistentes(); track categoria) {
+        @let selecionada = formulario.controls.categoria.value === categoria;
+        <button type="button" role="radio" class="chip" [class.chip--ativo]="selecionada" [attr.aria-checked]="selecionada" (click)="escolherCategoria(categoria)">
+          {{ categoria }}
+        </button>
+      }
+      <button
+        type="button"
+        role="radio"
+        class="chip chip--tracejado"
+        [class.chip--ativo]="ehNovaCategoria()"
+        [attr.aria-checked]="ehNovaCategoria()"
+        (click)="escolherCategoria(valorNovaCategoria)"
+      >
+        + Nova categoria
+      </button>
+    </div>
+    @if (ehNovaCategoria()) {
+      <label for="produto-nova-categoria" class="somente-leitor-tela">Nome da nova categoria</label>
+      <input id="produto-nova-categoria" class="campo__entrada" type="text" formControlName="novaCategoria" [placeholder]="conteudo().produto.categoria">
+      @if (temErro('novaCategoria')) {
+        <span class="campo__erro" role="alert">Dê um nome para a categoria.</span>
+      }
+    }
+  </div>
+
+  <div class="campo">
+    <label for="produto-descricao" class="campo__rotulo">Descrição</label>
+    <textarea id="produto-descricao" class="campo__entrada" rows="4" formControlName="descricao" [placeholder]="conteudo().produto.descricao"></textarea>
+    <span class="campo__dica">Quanto mais detalhe, melhor o assistente responde.</span>
+  </div>
+
+  <div class="campo">
+    <label for="produto-preco" class="campo__rotulo">Preço <span class="campo__rotulo-opcional">(deixe vazio se depender de avaliação)</span></label>
+    <div class="linha-preco">
+      <span class="campo-prefixado linha-preco__valor" [class.campo-prefixado--erro]="temErro('preco')">
+        <span class="campo-prefixado__prefixo">R$</span>
+        <input id="produto-preco" type="text" inputmode="decimal" formControlName="preco" placeholder="0,00">
+      </span>
+      <button
+        type="button"
+        class="chip linha-preco__a-partir"
+        [class.chip--ativo]="formulario.controls.precoAPartirDe.value"
+        [attr.aria-pressed]="formulario.controls.precoAPartirDe.value"
+        (click)="alternarPrecoAPartirDe()"
+      >
+        A partir de
+      </button>
+    </div>
+    @if (temErro('preco')) {
+      <span class="campo__erro" role="alert">Use apenas números, por exemplo 70 ou 70,50.</span>
+    }
+  </div>
+
+  <div class="campo">
+    <div class="atributos__cabecalho">
+      <span class="campo__rotulo">Opções que o cliente escolhe</span>
+      <span class="campo__dica">Ex.: {{ conteudo().produto.exemploOpcoes }}. Deixe vazio se não tiver.</span>
+    </div>
+
+    <div formArrayName="atributos" class="atributos__lista">
+      @for (atributo of atributos.controls; track atributo; let indice = $index) {
+        <div class="atributo caixa-suave" [formGroupName]="indice">
+          <div class="atributo__linha">
+            <input class="campo__entrada atributo__entrada" type="text" formControlName="nome" [placeholder]="conteudo().produto.nomeOpcao" [attr.aria-label]="'Nome da opção ' + (indice + 1)">
+            <button type="button" class="btn-icone" aria-label="Remover opção" (click)="removerAtributo(indice)">
+              <app-icone nome="fechar" [tamanho]="16" [espessura]="2" />
+            </button>
+          </div>
+          <input class="campo__entrada atributo__entrada" type="text" formControlName="opcoes" [placeholder]="conteudo().produto.valoresOpcao + ' (separe por vírgula)'" [attr.aria-label]="'Valores da opção ' + (indice + 1)">
+        </div>
+      }
+    </div>
+
+    <button type="button" class="btn btn--secundario atributos__adicionar" (click)="adicionarAtributo()">
+      <app-icone nome="mais" [tamanho]="16" [espessura]="2" />
+      Adicionar opção
+    </button>
+  </div>
+
+  <button type="submit" class="btn btn--primario btn--grande btn--bloco" [disabled]="salvando()" [attr.aria-busy]="salvando()">
+    @if (salvando()) {
+      <app-carregando modo="inline" variante="claro" [tamanho]="22" />
+      Salvando…
+    } @else {
+      Salvar {{ conteudo().termoItem }}
+    }
+  </button>
+</form>

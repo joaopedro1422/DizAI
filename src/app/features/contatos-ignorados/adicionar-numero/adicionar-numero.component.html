@@ -1,0 +1,43 @@
+<form class="formulario" [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
+  @if (agendaDisponivel) {
+    <button type="button" class="btn btn--secundario btn--bloco" (click)="escolherDaAgenda()">
+      <app-icone nome="pessoa" [tamanho]="18" [espessura]="2" />
+      Escolher da agenda do celular
+    </button>
+    <span class="divisor" aria-hidden="true">ou digite</span>
+  }
+
+  <div class="campo">
+    <label for="ignorar-whatsapp" class="campo__rotulo">Número do WhatsApp</label>
+    <input
+      id="ignorar-whatsapp"
+      class="campo__entrada"
+      type="tel"
+      inputmode="tel"
+      autocomplete="off"
+      formControlName="whatsapp"
+      placeholder="(00) 00000-0000"
+      (input)="formatarWhatsapp($event)"
+    >
+    @if (whatsappComErro()) {
+      <span class="campo__erro" role="alert">Informe um número válido, com DDD.</span>
+    } @else if (jaNaLista()) {
+      <span class="campo__erro" role="alert">Esse número já está na lista.</span>
+    }
+  </div>
+
+  <div class="campo">
+    <label for="ignorar-nome" class="campo__rotulo">Nome <span class="campo__rotulo-opcional">(opcional)</span></label>
+    <input id="ignorar-nome" class="campo__entrada" type="text" autocomplete="off" formControlName="nome" placeholder="Ex.: Mãe, Pedro irmão">
+    <span class="campo__dica">Só para você reconhecer na lista.</span>
+  </div>
+
+  <button type="submit" class="btn btn--primario btn--grande btn--bloco" [disabled]="salvando()" [attr.aria-busy]="salvando()">
+    @if (salvando()) {
+      <app-carregando modo="inline" variante="claro" [tamanho]="22" />
+      Adicionando…
+    } @else {
+      Ignorar este número
+    }
+  </button>
+</form>

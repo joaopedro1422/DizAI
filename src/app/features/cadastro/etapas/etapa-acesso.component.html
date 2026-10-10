@@ -1,0 +1,68 @@
+<div class="etapa__cabecalho">
+  <h1 class="etapa__titulo">Agora, o seu acesso</h1>
+  <p class="etapa__descricao">Você entra no DizAI com o WhatsApp do negócio e uma senha.</p>
+</div>
+
+<div class="etapa__campos" [formGroup]="grupo()">
+  <div class="campo">
+    <label for="whatsapp" class="campo__rotulo">WhatsApp do negócio</label>
+    <input
+      id="whatsapp"
+      class="campo__entrada"
+      type="tel"
+      inputmode="tel"
+      autocomplete="tel"
+      formControlName="whatsapp"
+      placeholder="(00) 00000-0000"
+      (input)="formatarWhatsapp($event)"
+    >
+    @if (temErro('whatsapp')) {
+      <span class="campo__erro" role="alert">Informe um WhatsApp válido, com DDD.</span>
+    } @else {
+      <span class="campo__dica">É o número em que seus clientes já falam com você.</span>
+    }
+  </div>
+
+  <div class="campo">
+    <label for="senha" class="campo__rotulo">Crie uma senha</label>
+    <span class="campo-senha">
+      <input
+        id="senha"
+        class="campo__entrada"
+        [type]="mostrarSenha() ? 'text' : 'password'"
+        autocomplete="new-password"
+        formControlName="senha"
+      >
+      <button
+        type="button"
+        class="campo-senha__alternar"
+        [attr.aria-label]="mostrarSenha() ? 'Esconder senha' : 'Mostrar senha'"
+        [attr.aria-pressed]="mostrarSenha()"
+        (click)="alternarVisibilidadeSenha()"
+      >
+        {{ mostrarSenha() ? 'Esconder' : 'Mostrar' }}
+      </button>
+    </span>
+    @if (temErro('senha')) {
+      <span class="campo__erro" role="alert">A senha precisa ter pelo menos {{ tamanhoMinimoSenha }} caracteres.</span>
+    } @else {
+      <span class="campo__dica">Pelo menos {{ tamanhoMinimoSenha }} caracteres.</span>
+    }
+  </div>
+
+  <div class="campo">
+    <label for="confirmacao-senha" class="campo__rotulo">Confirme a senha</label>
+    <input
+      id="confirmacao-senha"
+      class="campo__entrada"
+      [type]="mostrarSenha() ? 'text' : 'password'"
+      autocomplete="new-password"
+      formControlName="confirmacaoSenha"
+    >
+    @if (senhasDiferentes()) {
+      <span class="campo__erro" role="alert">As senhas não são iguais.</span>
+    } @else if (temErro('confirmacaoSenha')) {
+      <span class="campo__erro" role="alert">Repita a senha.</span>
+    }
+  </div>
+</div>

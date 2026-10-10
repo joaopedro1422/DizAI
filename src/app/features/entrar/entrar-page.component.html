@@ -1,0 +1,65 @@
+<div class="tela-app tela-entrar">
+  <header class="topo">
+    <a routerLink="/" class="btn-icone btn-icone--sem-borda topo__voltar" aria-label="Voltar para a página inicial">
+      <app-icone nome="voltar" [tamanho]="22" />
+    </a>
+  </header>
+
+  <main class="conteudo">
+    <app-logo [tamanhoSimbolo]="40" [tamanhoTexto]="28" />
+
+    <div class="textos">
+      <h1 class="titulo">Que bom te ver de novo</h1>
+      <p class="descricao">Entre para acompanhar suas conversas e ajustar o seu assistente.</p>
+    </div>
+
+    @if (sessaoExpirada() && !erroLogin()) {
+      <p class="aviso" role="status">Sua sessão expirou. Entre de novo para continuar.</p>
+    }
+
+    <form class="formulario" [formGroup]="formulario" (ngSubmit)="entrar()" novalidate>
+      <div class="campo">
+        <label for="whatsapp" class="campo__rotulo">WhatsApp do negócio</label>
+        <input
+          id="whatsapp"
+          class="campo__entrada"
+          type="tel"
+          inputmode="tel"
+          autocomplete="tel"
+          formControlName="whatsapp"
+          placeholder="(00) 00000-0000"
+          (input)="formatarWhatsapp($event)"
+        >
+        @if (temErro('whatsapp')) {
+          <span class="campo__erro" role="alert">Informe um WhatsApp válido, com DDD.</span>
+        }
+      </div>
+
+      <div class="campo">
+        <label for="senha" class="campo__rotulo">Senha</label>
+        <input id="senha" class="campo__entrada" type="password" autocomplete="current-password" formControlName="senha">
+        @if (temErro('senha')) {
+          <span class="campo__erro" role="alert">Informe sua senha.</span>
+        }
+      </div>
+
+      @if (erroLogin(); as erro) {
+        <p class="aviso aviso--erro" role="alert">{{ erro }}</p>
+      }
+
+      <button type="submit" class="btn btn--primario btn--grande btn--bloco" [disabled]="entrando()" [attr.aria-busy]="entrando()">
+        @if (entrando()) {
+          <app-carregando modo="inline" variante="claro" [tamanho]="22" />
+          Entrando…
+        } @else {
+          Entrar
+        }
+      </button>
+    </form>
+
+    <p class="cadastro">
+      Ainda não tem conta?
+      <a routerLink="/cadastro" class="cadastro__link">Testar grátis</a>
+    </p>
+  </main>
+</div>

@@ -1,0 +1,378 @@
+:host {
+  display: block;
+  background: var(--cor-fundo);
+}
+
+/* Navegação ---------------------------------------------------------------- */
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 22px;
+  padding-bottom: 22px;
+}
+
+.nav__marca {
+  display: inline-flex;
+  text-decoration: none;
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 28px;
+}
+
+.nav__link {
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.nav__link:hover {
+  color: var(--cor-primaria);
+}
+
+.nav__acoes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav__entrar {
+  color: var(--cor-texto);
+}
+
+.btn--claro {
+  background: #ffffff;
+  color: var(--cor-primaria);
+}
+
+.btn--claro:hover {
+  background: var(--cor-primaria-clara);
+}
+
+/* Seções ------------------------------------------------------------------- */
+
+.faixa--suave {
+  background: var(--cor-fundo-suave);
+}
+
+.secao {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding-top: 96px;
+  padding-bottom: 96px;
+}
+
+.secao--espacosa {
+  gap: 56px;
+  padding-top: 112px;
+  padding-bottom: 112px;
+}
+
+.secao__cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 720px;
+}
+
+.secao__cabecalho--largo {
+  max-width: 760px;
+}
+
+.secao__sobretitulo {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cor-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* "Para quem é → Pequenos negócios" */
+.sobretitulo-publico {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.sobretitulo-publico__seta {
+  color: var(--cor-primaria);
+}
+
+.sobretitulo-publico__destaque {
+  padding: 5px 12px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-primaria);
+  color: #FFFFFF;
+  white-space: nowrap;
+}
+
+.secao__titulo {
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.secao__titulo--largo {
+  max-width: 760px;
+}
+
+.secao__descricao {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
+}
+
+.grade {
+  display: grid;
+  gap: 16px;
+}
+
+.grade--cards {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.grade--publicos {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grade--passos {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.grade--recursos {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px 48px;
+}
+
+.cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px;
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+}
+
+.cartao--compacto {
+  gap: 10px;
+  padding: 26px;
+}
+
+.cartao__titulo {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.cartao__titulo--menor {
+  font-size: 19px;
+  letter-spacing: normal;
+}
+
+.cartao__texto {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
+}
+
+.cartao__texto--menor {
+  font-size: 15px;
+}
+
+.passo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 24px;
+  border-top: 2px solid var(--cor-primaria);
+}
+
+.passo__numero {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.passo__titulo {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.recurso {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.recurso__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.recurso__titulo {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Dúvida comum: mesmo número pessoal e de trabalho */
+.duvida {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 48px;
+  padding: 24px;
+  border-radius: var(--raio-grande);
+  background: var(--cor-primaria-clara);
+}
+
+.duvida__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: #FFFFFF;
+  color: var(--cor-primaria);
+}
+
+.duvida__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.duvida__titulo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--cor-primaria);
+}
+
+/* Chamada final ------------------------------------------------------------ */
+
+.chamada-final {
+  padding: 0 24px 96px;
+}
+
+.chamada-final__caixa {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 88px 32px;
+  border-radius: 32px;
+  background: var(--cor-primaria);
+  color: #ffffff;
+  text-align: center;
+}
+
+.chamada-final__titulo {
+  max-width: 720px;
+  font-size: clamp(30px, 4.5vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+}
+
+.chamada-final__texto {
+  max-width: 520px;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--cor-texto-sobre-escuro);
+}
+
+/* Rodapé ------------------------------------------------------------------- */
+
+.rodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 48px;
+  font-size: 14px;
+  color: var(--cor-texto-suave);
+}
+
+.rodape__marca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rodape__links {
+  display: flex;
+  gap: 24px;
+}
+
+.rodape__links a {
+  color: var(--cor-texto-suave);
+}
+
+/* Celular ------------------------------------------------------------------ */
+
+@media (max-width: 640px) {
+  .nav__link {
+    display: none;
+  }
+
+  .nav__acoes .btn {
+    padding: 0 14px;
+  }
+
+  /* "Para quem é → Pequenos e médios negócios" cabe numa linha só no celular */
+  .sobretitulo-publico {
+    gap: 8px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  .sobretitulo-publico__destaque {
+    padding: 4px 10px;
+  }
+
+  .secao,
+  .secao--espacosa {
+    gap: 40px;
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
+
+  .chamada-final {
+    padding: 0 16px 48px;
+  }
+
+  .chamada-final__caixa {
+    padding: 56px 24px;
+    border-radius: 24px;
+  }
+}
+
+.chamada-final__etiqueta {
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--raio-pilula);
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}

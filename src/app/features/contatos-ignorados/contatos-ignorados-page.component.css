@@ -1,0 +1,108 @@
+.acoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.acoes .btn {
+  padding-inline: 12px;
+  font-size: 14px;
+}
+
+.contatos-ignorados {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 24px 40px;
+}
+
+.explicacao {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.explicacao__titulo {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--cor-primaria);
+}
+
+.explicacao__texto {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
+}
+
+.contato {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--cor-borda-suave);
+}
+
+.contato__textos {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.contato__nome {
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contato__detalhes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.contato__remover {
+  flex: none;
+  min-width: 84px;
+  justify-content: center;
+}
+
+.contatos-ignorados__nota {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 24px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+.contatos-ignorados__nota app-icone {
+  flex: none;
+  margin-top: 2px;
+}
+
+.sem-conexao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sem-conexao__texto {
+  margin-bottom: 4px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
+}
+
+@media (max-width: 360px) {
+  .acoes {
+    grid-template-columns: 1fr;
+  }
+}

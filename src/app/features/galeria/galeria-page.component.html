@@ -1,0 +1,77 @@
+<div class="tela-app">
+  <app-cabecalho-pagina titulo="Galeria" [subtitulo]="resumo()" [comDivisor]="true">
+    <button acaoTitulo type="button" class="botao-cor" (click)="abrirCorPagina()">
+      <span class="botao-cor__amostra" [style.background]="corPagina()" aria-hidden="true"></span>
+      Cor da página
+    </button>
+
+    <a acoesTopo [routerLink]="caminhoPaginaPublica()" class="btn btn--pequeno link-publico">
+      <app-icone nome="externo" [tamanho]="15" [espessura]="2" />
+      Ver página pública
+    </a>
+
+    <div class="acoes">
+      <button type="button" class="btn btn--primario btn--acao-principal" (click)="abrirNovoTopico()">
+        <app-icone nome="pastaMais" [tamanho]="17" [espessura]="2" />
+        Novo tópico
+      </button>
+      <button
+        type="button"
+        class="btn btn--secundario btn--acao-principal"
+        [attr.aria-disabled]="semTopicos()"
+        (click)="abrirAdicionarFotos()"
+      >
+        <app-icone nome="imagem" [tamanho]="17" [espessura]="2" />
+        Adicionar fotos
+      </button>
+    </div>
+  </app-cabecalho-pagina>
+
+  <main class="lista conteudo-tela">
+    <p class="aviso-informativo">
+      <app-icone nome="informacao" [tamanho]="16" />
+      <span>Toda foto fica dentro de um tópico, como "{{ exemploTopico() }}". É o link do tópico que o assistente envia ao cliente.</span>
+    </p>
+
+    @if (carregando()) {
+      <app-carregando texto="Carregando sua galeria…" />
+    } @else {
+      @for (album of albuns(); track album.id) {
+        <app-album-card [album]="album" (adicionarFotos)="abrirAdicionarFotos(album.id)" />
+      } @empty {
+        <app-estado-vazio
+          icone="imagem"
+          titulo="Nenhum tópico ainda"
+          descricao="Crie um tópico para cada tipo de serviço e adicione as fotos dos seus trabalhos."
+        >
+          <button type="button" class="btn btn--primario" (click)="abrirNovoTopico()">Criar primeiro tópico</button>
+        </app-estado-vazio>
+      }
+    }
+  </main>
+</div>
+
+@switch (modalAberto()) {
+  @case ('cor') {
+    <app-bottom-sheet titulo="Cor da sua página" (fechar)="fecharModal()">
+      <app-seletor-cor-marca />
+      <button type="button" class="btn btn--primario btn--grande btn--bloco" (click)="fecharModal()">Pronto</button>
+    </app-bottom-sheet>
+  }
+  @case ('topico') {
+    <app-bottom-sheet titulo="Novo tópico" (fechar)="fecharModal()">
+      <app-topico-formulario [salvando]="criandoTopico()" (salvo)="criarTopico($event)" />
+    </app-bottom-sheet>
+  }
+  @case ('fotos') {
+    <app-bottom-sheet titulo="Adicionar fotos" (fechar)="fecharModal()">
+      <app-fotos-formulario
+        [albuns]="albuns()"
+        [albumInicialId]="albumParaFotos()"
+        [enviando]="enviandoFotos()"
+        (salvo)="enviarFotos($event)"
+        (novoTopico)="abrirNovoTopico()"
+      />
+    </app-bottom-sheet>
+  }
+}

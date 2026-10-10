@@ -1,0 +1,224 @@
+/* A vitrine é da loja, não do DizAI: usa uma paleta neutra própria e a cor escolhida pelo lojista. */
+.vitrine {
+  --vitrine-texto: #1c1a19;
+  --vitrine-suave: #6b6461;
+  --vitrine-borda: #e2dcd9;
+  --vitrine-fundo-suave: #f1ecea;
+  --vitrine-destaque: #1c1a19;
+
+  display: flex;
+  flex-direction: column;
+  color: var(--vitrine-texto);
+}
+
+.loja {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 24px 24px;
+  text-align: center;
+}
+
+.loja__inicial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+  font-family: var(--fonte-titulo);
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.loja__foto {
+  width: 88px;
+  height: 88px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ffffff;
+  box-shadow: 0 0 0 2px var(--vitrine-destaque), 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.loja__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.loja__nome {
+  font-family: var(--fonte-titulo);
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.loja__descricao {
+  font-size: 14px;
+  color: var(--vitrine-suave);
+}
+
+.categorias {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 24px 20px;
+  border-bottom: 1px solid #eeeae8;
+  scrollbar-width: none;
+}
+
+.categorias::-webkit-scrollbar {
+  display: none;
+}
+
+.categoria {
+  flex: none;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--vitrine-borda);
+  border-radius: var(--raio-pilula);
+  background: #ffffff;
+  color: var(--vitrine-texto);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.categoria--ativa {
+  border-color: var(--vitrine-destaque);
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.albuns {
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+  padding: 32px 24px 0;
+}
+
+.album {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-margin-top: 16px;
+}
+
+.album__cabecalho {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.album__nome {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.album__contagem {
+  font-size: 13px;
+  color: var(--vitrine-suave);
+}
+
+.album__descricao {
+  margin-top: -8px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--vitrine-suave);
+}
+
+.album__grade {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.album__botao-foto {
+  display: block;
+  padding: 0;
+  border: none;
+  border-radius: var(--raio-pequeno);
+  background: none;
+  cursor: zoom-in;
+  overflow: hidden;
+}
+
+.album__botao-foto:hover .album__foto {
+  transform: scale(1.03);
+}
+
+.album__foto {
+  display: block;
+  transition: transform 0.2s ease;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--raio-pequeno);
+  object-fit: cover;
+}
+
+.album__ver-mais {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--vitrine-texto);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sem-fotos {
+  padding: 24px 0;
+  text-align: center;
+  color: var(--vitrine-suave);
+}
+
+.rodape {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 24px 24px;
+}
+
+.rodape__whatsapp {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  border-radius: var(--raio-medio);
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.rodape__credito {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #8a8380;
+  text-decoration: none;
+}
+
+.nao-encontrada {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 120px 24px;
+  text-align: center;
+}

@@ -1,0 +1,57 @@
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.linha-preco {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.linha-preco__valor {
+  flex: 1;
+}
+
+.linha-preco__a-partir {
+  min-height: 50px;
+  border-radius: 12px;
+}
+
+.atributos__cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.atributos__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.atributo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+}
+
+.atributo__linha {
+  display: flex;
+  gap: 8px;
+}
+
+.atributo__entrada {
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: var(--raio-pequeno);
+  font-size: 14px;
+}
+
+.atributos__adicionar {
+  align-self: flex-start;
+  border-radius: 12px;
+  font-size: 14px;
+}

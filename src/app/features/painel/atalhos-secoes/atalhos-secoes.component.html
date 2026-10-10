@@ -1,0 +1,92 @@
+<nav class="atalhos" aria-label="Seções da loja">
+  <div class="atalhos__grade">
+    <a [routerLink]="rotas().produtos" class="atalho" appAlvoTour="produtos">
+      <span class="atalho__topo">
+        <span class="icone-atalho icone-atalho--azul">
+          <app-icone nome="caixa" [tamanho]="22" />
+        </span>
+        <app-icone nome="setaDiagonal" [tamanho]="18" [espessura]="2" class="atalho__seta" />
+      </span>
+      <span class="atalho__textos">
+        <span class="atalho__titulo">Serviços / Produtos</span>
+        <span class="atalho__resumo">{{ resumoProdutos() }}</span>
+      </span>
+    </a>
+
+    <a [routerLink]="rotas().perguntas" class="atalho" appAlvoTour="perguntas">
+      <span class="atalho__topo">
+        <span class="icone-atalho icone-atalho--ambar">
+          <app-icone nome="pergunta" [tamanho]="22" />
+        </span>
+        <app-icone nome="setaDiagonal" [tamanho]="18" [espessura]="2" class="atalho__seta" />
+      </span>
+      <span class="atalho__textos">
+        <span class="atalho__titulo">Perguntas frequentes</span>
+        <span class="atalho__resumo">{{ resumoPerguntas() }}</span>
+      </span>
+    </a>
+
+    <a [routerLink]="rotas().galeria" class="atalho" appAlvoTour="galeria">
+      <span class="atalho__topo">
+        <span class="icone-atalho icone-atalho--rosa">
+          <app-icone nome="imagem" [tamanho]="22" />
+        </span>
+        @if (miniaturasGaleria().length > 0) {
+          <span class="miniaturas" aria-hidden="true">
+            @for (foto of miniaturasGaleria(); track foto.id) {
+              <img class="miniaturas__foto" [src]="foto.url | urlImagem" alt="">
+            }
+            @if (fotosRestantes() > 0) {
+              <span class="miniaturas__foto miniaturas__restante">+{{ fotosRestantes() }}</span>
+            }
+          </span>
+        } @else {
+          <app-icone nome="setaDiagonal" [tamanho]="18" [espessura]="2" class="atalho__seta" />
+        }
+      </span>
+      <span class="atalho__textos">
+        <span class="atalho__titulo">Galeria</span>
+        <span class="atalho__resumo">{{ resumoGaleria() }}</span>
+      </span>
+    </a>
+
+    <a [routerLink]="rotas().contatosIgnorados" class="atalho" appAlvoTour="contatos">
+      <span class="atalho__topo">
+        <span class="icone-atalho icone-atalho--marinho">
+          <app-icone nome="pessoaIgnorada" [tamanho]="22" />
+        </span>
+        <app-icone nome="setaDiagonal" [tamanho]="18" [espessura]="2" class="atalho__seta" />
+      </span>
+      <span class="atalho__textos">
+        <span class="atalho__titulo">Contatos a ignorar</span>
+        <span class="atalho__resumo">{{ resumoContatosIgnorados() }}</span>
+      </span>
+    </a>
+  </div>
+
+  <a [routerLink]="rotas().chats" class="atalho-chats">
+    <span class="atalho-chats__topo">
+      <span class="icone-atalho icone-atalho--sobre-escuro">
+        <app-icone nome="conversa" [tamanho]="22" />
+      </span>
+      <span class="atalho__textos">
+        <span class="atalho-chats__titulo">Chats</span>
+        <span class="atalho-chats__resumo">{{ resumoChats() }}</span>
+      </span>
+      @if (quantidadeAguardando() > 0) {
+        <span class="atalho-chats__selo">{{ quantidadeAguardando() }} aguardando</span>
+      }
+    </span>
+
+    @if (conversaMaisUrgente(); as conversa) {
+      <span class="atalho-chats__previa">
+        <app-avatar [nome]="conversa.nome" [tamanho]="34" />
+        <span class="atalho-chats__previa-textos">
+          <span class="atalho-chats__previa-nome">{{ conversa.nome }} · {{ conversa.motivo }}</span>
+          <span class="atalho-chats__previa-mensagem">{{ conversa.mensagem }}</span>
+        </span>
+        <app-icone nome="avancar" [tamanho]="18" [espessura]="2" />
+      </span>
+    }
+  </a>
+</nav>

@@ -1,0 +1,34 @@
+@if (exibirCabecalho()) {
+  <div class="etapa__cabecalho">
+    <h1 class="etapa__titulo">Vamos conhecer você e o seu negócio</h1>
+    <p class="etapa__descricao">Essas informações ajudam o assistente a se apresentar do jeito certo.</p>
+  </div>
+}
+
+<div class="etapa__campos" [formGroup]="grupo()">
+  <div class="campo">
+    <label for="nome-responsavel" class="campo__rotulo">Seu nome</label>
+    <input id="nome-responsavel" class="campo__entrada" type="text" autocomplete="name" formControlName="nomeResponsavel" placeholder="Ex.: Isabela Souza">
+    @if (temErro('nomeResponsavel')) {
+      <span class="campo__erro" role="alert">Informe o seu nome.</span>
+    }
+  </div>
+
+  <div class="campo">
+    <label for="nome-loja" class="campo__rotulo">Nome do negócio</label>
+    <input id="nome-loja" class="campo__entrada" type="text" autocomplete="organization" formControlName="nomeLoja" placeholder="Ex.: Bella Studio">
+    @if (temErro('nomeLoja')) {
+      <span class="campo__erro" role="alert">Informe o nome do seu negócio.</span>
+    }
+  </div>
+
+  <div class="campo">
+    <label for="descricao" class="campo__rotulo">O que o seu negócio faz?</label>
+    <textarea id="descricao" class="campo__entrada" rows="3" formControlName="descricao" placeholder="Ex.: Estúdio de unhas com esmaltação em gel, alongamento e nail art."></textarea>
+    @if (temErro('descricao')) {
+      <span class="campo__erro" role="alert">Conte em poucas palavras o que você faz.</span>
+    } @else {
+      <span class="campo__dica">Uma ou duas frases já bastam.</span>
+    }
+  </div>
+</div>

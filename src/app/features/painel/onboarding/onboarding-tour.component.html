@@ -1,0 +1,87 @@
+@if (fase() !== 'inativo') {
+  <div class="bloqueio" aria-hidden="true"></div>
+}
+
+@if (fase() === 'boas-vindas') {
+  <div class="aviso-inicial" role="status">
+    <span class="aviso-inicial__linha">
+      <span class="aviso-inicial__icone">
+        <app-icone nome="check" [tamanho]="18" [espessura]="2.2" />
+      </span>
+      <span class="aviso-inicial__textos">
+        <span class="aviso-inicial__titulo">Sua loja foi criada!</span>
+        <span class="aviso-inicial__subtitulo">Vamos te mostrar o seu painel...</span>
+      </span>
+    </span>
+    <span class="aviso-inicial__barra" aria-hidden="true"><span class="aviso-inicial__preenchimento"></span></span>
+  </div>
+}
+
+@if (fase() === 'passo') {
+  @if (destaque(); as recorte) {
+    <div
+      class="destaque"
+      [class.destaque--animado]="animarRecorte()"
+      aria-hidden="true"
+      [style.top.px]="recorte.top"
+      [style.left.px]="recorte.left"
+      [style.width.px]="recorte.width"
+      [style.height.px]="recorte.height"
+    ></div>
+  }
+
+  @if (balao(); as posicao) {
+    <div
+      class="balao"
+      [class.balao--visivel]="balaoVisivel()"
+      [attr.aria-hidden]="!balaoVisivel()"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tour-titulo"
+      aria-describedby="tour-texto"
+      [style.width.px]="posicao.largura"
+      [style.left.px]="posicao.esquerda"
+      [style.top.px]="posicao.topo"
+      [style.bottom.px]="posicao.base"
+    >
+      <span
+        class="balao__seta"
+        [class.balao__seta--cima]="posicao.setaEmCima"
+        [style.left.px]="posicao.posicaoSeta"
+        aria-hidden="true"
+      ></span>
+
+      <div class="balao__topo">
+        <span class="balao__contador">Passo {{ indicePasso() + 1 }} de {{ passos.length }}</span>
+        <span class="balao__pontos" aria-hidden="true">
+          @for (passo of passos; track passo.alvo; let indice = $index) {
+            <span
+              class="balao__ponto"
+              [class.balao__ponto--atual]="indice === indicePasso()"
+              [class.balao__ponto--visto]="indice <= indicePasso()"
+            ></span>
+          }
+        </span>
+      </div>
+
+      <div class="balao__textos">
+        <h2 id="tour-titulo" class="balao__titulo">{{ passoAtual().titulo }}</h2>
+        <p id="tour-texto" class="balao__texto">{{ passoAtual().texto }}</p>
+      </div>
+
+      <div class="balao__acoes">
+        <button type="button" class="btn btn--texto" (click)="encerrar()">Pular tour</button>
+        <span class="balao__navegacao">
+          @if (indicePasso() > 0) {
+            <button type="button" class="btn-icone" aria-label="Passo anterior" (click)="voltar()">
+              <app-icone nome="voltar" [tamanho]="18" />
+            </button>
+          }
+          <button #botaoAvancar type="button" class="btn btn--primario" (click)="avancar()">
+            {{ ehUltimoPasso() ? 'Concluir' : 'Próximo' }}
+          </button>
+        </span>
+      </div>
+    </div>
+  }
+}

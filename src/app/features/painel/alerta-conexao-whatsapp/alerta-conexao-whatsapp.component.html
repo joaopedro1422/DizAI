@@ -1,0 +1,15 @@
+<div class="alerta" role="alert">
+  <div class="alerta__topo">
+    <span class="alerta__icone">
+      <app-icone nome="alerta" [tamanho]="22" [espessura]="2" />
+    </span>
+    <div class="alerta__textos">
+      <strong class="alerta__titulo">Seu WhatsApp ainda não está conectado</strong>
+      <p class="alerta__texto">Enquanto isso, o assistente não consegue responder seus clientes. Leva uns 10 minutos.</p>
+    </div>
+  </div>
+  <a [routerLink]="rotas().conectarWhatsapp" class="btn btn--primario btn--bloco">
+    Configurar agora
+    <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
+  </a>
+</div>

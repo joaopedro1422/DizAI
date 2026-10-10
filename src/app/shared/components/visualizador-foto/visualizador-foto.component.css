@@ -1,0 +1,97 @@
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.fundo {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 14, 22, 0.88);
+  animation: aparecer 0.2s ease both;
+}
+
+/* A caixa não captura cliques: tocar fora da foto e dos botões cai no fundo e fecha */
+.visualizador {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 720px;
+  max-height: 100%;
+  pointer-events: none;
+}
+
+.visualizador__topo,
+.visualizador__navegacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.visualizador__legenda {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.visualizador__contador {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.visualizador__botao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  color: #FFFFFF;
+  pointer-events: auto;
+  transition: background-color 0.15s ease;
+}
+
+.visualizador__botao:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.visualizador__foto {
+  max-width: 100%;
+  max-height: calc(100dvh - 190px);
+  border-radius: var(--raio-medio);
+  object-fit: contain;
+  pointer-events: auto;
+  animation: ampliar 0.22s ease-out both;
+}
+
+.visualizador__texto {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  text-align: center;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ampliar {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: none; }
+}

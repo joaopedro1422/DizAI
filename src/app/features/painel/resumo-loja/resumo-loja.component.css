@@ -1,0 +1,272 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 28px 24px 24px;
+  border-radius: 0 0 28px 28px;
+  /* Leve brilho azul no topo, no mesmo tom do restante do painel */
+  background:
+    radial-gradient(120% 90% at 0% 0%, var(--cor-primaria-clara) 0%, transparent 60%),
+    var(--cor-fundo);
+  box-shadow: 0 1px 0 var(--cor-borda-suave), 0 8px 24px rgba(15, 23, 42, 0.04);
+}
+
+/* Identidade ---------------------------------------------------------------- */
+
+.identidade {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatar {
+  position: relative;
+  flex: none;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+}
+
+.avatar__inicial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border: 3px solid var(--cor-fundo);
+  border-radius: 50%;
+  background: var(--cor-primaria);
+  color: #FFFFFF;
+  font-family: var(--fonte-titulo);
+  font-size: 26px;
+  font-weight: 500;
+  box-shadow: 0 6px 16px rgba(30, 58, 114, 0.22);
+  transition: transform 0.15s ease;
+}
+
+.avatar:hover .avatar__inicial,
+.avatar:hover .avatar__foto {
+  transform: scale(1.04);
+}
+
+/* Logotipo ou foto enviada pelo lojista */
+.avatar__foto {
+  display: block;
+  width: 64px;
+  height: 64px;
+  border: 3px solid var(--cor-fundo);
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--cor-fundo);
+  box-shadow: 0 6px 16px rgba(30, 58, 114, 0.22);
+  transition: transform 0.15s ease;
+}
+
+.avatar__enviando {
+  position: absolute;
+  inset: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.avatar:disabled {
+  cursor: progress;
+}
+
+.avatar__editar {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--cor-fundo);
+  border-radius: 50%;
+  background: var(--cor-fundo);
+  color: var(--cor-primaria);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.18);
+}
+
+.identidade__textos {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.identidade__saudacao {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+}
+
+.identidade__nome {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--fonte-titulo);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.identidade__descricao {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+/* Etiquetas ----------------------------------------------------------------- */
+
+.etiquetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.etiqueta {
+  padding: 6px 12px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo);
+  color: var(--cor-texto-secundario);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Status e link público num cartão só -------------------------------------- */
+
+.cartao-status {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo);
+  overflow: hidden;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--cor-borda-suave);
+}
+
+.status__indicador {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.status__ponto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cor-alerta);
+  box-shadow: 0 0 0 4px rgba(198, 138, 18, 0.15);
+}
+
+.status__ponto--ativo {
+  background: var(--cor-ativo);
+  box-shadow: 0 0 0 4px rgba(47, 122, 79, 0.15);
+}
+
+.status__telefone {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.ia-ativa {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--cor-borda-suave);
+}
+
+.ia-ativa__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ia-ativa__titulo {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ia-ativa__descricao {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.link-publico {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 6px 6px 14px;
+  color: var(--cor-texto-suave);
+}
+
+.link-publico__endereco {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--cor-texto-secundario);
+}
+
+.link-publico__copiar {
+  flex: none;
+  min-height: 38px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 9px;
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Atalho explícito para o modal de dados da loja ------------------------- */
+
+.editar-dados {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo);
+  color: var(--cor-primaria);
+  font-size: 13px;
+  font-weight: 700;
+  transition: border-color 0.15s ease;
+}
+
+.editar-dados:hover {
+  border-color: var(--cor-primaria);
+}

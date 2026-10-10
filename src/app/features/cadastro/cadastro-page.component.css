@@ -1,0 +1,67 @@
+.tela-cadastro {
+  display: flex;
+  flex-direction: column;
+}
+
+.cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 24px 0;
+}
+
+.cabecalho__linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cabecalho__voltar {
+  margin-left: -10px;
+  color: var(--cor-texto);
+}
+
+.cabecalho__passo {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+}
+
+.cabecalho__espaco {
+  width: 44px;
+}
+
+.progresso {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.progresso__segmento {
+  height: 4px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-desabilitado);
+  transition: background-color 0.3s ease;
+}
+
+.progresso__segmento--feito {
+  background: var(--cor-primaria);
+}
+
+.formulario {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.formulario__corpo {
+  flex: 1;
+  padding: 28px 24px 0;
+}
+
+.formulario__rodape {
+  position: sticky;
+  bottom: 0;
+  padding: 20px 24px 28px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #ffffff 24%);
+}

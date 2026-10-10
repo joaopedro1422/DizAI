@@ -1,0 +1,31 @@
+{
+  "/api": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "headers": {
+      "Origin": "http://localhost:4200"
+    }
+  },
+  "/public": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "headers": {
+      "Origin": "http://localhost:4200"
+    }
+  },
+  "/arquivos": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "headers": {
+      "Origin": "http://localhost:4200"
+    }
+  },
+  "/webhooks": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

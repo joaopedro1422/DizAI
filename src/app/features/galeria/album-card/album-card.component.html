@@ -1,0 +1,30 @@
+<div class="album__cabecalho">
+  <div class="album__textos">
+    <h2 class="album__nome">{{ album().nome }}</h2>
+    <span class="album__contagem">{{ contagem() }}</span>
+  </div>
+  <button type="button" class="btn btn--secundario btn--pequeno" (click)="adicionarFotos.emit()">
+    <app-icone nome="mais" [tamanho]="14" [espessura]="2.2" />
+    Fotos
+  </button>
+</div>
+
+@if (album().descricao) {
+  <p class="album__descricao">{{ album().descricao }}</p>
+}
+
+@if (album().quantidadeFotos === 0) {
+  <button type="button" class="area-tracejada" (click)="adicionarFotos.emit()">
+    Nenhuma foto ainda
+    <span class="album__chamada">Adicionar as primeiras fotos</span>
+  </button>
+} @else {
+  <div class="album__grade">
+    @for (foto of fotosVisiveis(); track foto.id) {
+      <img class="album__foto" [src]="foto.url | urlImagem" [alt]="foto.legenda ?? ''">
+    }
+    @if (fotosRestantes() > 0) {
+      <span class="album__foto album__restante">+{{ fotosRestantes() }}</span>
+    }
+  </div>
+}

@@ -1,0 +1,16 @@
+<div class="fundo" aria-hidden="true" (click)="fechar.emit()"></div>
+
+<section class="folha" role="dialog" aria-modal="true" [attr.aria-labelledby]="idTitulo">
+  <span class="folha__alca" aria-hidden="true"></span>
+
+  <header class="folha__cabecalho">
+    <h2 class="folha__titulo" [id]="idTitulo">{{ titulo() }}</h2>
+    <button type="button" class="btn-icone btn-icone--suave" aria-label="Fechar" (click)="fechar.emit()">
+      <app-icone nome="fechar" [tamanho]="18" [espessura]="2" />
+    </button>
+  </header>
+
+  <div class="folha__conteudo">
+    <ng-content />
+  </div>
+</section>

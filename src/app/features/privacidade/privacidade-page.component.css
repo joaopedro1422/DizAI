@@ -1,0 +1,207 @@
+:host {
+  display: block;
+  background: var(--cor-fundo);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 22px;
+  padding-bottom: 22px;
+}
+
+.nav__marca {
+  display: inline-flex;
+  text-decoration: none;
+}
+
+.nav__voltar {
+  gap: 6px;
+  color: var(--cor-texto);
+}
+
+/* Texto da política ------------------------------------------------------- */
+
+.politica {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  max-width: 820px;
+  padding-top: 32px;
+  padding-bottom: 80px;
+}
+
+.politica__cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.politica__sobretitulo {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.politica__titulo {
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.politica__resumo {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--cor-texto-secundario);
+}
+
+.politica__data {
+  font-size: 14px;
+  color: var(--cor-texto-suave);
+}
+
+.indice {
+  padding: 22px 24px;
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo-suave);
+}
+
+.indice__titulo {
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.indice__lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 8px 24px;
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.indice__lista a {
+  color: var(--cor-texto-secundario);
+}
+
+.indice__lista a:hover {
+  color: var(--cor-primaria);
+}
+
+.secao {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scroll-margin-top: 24px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--cor-texto-secundario);
+}
+
+.secao h2 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  color: var(--cor-texto);
+}
+
+.secao h3 {
+  margin-top: 6px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--cor-texto);
+}
+
+.secao ul,
+.secao ol {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding-left: 22px;
+}
+
+.secao strong {
+  color: var(--cor-texto);
+}
+
+.secao a {
+  font-weight: 600;
+  color: var(--cor-primaria);
+}
+
+.secao--destaque {
+  padding: 24px;
+  border-radius: var(--raio-grande);
+  background: var(--cor-primaria-clara);
+}
+
+.tabela-rolagem {
+  overflow-x: auto;
+}
+
+.tabela {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.tabela th,
+.tabela td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--cor-borda-suave);
+  text-align: left;
+  vertical-align: top;
+}
+
+.tabela th {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cor-texto);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--cor-fundo-suave);
+}
+
+.rodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 24px;
+  padding-bottom: 48px;
+  border-top: 1px solid var(--cor-borda-suave);
+  font-size: 14px;
+  color: var(--cor-texto-suave);
+}
+
+.rodape__marca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rodape__link {
+  color: var(--cor-texto-suave);
+}
+
+@media (max-width: 640px) {
+  .politica {
+    gap: 32px;
+    padding-top: 16px;
+  }
+
+  .secao--destaque {
+    padding: 20px 18px;
+  }
+}

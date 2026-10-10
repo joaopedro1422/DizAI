@@ -1,0 +1,62 @@
+<div class="tela-app tela-cadastro">
+  <header class="cabecalho">
+    <div class="cabecalho__linha">
+      @if (etapaAtual() === 1) {
+        <a routerLink="/" class="btn-icone btn-icone--sem-borda cabecalho__voltar" aria-label="Voltar para a página inicial">
+          <app-icone nome="voltar" [tamanho]="22" />
+        </a>
+      } @else {
+        <button type="button" class="btn-icone btn-icone--sem-borda cabecalho__voltar" aria-label="Voltar ao passo anterior" (click)="voltar()">
+          <app-icone nome="voltar" [tamanho]="22" />
+        </button>
+      }
+      <span class="cabecalho__passo">Passo {{ etapaAtual() }} de {{ totalEtapas }}</span>
+      <span class="cabecalho__espaco" aria-hidden="true"></span>
+    </div>
+
+    <div
+      class="progresso"
+      role="progressbar"
+      aria-label="Progresso do cadastro"
+      aria-valuemin="1"
+      [attr.aria-valuemax]="totalEtapas"
+      [attr.aria-valuenow]="etapaAtual()"
+    >
+      @for (segmento of segmentosProgresso; track segmento) {
+        <span class="progresso__segmento" [class.progresso__segmento--feito]="segmento <= etapaAtual()"></span>
+      }
+    </div>
+  </header>
+
+  <form class="formulario" [formGroup]="formulario" (ngSubmit)="avancar()" novalidate>
+    <main class="formulario__corpo">
+      @switch (etapaAtual()) {
+        @case (1) {
+          <app-etapa-dados-negocio [grupo]="formulario.controls.dadosNegocio" />
+        }
+        @case (2) {
+          <app-etapa-acesso [grupo]="formulario.controls.acesso" />
+        }
+        @case (3) {
+          <app-etapa-ramo [controle]="formulario.controls.ramo" />
+        }
+      }
+    </main>
+
+    <footer class="formulario__rodape">
+      <button type="submit" class="btn btn--primario btn--grande btn--bloco">
+        @if (ehUltimaEtapa()) {
+          Criar minha loja
+          <app-icone nome="check" [tamanho]="18" [espessura]="2" />
+        } @else {
+          Continuar
+          <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
+        }
+      </button>
+    </footer>
+  </form>
+</div>
+
+@if (criandoLoja()) {
+  <app-carregando modo="tela" texto="Criando sua loja…" />
+}

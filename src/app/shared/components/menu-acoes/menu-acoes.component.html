@@ -1,0 +1,21 @@
+<button
+  type="button"
+  class="btn-icone btn-icone--sem-borda menu__botao"
+  aria-haspopup="menu"
+  [attr.aria-expanded]="aberto()"
+  [attr.aria-label]="rotuloBotao()"
+  (click)="alternar()"
+>
+  <app-icone nome="maisOpcoes" [tamanho]="22" [espessura]="2.6" />
+</button>
+
+@if (aberto()) {
+  <div class="menu__lista" role="menu">
+    @for (item of itens(); track item.id) {
+      <button type="button" role="menuitem" class="menu__item" [class.menu__item--perigo]="item.perigo" (click)="selecionar(item)">
+        <app-icone [nome]="item.icone" [tamanho]="18" [espessura]="1.9" />
+        {{ item.rotulo }}
+      </button>
+    }
+  </div>
+}

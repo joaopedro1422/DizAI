@@ -1,0 +1,115 @@
+:host {
+  display: block;
+}
+
+.ideias {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px;
+  border: 1px dashed var(--cor-borda-forte);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo-tracejado);
+}
+
+.ideias__cabecalho {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.ideias__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-ambar);
+}
+
+.ideias__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ideias__titulo {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.ideias__descricao {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.ideias__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ideia {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  text-align: left;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.ideia:hover {
+  border-color: var(--cor-primaria);
+  transform: translateY(-1px);
+}
+
+.ideia__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ideia__etiqueta {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cor-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ideia__titulo {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ideia__texto {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.ideia__acao {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cor-primaria);
+}

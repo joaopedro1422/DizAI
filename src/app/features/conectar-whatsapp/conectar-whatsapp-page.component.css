@@ -1,0 +1,402 @@
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-top: 24px;
+}
+
+/* Já conectado ------------------------------------------------------------- */
+
+.conectado {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border-radius: var(--raio-medio);
+  background: #E7F4E1;
+}
+
+.conectado__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--cor-sucesso);
+  color: #FFFFFF;
+}
+
+.conectado__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Progresso do assistente --------------------------------------------------- */
+
+.progresso {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progresso__textos {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 28px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cor-texto-secundario);
+}
+
+.progresso__voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border: none;
+  background: none;
+  color: var(--cor-primaria);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.progresso__voltar:disabled {
+  opacity: 0.4;
+}
+
+.progresso__trilho {
+  height: 6px;
+  border-radius: 6px;
+  background: var(--cor-borda);
+  overflow: hidden;
+}
+
+.progresso__barra {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  background: var(--cor-primaria);
+  transition: width 0.3s ease;
+}
+
+/* Etapa atual (um cartão por vez) ------------------------------------------- */
+
+.etapa {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: surgir-etapa 0.25s ease-out both;
+}
+
+@keyframes surgir-etapa {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.etapa__numero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--cor-primaria);
+  color: #FFFFFF;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.etapa__titulo {
+  font-family: var(--fonte-titulo);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.etapa__texto {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--cor-texto-secundario);
+}
+
+.etapa__atencao {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-ambar);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.etapa__atencao app-icone {
+  flex: none;
+  margin-top: 1px;
+}
+
+.etapa .btn {
+  margin-top: 8px;
+  gap: 8px;
+}
+
+/* Pergunta inicial ------------------------------------------------------------ */
+
+.opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.opcao {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 16px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  text-align: left;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.opcao:hover,
+.opcao:focus-visible {
+  border-color: var(--cor-primaria);
+  background: var(--cor-selecionado);
+}
+
+.opcao__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+}
+
+.opcao__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.opcao__titulo {
+  font-size: 16px;
+  line-height: 1.3;
+}
+
+.opcao__descricao {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--cor-texto-secundario);
+}
+
+.opcao__seta {
+  flex: none;
+  color: var(--cor-texto-suave);
+}
+
+/* Checklist "tenha em mãos" --------------------------------------------------- */
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checklist__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.checklist__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--cor-fundo-suave);
+  color: var(--cor-primaria);
+}
+
+/* Botão da Meta e o que acontece na janela ------------------------------------ */
+
+.botao-meta {
+  min-height: 60px;
+  font-size: 17px;
+}
+
+.janela-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo-suave);
+}
+
+.janela-meta__titulo {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.janela-meta__passos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.janela-meta__passo {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.janela-meta__numero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--cor-primaria);
+  color: var(--cor-primaria);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.janela-meta__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.janela-meta__textos strong {
+  color: var(--cor-texto);
+}
+
+/* Se algo der errado ---------------------------------------------------------- */
+
+.problemas__titulo {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cor-primaria);
+}
+
+.problemas__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px 0 0;
+  padding-left: 18px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
+}
+
+/* Atendimento individual --------------------------------------------------- */
+
+.ajuda {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 20px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo-suave);
+}
+
+.ajuda__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+}
+
+.ajuda__titulo {
+  font-family: var(--fonte-titulo);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.ajuda__texto {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
+}
+
+.ajuda .btn {
+  margin-top: 6px;
+}
+
+.ajuda__email {
+  align-self: center;
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+/* Atalho de desenvolvimento (não aparece no build de produção) */
+.dev {
+  border: 1.5px dashed var(--cor-borda-forte);
+  border-radius: var(--raio-medio);
+  padding: 14px 16px;
+  background: var(--cor-fundo-tracejado);
+}
+
+.dev__titulo {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cor-texto-secundario);
+}
+
+.dev__texto {
+  margin: 12px 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+.dev__formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}

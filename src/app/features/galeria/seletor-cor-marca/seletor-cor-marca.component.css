@@ -1,0 +1,46 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.descricao {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.descricao strong {
+  color: var(--cor-texto);
+}
+
+.cores {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.cor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  color: #FFFFFF;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cor:hover {
+  transform: scale(1.06);
+}
+
+/* Anel de seleção: branco por dentro e a cor do texto por fora, visível em qualquer tom */
+.cor--selecionada {
+  box-shadow:
+    0 0 0 3px var(--cor-fundo),
+    0 0 0 5px var(--cor-texto);
+}

@@ -1,0 +1,49 @@
+<form class="formulario" [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
+  <section class="bloco" aria-labelledby="perfil-sobre">
+    <h3 id="perfil-sobre" class="rotulo-maiusculo">Sobre você e o negócio</h3>
+    <app-etapa-dados-negocio [grupo]="formulario.controls.dadosNegocio" [exibirCabecalho]="false" />
+    <div class="campo">
+      <label for="perfil-whatsapp" class="campo__rotulo">WhatsApp do negócio</label>
+      <input
+        id="perfil-whatsapp"
+        class="campo__entrada"
+        type="tel"
+        inputmode="tel"
+        autocomplete="tel"
+        formControlName="whatsapp"
+        placeholder="(00) 00000-0000"
+        (input)="formatarWhatsapp($event)"
+      >
+      @if (whatsappComErro()) {
+        <span class="campo__erro" role="alert">Informe um WhatsApp válido, com DDD.</span>
+      }
+    </div>
+  </section>
+
+  <section class="bloco" aria-labelledby="perfil-ramo">
+    <h3 id="perfil-ramo" class="rotulo-maiusculo">Tipo de negócio</h3>
+    <div class="grupo-chips" role="radiogroup" aria-labelledby="perfil-ramo">
+      @for (ramo of ramos; track ramo.valor) {
+        @let selecionado = formulario.controls.ramo.value === ramo.valor;
+        <button type="button" role="radio" class="chip" [class.chip--ativo]="selecionado" [attr.aria-checked]="selecionado" (click)="escolherRamo(ramo.valor)">
+          {{ ramo.rotulo }}
+        </button>
+      }
+    </div>
+  </section>
+
+  <section class="bloco" aria-labelledby="perfil-pagamento">
+    <h3 id="perfil-pagamento" class="rotulo-maiusculo">Pagamento, entrega e antecedência</h3>
+    <p class="bloco__dica">O assistente usa essas informações para responder seus clientes.</p>
+    <app-etapa-pagamento-entrega [grupo]="formulario.controls.pagamentoEntrega" [exibirCabecalho]="false" />
+  </section>
+
+  <button type="submit" class="btn btn--primario btn--grande btn--bloco" [disabled]="salvando()" [attr.aria-busy]="salvando()">
+    @if (salvando()) {
+      <app-carregando modo="inline" variante="claro" [tamanho]="22" />
+      Salvando…
+    } @else {
+      Salvar dados
+    }
+  </button>
+</form>

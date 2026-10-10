@@ -1,0 +1,90 @@
+/* Estilos comuns aos três passos do cadastro. */
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.etapa__cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.etapa__titulo {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+}
+
+.etapa__descricao {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+.etapa__campos {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.etapa__grupo {
+  margin: 0;
+  padding: 0;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.etapa__legenda {
+  padding: 0;
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.etapa__lista-opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.etapa__entrega {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.etapa__entrega .campo__entrada {
+  min-height: 46px;
+  font-size: 14px;
+}
+
+/* Campo de senha com o botão "Mostrar" dentro */
+.campo-senha {
+  position: relative;
+  display: block;
+}
+
+.campo-senha .campo__entrada {
+  padding-right: 92px;
+}
+
+.campo-senha__alternar {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  min-height: 38px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 9px;
+  background: var(--cor-fundo-suave);
+  color: var(--cor-primaria);
+  font-size: 13px;
+  font-weight: 700;
+  transform: translateY(-50%);
+}

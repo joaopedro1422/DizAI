@@ -1,0 +1,45 @@
+<header id="topo" class="hero">
+  <div class="hero__fundo" aria-hidden="true"></div>
+
+  <div class="container hero__grade">
+    <div class="hero__texto">
+      <span class="hero__etiqueta">
+        <span class="hero__pulso" aria-hidden="true"></span>
+        Atendente com IA para pequenos negócios
+      </span>
+
+      <h1 class="hero__titulo">
+        Pare de perder clientes por
+        <span class="hero__destaque">demora</span>
+        no WhatsApp.
+      </h1>
+
+      <p class="hero__descricao">
+        <strong>Enquanto você produz, o seu assistente responde as perguntas que sempre te fazem</strong>,
+        com os serviços, produtos, fotos, preços, prazos e regras do seu negócio. 
+      </p>
+
+
+      <div class="hero__acoes">
+        <a routerLink="/cadastro" class="btn btn--primario btn--hero">
+          Testar grátis
+          <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
+        </a>
+        <a routerLink="/" fragment="como" class="btn btn--secundario btn--hero hero__secundario">Ver como funciona</a>
+      </div>
+
+      <ul class="hero__garantias">
+        @for (garantia of garantias; track garantia) {
+          <li class="hero__garantia">
+            <span class="hero__check"><app-icone nome="check" [tamanho]="12" [espessura]="3" /></span>
+            {{ garantia }}
+          </li>
+        }
+      </ul>
+    </div>
+
+    <div class="hero__vitrine">
+      <app-demonstracao-conversa class="hero__demonstracao" />
+    </div>
+  </div>
+</header>

@@ -1,0 +1,75 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+/* Barra de status do celular */
+.barra-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  padding: 10px 22px 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.barra-status__icones {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.barra-status__sinal {
+  width: 16px;
+  height: 10px;
+  background: linear-gradient(to right, currentColor 0 3px, transparent 3px 4px, currentColor 4px 7px, transparent 7px 8px, currentColor 8px 11px, transparent 11px 12px, currentColor 12px);
+  clip-path: polygon(0 100%, 100% 0, 100% 100%);
+}
+
+.barra-status__bateria {
+  width: 22px;
+  height: 11px;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  background: linear-gradient(to right, currentColor 70%, transparent 70%) content-box;
+  padding: 1.5px;
+}
+
+/*
+ * O painel real é pensado para ~415px de largura. Aqui ele é desenhado nessa largura
+ * e reduzido com zoom para caber na tela do celular, mantendo as proporções.
+ */
+.painel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  zoom: 0.82;
+  scrollbar-width: none;
+}
+
+.painel::-webkit-scrollbar {
+  display: none;
+}
+
+.painel__conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 28px 24px 32px;
+}
+
+.lista-opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.instrucoes {
+  margin: 0;
+  white-space: pre-line;
+  line-height: 1.6;
+}

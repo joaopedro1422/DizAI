@@ -1,0 +1,60 @@
+<div class="passo">
+  <span id="rotulo-topico" class="passo__titulo">1. Em qual tópico?</span>
+  <div class="grupo-chips" role="radiogroup" aria-labelledby="rotulo-topico">
+    @for (album of albuns(); track album.id) {
+      @let selecionado = album.id === albumSelecionadoId();
+      <button
+        type="button"
+        role="radio"
+        class="chip"
+        [class.chip--ativo]="selecionado"
+        [attr.aria-checked]="selecionado"
+        (click)="selecionarAlbum(album.id)"
+      >
+        {{ album.nome }}
+      </button>
+    }
+    <button type="button" class="chip chip--tracejado" (click)="novoTopico.emit()">+ Novo tópico</button>
+  </div>
+</div>
+
+<div class="passo">
+  <div class="passo__linha">
+    <span class="passo__titulo">2. Escolha as fotos</span>
+    <span class="passo__resumo">{{ resumoSelecao() }}</span>
+  </div>
+
+  <div class="grade">
+    <label class="grade__adicionar">
+      <input class="somente-leitor-tela" type="file" accept="image/*" multiple (change)="aoEscolherArquivos($event)">
+      <app-icone nome="mais" [tamanho]="22" [espessura]="2" />
+      <span>Escolher</span>
+    </label>
+
+    @for (foto of fotos(); track foto.previa) {
+      <div class="grade__item">
+        <img class="grade__foto" [src]="foto.previa" [alt]="foto.arquivo.name">
+        <button type="button" class="grade__remover" [attr.aria-label]="'Remover ' + foto.arquivo.name" (click)="removerFoto(foto)">
+          <app-icone nome="fechar" [tamanho]="12" [espessura]="3" />
+        </button>
+      </div>
+    }
+  </div>
+</div>
+
+@if (erro()) {
+  <span class="campo__erro" role="alert">{{ erro() }}</span>
+}
+
+<button
+  type="button"
+  class="btn btn--primario btn--grande btn--bloco"
+  [attr.aria-disabled]="!podeSalvar()"
+  [disabled]="enviando()" [attr.aria-busy]="enviando()"
+  (click)="salvar()"
+>
+  @if (enviando()) {
+    <app-carregando modo="inline" variante="claro" [tamanho]="22" />
+  }
+  {{ rotuloBotao() }}
+</button>

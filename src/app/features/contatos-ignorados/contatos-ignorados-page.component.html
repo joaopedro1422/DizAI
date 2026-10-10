@@ -1,0 +1,88 @@
+<div class="tela-app">
+  <app-cabecalho-pagina titulo="Contatos a ignorar" [subtitulo]="subtitulo()" [comDivisor]="true">
+    <div class="acoes">
+      <button type="button" class="btn btn--primario btn--bloco btn--acao-principal" (click)="abrirModal('whatsapp')">
+        <app-icone nome="conversa" [tamanho]="18" [espessura]="2" />
+        Escolher do WhatsApp
+      </button>
+      <button type="button" class="btn btn--secundario btn--bloco btn--acao-principal" (click)="abrirModal('manual')">
+        <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
+        Digitar número
+      </button>
+    </div>
+  </app-cabecalho-pagina>
+
+  <main class="contatos-ignorados">
+    <section class="explicacao caixa-destaque" aria-labelledby="explicacao-titulo">
+      <h2 id="explicacao-titulo" class="explicacao__titulo">Usa o mesmo número para a vida pessoal e o trabalho?</h2>
+      <p class="explicacao__texto">
+        Adicione aqui família, amigos e quem mais não for cliente. O assistente não responde esses contatos:
+        as conversas com eles continuam só com você, do jeito de sempre.
+      </p>
+    </section>
+
+    @if (carregando()) {
+      <app-carregando texto="Carregando seus contatos…" />
+    } @else {
+      @for (contato of contatos(); track contato.id) {
+        <article class="contato">
+          <app-avatar [nome]="contato.nome || '#'" [tamanho]="42" />
+          <div class="contato__textos">
+            <h3 class="contato__nome">{{ contato.nome || contato.whatsapp }}</h3>
+            <p class="contato__detalhes">
+              @if (contato.nome) {
+                <span>{{ contato.whatsapp }}</span>
+                <span aria-hidden="true">·</span>
+              }
+              <span>{{ rotuloOrigem[contato.origem] }}</span>
+            </p>
+          </div>
+          <button
+            type="button"
+            class="btn btn--texto btn--pequeno contato__remover"
+            [disabled]="removendoId() !== null"
+            [attr.aria-busy]="removendoId() === contato.id"
+            [attr.aria-label]="'Remover ' + (contato.nome || contato.whatsapp) + ' da lista'"
+            (click)="remover(contato.id)"
+          >
+            @if (removendoId() === contato.id) {
+              <app-carregando modo="inline" [tamanho]="20" />
+            } @else {
+              Remover
+            }
+          </button>
+        </article>
+      } @empty {
+        <app-estado-vazio
+          icone="pessoaIgnorada"
+          titulo="Nenhum contato na lista"
+          descricao="Por enquanto o assistente responde todo mundo que mandar mensagem."
+        />
+      }
+
+      <p class="contatos-ignorados__nota">
+        <app-icone nome="escudo" [tamanho]="16" />
+        Esses números servem só para o assistente saber quem não atender. Ninguém recebe aviso.
+      </p>
+    }
+  </main>
+</div>
+
+@if (modalAberto(); as modal) {
+  <app-bottom-sheet [titulo]="tituloModal()" (fechar)="fecharModal()">
+    @if (modal === 'manual') {
+      <app-adicionar-numero [salvando]="salvando()" (confirmar)="adicionar($event)" />
+    } @else if (whatsappConectado()) {
+      <app-escolher-contatos-whatsapp [salvando]="salvando()" (confirmar)="adicionar($event)" />
+    } @else {
+      <div class="sem-conexao">
+        <p class="sem-conexao__texto">
+          Para escolher pela sua agenda do WhatsApp, primeiro conecte o seu número ao DizAI.
+          Enquanto isso, você pode digitar os números.
+        </p>
+        <a class="btn btn--primario btn--grande btn--bloco" [routerLink]="rotas().conectarWhatsapp">Conectar WhatsApp</a>
+        <button type="button" class="btn btn--secundario btn--grande btn--bloco" (click)="abrirModal('manual')">Digitar número</button>
+      </div>
+    }
+  </app-bottom-sheet>
+}

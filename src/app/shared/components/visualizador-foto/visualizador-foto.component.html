@@ -1,0 +1,35 @@
+<div class="fundo" aria-hidden="true" (click)="fechar.emit()"></div>
+
+<section class="visualizador" role="dialog" aria-modal="true" [attr.aria-label]="titulo() || 'Foto ampliada'">
+  <div class="visualizador__topo">
+    <span class="visualizador__legenda">
+      {{ titulo() }}
+      @if (temVarias()) {
+        <span class="visualizador__contador">{{ indice() + 1 }} de {{ fotos().length }}</span>
+      }
+    </span>
+    <button #botaoFechar type="button" class="visualizador__botao" aria-label="Fechar foto" (click)="fechar.emit()">
+      <app-icone nome="fechar" [tamanho]="20" [espessura]="2.2" />
+    </button>
+  </div>
+
+  @if (fotoAtual(); as foto) {
+    @for (atual of [foto]; track atual.id) {
+      <img class="visualizador__foto" [src]="atual.url | urlImagem" [alt]="atual.legenda ?? 'Foto de ' + titulo()">
+    }
+    @if (foto.legenda) {
+      <p class="visualizador__texto">{{ foto.legenda }}</p>
+    }
+  }
+
+  @if (temVarias()) {
+    <div class="visualizador__navegacao">
+      <button type="button" class="visualizador__botao" aria-label="Foto anterior" (click)="anterior()">
+        <app-icone nome="voltar" [tamanho]="22" [espessura]="2.2" />
+      </button>
+      <button type="button" class="visualizador__botao" aria-label="Próxima foto" (click)="proxima()">
+        <app-icone nome="avancar" [tamanho]="22" [espessura]="2.2" />
+      </button>
+    </div>
+  }
+</section>

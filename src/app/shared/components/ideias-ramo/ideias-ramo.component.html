@@ -1,0 +1,33 @@
+<section class="ideias" [attr.aria-label]="titulo()">
+  <div class="ideias__cabecalho">
+    <span class="ideias__icone" aria-hidden="true">
+      <app-icone nome="lampada" [tamanho]="18" [espessura]="1.9" />
+    </span>
+    <div class="ideias__textos">
+      <h2 class="ideias__titulo">{{ titulo() }}</h2>
+      @if (descricao()) {
+        <p class="ideias__descricao">{{ descricao() }}</p>
+      }
+    </div>
+  </div>
+
+  <ul class="ideias__lista">
+    @for (ideia of ideias(); track ideia.titulo; let indice = $index) {
+      <li>
+        <button type="button" class="ideia" (click)="escolher.emit(indice)">
+          <span class="ideia__textos">
+            @if (ideia.etiqueta) {
+              <span class="ideia__etiqueta">{{ ideia.etiqueta }}</span>
+            }
+            <span class="ideia__titulo">{{ ideia.titulo }}</span>
+            <span class="ideia__texto">{{ ideia.texto }}</span>
+          </span>
+          <span class="ideia__acao">
+            {{ rotuloAcao() }}
+            <app-icone nome="mais" [tamanho]="15" [espessura]="2.2" />
+          </span>
+        </button>
+      </li>
+    }
+  </ul>
+</section>

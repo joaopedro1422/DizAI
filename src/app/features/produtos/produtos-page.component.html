@@ -1,0 +1,51 @@
+<div class="tela-app">
+  <app-cabecalho-pagina [titulo]="conteudo().tituloItens" [subtitulo]="subtitulo()">
+    <button type="button" class="btn btn--primario btn--bloco btn--acao-principal" (click)="abrirModal()">
+      <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
+      Adicionar {{ conteudo().termoItem }}
+    </button>
+  </app-cabecalho-pagina>
+
+  @if (categorias().length > 0) {
+    <div class="filtros" role="tablist" aria-label="Filtrar por categoria">
+      @for (filtro of filtros(); track filtro) {
+        @let ativo = filtro === filtroAtual();
+        <button type="button" role="tab" class="chip chip--pequeno" [class.chip--ativo]="ativo" [attr.aria-selected]="ativo" (click)="filtrar(filtro)">
+          {{ filtro }}
+        </button>
+      }
+    </div>
+  }
+
+  <main class="lista conteudo-tela">
+    @if (carregando()) {
+      <app-carregando texto="Carregando seu catálogo…" />
+    } @else {
+      @for (produto of produtosFiltrados(); track produto.id) {
+        <app-produto-card [produto]="produto" />
+      } @empty {
+        <app-estado-vazio
+          icone="caixa"
+          [titulo]="'Nenhum ' + conteudo().termoItem + ' ainda'"
+          descricao="Cadastre o que você vende ou faz. O assistente só responde com o que estiver aqui."
+        />
+      }
+    }
+  </main>
+</div>
+
+@if (modalAberto()) {
+  <app-bottom-sheet [titulo]="conteudo().tituloNovoItem" (fechar)="fecharModal()">
+    <app-produto-formulario [categoriasExistentes]="categorias()" [salvando]="salvando()" (salvo)="adicionarProduto($event)" />
+  </app-bottom-sheet>
+}
+
+@if (mostrarDica()) {
+  <app-dica-sobreposta
+    [titulo]="'Antes de cadastrar seus ' + conteudo().tituloItens.toLowerCase()"
+    descricao="O assistente responde seus clientes usando só o que estiver aqui. Quanto mais completo o cadastro, melhor ele atende."
+    [itens]="dicasCadastro()"
+    [rotuloBotao]="rotuloBotaoDica()"
+    (confirmar)="fecharDica()"
+  />
+}

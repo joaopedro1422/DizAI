@@ -1,0 +1,76 @@
+<div class="seletor">
+  <span class="seletor__rotulo" aria-live="polite">
+    Exemplo: <strong>{{ exemploAtual().ramo }}</strong>
+  </span>
+  <div class="seletor__pontos" role="tablist" aria-label="Exemplos de negócio">
+    @for (exemplo of exemplos; track exemplo.id; let indice = $index) {
+      <button
+        type="button"
+        role="tab"
+        class="seletor__ponto"
+        [class.seletor__ponto--ativo]="indice === indiceAtual()"
+        [attr.aria-selected]="indice === indiceAtual()"
+        [attr.aria-label]="exemplo.ramo"
+        (click)="mostrarExemplo(indice)"
+      ></button>
+    }
+  </div>
+</div>
+
+<figure class="celular" [attr.aria-label]="'Exemplo de conversa no WhatsApp com ' + exemploAtual().nomeLoja">
+  <div class="celular__tela">
+    <div class="whatsapp__topo">
+      <app-icone nome="voltar" [tamanho]="20" [espessura]="2.2" />
+      <span class="whatsapp__avatar" [style.background]="exemploAtual().corAvatar" aria-hidden="true">{{ inicialLoja() }}</span>
+      <span class="whatsapp__contato">
+        <span class="whatsapp__nome">{{ exemploAtual().nomeLoja }}</span>
+        <span class="whatsapp__status">online</span>
+      </span>
+    </div>
+
+    <div class="whatsapp__conversa">
+      @for (exemplo of [exemploAtual()]; track exemplo.id) {
+        <div class="whatsapp__mensagens">
+          @for (mensagem of exemplo.mensagens; track $index; let ordem = $index) {
+            <div
+              class="balao"
+              [class.balao--cliente]="mensagem.autor === 'cliente'"
+              [class.balao--album]="!!mensagem.album"
+              [style.animation-delay.ms]="ordem * 140"
+            >
+              @if (mensagem.album; as album) {
+                <span class="album__fotos" aria-hidden="true">
+                  @for (cor of album.cores; track $index) {
+                    <span class="album__foto" [style.background]="cor"></span>
+                  }
+                </span>
+                <span class="album__legenda">
+                  <span class="album__titulo">{{ album.titulo }}</span>
+                  <span class="album__link">{{ album.link }}</span>
+                </span>
+              } @else {
+                <span class="balao__texto">{{ mensagem.texto }}</span>
+              }
+              <span class="balao__info">
+                {{ mensagem.horario }}
+                @if (mensagem.autor === 'cliente') {
+                  <app-icone nome="checkDuplo" [tamanho]="15" [espessura]="2" class="balao__lido" />
+                }
+              </span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="whatsapp__rodape" aria-hidden="true">
+      <span class="whatsapp__campo">
+        <app-icone nome="emoji" [tamanho]="20" />
+        Mensagem
+      </span>
+      <span class="whatsapp__microfone">
+        <app-icone nome="microfone" [tamanho]="18" [espessura]="2" />
+      </span>
+    </div>
+  </div>
+</figure>

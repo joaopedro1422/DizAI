@@ -1,0 +1,68 @@
+<div class="escolher">
+  <p class="escolher__intro">Estes são os contatos salvos no seu WhatsApp Business. Marque quem é da sua vida pessoal.</p>
+
+  <label class="busca">
+    <app-icone nome="busca" [tamanho]="18" />
+    <input
+      class="busca__entrada"
+      type="search"
+      aria-label="Buscar contato"
+      autocomplete="off"
+      placeholder="Buscar por nome ou número"
+      [value]="busca()"
+      (input)="atualizarBusca($event)"
+    >
+  </label>
+
+  @if (carregando()) {
+    <app-carregando texto="Buscando seus contatos…" />
+  } @else {
+    <ul class="contatos" role="list">
+      @for (opcao of opcoesFiltradas(); track opcao.chave) {
+        <li>
+          <button
+            type="button"
+            class="contato"
+            role="checkbox"
+            [class.contato--marcado]="estaSelecionado(opcao)"
+            [attr.aria-checked]="estaSelecionado(opcao)"
+            [attr.aria-disabled]="opcao.jaIgnorado"
+            (click)="alternar(opcao)"
+          >
+            <app-avatar [nome]="opcao.nome" [tamanho]="38" />
+            <span class="contato__textos">
+              <span class="contato__nome">{{ opcao.nome }}</span>
+              <span class="contato__numero">{{ opcao.whatsapp }}</span>
+            </span>
+            @if (opcao.jaIgnorado) {
+              <span class="contato__selo">Já ignorado</span>
+            } @else {
+              <span class="contato__caixa" aria-hidden="true">
+                @if (estaSelecionado(opcao)) {
+                  <app-icone nome="check" [tamanho]="14" [espessura]="3" />
+                }
+              </span>
+            }
+          </button>
+        </li>
+      } @empty {
+        <li class="contatos__vazio">Nenhum contato encontrado.</li>
+      }
+    </ul>
+  }
+
+  <button
+    type="button"
+    class="btn btn--primario btn--grande btn--bloco escolher__confirmar"
+    [disabled]="salvando() || quantidadeSelecionada() === 0"
+    [attr.aria-busy]="salvando()"
+    (click)="salvar()"
+  >
+    @if (salvando()) {
+      <app-carregando modo="inline" variante="claro" [tamanho]="22" />
+      Adicionando…
+    } @else {
+      {{ textoBotao() }}
+    }
+  </button>
+</div>

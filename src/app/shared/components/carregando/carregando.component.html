@@ -1,0 +1,20 @@
+<svg class="simbolo" [attr.width]="tamanho()" [attr.height]="tamanho()" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+  <defs>
+    <clipPath [attr.id]="idRecorte">
+      <path d="M8 6H22A18 17 0 0 1 22 40H16L8 46Z" />
+    </clipPath>
+  </defs>
+  <path class="simbolo__base" d="M8 6H22A18 17 0 0 1 22 40H16L8 46Z" />
+  <g [attr.clip-path]="'url(#' + idRecorte + ')'">
+    <rect class="simbolo__enchimento" x="0" y="0" width="48" height="48" />
+  </g>
+  <circle class="simbolo__ponto" cx="16" cy="23" r="2.7" />
+  <circle class="simbolo__ponto" cx="23.7" cy="23" r="2.7" />
+  <circle class="simbolo__ponto" cx="31.4" cy="23" r="2.7" />
+</svg>
+
+@if (texto()) {
+  <span class="texto">{{ texto() }}</span>
+} @else {
+  <span class="somente-leitor-tela">Carregando</span>
+}

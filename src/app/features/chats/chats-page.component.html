@@ -1,0 +1,74 @@
+<div class="tela-app">
+  <app-cabecalho-pagina titulo="Chats" subtitulo="Conversas que precisam de você aparecem aqui.">
+    <div class="abas" role="tablist" aria-label="Tipo de conversa">
+      <button
+        type="button"
+        role="tab"
+        id="aba-aguardando"
+        aria-controls="painel-aguardando"
+        class="aba"
+        [class.aba--ativa]="abaAtual() === 'aguardando'"
+        [attr.aria-selected]="abaAtual() === 'aguardando'"
+        (click)="mudarAba('aguardando')"
+      >
+        Aguardando você
+        @if (aguardandoDono().length > 0) {
+          <span class="aba__contador">{{ aguardandoDono().length }}</span>
+        }
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="aba-andamento"
+        aria-controls="painel-andamento"
+        class="aba"
+        [class.aba--ativa]="abaAtual() === 'andamento'"
+        [attr.aria-selected]="abaAtual() === 'andamento'"
+        (click)="mudarAba('andamento')"
+      >
+        Em andamento
+      </button>
+    </div>
+  </app-cabecalho-pagina>
+
+  @if (carregando()) {
+    <app-carregando texto="Carregando conversas…" />
+  } @else if (abaAtual() === 'aguardando') {
+    <main id="painel-aguardando" role="tabpanel" aria-labelledby="aba-aguardando" class="lista conteudo-tela">
+      @for (conversa of aguardandoDono(); track conversa.id) {
+        <app-conversa-aguardando-card
+          [conversa]="conversa"
+          [resolvendo]="resolvendoId() === conversa.id"
+          (resolvida)="marcarComoResolvida(conversa)"
+        />
+      } @empty {
+        <app-estado-vazio
+          titulo="Nenhum cliente esperando"
+          descricao="O assistente está cuidando das conversas. Quando alguém precisar de você, aparece aqui."
+        />
+      }
+    </main>
+  } @else {
+    <main id="painel-andamento" role="tabpanel" aria-labelledby="aba-andamento" class="conteudo-tela conversas">
+      @for (conversa of emAndamento(); track conversa.id) {
+        <article class="conversa">
+          <app-avatar [nome]="nomeExibicao(conversa)" />
+          <span class="conversa__textos">
+            <span class="conversa__linha">
+              <span class="conversa__nome">{{ nomeExibicao(conversa) }}</span>
+              <span class="conversa__tempo">{{ conversa.atualizadaEm | tempoDecorrido }}</span>
+            </span>
+            <span class="conversa__mensagem">{{ conversa.ultimaMensagem }}</span>
+            <span class="conversa__status" [class.conversa__status--dono]="conversa.status === 'HUMANO_ATIVO'"><span class="conversa__ponto"></span>{{ textoStatus(conversa) }}</span>
+          </span>
+        </article>
+      } @empty {
+        <app-estado-vazio
+          icone="conversa"
+          titulo="Nenhuma conversa no momento"
+          descricao="Quando um cliente mandar mensagem, o assistente começa a atender e a conversa aparece aqui."
+        />
+      }
+    </main>
+  }
+</div>

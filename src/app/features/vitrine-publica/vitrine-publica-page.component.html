@@ -1,0 +1,102 @@
+<div class="tela-app vitrine" [style.--vitrine-destaque]="corDestaque()">
+  @if (situacao() === 'carregando') {
+    <app-carregando texto="Carregando a galeria…" />
+  } @else if (situacao() === 'pronta') {
+    <header class="loja">
+      @if (fotoPerfilUrl(); as foto) {
+        <img class="loja__foto" [src]="foto | urlImagem" [alt]="'Logo de ' + nomeLoja()">
+      } @else {
+        <span class="loja__inicial" aria-hidden="true">{{ inicial() }}</span>
+      }
+      <div class="loja__textos">
+        <h1 class="loja__nome">{{ nomeLoja() }}</h1>
+        @if (descricao()) {
+          <p class="loja__descricao">{{ descricao() }}</p>
+        }
+      </div>
+    </header>
+
+    @if (albuns().length > 0) {
+      <nav class="categorias" aria-label="Categorias">
+        @for (album of albuns(); track album.slug; let primeiro = $first) {
+          <button type="button" class="categoria" [class.categoria--ativa]="primeiro" (click)="irParaAlbum(album)">
+            {{ album.nome }}
+          </button>
+        }
+      </nav>
+    }
+
+    <main class="albuns">
+      @for (album of albuns(); track album.slug) {
+        <section class="album" [id]="idSecao(album)" [attr.aria-labelledby]="idSecao(album) + '-titulo'">
+          <div class="album__cabecalho">
+            <h2 class="album__nome" [id]="idSecao(album) + '-titulo'">{{ album.nome }}</h2>
+            <span class="album__contagem">{{ contagemFotos(album) }}</span>
+          </div>
+          @if (album.descricao) {
+            <p class="album__descricao">{{ album.descricao }}</p>
+          }
+          <div class="album__grade">
+            @for (foto of fotosParaExibir(album); track foto.id; let indice = $index) {
+              <button type="button" class="album__botao-foto" [attr.aria-label]="'Ampliar foto ' + (indice + 1) + ' de ' + album.nome" (click)="abrirFoto(album, indice)">
+                <img class="album__foto" [src]="foto.url | urlImagem" [alt]="foto.legenda ?? 'Foto de ' + album.nome" loading="lazy">
+              </button>
+            }
+          </div>
+          @if (temMaisFotos(album)) {
+            <button
+              type="button"
+              class="album__ver-mais"
+              [attr.aria-expanded]="estaExpandido(album)"
+              [attr.aria-busy]="albumCarregando() === album.slug"
+              [disabled]="albumCarregando() === album.slug"
+              (click)="alternarExpansao(album)"
+            >
+              @if (albumCarregando() === album.slug) {
+                <app-carregando modo="inline" [tamanho]="18" />
+                Carregando fotos…
+              } @else {
+                {{ estaExpandido(album) ? 'Ver menos' : 'Ver todas as ' + contagemFotos(album) }}
+                <app-icone nome="seta" [tamanho]="16" [espessura]="2" />
+              }
+            </button>
+          }
+        </section>
+      } @empty {
+        <p class="sem-fotos">Esta loja ainda não publicou fotos.</p>
+      }
+    </main>
+
+    <footer class="rodape">
+      <a class="rodape__whatsapp" [href]="linkWhatsapp()" target="_blank" rel="noopener">
+        <app-icone nome="conversa" [tamanho]="20" />
+        Falar pelo WhatsApp
+      </a>
+      <a routerLink="/" class="rodape__credito">
+        Galeria criada com
+        <app-logo [tamanhoSimbolo]="14" [tamanhoTexto]="13" />
+      </a>
+    </footer>
+  } @else if (situacao() === 'erro') {
+    <div class="nao-encontrada">
+      <h1 class="loja__nome">Não foi possível abrir a galeria</h1>
+      <p class="loja__descricao">Confira sua internet e tente de novo.</p>
+      <button type="button" class="btn btn--secundario" (click)="recarregar()">Tentar de novo</button>
+    </div>
+  } @else {
+    <div class="nao-encontrada">
+      <h1 class="loja__nome">Página não encontrada</h1>
+      <p class="loja__descricao">Confira se o link está correto.</p>
+      <a routerLink="/" class="btn btn--secundario">Conhecer o DizAI</a>
+    </div>
+  }
+</div>
+
+@if (fotoAberta(); as aberta) {
+  <app-visualizador-foto
+    [fotos]="aberta.fotos"
+    [indiceInicial]="aberta.indice"
+    [titulo]="aberta.titulo"
+    (fechar)="fecharFoto()"
+  />
+}
