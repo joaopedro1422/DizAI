@@ -22,7 +22,7 @@
       <app-carregando texto="Carregando seu catálogo…" />
     } @else {
       @for (produto of produtosFiltrados(); track produto.id) {
-        <app-produto-card [produto]="produto" (editar)="editarProduto($event)" />
+        <app-produto-card [produto]="produto" (editar)="editarProduto($event)" (excluir)="solicitarExclusao($event)" />
       } @empty {
         <app-estado-vazio
           icone="caixa"
@@ -42,6 +42,33 @@
       [salvando]="salvando()"
       (salvo)="adicionarProduto($event)"
     />
+  </app-bottom-sheet>
+}
+
+@if (produtoParaExcluir(); as produto) {
+  <app-bottom-sheet [titulo]="'Excluir ' + conteudo().termoItem + '?'" (fechar)="cancelarExclusao()">
+    <div class="confirmar-exclusao">
+      <p>
+        <strong>{{ produto.nome }}</strong> sai do seu catálogo e o assistente deixa de oferecer aos clientes.
+        Esta ação não pode ser desfeita.
+      </p>
+      <button
+        type="button"
+        class="btn btn--excluir btn--grande btn--bloco"
+        [disabled]="excluindo()"
+        [attr.aria-busy]="excluindo()"
+        (click)="excluirProduto()"
+      >
+        @if (excluindo()) {
+          Excluindo…
+        } @else {
+          Excluir {{ conteudo().termoItem }}
+        }
+      </button>
+      <button type="button" class="btn btn--secundario btn--grande btn--bloco" [disabled]="excluindo()" (click)="cancelarExclusao()">
+        Cancelar
+      </button>
+    </div>
   </app-bottom-sheet>
 }
 

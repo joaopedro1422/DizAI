@@ -73,6 +73,8 @@ export class ProdutosPageComponent implements OnInit {
   protected readonly modalAberto = signal(false);
   protected readonly produtoEmEdicao = signal<Produto | null>(null);
   protected readonly salvando = signal(false);
+  protected readonly produtoParaExcluir = signal<Produto | null>(null);
+  protected readonly excluindo = signal(false);
   protected readonly carregando = this.produtoService.carregando;
 
   protected readonly filtros = computed(() => [TODAS_AS_CATEGORIAS, ...this.categorias()]);
@@ -124,6 +126,37 @@ export class ProdutosPageComponent implements OnInit {
   protected editarProduto(produto: Produto): void {
     this.produtoEmEdicao.set(produto);
     this.modalAberto.set(true);
+  }
+
+  protected solicitarExclusao(produto: Produto): void {
+    this.produtoParaExcluir.set(produto);
+  }
+
+  protected cancelarExclusao(): void {
+    if (!this.excluindo()) {
+      this.produtoParaExcluir.set(null);
+    }
+  }
+
+  protected async excluirProduto(): Promise<void> {
+    const produto = this.produtoParaExcluir();
+    if (!produto || this.excluindo()) {
+      return;
+    }
+    this.excluindo.set(true);
+    try {
+      await this.produtoService.remover(produto.id);
+      // se a categoria filtrada ficou vazia, volta para "Todos"
+      if (!this.categorias().includes(this.filtroAtual())) {
+        this.filtroAtual.set(TODAS_AS_CATEGORIAS);
+      }
+      this.produtoParaExcluir.set(null);
+      this.toastService.mostrar(`${capitalizar(this.conteudo().termoItem)} excluído`);
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível excluir. Tente de novo.'));
+    } finally {
+      this.excluindo.set(false);
+    }
   }
 
   protected async adicionarProduto(novoProduto: NovoProduto): Promise<void> {

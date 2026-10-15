@@ -44,6 +44,11 @@ export class ProdutoService {
     return produto;
   }
 
+  async remover(produtoId: number): Promise<void> {
+    await firstValueFrom(this.http.delete<void>(this.url(`/${produtoId}`)));
+    this.listaProdutos.update((produtos) => produtos.filter((produto) => produto.id !== produtoId));
+  }
+
   reiniciar(): void {
     this.carregamento.reiniciar();
     this.listaProdutos.set([]);

@@ -7,7 +7,7 @@ import { IconeComponent } from '../../../shared/components/icone/icone.component
 import { ItemMenuAcoes, MenuAcoesComponent } from '../../../shared/components/menu-acoes/menu-acoes.component';
 import { PrecoProdutoPipe } from '../../../shared/pipes/preco-produto.pipe';
 
-type AcaoProduto = 'editar';
+type AcaoProduto = 'editar' | 'excluir';
 
 @Component({
   selector: 'app-produto-card',
@@ -114,9 +114,11 @@ type AcaoProduto = 'editar';
 export class ProdutoCardComponent {
   readonly produto = input.required<Produto>();
   readonly editar = output<Produto>();
+  readonly excluir = output<Produto>();
 
   protected readonly itensMenu: ItemMenuAcoes<AcaoProduto>[] = [
     { id: 'editar', rotulo: 'Editar', icone: 'editar' },
+    { id: 'excluir', rotulo: 'Excluir', icone: 'lixeira', perigo: true },
   ];
   protected readonly resumoOpcoes = computed(() => {
     const total = this.produto().atributos.length;
@@ -126,6 +128,8 @@ export class ProdutoCardComponent {
   protected aoEscolherAcao(acao: AcaoProduto): void {
     if (acao === 'editar') {
       this.editar.emit(this.produto());
+    } else {
+      this.excluir.emit(this.produto());
     }
   }
 }
