@@ -1,27 +1,100 @@
-<p class="descricao">
-  Usada na categoria selecionada e no botão "Falar pelo WhatsApp" que seus clientes veem.
-  Cor atual: <strong>{{ nomeCorAtual() }}</strong>.
-</p>
-
-<div class="cores" role="radiogroup" aria-label="Cor da página pública">
-  @for (cor of cores; track cor.valor) {
-    @let selecionada = cor.valor === corAtual();
-    <button
-      type="button"
-      role="radio"
-      class="cor"
-      [class.cor--selecionada]="selecionada"
-      [style.background]="cor.hex"
-      [attr.aria-checked]="selecionada"
-      [attr.aria-label]="cor.nome"
-      [title]="cor.nome"
-      (click)="escolher(cor.valor)"
-    >
-      @if (salvando() === cor.valor) {
-        <app-carregando modo="inline" variante="claro" [tamanho]="18" />
-      } @else if (selecionada) {
-        <app-icone nome="check" [tamanho]="16" [espessura]="3" />
+<div class="configuracao-vitrine">
+  <section class="campo">
+    <div>
+      <h3 class="campo__titulo">Cor de destaque</h3>
+      <p class="descricao">Usada nas categorias, no botão do WhatsApp e em detalhes da vitrine. Atual: <strong>{{ nomeCorAtual() }}</strong>.</p>
+    </div>
+    <div class="cores" role="radiogroup" aria-label="Cor de destaque da página pública">
+      @for (cor of cores; track cor.valor) {
+        @let selecionada = cor.valor === corAtual();
+        <button
+          type="button"
+          role="radio"
+          class="cor"
+          [class.cor--selecionada]="selecionada"
+          [style.background]="cor.hex"
+          [attr.aria-checked]="selecionada"
+          [attr.aria-label]="cor.nome"
+          [title]="cor.nome"
+          (click)="escolherCor(cor.valor)"
+        >
+          @if (selecionada) {
+            <app-icone nome="check" [tamanho]="16" [espessura]="3" />
+          }
+        </button>
       }
-    </button>
-  }
+    </div>
+  </section>
+
+  <div class="campo">
+    <label class="campo__titulo" for="fonte-vitrine">Fonte</label>
+    <select id="fonte-vitrine" [value]="fonteAtual()" (change)="alterarFonte($event)">
+      <optgroup label="Elegantes">
+        <option value="Playfair Display">Playfair Display</option>
+        <option value="Cormorant Garamond">Cormorant Garamond</option>
+        <option value="Lora">Lora</option>
+      </optgroup>
+      <optgroup label="Modernas">
+        <option value="Montserrat">Montserrat</option>
+        <option value="Poppins">Poppins</option>
+        <option value="DM Sans">DM Sans</option>
+      </optgroup>
+      <optgroup label="Manuscritas">
+        <option value="Dancing Script">Dancing Script</option>
+        <option value="Pacifico">Pacifico</option>
+        <option value="Caveat">Caveat</option>
+      </optgroup>
+      <optgroup label="Impactantes">
+        <option value="Oswald">Oswald</option>
+        <option value="Bebas Neue">Bebas Neue</option>
+        <option value="Roboto Condensed">Roboto Condensed</option>
+      </optgroup>
+    </select>
+    <p class="fonte-preview" [style.font-family]="fonteCss()">O texto ficará assim</p>
+  </div>
+
+  <label class="campo">
+    <span class="campo__titulo">Cor de fundo</span>
+    <select [value]="fundoAtual()" (change)="alterarFundo($event)">
+      @for (opcao of opcoesFundo; track opcao.valor) {
+        <option [value]="opcao.valor">{{ opcao.nome }}</option>
+      }
+    </select>
+  </label>
+
+  <label class="campo">
+    <span class="campo__titulo">Aplicar o fundo em</span>
+    <select [value]="areaFundoAtual()" (change)="alterarAreaFundo($event)">
+      <option value="PAGINA">Toda a página</option>
+      <option value="CABECALHO">Apenas o cabeçalho</option>
+    </select>
+  </label>
+
+  <section class="campo">
+    <div>
+      <h3 class="campo__titulo">Imagem de capa</h3>
+      <p class="descricao">Escolha uma imagem de até 5 MB para o topo da sua vitrine.</p>
+    </div>
+    @if (arquivoCapa(); as arquivo) {
+      <p class="arquivo-capa">Nova capa selecionada: <strong>{{ arquivo.name }}</strong></p>
+    } @else {
+      @if (removerCapa()) {
+        <p class="descricao">A capa será removida ao salvar.</p>
+        <button type="button" class="btn btn--secundario btn--pequeno" (click)="manterCapa()">Manter capa atual</button>
+      } @else if (capaAtual()) {
+        <div class="capa-atual">
+          <img [src]="capaAtual() | urlImagem" alt="Capa atual da vitrine">
+          <button type="button" class="btn btn--secundario btn--pequeno" (click)="limparCapa()">Remover capa</button>
+        </div>
+      }
+    }
+    <label class="btn btn--secundario btn--bloco seletor-capa">
+      {{ arquivoCapa() ? 'Escolher outra imagem' : 'Selecionar imagem de capa' }}
+      <input type="file" accept="image/*" (change)="aoEscolherCapa($event)">
+    </label>
+  </section>
+
+  <button type="button" class="btn btn--primario btn--grande btn--bloco" [disabled]="salvando()" (click)="salvar()">
+    {{ salvando() ? 'Salvando…' : 'Salvar alterações' }}
+  </button>
 </div>

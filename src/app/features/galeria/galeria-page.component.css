@@ -41,3 +41,113 @@
   border-radius: 50%;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
+
+.lista--com-barra {
+  padding-bottom: 120px;
+}
+
+.confirmar-exclusao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
+}
+
+.lista-topicos {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.topico-reordenavel {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.topico-reordenavel > app-album-card {
+  flex: 1;
+  min-width: 0;
+}
+
+.topico-reordenavel__controles {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: 14px;
+}
+
+.topico-reordenavel__mover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-fundo);
+  color: var(--cor-texto-secundario);
+}
+
+.topico-reordenavel__setas {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.topico-reordenavel__mover {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: transparent;
+}
+
+.topico-reordenavel__mover--baixo app-icone {
+  transform: rotate(90deg);
+}
+
+.topico-reordenavel__mover:not(.topico-reordenavel__mover--baixo) app-icone {
+  transform: rotate(-90deg);
+}
+
+.topico-reordenavel__mover:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.barra-salvar {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: var(--largura-tela-app);
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--cor-borda-suave);
+  background: var(--cor-fundo);
+  box-shadow: 0 -8px 24px rgba(20, 26, 38, 0.08);
+  transform: translateX(-50%);
+  animation: subir-barra 0.28s ease-out both;
+}
+
+.barra-salvar__descartar {
+  flex: none;
+}
+
+.barra-salvar__salvar {
+  flex: 1;
+  min-height: 48px;
+}
+
+@keyframes subir-barra {
+  from { transform: translate(-50%, 100%); }
+  to { transform: translate(-50%, 0); }
+}

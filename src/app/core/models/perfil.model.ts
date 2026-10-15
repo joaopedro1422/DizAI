@@ -1,3 +1,5 @@
+import { AreaCorFundoVitrine, CorFundoVitrine, FonteVitrine } from './vitrine.model';
+
 export type RamoNegocio =
   | 'SERVICOS_PRESENCIAIS'
   | 'SERVICOS_PERSONALIZADOS'
@@ -15,6 +17,7 @@ export type ModoFotos = 'GALERIA' | 'LINK_EXTERNO';
 export type FormaPagamento = 'PIX' | 'CARTAO_CREDITO' | 'CARTAO_DEBITO' | 'DINHEIRO' | 'LINK_PAGAMENTO';
 
 export type FormaRecebimento = 'ENTREGA' | 'RETIRADA' | 'ATENDIMENTO_LOCAL';
+
 
 /** Cor da página pública da loja (sempre um tom escuro, ver CORES_MARCA). */
 export type CorMarca =
@@ -44,6 +47,11 @@ export interface Perfil {
   /** Referência do logotipo no Storage (lojas/{slug}/perfil/...). `null` mostra a inicial do nome. Exiba com o pipe urlImagem. */
   fotoPerfilUrl: string | null;
   corMarca: CorMarca;
+  fonteGaleria?: FonteVitrine;
+  corFundoGaleria?: CorFundoVitrine;
+  areaCorFundoGaleria?: AreaCorFundoVitrine;
+  /** Referência da imagem de capa no Storage. */
+  capaUrl?: string | null;
   ramo: RamoNegocio;
   formasPagamento: FormaPagamento[];
   formasRecebimento: FormaRecebimento[];

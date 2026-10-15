@@ -1,0 +1,36 @@
+<app-telefone-demo>
+<div class="vitrine-publica" aria-label="Exemplo da vitrine pública da Doce Encanto">
+  <div class="vitrine-publica__barra"><app-icone nome="escudo" [tamanho]="12" /> dizai.com/doce-encanto <span>•••</span></div>
+  <div class="vitrine-publica__pagina">
+    <div class="vitrine-publica__cabecalho">
+      <header class="vitrine-publica__identidade">
+        @if (logoUrl; as logo) {
+          <img class="vitrine-publica__logo" [src]="logo" alt="Logo de Doce Encanto" />
+        } @else {
+          <span class="vitrine-publica__logo vitrine-publica__logo--inicial" aria-hidden="true">D</span>
+        }
+        <span class="vitrine-publica__nome">Pedacinho do Céu</span>
+        <span class="vitrine-publica__descricao">Bolos e doces feitos para celebrar.</span>
+      </header>
+      <nav class="vitrine-publica__categorias" aria-label="Categorias">
+        <span class="vitrine-publica__categoria--ativa">Catálogo</span><span>Bolos e tortas</span>
+      </nav>
+    </div>
+    <div class="vitrine-publica__conteudo">
+      <div class="vitrine-publica__album"><strong>Catálogo</strong><span>6 fotos</span></div>
+      <div class="vitrine-publica__fotos">
+        <img src="/landing/galeria/cardapio1.png" alt="" /><img src="/landing/galeria/cardapio2.png" alt="" />
+      </div>
+      <div class="vitrine-publica__album vitrine-publica__album--segundo"><strong>Bolos e tortas</strong><span>12 fotos</span></div>
+      <div class="vitrine-publica__fotos">
+           <img src="/landing/galeria/bolos/03.webp" alt="" /><img src="/landing/galeria/bolos/08.webp" alt="" />
+        <img src="/landing/galeria/bolos/05.webp" alt="" /> 
+           <img src="/landing/galeria/bolos/04.webp" alt="" />
+              <img src="/landing/galeria/bolos/06.webp" alt="" />
+                 <img src="/landing/galeria/bolos/01.webp" alt="" />
+      </div>
+    </div>
+    <span class="vitrine-publica__botao"><app-icone nome="conversa" [tamanho]="16" /> Falar pelo WhatsApp</span>
+  </div>
+</div>
+</app-telefone-demo>

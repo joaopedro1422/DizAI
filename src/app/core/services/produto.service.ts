@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { urlDoPerfil } from '../api/api-url';
 import { SessaoService } from '../auth/sessao.service';
-import { NovoProduto, Produto } from '../models/produto.model';
+import { NovoProduto, Produto, ProdutoAtualizacao } from '../models/produto.model';
 import { CarregamentoUnico } from '../utils/carregamento-unico';
 
 /** Catálogo de produtos e serviços: /api/perfis/{perfilId}/produtos */
@@ -34,12 +34,22 @@ export class ProdutoService {
     return produto;
   }
 
+  async atualizar(produtoId: number, produtoAtualizado: ProdutoAtualizacao): Promise<Produto> {
+    const produto = await firstValueFrom(
+      this.http.put<Produto>(this.url(`/${produtoId}`), produtoAtualizado),
+    );
+    this.listaProdutos.update((produtos) =>
+      produtos.map((item) => (item.id === produto.id ? produto : item)),
+    );
+    return produto;
+  }
+
   reiniciar(): void {
     this.carregamento.reiniciar();
     this.listaProdutos.set([]);
   }
 
-  private url(): string {
-    return urlDoPerfil(this.sessao.perfilIdObrigatorio(), '/produtos');
+  private url(caminho = ''): string {
+    return urlDoPerfil(this.sessao.perfilIdObrigatorio(), `/produtos${caminho}`);
   }
 }

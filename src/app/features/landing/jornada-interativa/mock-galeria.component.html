@@ -1,0 +1,101 @@
+<app-telefone-demo>
+  <main class="galeria-demo" [class.galeria-demo--marrom]="etapa() === 'cor'">
+    <header class="galeria-demo__topo">
+      <span class="galeria-demo__voltar"><app-icone nome="voltar" [tamanho]="17" /></span>
+      <div class="galeria-demo__titulo"><strong>Galeria de fotos</strong><small>Organize suas fotos por tópico</small></div>
+      <span class="galeria-demo__personalizar"><app-icone nome="ajustes" [tamanho]="18" /></span>
+    </header>
+
+    <section class="galeria-demo__conteudo">
+      <div class="galeria-demo__acoes">
+        <div><strong>Suas galerias</strong><small>Compartilhe seus trabalhos</small></div>
+        <span><app-icone nome="mais" [tamanho]="13" /> Novo tópico</span>
+      </div>
+
+      <article class="galeria-demo__album">
+        <header class="galeria-demo__album-topo">
+          <div><strong>Bolos e tortas</strong><small>{{ etapa() === 'atualizada' || etapa() === 'cor' ? '9 fotos' : '8 fotos' }}</small></div>
+          <span><app-icone nome="mais" [tamanho]="13" /> Fotos</span>
+        </header>
+        <div class="galeria-demo__grade">
+          <img src="/landing/galeria/bolos/01.webp" alt="" />
+          <img src="/landing/galeria/bolos/02.webp" alt="" />
+          <img src="/landing/galeria/bolos/03.webp" alt="" />
+          <img src="/landing/galeria/bolos/04.webp" alt="" />
+          <img src="/landing/galeria/bolos/05.webp" alt="" />
+          <img src="/landing/galeria/bolos/06.webp" alt="" />
+          <img src="/landing/galeria/bolos/07.webp" alt="" />
+          <img src="/landing/galeria/bolos/08.webp" alt="" />
+          @if (etapa() === 'atualizada' || etapa() === 'cor') {
+            <img class="galeria-demo__foto-adicionada" [src]="fotoAdicionada" alt="" />
+          }
+        </div>
+      </article>
+
+      <article class="galeria-demo__album galeria-demo__album--secundario">
+        <header class="galeria-demo__album-topo">
+          <div><strong>Docinhos</strong><small>6 fotos</small></div>
+          <span><app-icone nome="mais" [tamanho]="13" /> Fotos</span>
+        </header>
+        <div class="galeria-demo__grade galeria-demo__grade--secundaria">
+          <img src="/landing/galeria/bolos/03.webp" alt="" />
+          <img src="/landing/galeria/bolos/05.webp" alt="" />
+          <img src="/landing/galeria/bolos/07.webp" alt="" />
+        </div>
+      </article>
+    </section>
+
+    @if (etapa() === 'fotos' || etapa() === 'salvando') {
+      <div class="galeria-demo__overlay" aria-hidden="true"></div>
+      <section class="galeria-demo__modal galeria-demo__modal--fotos" role="dialog" aria-label="Adicionar fotos">
+        <span class="galeria-demo__alca"></span>
+        <header class="galeria-demo__modal-topo">
+          <h2>Adicionar fotos</h2>
+          <span><app-icone nome="fechar" [tamanho]="16" /></span>
+        </header>
+        <div class="galeria-demo__form-fotos">
+          <div class="galeria-demo__passo">
+            <strong>1. Em qual tópico?</strong>
+            <div class="galeria-demo__chips"><span class="galeria-demo__chip galeria-demo__chip--ativo">Bolos e tortas</span><span class="galeria-demo__chip">Docinhos</span></div>
+          </div>
+          <div class="galeria-demo__passo">
+            <div class="galeria-demo__linha"><strong>2. Escolha as fotos</strong><small>1 selecionada</small></div>
+            <div class="galeria-demo__grade-fotos">
+              <img [src]="fotoAdicionada" alt="Foto de bolo selecionada" />
+              <span><app-icone nome="mais" [tamanho]="19" /><small>Escolher</small></span>
+            </div>
+          </div>
+          <span class="galeria-demo__botao" [class.galeria-demo__botao--salvando]="etapa() === 'salvando'">
+            {{ etapa() === 'salvando' ? 'Enviando fotos…' : 'Adicionar 1 foto' }}
+          </span>
+        </div>
+      </section>
+    }
+
+    @if (etapa() === 'cor') {
+      <div class="galeria-demo__overlay" aria-hidden="true"></div>
+      <section class="galeria-demo__modal galeria-demo__modal--cor" role="dialog" aria-label="Personalizar vitrine">
+        <span class="galeria-demo__alca"></span>
+        <header class="galeria-demo__modal-topo">
+          <h2>Personalizar vitrine</h2>
+          <span><app-icone nome="fechar" [tamanho]="16" /></span>
+        </header>
+        <div class="galeria-demo__cor">
+          <div><strong>Cor de destaque</strong><p>Usada nas categorias, no botão do WhatsApp e em detalhes da vitrine. Atual: <b>Marrom</b>.</p></div>
+          <div class="galeria-demo__paleta" role="radiogroup" aria-label="Cor de destaque">
+            <span role="radio" aria-checked="false" style="background:#151515"></span><span role="radio" aria-checked="false" style="background:#3f4652"></span>
+            <span role="radio" aria-checked="false" style="background:#1e3a72"></span><span role="radio" aria-checked="false" style="background:#0f4c5c"></span>
+            <span role="radio" aria-checked="false" style="background:#1d5a36"></span><span role="radio" aria-checked="false" style="background:#4a5a23"></span>
+            <span role="radio" aria-checked="false" style="background:#8a6100"></span><span role="radio" aria-checked="false" style="background:#a3410f"></span>
+            <span role="radio" aria-checked="false" style="background:#8e1b2b"></span>
+            <span role="radio" aria-checked="false" style="background:#a12a63"></span>
+            <span role="radio" aria-checked="false" style="background:#5b2a86"></span>
+            <span class="galeria-demo__marrom" role="radio" aria-checked="true" aria-label="Marrom selecionado"><app-icone nome="check" [tamanho]="14" [espessura]="3" /></span>
+          </div>
+          <div class="galeria-demo__fonte"><strong>Fonte</strong><span>Playfair Display</span></div>
+          <span class="galeria-demo__botao galeria-demo__botao--salvar">Salvar alterações</span>
+        </div>
+      </section>
+    }
+  </main>
+</app-telefone-demo>

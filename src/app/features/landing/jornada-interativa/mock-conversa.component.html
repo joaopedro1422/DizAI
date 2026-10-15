@@ -1,0 +1,49 @@
+<div class="conversa" [class.conversa--fechamento]="tipo === 'fechamento'" role="group" aria-label="Troca de mensagens">
+  @switch (tipo) {
+    @case ('produto') {
+      <span class="conversa__balao conversa__balao--cliente">
+        Olá, quais são os sabores disponíveis para a torta de 20 pessoas?
+      </span>
+      <span class="conversa__balao conversa__balao--resposta">
+        Olá! Que bom ter você aqui na Pedacinhos do Céu! 🍰😊 <br><br>
+        Os Recheios são Brigadeiro, Ninho e Limão.<br>
+        Massa de baunilha ou mista. 
+      </span>
+    }
+    @case ('fechamento') {
+      <span class="conversa__balao conversa__balao--cliente">
+        Vou querer!
+      </span>
+      <span class="conversa__balao conversa__balao--resposta">
+        Perfeito! Total R$ 85,00 <br>
+        Para registrar seu pedido me informe: <br>
+        - Seu nome <br>
+        - Retirada ou entrega <br>
+        - Data desejada.
+      </span>
+      <span class="conversa__balao conversa__balao--cliente">
+        João, vai ser para retirada na segunda feira.
+      </span>
+      <span class="conversa__balao conversa__balao--resposta">
+        Aguarde a confirmação, 1 minuto!
+      </span>
+    }
+    @case ('galeria') {
+      <span class="conversa__balao conversa__balao--cliente">
+        Pode ser na segunda mesmo então. Você tem fotos de modelos já produzidos?
+      </span>
+      <span class="conversa__balao conversa__balao--resposta">
+        Claro! Pode conferir aqui.
+        <span class="conversa__link">dizai.com/doce-encanto</span>
+      </span>
+    }
+    @case ('domingo') {
+      <span class="conversa__balao conversa__balao--cliente">
+        Vou querer de brigadeiro e massa mista para o dia 15, domingo
+      </span>
+      <span class="conversa__balao conversa__balao--resposta">
+        Infelizmente não fazemos entregas aos domingos. <br> Estamos disponíveis na segunda feira a partir das 8:00
+      </span>
+    }
+  }
+</div>

@@ -1,0 +1,31 @@
+<app-telefone-demo>
+  <div class="app-tela">
+    <div class="painel-topo"><span class="painel-topo__logo">D</span><span><strong>Doce Encanto</strong><small>Meu negócio</small></span><app-icone nome="maisOpcoes" [tamanho]="18" /></div>
+    <div class="painel-scroll">
+      <div class="atalhos"><span>Produtos</span><span>Perguntas</span><span>Galeria</span></div>
+      <app-secao-configuracao
+        class="configuracao"
+        titulo="Instruções obrigatórias"
+        selo="Prioridade máxima"
+        descricao="Regras que o assistente segue acima de qualquer comportamento padrão."
+      >
+        <label for="demo-instrucoes" class="somente-leitor-tela">Instruções obrigatórias</label>
+        <textarea id="demo-instrucoes" class="campo__entrada campo__entrada--instrucoes" rows="6" readonly [value]="instrucaoDigitada()"></textarea>
+        <p class="aviso-informativo">
+          <app-icone nome="alerta" [tamanho]="14" />
+          <span>Uma regra por linha. Evite contradizer seus produtos e perguntas frequentes.</span>
+        </p>
+        <div class="sugestoes-instrucoes">
+          <span class="rotulo-maiusculo">Regras comuns no seu ramo</span>
+          <div class="sugestoes-instrucoes__lista">
+            <button type="button" class="sugestao-instrucao">
+              <app-icone nome="mais" [tamanho]="14" />
+              Encomendas precisam ser feitas com antecedência
+            </button>
+          </div>
+        </div>
+      </app-secao-configuracao>
+    </div>
+    <div class="barra-salvar"><span [class.barra-salvar__botao--pressionado]="instrucoesSalvas()">{{ instrucoesSalvas() ? 'Alterações salvas!' : 'Salvar alterações' }}</span></div>
+  </div>
+</app-telefone-demo>

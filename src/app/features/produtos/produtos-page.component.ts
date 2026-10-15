@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 
 import { ERRO_AO_CARREGAR, mensagemDoErro } from '../../core/api/erro-api';
-import { NovoProduto } from '../../core/models/produto.model';
+import { NovoProduto, Produto, ProdutoAtualizacao } from '../../core/models/produto.model';
 import { ConteudoRamoService } from '../../core/services/conteudo-ramo.service';
 import { DicasVistasService } from '../../core/services/dicas-vistas.service';
 import { ProdutoService } from '../../core/services/produto.service';
@@ -71,6 +71,7 @@ export class ProdutosPageComponent implements OnInit {
   protected readonly categorias = this.produtoService.categorias;
   protected readonly filtroAtual = signal(TODAS_AS_CATEGORIAS);
   protected readonly modalAberto = signal(false);
+  protected readonly produtoEmEdicao = signal<Produto | null>(null);
   protected readonly salvando = signal(false);
   protected readonly carregando = this.produtoService.carregando;
 
@@ -111,20 +112,41 @@ export class ProdutosPageComponent implements OnInit {
   }
 
   protected abrirModal(): void {
+    this.produtoEmEdicao.set(null);
     this.modalAberto.set(true);
   }
 
   protected fecharModal(): void {
     this.modalAberto.set(false);
+    this.produtoEmEdicao.set(null);
+  }
+
+  protected editarProduto(produto: Produto): void {
+    this.produtoEmEdicao.set(produto);
+    this.modalAberto.set(true);
   }
 
   protected async adicionarProduto(novoProduto: NovoProduto): Promise<void> {
     this.salvando.set(true);
     try {
-      await this.produtoService.adicionar(novoProduto);
+      const produto = this.produtoEmEdicao();
+      if (produto) {
+        const atualizacao: ProdutoAtualizacao = {
+          ...novoProduto,
+          disponivel: produto.disponivel,
+          fotoUrl: produto.fotoUrl ?? null,
+        };
+        await this.produtoService.atualizar(produto.id, atualizacao);
+      } else {
+        await this.produtoService.adicionar(novoProduto);
+      }
       this.filtroAtual.set(TODAS_AS_CATEGORIAS);
       this.fecharModal();
-      this.toastService.mostrar(`${capitalizar(this.conteudo().termoItem)} adicionado`);
+      this.toastService.mostrar(
+        produto
+          ? `${capitalizar(this.conteudo().termoItem)} atualizado`
+          : `${capitalizar(this.conteudo().termoItem)} adicionado`,
+      );
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível salvar. Tente de novo.'));
     } finally {

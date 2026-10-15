@@ -7,6 +7,9 @@ const CIRCULO = 'M3 12a9 9 0 1 0 18 0a9 9 0 1 0-18 0';
 export const ICONES = {
   voltar: ['M15 6l-6 6 6 6'],
   avancar: ['M9 6l6 6-6 6'],
+  reproduzir: ['M8 5v14l11-7z'],
+  pausar: ['M9 5v14', 'M15 5v14'],
+  arrastar: ['M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01'],
   seta: ['M5 12h14M13 6l6 6-6 6'],
   setaDiagonal: ['M7 17L17 7M9 7h8v8'],
   externo: ['M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5'],
@@ -14,6 +17,7 @@ export const ICONES = {
   fechar: ['M6 6l12 12M18 6L6 18'],
   check: ['M5 12l5 5L20 7'],
   editar: ['M4 20h4L18.5 9.5a2.1 2.1 0 0 0-3-3L5 17v3z', 'M14 8l3 3'],
+  lixeira: ['M4 7h16', 'M10 11v6M14 11v6', 'M6 7l1 14h10l1-14', 'M9 7V4h6v3'],
   maisOpcoes: ['M12 5.5h.01M12 12h.01M12 18.5h.01'],
   caixa: ['M3 8l9-5 9 5-9 5-9-5z', 'M3 8v8l9 5 9-5V8', 'M12 13v8'],
   pergunta: [CIRCULO, 'M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.4', 'M12 17h.01'],

@@ -18,7 +18,7 @@ export function criarFormularioConfiguracoes(fb: FormBuilder, valores: Configura
       camposPedido: [valores.camposPedido, Validators.maxLength(500)],
       modoFotos: fb.nonNullable.control<ModoFotos>(valores.modoFotos),
       linkPortfolioExterno: [valores.linkPortfolioExterno, [urlValida, Validators.maxLength(500)]],
-      saudacaoPersonalizada: [valores.saudacaoPersonalizada, Validators.maxLength(300)],
+      saudacaoPersonalizada: [valores.saudacaoPersonalizada, Validators.maxLength(1000)],
       instrucoesObrigatorias: [valores.instrucoesObrigatorias, Validators.maxLength(1500)],
     },
     { validators: linkObrigatorioNoModoExterno },

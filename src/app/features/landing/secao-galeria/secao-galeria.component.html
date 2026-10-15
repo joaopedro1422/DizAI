@@ -4,8 +4,8 @@
       <span class="galeria__sobretitulo">Galeria de trabalhos</span>
       <h2 id="galeria-titulo" class="galeria__titulo">Seus trabalhos vendem por você.</h2>
       <p class="galeria__descricao">
-        Monte uma página com as fotos do que você já fez, organizadas por serviço.
-        Quando o cliente pede para ver, o assistente manda o link na hora.
+        Monte uma página de portifólio com fotos do que você já fez.
+        Quando o cliente pede para ver, o assistente envia o link.
       </p>
 
       <ul class="beneficios">
@@ -28,6 +28,8 @@
     <div
       class="galeria__demonstracao"
       [style.--galeria-marca]="exemploAtual().corMarca"
+      [style.--galeria-fundo]="exemploAtual().corFundoGaleria"
+      [style.--galeria-fonte]="fonteVitrine()"
       (mouseenter)="pausado.set(true)"
       (mouseleave)="pausado.set(false)"
       (focusin)="pausado.set(true)"
@@ -51,17 +53,31 @@
               {{ exemplo.link }}
             </div>
 
-            <div class="vitrine">
-              <div class="vitrine__loja">
-                <span class="vitrine__logo" aria-hidden="true">{{ inicialLoja() }}</span>
-                <span class="vitrine__nome">{{ exemplo.nomeLoja }}</span>
-                <span class="vitrine__descricao">{{ exemplo.descricao }}</span>
-              </div>
+            <div
+              class="vitrine"
+              [class.vitrine--fundo-pagina]="exemplo.areaCorFundoGaleria === 'PAGINA'"
+            >
+              <div
+                class="vitrine__cabecalho"
+                [class.vitrine__cabecalho--fundo]="exemplo.areaCorFundoGaleria === 'CABECALHO'"
+              >
+                <div class="vitrine__loja">
+                  <span class="vitrine__logo" aria-hidden="true">
+                    @if (exemplo.logoUrl; as logo) {
+                      <img class="vitrine__imagem-logo" [src]="logo" alt="">
+                    } @else {
+                      {{ inicialLoja() }}
+                    }
+                  </span>
+                  <span class="vitrine__nome">{{ exemplo.nomeLoja }}</span>
+                  <span class="vitrine__descricao">{{ exemplo.descricao }}</span>
+                </div>
 
-              <div class="vitrine__categorias" aria-hidden="true">
-                @for (categoria of exemplo.categorias; track categoria; let primeira = $first) {
-                  <span class="vitrine__categoria" [class.vitrine__categoria--ativa]="primeira">{{ categoria }}</span>
-                }
+                <div class="vitrine__categorias" aria-hidden="true">
+                  @for (categoria of exemplo.categorias; track categoria; let primeira = $first) {
+                    <span class="vitrine__categoria" [class.vitrine__categoria--ativa]="primeira">{{ categoria }}</span>
+                  }
+                </div>
               </div>
 
               <div class="vitrine__album">

@@ -29,11 +29,12 @@ export const EXEMPLOS_CONVERSA: ExemploConversa[] = [
     nomeLoja: 'Bella Studio',
     corAvatar: '#E9D7D1',
     mensagens: [
-      { autor: 'cliente', horario: '09:41', texto: 'Oi! Você trabalha com unha em gel?' },
+      { autor: 'cliente', horario: '09:41', texto: 'Oi! Boa tarde!' },
+      { autor: 'cliente', horario: '09:41', texto: 'Você trabalha com unha em gel?' },
       {
         autor: 'loja',
         horario: '09:41',
-        texto: 'Olá! Que bom ter você aqui na Bella Studio 💅\nTrabalhamos sim!\nQuer ver alguns trabalhos feitos?',
+        texto: 'Olá! Seja bem vinda ao Bella Studio 💅\nTrabalhamos sim!\nQuer ver alguns trabalhos feitos?',
       },
       { autor: 'cliente', horario: '09:42', texto: 'Quero!' },
       {
@@ -76,7 +77,7 @@ export const EXEMPLOS_CONVERSA: ExemploConversa[] = [
       {
         autor: 'loja',
         horario: '07:58',
-        texto: 'Bom dia! Que bom ter você aqui na Luz & Cia ⚡\nFazemos sim! Montamos o projeto do zero, com spots, fitas de LED e iluminação indireta, pensado para cada ambiente.\nÉ para algum cômodo específico?',
+        texto: 'Bom dia!⚡\nFazemos sim! Montamos projetos do zero, pensados para cada ambiente.\nÉ para algum cômodo específico?',
       },
       { autor: 'cliente', horario: '08:00', texto: 'Sala e cozinha. Quero deixar mais aconchegante' },
       {

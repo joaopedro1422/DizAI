@@ -3,10 +3,17 @@
     <h2 class="album__nome">{{ album().nome }}</h2>
     <span class="album__contagem">{{ contagem() }}</span>
   </div>
-  <button type="button" class="btn btn--secundario btn--pequeno" (click)="adicionarFotos.emit()">
-    <app-icone nome="mais" [tamanho]="14" [espessura]="2.2" />
-    Fotos
-  </button>
+  <div class="album__acoes">
+    <button type="button" class="btn btn--secundario btn--pequeno" (click)="adicionarFotos.emit()">
+      <app-icone nome="mais" [tamanho]="14" [espessura]="2.2" />
+      Fotos
+    </button>
+    <app-menu-acoes
+      rotuloBotao="Opções do tópico"
+      [itens]="itensMenu"
+      (escolher)="aoEscolherAcao($event)"
+    />
+  </div>
 </div>
 
 @if (album().descricao) {

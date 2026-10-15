@@ -9,7 +9,11 @@ import { SessaoService } from '../auth/sessao.service';
  * Pasta da loja onde as imagens vão ficar no Firebase Storage:
  * lojas/{slug}/perfil, lojas/{slug}/galeria/{tópico} ou lojas/{slug}/produtos.
  */
-export type DestinoImagem = { tipo: 'PERFIL' } | { tipo: 'GALERIA'; albumId: number } | { tipo: 'PRODUTOS' };
+export type DestinoImagem =
+  | { tipo: 'PERFIL' }
+  | { tipo: 'CAPA' }
+  | { tipo: 'GALERIA'; albumId: number }
+  | { tipo: 'PRODUTOS' };
 
 /**
  * Envia as imagens ao backend (POST /api/perfis/{perfilId}/arquivos, multipart), que grava no Firebase Storage

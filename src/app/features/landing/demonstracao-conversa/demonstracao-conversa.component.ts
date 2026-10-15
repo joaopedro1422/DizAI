@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, injec
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { EXEMPLOS_CONVERSA } from './exemplos-conversa';
 
-const INTERVALO_TROCA_MS = 7000;
+const INTERVALO_TROCA_MS = 9000;
 
 /**
  * Celular com conversas de exemplo no estilo do WhatsApp.

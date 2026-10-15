@@ -15,6 +15,7 @@
 
 <main>
   <app-secao-hero />
+  
 
   <section class="faixa faixa--suave" aria-labelledby="dor-titulo">
     <div class="container secao">
@@ -39,7 +40,7 @@
   <section id="como" class="container secao secao--espacosa" aria-labelledby="como-titulo">
     <div class="secao__cabecalho">
       <span class="secao__sobretitulo">Como funciona</span>
-      <h2 id="como-titulo" class="secao__titulo">Você conta sobre a sua loja. O DizAI atende por você.</h2>
+      <h2 id="como-titulo" class="secao__titulo">Você conta sobre o seu negócio. O DizAI atende por você.</h2>
     </div>
     <ol class="grade grade--passos">
       @for (passo of passos; track passo.titulo; let indice = $index) {
@@ -51,33 +52,8 @@
       }
     </ol>
   </section>
-
-  <app-secao-galeria />
-
-  <section id="para-quem" class="faixa faixa--suave" aria-labelledby="quem-titulo">
-    <div class="container secao secao--espacosa">
-      <div class="secao__cabecalho secao__cabecalho--largo">
-        <span class="secao__sobretitulo sobretitulo-publico">
-          Para quem é
-          <app-icone nome="seta" [tamanho]="16" [espessura]="2.4" class="sobretitulo-publico__seta" />
-          <span class="sobretitulo-publico__destaque">Pequenos e médios negócios</span>
-        </span>
-        <h2 id="quem-titulo" class="secao__titulo">Feito para quem vende sob encomenda ou presta serviços autônomos.</h2>
-        <p class="secao__descricao">
-          Para quem toca o negócio quase sozinho e não tem uma equipe só para o WhatsApp.
-          Não é cardápio com carrinho: é conversa de verdade, do jeito que o seu cliente já pergunta.
-        </p>
-      </div>
-      <div class="grade grade--publicos">
-        @for (publico of publicos; track publico.titulo) {
-          <article class="cartao cartao--compacto">
-            <h3 class="cartao__titulo cartao__titulo--menor">{{ publico.titulo }}</h3>
-            <p class="cartao__texto cartao__texto--menor">{{ publico.texto }}</p>
-          </article>
-        }
-      </div>
-    </div>
-  </section>
+  <app-jornada-interativa />
+  
 
   <section id="recursos" class="container secao secao--espacosa" aria-labelledby="recursos-titulo">
     <div class="secao__cabecalho">
@@ -109,6 +85,33 @@
       </div>
     </aside>
   </section>
+  <app-secao-galeria />
+  <section id="para-quem" class="faixa faixa--suave" aria-labelledby="quem-titulo">
+    <div class="container secao secao--espacosa">
+      <div class="secao__cabecalho secao__cabecalho--largo">
+        <span class="secao__sobretitulo sobretitulo-publico">
+          Para quem é
+          <app-icone nome="seta" [tamanho]="16" [espessura]="2.4" class="sobretitulo-publico__seta" />
+          <span class="sobretitulo-publico__destaque">Pequenos e médios negócios</span>
+        </span>
+        <h2 id="quem-titulo" class="secao__titulo">Feito para quem vende sob encomenda ou presta serviços autônomos.</h2>
+        <p class="secao__descricao">
+          Para quem toca o negócio quase sozinho e não tem uma equipe só para o WhatsApp.
+          Não é cardápio com carrinho: é conversa de verdade, do jeito que o seu cliente já pergunta.
+        </p>
+      </div>
+      <div class="grade grade--publicos">
+        @for (publico of publicos; track publico.titulo) {
+          <article class="cartao cartao--compacto">
+            <h3 class="cartao__titulo cartao__titulo--menor">{{ publico.titulo }}</h3>
+            <p class="cartao__texto cartao__texto--menor">{{ publico.texto }}</p>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  
 
   <section class="chamada-final" aria-labelledby="cta-titulo">
     <div class="chamada-final__caixa">

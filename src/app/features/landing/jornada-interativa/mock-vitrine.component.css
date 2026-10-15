@@ -1,0 +1,196 @@
+:host {
+  display: block;
+  width: min(100%, 362px);
+  height: 680px;
+}
+
+:host ::ng-deep .vitrine-publica {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fef7fc;
+  color: #35252b;
+   overflow: auto;
+  font-family: 'Dancing Script', cursive;
+}
+
+:host ::ng-deep .vitrine-publica__barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  gap: 6px;
+    font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  margin: 7px 10px 0px;
+  padding: 9px 11px;
+  border-radius: 18px;
+  background: #f0f1f3;
+  color: #66717e;
+  font-size: 9px;
+}
+
+:host ::ng-deep .vitrine-publica__pagina {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+:host ::ng-deep .vitrine-publica__cabecalho {
+  flex: none;
+  border-radius: 0 0 18px 18px;
+  background: #fef7fc;
+}
+
+:host ::ng-deep .vitrine-publica__identidade {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding:20px 24px 12px;
+  text-align: center;
+}
+
+:host ::ng-deep .vitrine-publica__logo {
+  width: 80px;
+  height: 80px;
+  flex: none;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #8a6100;
+  box-shadow: 0 0 0 2px #8a6100, 0 8px 20px #0000001f;
+  object-fit: cover;
+}
+
+:host ::ng-deep .vitrine-publica__logo--inicial {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px #8a6100, 0 8px 20px #0000001f;
+  color: #fff;
+  font: 30px Georgia, serif;
+}
+
+:host ::ng-deep .vitrine-publica__nome {
+  font-size:  27px ;
+}
+
+:host ::ng-deep .vitrine-publica__descricao {
+  margin-top: -8px;
+  color: #806d75;
+  font-size: 12px;
+}
+
+:host ::ng-deep .vitrine-publica__categorias {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0px 20px 18px;
+  border-bottom: 1px solid #eeeae8;
+  border-radius: 0 0 15px 15px;
+  scrollbar-width: none;
+}
+
+:host ::ng-deep .vitrine-publica__categorias::-webkit-scrollbar {
+  display: none;
+}
+
+:host ::ng-deep .vitrine-publica__categorias span {
+  display: grid;
+  min-height: 34px;
+  flex: none;
+  place-items: center;
+  padding: 0 16px;
+  border: 1px solid #e2dcd9;
+  border-radius: 999px;
+  background: #fff;
+  color: #1c1a19;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+:host ::ng-deep .vitrine-publica__categorias .vitrine-publica__categoria--ativa {
+  border-color: #8a6100;
+  background: #8a6100;
+  color: #fff;
+  font-weight: 600;
+}
+
+:host ::ng-deep .vitrine-publica__conteudo {
+  flex: 1;
+ 
+  padding: 18px 24px 100px;
+  scrollbar-width: none;
+}
+
+:host ::ng-deep .vitrine-publica__conteudo::-webkit-scrollbar {
+  display: none;
+}
+
+:host ::ng-deep .vitrine-publica__album {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+:host ::ng-deep .vitrine-publica__album strong {
+  font-size: 22px;
+}
+
+:host ::ng-deep .vitrine-publica__album span {
+  color: #806d75;
+  font-size: 11px;
+}
+
+:host ::ng-deep .vitrine-publica__album--segundo {
+  margin-top: 17px;
+}
+
+:host ::ng-deep .vitrine-publica__fotos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+:host ::ng-deep .vitrine-publica__fotos img {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 7px;
+  object-fit: cover;
+}
+
+:host ::ng-deep .vitrine-publica__botao {
+  position: absolute;
+  right: 13px;
+  bottom: 12px;
+  left: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  min-height: 43px;
+  border-radius: 10px;
+  background: #8a6100;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  :host {
+    height: 650px;
+  }
+}
+
+@media (max-width: 420px) {
+  :host {
+    width: min(100%, 340px);
+  }
+}

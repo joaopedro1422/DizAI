@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, input, output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { NovoProduto } from '../../../core/models/produto.model';
+import { NovoProduto, Produto } from '../../../core/models/produto.model';
 import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.service';
 import { separarPorVirgula } from '../../../core/utils/texto.utils';
 import { campoComErro } from '../../../core/utils/validadores';
@@ -25,6 +25,7 @@ type GrupoAtributo = FormGroup<{ nome: FormControl<string>; opcoes: FormControl<
 })
 export class ProdutoFormularioComponent implements OnInit {
   readonly categoriasExistentes = input<string[]>([]);
+  readonly produto = input<Produto | null>(null);
   /** A tela avisa enquanto o produto está sendo salvo. */
   readonly salvando = input(false);
   readonly salvo = output<NovoProduto>();
@@ -51,6 +52,26 @@ export class ProdutoFormularioComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const produto = this.produto();
+    if (produto) {
+      this.formulario.patchValue({
+        nome: produto.nome,
+        categoria: produto.categoria,
+        descricao: produto.descricao ?? '',
+        preco: produto.preco === null ? '' : String(produto.preco),
+        precoAPartirDe: produto.precoAPartirDe,
+      });
+      produto.atributos.forEach((atributo) => {
+        this.atributos.push(
+          this.fb.nonNullable.group({
+            nome: [atributo.nome, Validators.maxLength(40)],
+            opcoes: [atributo.opcoes.join(', '), Validators.maxLength(300)],
+          }),
+        );
+      });
+      return;
+    }
+
     const primeiraCategoria = this.categoriasExistentes()[0] ?? NOVA_CATEGORIA;
     this.formulario.controls.categoria.setValue(primeiraCategoria);
   }

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { FonteVitrine } from '../../../core/models/vitrine.model';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { EXEMPLOS_GALERIA, FotoExemplo } from './exemplos-galeria';
 
@@ -8,9 +9,9 @@ import { EXEMPLOS_GALERIA, FotoExemplo } from './exemplos-galeria';
 const INTERVALO_TROCA_MS = 7000;
 
 const BENEFICIOS = [
-  'Fotos separadas por tópico, como "unhas em gel" ou "bolos de aniversário".',
+  'Fotos separadas por tópico.',
   'Com a sua logo e a cor da sua marca.',
-  'Um link só, que também serve para a bio do Instagram.',
+  'Link que pode ser utilizado na bio do instagram e outros canais',
 ];
 
 /**
@@ -35,6 +36,13 @@ export class SecaoGaleriaComponent implements OnInit {
 
   protected readonly exemploAtual = computed(() => EXEMPLOS_GALERIA[this.indiceAtual()]);
   protected readonly inicialLoja = computed(() => this.exemploAtual().nomeLoja.charAt(0));
+  protected readonly fonteVitrine = computed(() => {
+    const fonte = this.exemploAtual().fonteGaleria;
+    const serifadas: FonteVitrine[] = ['Playfair Display', 'Cormorant Garamond', 'Lora'];
+    const manuscritas: FonteVitrine[] = ['Dancing Script', 'Pacifico', 'Caveat'];
+    const familia = serifadas.includes(fonte) ? 'serif' : manuscritas.includes(fonte) ? 'cursive' : 'sans-serif';
+    return `'${fonte}', ${familia}`;
+  });
 
   ngOnInit(): void {
     if (this.prefereMenosMovimento()) {

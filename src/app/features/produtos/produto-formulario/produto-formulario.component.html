@@ -95,7 +95,7 @@
       <app-carregando modo="inline" variante="claro" [tamanho]="22" />
       Salvando…
     } @else {
-      Salvar {{ conteudo().termoItem }}
+      {{ produto() ? 'Atualizar ' : 'Salvar ' }}{{ conteudo().termoItem }}
     }
   </button>
 </form>

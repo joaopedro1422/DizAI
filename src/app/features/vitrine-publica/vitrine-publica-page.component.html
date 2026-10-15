@@ -1,32 +1,79 @@
-<div class="tela-app vitrine" [style.--vitrine-destaque]="corDestaque()">
+<div
+  class="tela-app vitrine vitrine--entrada"
+  [class.vitrine--introducao]="introducaoAtiva()"
+  [class.vitrine--fundo-pagina]="areaFundo() === 'PAGINA'"
+  [style.--vitrine-destaque]="corDestaque()"
+  [style.--vitrine-fundo-selecionado]="fundoPagina()"
+  [style.--vitrine-fonte]="fonteCss()"
+>
+
   @if (situacao() === 'carregando') {
     <app-carregando texto="Carregando a galeria…" />
   } @else if (situacao() === 'pronta') {
-    <header class="loja">
-      @if (fotoPerfilUrl(); as foto) {
-        <img class="loja__foto" [src]="foto | urlImagem" [alt]="'Logo de ' + nomeLoja()">
-      } @else {
-        <span class="loja__inicial" aria-hidden="true">{{ inicial() }}</span>
-      }
-      <div class="loja__textos">
-        <h1 class="loja__nome">{{ nomeLoja() }}</h1>
-        @if (descricao()) {
-          <p class="loja__descricao">{{ descricao() }}</p>
-        }
+    @if (introducaoAtiva()) {
+      <div
+        class="vitrine__introducao"
+        [class.vitrine__introducao--animando]="introducaoAnimacaoAtiva()"
+        aria-hidden="true"
+        (animationend)="finalizarIntroducao($event)"
+      >
+        <div class="vitrine__introducao-identidade">
+          @if (fotoPerfilUrl(); as foto) {
+            @if (fotoPerfilFalhou()) {
+              <span class="vitrine__introducao-inicial">{{ inicial() }}</span>
+            } @else {
+              <img
+                class="vitrine__introducao-logo"
+                [src]="foto | urlImagem"
+                alt=""
+                (load)="iniciarAnimacaoIntroducao()"
+                (error)="falhouFotoPerfil()"
+              >
+            }
+          } @else {
+            <span class="vitrine__introducao-inicial">{{ inicial() }}</span>
+          }
+          <span class="vitrine__introducao-nome">{{ nomeLoja() }}</span>
+        </div>
       </div>
-    </header>
-
-    @if (albuns().length > 0) {
-      <nav class="categorias" aria-label="Categorias">
-        @for (album of albuns(); track album.slug; let primeiro = $first) {
-          <button type="button" class="categoria" [class.categoria--ativa]="primeiro" (click)="irParaAlbum(album)">
-            {{ album.nome }}
-          </button>
-        }
-      </nav>
     }
+    <div class="container-topo" [class.container-topo--fundo-cabecalho]="areaFundo() === 'CABECALHO'">
+      @if (capaUrl(); as capa) {
+        <div class="vitrine__capa">
+          <img [src]="capa | urlImagem" alt="">
+        </div>
+      }
+      <header class="loja animacao-entrada animacao-entrada--1" [class.loja--com-capa]="!!capaUrl()">
+        @if (fotoPerfilUrl(); as foto) {
+          @if (fotoPerfilFalhou()) {
+            <span class="loja__inicial" aria-hidden="true">{{ inicial() }}</span>
+          } @else {
+            <img class="loja__foto" [src]="foto | urlImagem" [alt]="'Logo de ' + nomeLoja()" (error)="falhouFotoPerfil()">
+          }
+        } @else {
+          <span class="loja__inicial" aria-hidden="true">{{ inicial() }}</span>
+        }
+        <div class="loja__textos">
+          <h1 class="loja__nome">{{ nomeLoja() }}</h1>
+          @if (descricao()) {
+            <p class="loja__descricao">{{ descricao() }}</p>
+          }
+        </div>
+      </header>
 
-    <main class="albuns">
+      @if (albuns().length > 0) {
+        <nav class="categorias animacao-entrada animacao-entrada--2" aria-label="Categorias">
+          @for (album of albuns(); track album.slug; let primeiro = $first) {
+            <button type="button" class="categoria" [class.categoria--ativa]="primeiro" (click)="irParaAlbum(album)">
+              {{ album.nome }}
+            </button>
+          }
+        </nav>
+      }
+    </div>
+    
+
+    <main class="albuns animacao-entrada animacao-entrada--3">
       @for (album of albuns(); track album.slug) {
         <section class="album" [id]="idSecao(album)" [attr.aria-labelledby]="idSecao(album) + '-titulo'">
           <div class="album__cabecalho">
@@ -66,8 +113,7 @@
         <p class="sem-fotos">Esta loja ainda não publicou fotos.</p>
       }
     </main>
-
-    <footer class="rodape">
+    <footer class="rodape ">
       <a class="rodape__whatsapp" [href]="linkWhatsapp()" target="_blank" rel="noopener">
         <app-icone nome="conversa" [tamanho]="20" />
         Falar pelo WhatsApp

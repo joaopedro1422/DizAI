@@ -1,14 +1,17 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
 import { Produto } from '../../../core/models/produto.model';
 import { pluralizar } from '../../../core/utils/colecao.utils';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
+import { ItemMenuAcoes, MenuAcoesComponent } from '../../../shared/components/menu-acoes/menu-acoes.component';
 import { PrecoProdutoPipe } from '../../../shared/pipes/preco-produto.pipe';
+
+type AcaoProduto = 'editar';
 
 @Component({
   selector: 'app-produto-card',
-  imports: [IconeComponent, PrecoProdutoPipe, UrlImagemPipe],
+  imports: [IconeComponent, MenuAcoesComponent, PrecoProdutoPipe, UrlImagemPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (produto().fotoUrl; as fotoUrl) {
@@ -29,9 +32,12 @@ import { PrecoProdutoPipe } from '../../../shared/pipes/preco-produto.pipe';
       </div>
     </div>
 
-    <button type="button" class="btn-icone btn-icone--sem-borda produto__menu" aria-label="Opções do produto">
-      <app-icone nome="maisOpcoes" [tamanho]="18" [espessura]="3.2" />
-    </button>
+    <app-menu-acoes
+      class="produto__menu"
+      rotuloBotao="Opções do produto"
+      [itens]="itensMenu"
+      (escolher)="aoEscolherAcao($event)"
+    />
   `,
   styles: `
     :host {
@@ -107,9 +113,19 @@ import { PrecoProdutoPipe } from '../../../shared/pipes/preco-produto.pipe';
 })
 export class ProdutoCardComponent {
   readonly produto = input.required<Produto>();
+  readonly editar = output<Produto>();
 
+  protected readonly itensMenu: ItemMenuAcoes<AcaoProduto>[] = [
+    { id: 'editar', rotulo: 'Editar', icone: 'editar' },
+  ];
   protected readonly resumoOpcoes = computed(() => {
     const total = this.produto().atributos.length;
     return total === 0 ? 'Sem opções' : pluralizar(total, 'opção', 'opções');
   });
+
+  protected aoEscolherAcao(acao: AcaoProduto): void {
+    if (acao === 'editar') {
+      this.editar.emit(this.produto());
+    }
+  }
 }

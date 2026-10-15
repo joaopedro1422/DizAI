@@ -17,7 +17,7 @@ export class SecaoHeroComponent {
     'Pensado para microempreendedores',
     'Pronto em poucos minutos',
     'Funciona no seu número de sempre',
-    'Controle total sobre vendas e agendamentos.',
-    'Galeria de fotos do seu trabalho'
+    'Controle total sobre vendas e agendamentos.'
+
   ];
 }

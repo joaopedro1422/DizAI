@@ -1,3 +1,5 @@
+import type { AreaCorFundoVitrine, FonteVitrine } from '../../../core/models/vitrine.model';
+
 /**
  * Foto da galeria de exemplo. O degradê nos tons do trabalho aparece enquanto a imagem carrega
  * (ou sozinho, nos temas que ainda não têm fotos reais).
@@ -24,6 +26,12 @@ export interface ExemploGaleria {
   descricao: string;
   /** Uma das cores de marca que o lojista pode escolher (CORES_MARCA). */
   corMarca: string;
+  /** Cor coordenada à marca; quando omitida, a miniatura deriva um tom claro da cor de destaque. */
+  corFundoGaleria?: string;
+  areaCorFundoGaleria: AreaCorFundoVitrine;
+  fonteGaleria: FonteVitrine;
+  /** Caminho opcional do logo em public/, para trocar a inicial por uma imagem real. */
+  logoUrl?: string;
   link: string;
   pergunta: string;
   resposta: string;
@@ -40,6 +48,8 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
     nomeLoja: 'Bella Studio',
     descricao: 'Unhas em gel e nail art',
     corMarca: '#7a2e46',
+    areaCorFundoGaleria: 'CABECALHO',
+    fonteGaleria: 'Cormorant Garamond',
     link: 'dizai.com/bella-studio',
     pergunta: 'Tem fotos de unhas em gel que você já fez? 💅',
     resposta: 'Tenho sim! Olha alguns trabalhos:',
@@ -63,6 +73,8 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
     nomeLoja: 'Doce Encanto',
     descricao: 'Bolos e doces para festas',
     corMarca: '#A12A63',
+    areaCorFundoGaleria: 'PAGINA',
+    fonteGaleria: 'Playfair Display',
     link: 'dizai.com/doce-encanto',
     pergunta: 'Tem fotos de bolos infantis que você já fez? 🎂',
     resposta: 'Tenho sim! Olha só:',
@@ -86,6 +98,8 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
     nomeLoja: 'Arte em Madeira',
     descricao: 'Móveis planejados sob medida',
     corMarca: '#5C3A21',
+    areaCorFundoGaleria: 'CABECALHO',
+    fonteGaleria: 'Lora',
     link: 'dizai.com/arte-em-madeira',
     pergunta: 'Tem fotos de cozinhas planejadas que vocês já fizeram?',
     resposta: 'Temos sim! Veja algumas das nossas cozinhas:',
@@ -109,6 +123,8 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
     nomeLoja: 'Zé Eletricista',
     descricao: 'Iluminação personalizada e instalações',
     corMarca: '#8A6100',
+    areaCorFundoGaleria: 'PAGINA',
+    fonteGaleria: 'Montserrat',
     link: 'dizai.com/ze-eletricista',
     pergunta: 'Tem fotos de projetos de iluminação personalizada que você já fez? 💡',
     resposta: 'Tenho sim! Olha alguns projetos:',
@@ -132,6 +148,8 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
     nomeLoja: 'Casa & Cortina',
     descricao: 'Cortinas e persianas sob medida',
     corMarca: '#0F4C5C',
+    areaCorFundoGaleria: 'CABECALHO',
+    fonteGaleria: 'Poppins',
     link: 'dizai.com/casa-e-cortina',
     pergunta: 'Tem foto de cortina blackout instalada?',
     resposta: 'Tenho sim! Veja como ficam:',

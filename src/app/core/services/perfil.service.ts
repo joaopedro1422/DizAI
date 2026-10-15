@@ -5,7 +5,8 @@ import { Observable, firstValueFrom } from 'rxjs';
 import { urlDoPerfil } from '../api/api-url';
 import { SessaoService } from '../auth/sessao.service';
 import { COR_MARCA_PADRAO } from '../constants/cores-marca';
-import { ConfiguracoesAtendimento, CorMarca, DadosLoja, Perfil } from '../models/perfil.model';
+import { ConfiguracoesAtendimento, DadosLoja, Perfil } from '../models/perfil.model';
+import { ConfiguracaoVitrine } from '../models/vitrine.model';
 import { CarregamentoUnico } from '../utils/carregamento-unico';
 import { ResultadoCadastroMeta } from '../whatsapp/cadastro-incorporado-meta.service';
 
@@ -96,9 +97,9 @@ export class PerfilService {
     return this.enviar(this.http.patch<Perfil>(this.url('/foto'), { fotoPerfilUrl }));
   }
 
-  /** Cor da página pública. */
-  atualizarCorMarca(corMarca: CorMarca): Promise<void> {
-    return this.enviar(this.http.patch<Perfil>(this.url('/cor-marca'), { corMarca }));
+  /** Salva a identidade completa da vitrine pública em uma única atualização. */
+  atualizarConfiguracaoVitrine(configuracao: ConfiguracaoVitrine): Promise<void> {
+    return this.enviar(this.http.patch<Perfil>(this.url('/cor-marca'), configuracao));
   }
 
   /**

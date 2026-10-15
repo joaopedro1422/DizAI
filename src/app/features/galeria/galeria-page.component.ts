@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { RouterLink } from '@angular/router';
 
 import { ERRO_AO_CARREGAR, mensagemDoErro } from '../../core/api/erro-api';
-import { NovoAlbum } from '../../core/models/galeria.model';
+import { Album, NovoAlbum } from '../../core/models/galeria.model';
 import { buscarCorMarca } from '../../core/constants/cores-marca';
 import { ArmazenamentoFotosService } from '../../core/services/armazenamento-fotos.service';
 import { ConteudoRamoService } from '../../core/services/conteudo-ramo.service';
@@ -20,7 +20,7 @@ import { FotosEscolhidas, FotosFormularioComponent } from './fotos-formulario/fo
 import { SeletorCorMarcaComponent } from './seletor-cor-marca/seletor-cor-marca.component';
 import { TopicoFormularioComponent } from './topico-formulario/topico-formulario.component';
 
-type ModalGaleria = 'topico' | 'fotos' | 'cor' | null;
+type ModalGaleria = 'topico' | 'fotos' | 'vitrine' | 'excluir' | null;
 
 @Component({
   selector: 'app-galeria-page',
@@ -57,9 +57,23 @@ export class GaleriaPageComponent implements OnInit {
   protected readonly albumParaFotos = signal<number | null>(null);
   protected readonly enviandoFotos = signal(false);
   protected readonly criandoTopico = signal(false);
+  protected readonly excluindoTopico = signal(false);
+  protected readonly topicoParaExcluir = signal<Album | null>(null);
   protected readonly carregando = this.galeriaService.carregando;
+  protected readonly ordemRascunho = signal<number[]>([]);
+  protected readonly ordemSalva = signal<number[]>([]);
+  protected readonly salvandoOrdem = signal(false);
 
   protected readonly semTopicos = computed(() => this.albuns().length === 0);
+  protected readonly albunsNaOrdemRascunho = computed(() => {
+    const albunsPorId = new Map(this.albuns().map((album) => [album.id, album]));
+    return this.ordemRascunho()
+      .map((id) => albunsPorId.get(id))
+      .filter((album): album is Album => album !== undefined);
+  });
+  protected readonly temAlteracoesOrdem = computed(
+    () => JSON.stringify(this.ordemRascunho()) !== JSON.stringify(this.ordemSalva()),
+  );
 
   protected readonly resumo = computed(() => {
     const topicos = pluralizar(this.albuns().length, 'tópico', 'tópicos');
@@ -70,11 +84,16 @@ export class GaleriaPageComponent implements OnInit {
   ngOnInit(): void {
     this.galeriaService
       .carregar()
+      .then(() => {
+        const ids = this.albuns().map((album) => album.id);
+        this.ordemRascunho.set(ids);
+        this.ordemSalva.set(ids);
+      })
       .catch((erro: unknown) => this.toastService.mostrar(mensagemDoErro(erro, ERRO_AO_CARREGAR)));
   }
 
-  protected abrirCorPagina(): void {
-    this.modalAberto.set('cor');
+  protected abrirConfiguracaoVitrine(): void {
+    this.modalAberto.set('vitrine');
   }
 
   protected abrirNovoTopico(): void {
@@ -93,8 +112,38 @@ export class GaleriaPageComponent implements OnInit {
   }
 
   protected fecharModal(): void {
-    if (!this.enviandoFotos() && !this.criandoTopico()) {
+    if (!this.enviandoFotos() && !this.criandoTopico() && !this.excluindoTopico()) {
       this.modalAberto.set(null);
+      this.topicoParaExcluir.set(null);
+    }
+  }
+
+  protected solicitarExclusaoTopico(album: Album): void {
+    if (this.salvandoOrdem()) {
+      this.toastService.mostrar('Aguarde o salvamento da ordem antes de excluir um tópico.');
+      return;
+    }
+    this.topicoParaExcluir.set(album);
+    this.modalAberto.set('excluir');
+  }
+
+  protected async excluirTopico(): Promise<void> {
+    const album = this.topicoParaExcluir();
+    if (!album || this.excluindoTopico()) {
+      return;
+    }
+    this.excluindoTopico.set(true);
+    try {
+      await this.galeriaService.excluirAlbum(album.id);
+      this.ordemRascunho.update((ids) => ids.filter((id) => id !== album.id));
+      this.ordemSalva.update((ids) => ids.filter((id) => id !== album.id));
+      this.modalAberto.set(null);
+      this.topicoParaExcluir.set(null);
+      this.toastService.mostrar('Tópico e fotos excluídos');
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível excluir o tópico. Tente de novo.'));
+    } finally {
+      this.excluindoTopico.set(false);
     }
   }
 
@@ -103,11 +152,49 @@ export class GaleriaPageComponent implements OnInit {
     this.criandoTopico.set(true);
     try {
       const album = await this.galeriaService.criarAlbum(novoAlbum);
+      this.ordemRascunho.update((ids) => [...ids, album.id]);
+      this.ordemSalva.update((ids) => [...ids, album.id]);
       this.abrirAdicionarFotos(album.id);
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível criar o tópico. Tente de novo.'));
     } finally {
       this.criandoTopico.set(false);
+    }
+  }
+
+  protected moverTopico(indice: number, deslocamento: -1 | 1): void {
+    const destino = indice + deslocamento;
+    const ordem = this.ordemRascunho();
+    if (destino < 0 || destino >= ordem.length || this.salvandoOrdem()) {
+      return;
+    }
+    const novaOrdem = [...ordem];
+    const [albumId] = novaOrdem.splice(indice, 1);
+    novaOrdem.splice(destino, 0, albumId);
+    this.ordemRascunho.set(novaOrdem);
+  }
+
+  protected descartarOrdem(): void {
+    if (!this.salvandoOrdem()) {
+      this.ordemRascunho.set([...this.ordemSalva()]);
+    }
+  }
+
+  protected async salvarOrdem(): Promise<void> {
+    if (!this.temAlteracoesOrdem() || this.salvandoOrdem()) {
+      return;
+    }
+    this.salvandoOrdem.set(true);
+    try {
+      await this.galeriaService.atualizarOrdem(this.ordemRascunho());
+      const idsSalvos = this.albuns().map((album) => album.id);
+      this.ordemSalva.set(idsSalvos);
+      this.ordemRascunho.set(idsSalvos);
+      this.toastService.mostrar('Ordem dos tópicos atualizada');
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível salvar a ordem. Tente de novo.'));
+    } finally {
+      this.salvandoOrdem.set(false);
     }
   }
 

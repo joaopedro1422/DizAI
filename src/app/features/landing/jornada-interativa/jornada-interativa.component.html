@@ -1,0 +1,47 @@
+<section #secaoJornada class="jornada" aria-labelledby="jornada-titulo">
+  <div class="container jornada__layout">
+    <header class="jornada__texto">
+      <span class="jornada__sobretitulo">Do seu painel ao atendimento</span>
+
+      <div class="jornada__etapa" aria-live="polite">
+        <span class="jornada__numero">{{ cenaAtual().rotulo }}</span>
+        <h3 class="jornada__titulo-cena">{{ cenaAtual().titulo }}</h3>
+        <p class="jornada__descricao-cena">{{ cenaAtual().descricao }}</p>
+      </div>
+      <button type="button" class="jornada__pausar" [attr.aria-label]="pausada() ? 'Reproduzir demonstração' : 'Pausar demonstração'" [attr.aria-pressed]="!pausada()" (click)="alternarReproducao()">
+        @if (pausada()) {
+          <app-icone nome="reproduzir" [tamanho]="18" />
+        } @else {
+          <app-icone nome="pausar" [tamanho]="18" />
+        }
+      </button>
+    </header>
+
+    <div class="jornada__visual">
+      <div class="jornada__palco">
+        @if (iniciada()) {
+          @switch (indiceCena()) {
+            @case (0) { <app-mock-painel-jornada tela="produto" aria-label="Cadastro de produto no painel mobile" /> }
+            @case (1) { <app-mock-conversa-jornada tipo="produto" aria-label="Pergunta sobre sabores e resposta do assistente" /> }
+            @case (2) { <app-mock-painel-jornada tela="instrucoes" aria-label="Instrução obrigatória sendo cadastrada no painel mobile" /> }
+            @case (3) { <app-mock-conversa-jornada tipo="domingo" aria-label="Pergunta sobre entrega no domingo e resposta do assistente" /> }
+            @case (4) { <app-mock-galeria-jornada aria-label="Adicionando uma foto e personalizando a vitrine no painel mobile" /> }
+            @case (5) { <app-mock-conversa-jornada tipo="galeria" aria-label="Pedido de fotos e resposta com o link da galeria" /> }
+            @case (6) { <app-mock-vitrine-jornada aria-label="Galeria pública da loja aberta no celular" /> }
+            @case (7) { <app-mock-painel-jornada tela="fechamento" aria-label="Configuração de coleta de dados do pedido no painel mobile" /> }
+            @case (8) { <app-mock-conversa-jornada tipo="fechamento" aria-label="Assistente solicitando os dados necessários para fechar o pedido" /> }
+          }
+        }
+      </div>
+
+      <div class="jornada__controles">
+
+        <div class="jornada__navegacao">
+          <span class="jornada__contador">0{{ indiceCena() + 1 }} <span>/ 0{{ cenas.length }}</span></span>
+          <button type="button" class="jornada__seta" aria-label="Etapa anterior" (click)="anterior()"><app-icone nome="voltar" [tamanho]="18" /></button>
+          <button type="button" class="jornada__seta jornada__seta--proxima" aria-label="Próxima etapa" (click)="avancar()"><app-icone nome="avancar" [tamanho]="18" /></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

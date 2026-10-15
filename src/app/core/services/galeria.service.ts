@@ -23,6 +23,10 @@ interface AlbumApi {
   previa?: Foto[];
 }
 
+interface ExclusaoAlbumApi {
+  fotosRemovidas: string[];
+}
+
 /**
  * Tópicos (álbuns) e fotos da galeria: /api/perfis/{perfilId}/albuns
  * Regra: toda foto pertence a um álbum, por isso só existe `adicionarFotos(albumId, ...)`.
@@ -59,6 +63,25 @@ export class GaleriaService {
   async adicionarFotos(albumId: number, urls: string[]): Promise<void> {
     await firstValueFrom(this.http.post<unknown>(this.url(`/albuns/${albumId}/fotos`), { urls }));
     await this.buscar();
+  }
+
+  /**
+   * Atualiza a ordem dos tópicos como parte do recurso da galeria.
+   * PUT /albuns/ordem recebe todos os IDs na ordem desejada; em seguida o GET
+   * confirma e sincroniza a ordem persistida pelo backend.
+   */
+  async atualizarOrdem(albumIds: number[]): Promise<void> {
+    await firstValueFrom(
+      this.http.put<void>(this.url('/albuns/ordem'), { albumIds }),
+    );
+    await this.buscar();
+  }
+
+  async excluirAlbum(albumId: number): Promise<void> {
+    await firstValueFrom(
+      this.http.delete<ExclusaoAlbumApi>(this.url(`/albuns/${albumId}`)),
+    );
+    this.listaAlbuns.update((albuns) => albuns.filter((album) => album.id !== albumId));
   }
 
   buscarAlbum(albumId: number): Album | undefined {

@@ -1,10 +1,18 @@
 :host {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+
+.configuracao-vitrine {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
 
 .descricao {
+  margin-top: 5px;
   font-size: 14px;
   line-height: 1.5;
   color: var(--cor-texto-secundario);
@@ -18,6 +26,36 @@
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 10px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.campo__titulo {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.campo select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo);
+}
+
+.fonte-preview {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  color: var(--cor-texto);
+  font-size: 18px;
 }
 
 .cor {
@@ -43,4 +81,37 @@
   box-shadow:
     0 0 0 3px var(--cor-fundo),
     0 0 0 5px var(--cor-texto);
+}
+
+.capa-atual {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.capa-atual img {
+  width: 112px;
+  height: 64px;
+  border-radius: var(--raio-pequeno);
+  object-fit: cover;
+}
+
+.arquivo-capa {
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  color: var(--cor-texto-secundario);
+}
+
+.seletor-capa {
+  position: relative;
+  overflow: hidden;
+}
+
+.seletor-capa input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
 }

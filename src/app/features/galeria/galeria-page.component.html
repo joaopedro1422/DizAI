@@ -1,8 +1,8 @@
 <div class="tela-app">
   <app-cabecalho-pagina titulo="Galeria" [subtitulo]="resumo()" [comDivisor]="true">
-    <button acaoTitulo type="button" class="botao-cor" (click)="abrirCorPagina()">
+    <button acaoTitulo type="button" class="botao-cor" (click)="abrirConfiguracaoVitrine()">
       <span class="botao-cor__amostra" [style.background]="corPagina()" aria-hidden="true"></span>
-      Cor da página
+      Personalizar vitrine
     </button>
 
     <a acoesTopo [routerLink]="caminhoPaginaPublica()" class="btn btn--pequeno link-publico">
@@ -27,18 +27,49 @@
     </div>
   </app-cabecalho-pagina>
 
-  <main class="lista conteudo-tela">
+  <main class="lista conteudo-tela" [class.lista--com-barra]="temAlteracoesOrdem()">
     <p class="aviso-informativo">
       <app-icone nome="informacao" [tamanho]="16" />
-      <span>Toda foto fica dentro de um tópico, como "{{ exemploTopico() }}". É o link do tópico que o assistente envia ao cliente.</span>
+      <span>Toda foto fica dentro de um tópico, como "{{ exemploTopico() }}". É o link do tópico que o assistente envia ao cliente. Use as setas para mudar a ordem da vitrine.</span>
     </p>
 
     @if (carregando()) {
       <app-carregando texto="Carregando sua galeria…" />
     } @else {
-      @for (album of albuns(); track album.id) {
-        <app-album-card [album]="album" (adicionarFotos)="abrirAdicionarFotos(album.id)" />
-      } @empty {
+      <div class="lista-topicos">
+        @for (album of albunsNaOrdemRascunho(); track album.id; let indice = $index) {
+          <div class="topico-reordenavel">
+            <div class="topico-reordenavel__controles">
+              <div class="topico-reordenavel__setas">
+                <button
+                  type="button"
+                  class="topico-reordenavel__mover"
+                  [disabled]="indice === 0 || salvandoOrdem()"
+                  [attr.aria-label]="'Mover ' + album.nome + ' para cima'"
+                  (click)="moverTopico(indice, -1)"
+                >
+                  <app-icone nome="avancar" [tamanho]="15" />
+                </button>
+                <button
+                  type="button"
+                  class="topico-reordenavel__mover topico-reordenavel__mover--baixo"
+                  [disabled]="indice === albunsNaOrdemRascunho().length - 1 || salvandoOrdem()"
+                  [attr.aria-label]="'Mover ' + album.nome + ' para baixo'"
+                  (click)="moverTopico(indice, 1)"
+                >
+                  <app-icone nome="avancar" [tamanho]="15" />
+                </button>
+              </div>
+            </div>
+            <app-album-card
+              [album]="album"
+              (adicionarFotos)="abrirAdicionarFotos(album.id)"
+              (excluir)="solicitarExclusaoTopico($event)"
+            />
+          </div>
+        }
+      </div>
+      @if (albunsNaOrdemRascunho().length === 0) {
         <app-estado-vazio
           icone="imagem"
           titulo="Nenhum tópico ainda"
@@ -51,11 +82,27 @@
   </main>
 </div>
 
+@if (temAlteracoesOrdem()) {
+  <div class="barra-salvar barra-fixa-inferior" role="region" aria-label="Ordem dos tópicos não salva">
+    <button type="button" class="btn btn--secundario barra-salvar__descartar" [disabled]="salvandoOrdem()" (click)="descartarOrdem()">
+      Descartar
+    </button>
+    <button
+      type="button"
+      class="btn btn--primario barra-salvar__salvar"
+      [disabled]="salvandoOrdem()"
+      [attr.aria-busy]="salvandoOrdem()"
+      (click)="salvarOrdem()"
+    >
+      {{ salvandoOrdem() ? 'Salvando…' : 'Salvar alterações' }}
+    </button>
+  </div>
+}
+
 @switch (modalAberto()) {
-  @case ('cor') {
-    <app-bottom-sheet titulo="Cor da sua página" (fechar)="fecharModal()">
-      <app-seletor-cor-marca />
-      <button type="button" class="btn btn--primario btn--grande btn--bloco" (click)="fecharModal()">Pronto</button>
+  @case ('vitrine') {
+    <app-bottom-sheet titulo="Personalizar vitrine" (fechar)="fecharModal()">
+      <app-seletor-cor-marca (salvo)="fecharModal()" />
     </app-bottom-sheet>
   }
   @case ('topico') {
@@ -73,5 +120,33 @@
         (novoTopico)="abrirNovoTopico()"
       />
     </app-bottom-sheet>
+  }
+  @case ('excluir') {
+    @if (topicoParaExcluir(); as topico) {
+      <app-bottom-sheet titulo="Excluir tópico?" (fechar)="fecharModal()">
+        <div class="confirmar-exclusao">
+          <p>
+            O tópico <strong>{{ topico.nome }}</strong> e todas as fotos associadas serão excluídos.
+            Esta ação não pode ser desfeita.
+          </p>
+          <button
+            type="button"
+            class="btn btn--excluir btn--grande btn--bloco"
+            [disabled]="excluindoTopico()"
+            [attr.aria-busy]="excluindoTopico()"
+            (click)="excluirTopico()"
+          >
+            @if (excluindoTopico()) {
+              Excluindo…
+            } @else {
+              Excluir tópico
+            }
+          </button>
+          <button type="button" class="btn btn--secundario btn--grande btn--bloco" [disabled]="excluindoTopico()" (click)="fecharModal()">
+            Cancelar
+          </button>
+        </div>
+      </app-bottom-sheet>
+    }
   }
 }

@@ -24,13 +24,13 @@ export class SecaoPropostaComponent {
     {
       icone: 'conversa',
       titulo: 'O cliente pergunta',
-      texto: 'Preço, prazo, sabor, horário, entrega: as mesmas dúvidas de sempre.',
+      texto: 'Serviços, sabores, cores, prazo, horário, entrega: as mesmas dúvidas de sempre.',
       ehDoLojista: false,
     },
     {
       icone: 'raio',
       titulo: 'O DizAI responde',
-      texto: 'Na hora, com as informações da sua loja, enquanto você trabalha.',
+      texto: 'Na hora, com as informações da sua loja, enquanto você trabalha ou descansa no final de semana.',
       ehDoLojista: false,
     },
     {

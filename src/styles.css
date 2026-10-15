@@ -245,6 +245,15 @@ body:has(.barra-fixa-inferior) app-toast-host .regiao {
   background: var(--cor-sucesso-hover);
 }
 
+.btn--excluir {
+  background: var(--cor-erro);
+  color: #FFFFFF;
+}
+
+.btn--excluir:hover {
+  filter: brightness(0.92);
+}
+
 .btn--texto {
   padding: 0 4px;
   background: transparent;
