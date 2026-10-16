@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
+import { PergunteDizaiComponent } from './pergunte-dizai/pergunte-dizai.component';
 
 interface Pergunta {
   pergunta: string;
@@ -41,7 +42,7 @@ const PERGUNTAS: Pergunta[] = [
 /** "Perguntas" da landing: respostas expansíveis, todas começam fechadas. */
 @Component({
   selector: 'app-secao-perguntas',
-  imports: [IconeComponent],
+  imports: [IconeComponent, PergunteDizaiComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './secao-perguntas.component.html',
   styleUrls: ['../secao-landing.css', './secao-perguntas.component.css'],

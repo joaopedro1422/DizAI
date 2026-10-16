@@ -1,0 +1,66 @@
+<section class="pergunte" aria-labelledby="pergunte-titulo">
+  <div class="pergunte__cabecalho">
+    <span class="pergunte__selo" aria-hidden="true"><app-icone nome="brilho" [tamanho]="18" [espessura]="2.2" /></span>
+    <div>
+      <h3 id="pergunte-titulo" class="pergunte__titulo">Ainda com dúvida? Pergunte ao DizAI</h3>
+      <p class="pergunte__descricao">Conte sobre o seu negócio e pergunte se faz sentido para você. Quem responde é a nossa IA.</p>
+    </div>
+  </div>
+
+  <form class="pergunte__form" (ngSubmit)="enviar()">
+    <label class="sr-only" for="pergunte-campo">Sua pergunta para o DizAI</label>
+    <textarea
+      #campo
+      id="pergunte-campo"
+      name="pergunta"
+      class="pergunte__campo"
+      rows="2"
+      placeholder="Ex.: tenho uma loja de roupas, o assistente consegue responder sobre tamanhos?"
+      [maxlength]="limiteLetras"
+      [ngModel]="texto()"
+      (ngModelChange)="texto.set($event)"
+      (keydown)="aoTeclar($event)"
+    ></textarea>
+    <button
+      type="submit"
+      class="pergunte__enviar"
+      [disabled]="!texto().trim() || perguntaPendente()"
+      aria-label="Enviar pergunta"
+    >
+      <app-icone nome="seta" [tamanho]="18" [espessura]="2.4" />
+    </button>
+  </form>
+
+  @if (trocas().length === 0 && !perguntaPendente()) {
+    <div class="pergunte__sugestoes" aria-label="Sugestões de pergunta">
+      @for (sugestao of sugestoes; track sugestao) {
+        <button type="button" class="pergunte__sugestao" (click)="usarSugestao(sugestao)">{{ sugestao }}</button>
+      }
+    </div>
+  }
+
+  @if (erro(); as mensagem) {
+    <p class="pergunte__erro" role="alert">{{ mensagem }}</p>
+  }
+
+  <div class="pergunte__conversa" aria-live="polite">
+    @for (troca of trocas(); track $index) {
+      <div class="pergunte__troca">
+        <p class="pergunte__pergunta">{{ troca.pergunta }}</p>
+        <div class="pergunte__resposta">
+          <span class="pergunte__autor"><app-icone nome="brilho" [tamanho]="13" [espessura]="2.2" /> DizAI</span>
+          <p>{{ troca.resposta }}</p>
+        </div>
+      </div>
+    }
+    @if (perguntaPendente(); as pendente) {
+      <div class="pergunte__troca">
+        <p class="pergunte__pergunta">{{ pendente }}</p>
+        <div class="pergunte__resposta pergunte__resposta--pensando">
+          <span class="pergunte__autor"><app-icone nome="brilho" [tamanho]="13" [espessura]="2.2" /> DizAI</span>
+          <span class="pergunte__pontinhos" aria-label="Pensando na resposta"><i></i><i></i><i></i></span>
+        </div>
+      </div>
+    }
+  </div>
+</section>
