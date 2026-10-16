@@ -1,0 +1,141 @@
+@if (situacao() === 'carregando') {
+  <app-carregando texto="Abrindo a agenda…" />
+} @else if (situacao() === 'erro') {
+  <div class="vazio">
+    <p>Não foi possível abrir a agenda agora.</p>
+    <button type="button" class="botao-contorno" (click)="recarregar()">Tentar de novo</button>
+  </div>
+} @else {
+  <div class="agenda">
+    <section class="passo" aria-labelledby="passo-servico">
+      <h2 class="passo__titulo" id="passo-servico">
+        <span class="passo__numero" [class.passo__numero--feito]="escolhidos().length > 0">1</span>
+        Escolha o serviço
+      </h2>
+      @for (categoria of categorias(); track categoria.nome) {
+        <div class="categoria">
+          @if (categorias().length > 1) {
+            <span class="categoria__nome">{{ categoria.nome }}</span>
+          }
+          <div class="servicos">
+            @for (servico of categoria.servicos; track servico.id) {
+              @let escolhido = escolhidos().includes(servico.id);
+              <button
+                type="button"
+                class="servico"
+                [class.servico--escolhido]="escolhido"
+                [attr.aria-pressed]="escolhido"
+                (click)="alternarServico(servico)"
+              >
+                <span class="servico__marca" aria-hidden="true">
+                  @if (escolhido) {
+                    <app-icone nome="check" [tamanho]="14" [espessura]="3" />
+                  }
+                </span>
+                <span class="servico__nome">{{ servico.nome }}</span>
+                <span class="servico__duracao">
+                  <app-icone nome="relogio" [tamanho]="14" />
+                  {{ duracao(servico.duracaoMinutos) }}
+                </span>
+              </button>
+            }
+          </div>
+        </div>
+      } @empty {
+        <p class="vazio">Nenhum serviço disponível para agendar no momento.</p>
+      }
+      @if (escolhidos().length > 1) {
+        <p class="passo__nota">Total: {{ duracao(duracaoTotal()) }} de atendimento, um serviço depois do outro.</p>
+      }
+    </section>
+
+    @if (escolhidos().length > 0) {
+      <section class="passo passo--entrada" aria-labelledby="passo-dia">
+        <h2 class="passo__titulo" id="passo-dia">
+          <span class="passo__numero" [class.passo__numero--feito]="!!diaSelecionado()">2</span>
+          Escolha o dia
+        </h2>
+        @if (carregandoHorarios() && dias().length === 0) {
+          <app-carregando modo="inline" [tamanho]="22" />
+        } @else if (semHorarioNoMes()) {
+          <p class="vazio">Não há horários livres para este serviço nos próximos dias. Chame no WhatsApp que a gente encontra um jeito.</p>
+        } @else {
+          <app-faixa-dias
+            class="faixa"
+            [class.faixa--atualizando]="carregandoHorarios()"
+            [itens]="itensFaixa()"
+            [selecionado]="diaSelecionado()"
+            (escolher)="escolherDia($event)"
+          />
+        }
+      </section>
+    }
+
+    @if (diaSelecionado() && turnos().length > 0) {
+      <section class="passo passo--entrada" aria-labelledby="passo-hora">
+        <h2 class="passo__titulo" id="passo-hora">
+          <span class="passo__numero" [class.passo__numero--feito]="!!horaSelecionada()">3</span>
+          Escolha o horário
+        </h2>
+        @for (turno of turnos(); track turno.nome) {
+          <div class="turno">
+            <span class="turno__nome">{{ turno.nome }}</span>
+            <div class="horarios" role="radiogroup" [attr.aria-label]="'Horários da ' + turno.nome.toLowerCase()">
+              @for (hora of turno.horarios; track hora) {
+                <button
+                  type="button"
+                  role="radio"
+                  class="hora"
+                  [class.hora--escolhida]="horaSelecionada() === hora"
+                  [attr.aria-checked]="horaSelecionada() === hora"
+                  (click)="escolherHora(hora)"
+                >
+                  {{ hora }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </section>
+    }
+
+    @if (horaSelecionada()) {
+      <section class="passo passo--entrada" aria-labelledby="passo-nome">
+        <h2 class="passo__titulo" id="passo-nome">
+          <span class="passo__numero" [class.passo__numero--feito]="nome().trim().length > 0">4</span>
+          Seu nome <span class="passo__opcional">(opcional)</span>
+        </h2>
+        <input
+          class="campo-nome"
+          type="text"
+          autocomplete="name"
+          placeholder="Como podemos te chamar?"
+          aria-labelledby="passo-nome"
+          [value]="nome()"
+          (input)="digitarNome($event)"
+        >
+      </section>
+
+      @if (resumoEscolha(); as resumo) {
+        <div class="resumo passo--entrada">
+          <span class="resumo__linha"><strong>{{ resumo.servicos }}</strong> · {{ resumo.duracao }}</span>
+          <span class="resumo__linha">{{ resumo.quando }}</span>
+          <span class="resumo__nota">Ao enviar, o horário é conferido e confirmado na hora pelo WhatsApp.</span>
+        </div>
+      }
+    }
+  </div>
+
+  <div class="enviar">
+    @if (linkEnviar(); as link) {
+      <a class="enviar__botao" [href]="link" target="_blank" rel="noopener">
+        <app-icone nome="conversa" [tamanho]="20" />
+        Enviar pelo WhatsApp
+      </a>
+    } @else {
+      <span class="enviar__botao enviar__botao--inativo" aria-disabled="true">
+        {{ escolhidos().length === 0 ? 'Escolha um serviço' : !horaSelecionada() ? 'Escolha o dia e o horário' : 'Enviar pelo WhatsApp' }}
+      </span>
+    }
+  </div>
+}

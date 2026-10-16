@@ -61,7 +61,34 @@
         </div>
       </header>
 
-      @if (albuns().length > 0) {
+      @if (temAgenda()) {
+        <div class="alternar animacao-entrada animacao-entrada--2" role="tablist" aria-label="O que ver">
+          <button
+            type="button"
+            role="tab"
+            class="alternar__opcao"
+            [class.alternar__opcao--ativa]="!mostrandoAgenda()"
+            [attr.aria-selected]="!mostrandoAgenda()"
+            (click)="mudarAba('galeria')"
+          >
+            <app-icone nome="imagem" [tamanho]="17" />
+            Trabalhos
+          </button>
+          <button
+            type="button"
+            role="tab"
+            class="alternar__opcao"
+            [class.alternar__opcao--ativa]="mostrandoAgenda()"
+            [attr.aria-selected]="mostrandoAgenda()"
+            (click)="mudarAba('agenda')"
+          >
+            <app-icone nome="calendario" [tamanho]="17" />
+            Agendar horário
+          </button>
+        </div>
+      }
+
+      @if (albuns().length > 0 && !mostrandoAgenda()) {
         <nav class="categorias animacao-entrada animacao-entrada--2" aria-label="Categorias">
           @for (album of albuns(); track album.slug; let primeiro = $first) {
             <button type="button" class="categoria" [class.categoria--ativa]="primeiro" (click)="irParaAlbum(album)">
@@ -73,6 +100,12 @@
     </div>
     
 
+    @if (mostrandoAgenda()) {
+      <!-- sem a classe de animação: o transform dela prenderia o botão fixo de enviar dentro do bloco -->
+      <main>
+        <app-agenda-publica [slug]="slug()" [numeroWhatsapp]="numeroWhatsapp()" />
+      </main>
+    } @else {
     <main class="albuns animacao-entrada animacao-entrada--3">
       @for (album of albuns(); track album.slug) {
         <section class="album" [id]="idSecao(album)" [attr.aria-labelledby]="idSecao(album) + '-titulo'">
@@ -113,11 +146,14 @@
         <p class="sem-fotos">Esta loja ainda não publicou fotos.</p>
       }
     </main>
+    }
     <footer class="rodape ">
-      <a class="rodape__whatsapp" [href]="linkWhatsapp()" target="_blank" rel="noopener">
-        <app-icone nome="conversa" [tamanho]="20" />
-        Falar pelo WhatsApp
-      </a>
+      @if (!mostrandoAgenda()) {
+        <a class="rodape__whatsapp" [href]="linkWhatsapp()" target="_blank" rel="noopener">
+          <app-icone nome="conversa" [tamanho]="20" />
+          Falar pelo WhatsApp
+        </a>
+      }
       <a routerLink="/" class="rodape__credito">
         Galeria criada com
         <app-logo [tamanhoSimbolo]="14" [tamanhoTexto]="13" />

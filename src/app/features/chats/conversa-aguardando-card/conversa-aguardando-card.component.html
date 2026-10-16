@@ -19,7 +19,7 @@
 
 @if (conversa().resumoPedido.length > 0) {
   <div class="resumo caixa-suave">
-    <span class="rotulo-maiusculo">Resumo do pedido</span>
+    <span class="rotulo-maiusculo">{{ tituloResumo() }}</span>
     <dl class="resumo__lista">
       @for (item of conversa().resumoPedido; track $index) {
         <div class="resumo__item">
@@ -34,7 +34,7 @@
 <div class="acoes">
   <a class="btn btn--primario acoes__responder" [href]="linkWhatsapp()" target="_blank" rel="noopener">
     <app-icone nome="conversa" [tamanho]="16" [espessura]="2" />
-    Responder no WhatsApp
+    Ir ao WhatsApp
   </a>
   <button type="button" class="btn btn--secundario acoes__resolvido" [disabled]="resolvendo()" [attr.aria-busy]="resolvendo()" (click)="resolvida.emit()">
     @if (resolvendo()) {

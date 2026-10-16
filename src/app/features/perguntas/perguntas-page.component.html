@@ -10,6 +10,25 @@
     @if (carregando()) {
       <app-carregando texto="Carregando suas perguntas…" />
     } @else {
+      @if (semResposta().length > 0) {
+        <section class="sem-resposta" aria-labelledby="titulo-sem-resposta">
+          <div class="sem-resposta__cabecalho">
+            <app-icone nome="lampada" [tamanho]="18" />
+            <h2 class="sem-resposta__titulo" id="titulo-sem-resposta">O assistente não soube responder</h2>
+          </div>
+          <p class="sem-resposta__descricao">Clientes perguntaram isto. Responda uma vez e o assistente passa a saber.</p>
+          @for (sugestao of semResposta(); track sugestao.id) {
+            <article class="sugestao-faq">
+              <p class="sugestao-faq__pergunta">"{{ sugestao.pergunta }}"</p>
+              <div class="sugestao-faq__acoes">
+                <button type="button" class="btn btn--primario btn--pequeno" (click)="responder(sugestao)">Responder</button>
+                <button type="button" class="btn btn--texto btn--pequeno" [disabled]="descartando() === sugestao.id" (click)="descartar(sugestao)">Descartar</button>
+              </div>
+            </article>
+          }
+        </section>
+      }
+
       @for (item of perguntas(); track item.id) {
         <article class="pergunta">
           <div class="pergunta__textos">

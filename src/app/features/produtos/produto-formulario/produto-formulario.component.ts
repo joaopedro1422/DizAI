@@ -1,7 +1,10 @@
-import { Component, OnInit, inject, input, output } from '@angular/core';
+import { Component, OnInit, computed, inject, input, output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { ramoDeServico, ramoUsaAgenda } from '../../../core/models/perfil.model';
 import { NovoProduto, Produto } from '../../../core/models/produto.model';
+import { PerfilService } from '../../../core/services/perfil.service';
+import { formatarDuracao } from '../../../core/utils/datas-agenda';
 import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.service';
 import { separarPorVirgula } from '../../../core/utils/texto.utils';
 import { campoComErro } from '../../../core/utils/validadores';
@@ -13,6 +16,9 @@ const NOVA_CATEGORIA = '__nova_categoria__';
 
 /** Aceita "70", "70,5" ou "70.50". */
 const PADRAO_PRECO = /^\d{1,7}([.,]\d{1,2})?$/;
+
+/** Atalhos de duração (minutos) mostrados como chips; outro valor vai no campo. */
+const DURACOES_COMUNS = [30, 45, 60, 90, 120];
 
 type GrupoAtributo = FormGroup<{ nome: FormControl<string>; opcoes: FormControl<string> }>;
 
@@ -37,6 +43,13 @@ export class ProdutoFormularioComponent implements OnInit {
 
   protected readonly valorNovaCategoria = NOVA_CATEGORIA;
 
+  private readonly perfil = inject(PerfilService).perfil;
+  private readonly ramo = computed(() => this.perfil().ramo);
+  /** Serviços mostram a duração; nos ramos com agenda ela é obrigatória (a agenda conta os horários por ela). */
+  protected readonly pedeDuracao = computed(() => ramoDeServico(this.ramo()));
+  protected readonly duracaoObrigatoria = computed(() => ramoUsaAgenda(this.ramo()));
+  protected readonly duracoesComuns = DURACOES_COMUNS.map((minutos) => ({ minutos, rotulo: formatarDuracao(minutos) }));
+
   protected readonly formulario = this.fb.nonNullable.group({
     nome: ['', [Validators.required, Validators.maxLength(80)]],
     categoria: ['', Validators.required],
@@ -44,6 +57,7 @@ export class ProdutoFormularioComponent implements OnInit {
     descricao: ['', Validators.maxLength(500)],
     preco: ['', Validators.pattern(PADRAO_PRECO)],
     precoAPartirDe: [false],
+    duracao: ['', [Validators.pattern(/^\d{1,3}$/), Validators.min(5), Validators.max(720)]],
     atributos: this.fb.array<GrupoAtributo>([]),
   });
 
@@ -52,9 +66,13 @@ export class ProdutoFormularioComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.duracaoObrigatoria()) {
+      this.formulario.controls.duracao.addValidators(Validators.required);
+    }
     const produto = this.produto();
     if (produto) {
       this.formulario.patchValue({
+        duracao: produto.duracaoMinutos ? String(produto.duracaoMinutos) : '',
         nome: produto.nome,
         categoria: produto.categoria,
         descricao: produto.descricao ?? '',
@@ -85,6 +103,18 @@ export class ProdutoFormularioComponent implements OnInit {
     controle.setValue(!controle.value);
   }
 
+  protected escolherDuracao(minutos: number): void {
+    const controle = this.formulario.controls.duracao;
+    controle.setValue(String(minutos));
+    controle.markAsTouched();
+  }
+
+  /** "1h30" ao lado do campo, para o lojista conferir o que digitou em minutos. */
+  protected duracaoLegivel(): string {
+    const minutos = Number(this.formulario.controls.duracao.value);
+    return minutos >= 5 && minutos <= 720 ? formatarDuracao(minutos) : '';
+  }
+
   protected adicionarAtributo(): void {
     this.atributos.push(
       this.fb.nonNullable.group({
@@ -102,7 +132,7 @@ export class ProdutoFormularioComponent implements OnInit {
     return this.formulario.controls.categoria.value === NOVA_CATEGORIA;
   }
 
-  protected temErro(campo: 'nome' | 'preco' | 'novaCategoria'): boolean {
+  protected temErro(campo: 'nome' | 'preco' | 'novaCategoria' | 'duracao'): boolean {
     return campoComErro(this.formulario.controls[campo]);
   }
 
@@ -128,6 +158,7 @@ export class ProdutoFormularioComponent implements OnInit {
     const valores = this.formulario.getRawValue();
     const categoria = this.ehNovaCategoria() ? valores.novaCategoria.trim() : valores.categoria;
     const preco = valores.preco.trim();
+    const duracao = valores.duracao.trim();
 
     return {
       nome: valores.nome.trim(),
@@ -135,6 +166,7 @@ export class ProdutoFormularioComponent implements OnInit {
       descricao: valores.descricao.trim(),
       preco: preco ? Number(preco.replace(',', '.')) : null,
       precoAPartirDe: valores.precoAPartirDe,
+      duracaoMinutos: this.pedeDuracao() && duracao ? Number(duracao) : null,
       atributos: valores.atributos
         .map((atributo) => ({ nome: atributo.nome.trim(), opcoes: separarPorVirgula(atributo.opcoes) }))
         .filter((atributo) => atributo.nome && atributo.opcoes.length > 0),

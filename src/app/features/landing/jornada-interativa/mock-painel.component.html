@@ -1,115 +1,201 @@
 @switch (tela) {
   @case ('produto') {
     <app-telefone-demo>
-      <div class="app-tela app-tela--catalogo">
-        <div class="app-topo">
-          <span class="app-voltar"><app-icone nome="voltar" [tamanho]="18" /></span>
-          <span class="app-topo__titulo">Produtos</span>
-          <span class="app-topo__acao"><app-icone nome="mais" [tamanho]="18" /></span>
-        </div>
-        <div class="catalogo">
-          <div class="catalogo__titulo"><h2>Produtos</h2><span>Nenhum produto cadastrado ainda</span></div>
-          <div class="catalogo__botao"><app-icone nome="mais" [tamanho]="15" /> Adicionar produto</div>
-          <div class="catalogo__vazio"><span class="catalogo__icone"><app-icone nome="caixa" [tamanho]="25" /></span><strong>Nenhum produto ainda</strong><span>Cadastre o que você vende ou faz.</span></div>
-        </div>
-        <div class="escurecer"></div>
-        <section class="folha">
-          <span class="folha__alca"></span>
-          <header class="folha__cabecalho"><h2>Novo produto</h2><span><app-icone nome="fechar" [tamanho]="17" /></span></header>
-          <div class="folha__formulario">
-            <label class="campo"><span>Nome do produto</span><strong>Torta artesanal G</strong></label>
-            <div class="campo">
-              <span>Categoria</span>
-              <div class="chips"><span class="chip chip--ativo">Tortas</span><span class="chip">+ Nova categoria</span></div>
-            </div>
-            <label class="campo"><span>Descrição</span><strong class="campo__texto" [class.campo__texto--digitando]="!produtoSalvo()">{{ descricaoDigitada() }}</strong><small>Quanto mais detalhe, melhor o assistente responde.</small></label>
-            <div class="campo">
-              <span>Preço <small>(deixe vazio se depender de avaliação)</small></span>
-              <div class="preco"><strong>R$</strong><b>85,00</b><span class="chip chip--ativo">A partir de</span></div>
-            </div>
-            <div class="campo">
-              <span>Opções que o cliente escolhe</span>
-              <div class="opcao"><b>Sabores</b><span>Brigadeiro, Ninho, Limão</span></div>
-              <div class="opcao"><b>Massas</b><span>Branca, mista</span></div>
-              <span class="adicionar"><app-icone nome="mais" [tamanho]="14" /> Adicionar opção</span>
-            </div>
-            <button class="salvar" [class.salvar--pressionado]="produtoSalvo()">{{ produtoSalvo() ? 'Produto salvo!' : 'Salvar produto' }}</button>
-          </div>
-        </section>
-      </div>
-    </app-telefone-demo>
-  }
-  @case ('fechamento') {
-    <app-telefone-demo>
       <div class="app-tela">
-        <div class="app-topo">
-          <span class="app-voltar"><app-icone nome="voltar" [tamanho]="18" /></span>
-          <span class="app-topo__titulo">Como o assistente atende</span>
-          <span class="app-topo__acao"></span>
-        </div>
-        <main class="fechamento-painel">
-          <section class="fechamento-cartao">
-            <header class="fechamento-cartao__cabecalho">
-              <h1>Quando o cliente quiser fechar</h1>
-              <p>Escolha até onde o assistente vai antes de passar a conversa para você.</p>
-            </header>
-            <div class="fechamento-opcao">
-              <span class="fechamento-opcao__marcador"></span>
-              <span><strong>Me chamar na hora</strong><small>O assistente passa a conversa para você.</small></span>
-            </div>
-            <div class="fechamento-opcao fechamento-opcao--selecionada">
-              <span class="fechamento-opcao__marcador"></span>
-              <span><strong>Coletar os dados do pedido</strong><small>A IA pergunta os dados e envia um resumo. A confirmação continua passando por você.</small></span>
-            </div>
-            <label class="fechamento-campo">
-              <span class="campo__rotulo">O que o assistente precisa coletar?</span>
-              <textarea class="campo__entrada" readonly rows="3" [value]="camposPedidoDigitados()"></textarea>
-              <span class="campo__dica">Escreva do seu jeito, separando os itens por vírgula.</span>
-            </label>
-          </section>
-        </main>
-        <div class="fechamento-salvar">
-          <span class="salvar" [class.salvar--pressionado]="configuracaoSalva()">{{ configuracaoSalva() ? 'Alterações salvas!' : 'Salvar alterações' }}</span>
-        </div>
-      </div>
-    </app-telefone-demo>
-  }
-  @case ('galeria') {
-    <app-telefone-demo>
-      <div class="app-tela">
-        <div class="app-topo">
-          <span class="app-voltar"><app-icone nome="voltar" [tamanho]="18" /></span>
-          <span class="app-topo__link"><app-icone nome="externo" [tamanho]="13" /> Ver página pública</span>
-        </div>
-        <header class="pagina-cabecalho">
-          <div class="pagina-cabecalho__linha"><h1>Galeria</h1><span class="personalizar"><i></i> Personalizar vitrine</span></div>
-          <p>3 tópicos · 18 fotos</p>
+        <!-- Tela "Produtos" do painel: cabeçalho, botão, filtros e cards -->
+        <header class="cabecalho">
+          <span class="cabecalho__voltar"><app-icone nome="voltar" [tamanho]="17" /></span>
+          <h1 class="titulo-pagina">Produtos</h1>
+          <p class="cabecalho__subtitulo">{{ etapaProduto() === 'salvo' ? '3 cadastrados' : '2 cadastrados' }}</p>
+          <span class="botao botao--primario botao--largo" [class.botao--tocado]="etapaProduto() === 'tocando'">
+            <app-icone nome="mais" [tamanho]="14" [espessura]="2" /> Adicionar produto
+          </span>
         </header>
-        <div class="acoes">
-          <span class="acoes__principal"><app-icone nome="pastaMais" [tamanho]="15" /> Novo tópico</span>
-          <span class="acoes__secundaria"><app-icone nome="imagem" [tamanho]="15" /> Adicionar fotos</span>
-        </div>
-        <main class="galeria">
-          <div class="aviso"><app-icone nome="informacao" [tamanho]="15" /><span>Toda foto fica dentro de um tópico, como “Bolos e tortas”. É o link do tópico que o assistente envia ao cliente. Use as setas para mudar a ordem da vitrine.</span></div>
-          <div class="topico">
-            <div class="setas"><span><app-icone nome="avancar" [tamanho]="14" /></span><span class="setas__baixo"><app-icone nome="avancar" [tamanho]="14" /></span></div>
-            <article class="album">
-              <div class="album__cabecalho"><span><strong>Bolos e tortas</strong><small>8 fotos</small></span><span class="album__fotos"><app-icone nome="mais" [tamanho]="13" /> Fotos</span></div>
-              <div class="album__grade">
-                <img src="/landing/galeria/bolos/01.webp" alt="" /><img src="/landing/galeria/bolos/03.webp" alt="" />
-                <img src="/landing/galeria/bolos/05.webp" alt="" /><img src="/landing/galeria/bolos/07.webp" alt="" />
+        <div class="filtros"><span class="chip chip--ativo">Todos</span><span class="chip">Tortas</span><span class="chip">Docinhos</span></div>
+
+        <main class="lista">
+          @if (etapaProduto() === 'salvo') {
+            <article class="produto produto--novo">
+              <img class="produto__foto" src="/landing/galeria/bolos/02.webp" alt="" />
+              <div class="produto__textos">
+                <span class="produto__categoria">Tortas</span>
+                <strong class="produto__nome">Torta artesanal G</strong>
+                <span class="produto__descricao">Serve até 20 pessoas. Massa amanteigada e recheio cremoso…</span>
+                <span class="produto__rodape"><b>A partir de R$ 85,00</b><small>1 opção</small></span>
               </div>
             </article>
-          </div>
-          <div class="topico">
-            <div class="setas"><span><app-icone nome="avancar" [tamanho]="14" /></span><span class="setas__baixo"><app-icone nome="avancar" [tamanho]="14" /></span></div>
-            <article class="album album--segundo"><div class="album__cabecalho"><span><strong>Docinhos</strong><small>6 fotos</small></span><span class="album__fotos"><app-icone nome="mais" [tamanho]="13" /> Fotos</span></div></article>
-          </div>
+          }
+          <article class="produto">
+            <img class="produto__foto" src="/landing/galeria/bolos/04.webp" alt="" />
+            <div class="produto__textos">
+              <span class="produto__categoria">Tortas</span>
+              <strong class="produto__nome">Torta de morango P</strong>
+              <span class="produto__descricao">Serve até 10 pessoas, com morangos frescos…</span>
+              <span class="produto__rodape"><b>R$ 60,00</b><small>1 opção</small></span>
+            </div>
+          </article>
+          <article class="produto">
+            <img class="produto__foto" src="/landing/galeria/bolos/06.webp" alt="" />
+            <div class="produto__textos">
+              <span class="produto__categoria">Docinhos</span>
+              <strong class="produto__nome">Cento de brigadeiros</strong>
+              <span class="produto__descricao">Brigadeiro gourmet, 20 g cada…</span>
+              <span class="produto__rodape"><b>R$ 120,00</b><small>2 opções</small></span>
+            </div>
+          </article>
         </main>
+
+        @if (etapaProduto() === 'salvo') {
+          <span class="toast">Produto adicionado</span>
+        }
+
+        @if (etapaProduto() === 'formulario' || etapaProduto() === 'salvando') {
+          <div class="escurecer"></div>
+          <!-- bottom sheet "Novo produto", com os campos do formulário real -->
+          <section class="folha">
+            <span class="folha__alca"></span>
+            <header class="folha__cabecalho"><h2>Novo produto</h2><span><app-icone nome="fechar" [tamanho]="15" /></span></header>
+            <div class="folha__corpo">
+              <div class="formulario" [style.transform]="'translateY(-' + rolagem() + 'px)'">
+                <div class="campo">
+                  <span class="campo__rotulo">Nome do produto</span>
+                  <span class="entrada" [class.entrada--ativa]="campoAtivo() === 'nome'">
+                    @if (nome()) { {{ nome() }} } @else { <i>Ex.: Torta de brigadeiro</i> }
+                  </span>
+                </div>
+                <div class="campo">
+                  <span class="campo__rotulo">Categoria</span>
+                  <div class="chips">
+                    <span class="chip" [class.chip--ativo]="categoriaEscolhida()">Tortas</span>
+                    <span class="chip">Docinhos</span>
+                    <span class="chip chip--tracejado">+ Nova categoria</span>
+                  </div>
+                </div>
+                <div class="campo">
+                  <span class="campo__rotulo">Descrição</span>
+                  <span class="entrada entrada--texto" [class.entrada--ativa]="campoAtivo() === 'descricao'">{{ descricao() }}</span>
+                  <span class="campo__dica">Quanto mais detalhe, melhor o assistente responde.</span>
+                </div>
+                <div class="campo">
+                  <span class="campo__rotulo">Preço <small>(deixe vazio se depender de avaliação)</small></span>
+                  <div class="preco">
+                    <span class="entrada preco__valor" [class.entrada--ativa]="campoAtivo() === 'preco'"><small>R$</small> {{ preco() }}</span>
+                    <span class="chip chip--alto" [class.chip--ativo]="aPartirDe()">A partir de</span>
+                  </div>
+                </div>
+                <div class="campo">
+                  <span class="campo__rotulo">Opções que o cliente escolhe</span>
+                  <span class="campo__dica">Ex.: Sabor → brigadeiro, ninho. Deixe vazio se não tiver.</span>
+                  <div class="atributo">
+                    <div class="atributo__linha">
+                      <span class="entrada entrada--pequena" [class.entrada--ativa]="campoAtivo() === 'opcao'">
+                        @if (opcao()) { {{ opcao() }} } @else { <i>Nome (ex.: Sabor)</i> }
+                      </span>
+                      <span class="atributo__remover"><app-icone nome="fechar" [tamanho]="12" /></span>
+                    </div>
+                    <span class="entrada entrada--pequena" [class.entrada--ativa]="campoAtivo() === 'valores'">
+                      @if (valores()) { {{ valores() }} } @else { <i>Valores (separe por vírgula)</i> }
+                    </span>
+                  </div>
+                  <span class="botao botao--secundario botao--pequeno"><app-icone nome="mais" [tamanho]="12" [espessura]="2" /> Adicionar opção</span>
+                </div>
+              </div>
+            </div>
+            <span class="botao botao--primario botao--grande" [class.botao--tocado]="etapaProduto() === 'salvando'">
+              {{ etapaProduto() === 'salvando' ? 'Salvando…' : 'Salvar produto' }}
+            </span>
+          </section>
+        }
       </div>
     </app-telefone-demo>
   }
+
   @case ('instrucoes') {
-    <app-mock-instrucoes />
+    <app-telefone-demo>
+      <div class="app-tela app-tela--painel">
+        <!-- Painel principal, rolado até "Como o assistente atende" -->
+        <main class="painel">
+          <div class="cartao cartao--anterior">
+            <strong>Enviar catálogo em imagem ou PDF?</strong>
+            <span class="opcao-card"><span class="opcao-card__marcador opcao-card__marcador--ativo"></span>Não enviar</span>
+          </div>
+          <!-- mesmo desenho do app-secao-configuracao, em escala de celular -->
+          <section class="cartao">
+            <div class="cartao__textos">
+              <span class="cartao__linha-titulo">
+                <strong class="cartao__titulo">Instruções obrigatórias</strong>
+                <span class="selo">Prioridade máxima</span>
+              </span>
+              <span class="cartao__descricao">Regras que o assistente segue acima de qualquer comportamento padrão.</span>
+            </div>
+            <span class="entrada entrada--texto entrada--instrucoes" [class.entrada--ativa]="alterado()">{{ instrucao() }}</span>
+            <p class="aviso-informativo">
+              <app-icone nome="alerta" [tamanho]="13" />
+              <span>Uma regra por linha. Evite contradizer seus produtos e perguntas frequentes.</span>
+            </p>
+            <div class="sugestoes">
+              <span class="rotulo-maiusculo">Regras comuns no seu ramo</span>
+              <span class="sugestao"><app-icone nome="mais" [tamanho]="12" /> Encomendas precisam ser feitas com antecedência</span>
+            </div>
+          </section>
+        </main>
+        @if (alterado()) {
+          <div class="barra-salvar">
+            <span class="botao botao--secundario">Descartar</span>
+            <span class="botao botao--primario barra-salvar__salvar" [class.botao--tocado]="salvandoAlteracoes()">Salvar alterações</span>
+          </div>
+        }
+        @if (salvo()) {
+          <span class="toast">Alterações salvas</span>
+        }
+      </div>
+    </app-telefone-demo>
+  }
+
+  @case ('fechamento') {
+    <app-telefone-demo>
+      <div class="app-tela app-tela--painel">
+        <main class="painel">
+          <div class="grupo-cabecalho">
+            <strong>Como o assistente atende</strong>
+            <span>Ajuste o jeito que ele conversa com seus clientes.</span>
+          </div>
+          <section class="cartao">
+            <div class="cartao__textos">
+              <strong class="cartao__titulo">Quando o cliente quiser fechar</strong>
+              <span class="cartao__descricao">Escolha até onde o assistente vai antes de passar a conversa para você.</span>
+            </div>
+            <div class="opcoes">
+              <span class="opcao-card" [class.opcao-card--selecionada]="!coletarDados()">
+                <span class="opcao-card__marcador" [class.opcao-card__marcador--ativo]="!coletarDados()"></span>
+                <span class="opcao-card__textos"><strong>Me chamar na hora</strong><small>O assistente tira dúvidas e, assim que o cliente quiser fechar, passa a conversa para você.</small></span>
+              </span>
+              <span class="opcao-card" [class.opcao-card--selecionada]="coletarDados()">
+                <span class="opcao-card__marcador" [class.opcao-card__marcador--ativo]="coletarDados()"></span>
+                <span class="opcao-card__textos"><strong>Coletar os dados do pedido</strong><small>O assistente pergunta tudo o que você precisa, envia um resumo, pede confirmação e só então te chama.</small></span>
+              </span>
+            </div>
+            @if (coletarDados()) {
+              <div class="caixa-coleta">
+                <span class="campo__rotulo">O que o assistente precisa coletar?</span>
+                <span class="entrada entrada--texto entrada--coleta" [class.entrada--ativa]="!salvo()">
+                  @if (camposPedido()) { {{ camposPedido() }} } @else { <i>Ex.: sabor, tamanho, data de retirada, nome</i> }
+                </span>
+                <span class="campo__dica">Escreva do seu jeito, separando os itens por vírgula.</span>
+              </div>
+            }
+          </section>
+        </main>
+        @if (alterado()) {
+          <div class="barra-salvar">
+            <span class="botao botao--secundario">Descartar</span>
+            <span class="botao botao--primario barra-salvar__salvar" [class.botao--tocado]="salvandoAlteracoes()">Salvar alterações</span>
+          </div>
+        }
+        @if (salvo()) {
+          <span class="toast">Alterações salvas</span>
+        }
+      </div>
+    </app-telefone-demo>
   }
 }

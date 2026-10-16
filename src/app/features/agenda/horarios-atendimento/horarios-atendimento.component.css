@@ -1,0 +1,393 @@
+:host {
+  display: block;
+}
+
+.horarios {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Espaço para a barra fixa não cobrir o último cartão */
+.horarios--com-barra {
+  padding-bottom: 96px;
+}
+
+.cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.cartao__titulo {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.cartao__descricao {
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+/* Chave da agenda automática */
+.chave {
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.chave--ligada {
+  border-color: #BFE0CC;
+  background: linear-gradient(180deg, #F2FAF5 0%, #FFFFFF 70%);
+}
+
+.chave__linha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chave__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto-suave);
+}
+
+.chave--ligada .chave__icone {
+  background: #E3F2EA;
+  color: var(--cor-ativo);
+}
+
+.chave__textos {
+  flex: 1;
+  min-width: 0;
+}
+
+.chave__estado {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cor-texto-suave);
+}
+
+.chave--ligada .chave__estado {
+  color: var(--cor-ativo);
+}
+
+.chave__descricao {
+  margin-top: 0;
+}
+
+.chave__vantagens {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--cor-texto-secundario);
+}
+
+.chave__vantagens li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chave__vantagens app-icone {
+  color: var(--cor-ativo);
+}
+
+.aviso-duracao {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #F1D9A6;
+  border-radius: var(--raio-medio);
+  background: var(--cor-ambar-fundo);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.aviso-duracao app-icone {
+  color: var(--cor-ambar);
+}
+
+.aviso-duracao a {
+  font-weight: 700;
+  color: var(--cor-primaria);
+}
+
+/* Os 7 dias da semana */
+.semana {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.semana__dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 0 8px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 14px;
+  background: var(--cor-fundo);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.semana__letra {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.semana__ponto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cor-borda);
+}
+
+.semana__dia--aberto .semana__ponto {
+  background: var(--cor-ativo);
+}
+
+.semana__dia--erro .semana__ponto {
+  background: var(--cor-erro);
+}
+
+.semana__dia--escolhido {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria);
+  color: #ffffff;
+}
+
+.semana__dia--escolhido.semana__dia--aberto .semana__ponto {
+  background: #7FD3A2;
+}
+
+/* Editor do dia escolhido */
+.dia-aberto {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+}
+
+.dia-aberto__cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dia-aberto__nome {
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.dia-aberto__atende {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cor-texto-secundario);
+}
+
+.dia-aberto__fechado {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+.dia-aberto__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.trechos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trecho {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trecho__hora {
+  flex: 1;
+  min-width: 0;
+  min-height: 46px;
+  padding: 0 4px;
+  border: 1px solid #C3CBDA;
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-fundo);
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* sem o ícone do relógio: no celular o seletor abre ao tocar, e o horário cabe inteiro */
+.trecho__hora::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+.trecho__hora::-webkit-datetime-edit {
+  display: flex;
+  justify-content: center;
+}
+
+.trecho__hora:focus {
+  border-color: var(--cor-primaria);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(30, 58, 114, 0.15);
+}
+
+.trecho__ate {
+  flex: none;
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.trecho__remover {
+  flex: none;
+  color: var(--cor-texto-suave);
+}
+
+/* Resumo da semana */
+.resumo-semana {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+.resumo-semana__linha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 2px;
+  border: none;
+  border-bottom: 1px solid var(--cor-borda-suave);
+  background: transparent;
+  text-align: left;
+}
+
+.resumo-semana__dia {
+  flex: none;
+  width: 34px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.resumo-semana__texto {
+  font-size: 13px;
+  color: var(--cor-texto-secundario);
+  font-variant-numeric: tabular-nums;
+}
+
+.resumo-semana__linha--fechado .resumo-semana__texto {
+  color: var(--cor-texto-suave);
+  font-style: italic;
+}
+
+/* Copiar horários */
+.copiar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.copiar__texto {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.copiar__atalho {
+  align-self: flex-start;
+}
+
+/* Barra fixa de salvar (igual à do painel) */
+.barra-salvar {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: var(--largura-tela-app);
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--cor-borda-suave);
+  background: var(--cor-fundo);
+  box-shadow: 0 -8px 24px rgba(20, 26, 38, 0.08);
+  transform: translateX(-50%);
+  animation: subir-barra 0.28s ease-out both;
+}
+
+.barra-salvar__descartar {
+  flex: none;
+}
+
+.barra-salvar__salvar {
+  flex: 1;
+  min-height: 48px;
+}
+
+@keyframes subir-barra {
+  from { transform: translate(-50%, 100%); }
+  to { transform: translate(-50%, 0); }
+}
+
+/* Agenda ligada, mas o modo não é o automático: leva para o painel */
+.chave__modo {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #F1D9A6;
+  border-radius: var(--raio-medio);
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-ambar);
+  font-size: 13px;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.chave__modo span {
+  color: var(--cor-texto-secundario);
+}
+
+.chave__modo strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--cor-primaria);
+}

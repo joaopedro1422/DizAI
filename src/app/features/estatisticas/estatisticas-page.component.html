@@ -1,0 +1,66 @@
+<div class="tela-app">
+  <app-cabecalho-pagina titulo="Estatísticas" subtitulo="O que o seu assistente fez por você.">
+    <div class="periodos" role="radiogroup" aria-label="Período">
+      @for (periodo of periodos; track periodo.dias) {
+        <button
+          type="button"
+          role="radio"
+          class="chip"
+          [class.chip--ativo]="dias() === periodo.dias"
+          [attr.aria-checked]="dias() === periodo.dias"
+          (click)="escolherPeriodo(periodo.dias)"
+        >
+          {{ periodo.rotulo }}
+        </button>
+      }
+    </div>
+  </app-cabecalho-pagina>
+
+  <main class="conteudo-tela estatisticas">
+    @if (carregando() && !numeros()) {
+      <app-carregando texto="Somando os números…" />
+    }
+    @if (numeros(); as n) {
+      <section class="economia" [class.economia--atualizando]="carregando()" aria-labelledby="titulo-economia">
+        <span class="economia__rotulo" id="titulo-economia">
+          <app-icone nome="relogio" [tamanho]="16" />
+          Tempo que você economizou
+        </span>
+        <span class="economia__valor">
+          {{ tempoEconomizado().valor }}<span class="economia__unidade">{{ tempoEconomizado().unidade }}</span>
+        </span>
+        <span class="economia__periodo">nos últimos {{ n.dias }} dias</span>
+      </section>
+
+      <div class="indicadores" [class.indicadores--atualizando]="carregando()">
+        @for (item of indicadores(); track item.rotulo) {
+          <article class="indicador">
+            <span class="indicador__icone" [class]="'indicador__icone--' + item.tom">
+              <app-icone [nome]="item.icone" [tamanho]="20" />
+            </span>
+            <span class="indicador__valor">{{ item.valor }}</span>
+            <span class="indicador__rotulo">{{ item.rotulo }}</span>
+            <span class="indicador__detalhe">{{ item.detalhe }}</span>
+          </article>
+        }
+      </div>
+
+      @if (n.perguntasSemResposta > 0) {
+        <a class="sugestoes" [routerLink]="rotaPerguntas()">
+          <app-icone nome="lampada" [tamanho]="18" />
+          <span>Ensine o assistente: responda as perguntas que ficaram sem resposta.</span>
+          <app-icone nome="avancar" [tamanho]="16" [espessura]="2" />
+        </a>
+      }
+
+      @if (vazio()) {
+        <p class="aviso-vazio">Ainda não houve atendimentos neste período. Assim que o assistente responder seus clientes, os números aparecem aqui.</p>
+      }
+
+      <p class="como-calculamos">
+        Como calculamos o tempo: cerca de 1,5 minuto por mensagem que o assistente mandou no seu lugar
+        (ler, pensar e digitar){{ n.agendamentos !== null ? ' e mais 3 minutos por agendamento marcado (conferir a agenda e anotar)' : '' }}.
+      </p>
+    }
+  </main>
+</div>

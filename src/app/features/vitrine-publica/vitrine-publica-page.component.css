@@ -137,8 +137,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80px;
-  height: 80px;
+  width: 83px;
+  height: 83px;
   border-radius: 50%;
   background: var(--vitrine-destaque);
   color: #ffffff;
@@ -148,8 +148,8 @@
 }
 
 .loja__foto {
-  width: 88px;
-  height: 88px;
+  width: 91px;
+  height: 91px;
   border: 3px solid #ffffff;
   border-radius: 50%;
   object-fit: cover;
@@ -173,6 +173,39 @@
 .loja__descricao {
   font-size: 14px;
   color: var(--vitrine-suave);
+}
+
+/* Trabalhos | Agendar horário (lojas com a agenda ligada) */
+.alternar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin: 0 24px 18px;
+  padding: 4px;
+  border: 1px solid var(--vitrine-borda);
+  border-radius: var(--raio-pilula);
+  background: transparent;   /* a opção não escolhida mostra o fundo da loja */
+}
+
+.alternar__opcao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  border: none;
+  border-radius: var(--raio-pilula);
+  background: transparent;
+  color: var(--vitrine-texto);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.alternar__opcao--ativa {
+  background: var(--vitrine-destaque);
+  color: #ffffff;
 }
 
 .categorias {

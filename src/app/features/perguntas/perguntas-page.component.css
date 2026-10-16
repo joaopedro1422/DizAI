@@ -41,3 +41,56 @@
 .perguntas__ideias {
   margin-top: 24px;
 }
+
+/* Perguntas que o assistente não soube responder (viram pergunta frequente) */
+.sem-resposta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid #F1D9A6;
+  border-radius: var(--raio-grande);
+  background: var(--cor-ambar-fundo);
+}
+
+.sem-resposta__cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cor-ambar);
+}
+
+.sem-resposta__titulo {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--cor-texto);
+}
+
+.sem-resposta__descricao {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.sugestao-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+.sugestao-faq__pergunta {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.sugestao-faq__acoes {
+  display: flex;
+  gap: 8px;
+}

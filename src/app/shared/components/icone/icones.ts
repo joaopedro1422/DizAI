@@ -65,6 +65,19 @@ export const ICONES = {
   olho: ['M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z', 'M9 12a3 3 0 1 0 6 0a3 3 0 1 0-6 0'],
   sair: ['M9 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3', 'M16 16l4-4-4-4', 'M20 12H9'],
   emoji: [CIRCULO, 'M8.5 14.5c.9 1.2 2.1 1.8 3.5 1.8s2.6-.6 3.5-1.8', 'M9 9.5h.01M15 9.5h.01'],
+  grafico: ['M4 20h16', 'M7 16v-4', 'M12 16V8', 'M17 16v-7'],
+  sino: ['M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9', 'M10.3 21a1.94 1.94 0 0 0 3.4 0'],
+  documento: ['M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z', 'M14 2v6h6', 'M8 13h8', 'M8 17h5'],
+  setaBaixo: ['M6 9l6 6 6-6'],
+  brilho: [
+    'M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z',
+    'M19 3v4', 'M21 5h-4', 'M5 17v3', 'M6.5 18.5h-3',
+  ],
+  calendario: ['M8 2v4', 'M16 2v4', 'M3 10h18', 'M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z'],
+  calendarioFolga: [
+    'M8 2v4', 'M16 2v4', 'M3 10h18', 'M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z',
+    'M10 14l4 4', 'M14 14l-4 4',
+  ],
 } as const satisfies Record<string, readonly string[]>;
 
 export type NomeIcone = keyof typeof ICONES;

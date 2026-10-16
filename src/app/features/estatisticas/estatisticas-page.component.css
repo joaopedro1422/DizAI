@@ -1,0 +1,154 @@
+.periodos {
+  display: flex;
+  gap: 8px;
+}
+
+.estatisticas {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Destaque: horas economizadas */
+.economia {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 22px 20px;
+  border-radius: var(--raio-grande);
+  background: linear-gradient(135deg, var(--cor-primaria) 0%, #2C4F9E 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(30, 58, 114, 0.25);
+  transition: opacity 0.2s ease;
+}
+
+.economia__rotulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cor-texto-sobre-escuro);
+}
+
+.economia__valor {
+  font-family: var(--fonte-titulo);
+  font-size: 44px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.economia__unidade {
+  margin-left: 4px;
+  font-size: 22px;
+}
+
+.economia__periodo {
+  font-size: 13px;
+  color: var(--cor-texto-sobre-escuro);
+}
+
+/* Os 4 números */
+.indicadores {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  transition: opacity 0.2s ease;
+}
+
+.economia--atualizando,
+.indicadores--atualizando {
+  opacity: 0.55;
+}
+
+.indicador {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.indicador__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+}
+
+.indicador__icone--azul {
+  background: var(--cor-azul-fundo);
+  color: var(--cor-azul);
+}
+
+.indicador__icone--verde {
+  background: #E3F2EA;
+  color: var(--cor-ativo);
+}
+
+.indicador__icone--ambar {
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-ambar);
+}
+
+.indicador__icone--rosa {
+  background: var(--cor-rosa-fundo);
+  color: var(--cor-rosa);
+}
+
+.indicador__valor {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.indicador__rotulo {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.indicador__detalhe {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+.sugestoes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #F1D9A6;
+  border-radius: var(--raio-medio);
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-ambar);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.45;
+  text-decoration: none;
+}
+
+.sugestoes span {
+  flex: 1;
+  color: var(--cor-texto-secundario);
+}
+
+.aviso-vazio {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+  text-align: center;
+}
+
+.como-calculamos {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}

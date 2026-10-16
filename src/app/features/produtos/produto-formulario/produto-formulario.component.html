@@ -64,6 +64,39 @@
     }
   </div>
 
+  @if (pedeDuracao()) {
+    <div class="campo">
+      <label for="produto-duracao" class="campo__rotulo">
+        Duração do atendimento
+        @if (!duracaoObrigatoria()) {
+          <span class="campo__rotulo-opcional">(opcional)</span>
+        }
+      </label>
+      <div class="grupo-chips" role="group" aria-label="Durações comuns">
+        @for (opcao of duracoesComuns; track opcao.minutos) {
+          @let escolhida = formulario.controls.duracao.value === '' + opcao.minutos;
+          <button type="button" class="chip chip--pequeno" [class.chip--ativo]="escolhida" [attr.aria-pressed]="escolhida" (click)="escolherDuracao(opcao.minutos)">
+            {{ opcao.rotulo }}
+          </button>
+        }
+      </div>
+      <div class="linha-duracao">
+        <span class="campo-prefixado linha-duracao__valor" [class.campo-prefixado--erro]="temErro('duracao')">
+          <input id="produto-duracao" type="text" inputmode="numeric" formControlName="duracao" placeholder="Outra duração">
+          <span class="campo-prefixado__prefixo">min</span>
+        </span>
+        @if (duracaoLegivel(); as legivel) {
+          <span class="linha-duracao__legivel">= {{ legivel }}</span>
+        }
+      </div>
+      @if (temErro('duracao')) {
+        <span class="campo__erro" role="alert">Informe quantos minutos o atendimento leva (de 5 a 720).</span>
+      } @else if (duracaoObrigatoria()) {
+        <span class="campo__dica">A agenda usa a duração para saber quais horários cabem este {{ conteudo().termoItem }}.</span>
+      }
+    </div>
+  }
+
   <div class="campo">
     <div class="atributos__cabecalho">
       <span class="campo__rotulo">Opções que o cliente escolhe</span>

@@ -23,6 +23,9 @@
       <span class="atalho__textos">
         <span class="atalho__titulo">Perguntas frequentes</span>
         <span class="atalho__resumo">{{ resumoPerguntas() }}</span>
+        @if (perguntasParaResponder() > 0) {
+          <span class="atalho__pendente">{{ perguntasParaResponder() }} sem resposta</span>
+        }
       </span>
     </a>
 
@@ -63,6 +66,39 @@
       </span>
     </a>
   </div>
+
+  @if (usaAgenda()) {
+    <a [routerLink]="rotas().agenda" class="atalho-agenda" [class.atalho-agenda--desligada]="!agendaAtiva()">
+      <span class="atalho-agenda__topo">
+        <span class="icone-atalho icone-atalho--verde">
+          <app-icone nome="calendario" [tamanho]="22" />
+        </span>
+        <span class="atalho__textos">
+          <span class="atalho__titulo">Agenda</span>
+          <span class="atalho__resumo">{{ resumoAgenda() }}</span>
+        </span>
+        <span class="atalho-agenda__estado" [class.atalho-agenda__estado--ligada]="agendaAtiva()">
+          {{ estadoAgenda() }}
+        </span>
+      </span>
+
+      @if (proximoHorario(); as proximo) {
+        <span class="atalho-agenda__proximo">
+          <span class="atalho-agenda__hora">{{ proximo.inicio }}</span>
+          <span class="atalho-agenda__proximo-textos">
+            <span class="atalho-agenda__proximo-nome">{{ proximo.nomeCliente }}</span>
+            <span class="atalho-agenda__proximo-servico">{{ proximo.servicos }}</span>
+          </span>
+          <app-icone nome="avancar" [tamanho]="18" [espessura]="2" />
+        </span>
+      } @else if (!agendaAtiva()) {
+        <span class="atalho-agenda__convite">
+          Cadastre seus horários e o assistente marca os clientes sozinho, direto no WhatsApp.
+          <app-icone nome="avancar" [tamanho]="16" [espessura]="2" />
+        </span>
+      }
+    </a>
+  }
 
   <a [routerLink]="rotas().chats" class="atalho-chats">
     <span class="atalho-chats__topo">

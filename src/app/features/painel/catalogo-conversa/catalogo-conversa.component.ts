@@ -60,8 +60,11 @@ export class CatalogoConversaComponent {
   protected readonly rotaProdutos = computed(() => this.rotas().produtos);
 
   protected readonly modos = MODOS_CATALOGO;
-  /** O lojista fechou o aviso do cadastro; volta a aparecer quando ele troca a opção. */
-  protected readonly avisoFechado = signal(false);
+  /**
+   * O aviso do cadastro só aparece quando o lojista troca a opção desta seção:
+   * ao abrir ou recarregar o painel ele começa fechado, e o X fecha de novo.
+   */
+  protected readonly avisoFechado = signal(true);
   protected readonly ligado = computed(() => this.modo() !== 'NAO');
   protected readonly tituloItens = computed(() => this.conteudo().tituloItens);
   protected readonly totalProdutos = computed(() => this.produtoService.produtos().length);

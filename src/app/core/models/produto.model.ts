@@ -16,6 +16,8 @@ export interface Produto {
   disponivel: boolean;
   atributos: AtributoProduto[];
   fotoUrl?: string | null;
+  /** Duração do atendimento em minutos (serviços). Obrigatória nos ramos com agenda. */
+  duracaoMinutos?: number | null;
 }
 
 export type NovoProduto = Omit<Produto, 'id' | 'disponivel'> & { disponivel?: boolean };

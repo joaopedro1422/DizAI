@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
+import { IconeComponent } from '../icone/icone.component';
+
 /**
  * Opção de escolha única em formato de card (título + descrição + marcador).
  * Coloque os cards dentro de um elemento com `role="radiogroup"`.
  */
 @Component({
   selector: 'app-opcao-card',
+  imports: [IconeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <button
@@ -18,7 +21,12 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
     >
       <span class="opcao__marcador" aria-hidden="true"></span>
       <span class="opcao__textos">
-        <span class="opcao__titulo">{{ titulo() }}</span>
+        <span class="opcao__titulo">
+          {{ titulo() }}
+          @if (destaque()) {
+            <app-icone class="opcao__destaque" nome="brilho" [tamanho]="16" [espessura]="2" />
+          }
+        </span>
         @if (descricao()) {
           <span class="opcao__descricao">{{ descricao() }}</span>
         }
@@ -69,6 +77,13 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
       border: 6px solid var(--cor-primaria);
     }
 
+    /* estrelinha dourada ao lado do título: opção especial */
+    .opcao__destaque {
+      margin-left: 4px;
+      color: #C68A12;
+      vertical-align: -2px;
+    }
+
     .opcao__textos {
       display: flex;
       flex-direction: column;
@@ -89,6 +104,8 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 })
 export class OpcaoCardComponent {
   readonly titulo = input.required<string>();
+  /** Mostra a estrelinha ao lado do título (opção especial, ex.: agendamento automático). */
+  readonly destaque = input(false);
   readonly descricao = input('');
   readonly selecionado = input(false);
   readonly selecionar = output<void>();

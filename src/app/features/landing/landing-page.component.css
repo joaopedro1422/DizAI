@@ -96,24 +96,8 @@
 }
 
 /* "Para quem é → Pequenos negócios" */
-.sobretitulo-publico {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-}
 
-.sobretitulo-publico__seta {
-  color: var(--cor-primaria);
-}
 
-.sobretitulo-publico__destaque {
-  padding: 5px 12px;
-  border-radius: var(--raio-pilula);
-  background: var(--cor-primaria);
-  color: #FFFFFF;
-  white-space: nowrap;
-}
 
 .secao__titulo {
   font-size: clamp(30px, 4vw, 48px);
@@ -141,9 +125,6 @@
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
-.grade--publicos {
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-}
 
 .grade--passos {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -153,10 +134,6 @@
   list-style: none;
 }
 
-.grade--recursos {
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 40px 48px;
-}
 
 .cartao {
   display: flex;
@@ -212,57 +189,13 @@
   letter-spacing: -0.02em;
 }
 
-.recurso {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-}
 
-.recurso__textos {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
 
-.recurso__titulo {
-  font-size: 18px;
-  font-weight: 700;
-}
 
 /* Dúvida comum: mesmo número pessoal e de trabalho */
-.duvida {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin-top: 48px;
-  padding: 24px;
-  border-radius: var(--raio-grande);
-  background: var(--cor-primaria-clara);
-}
 
-.duvida__icone {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: #FFFFFF;
-  color: var(--cor-primaria);
-}
 
-.duvida__textos {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
 
-.duvida__titulo {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--cor-primaria);
-}
 
 /* Chamada final ------------------------------------------------------------ */
 
@@ -336,17 +269,6 @@
 
   .nav__acoes .btn {
     padding: 0 14px;
-  }
-
-  /* "Para quem é → Pequenos e médios negócios" cabe numa linha só no celular */
-  .sobretitulo-publico {
-    gap: 8px;
-    font-size: 12px;
-    letter-spacing: 0.04em;
-  }
-
-  .sobretitulo-publico__destaque {
-    padding: 4px 10px;
   }
 
   .secao,

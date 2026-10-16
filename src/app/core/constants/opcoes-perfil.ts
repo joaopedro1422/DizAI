@@ -73,7 +73,8 @@ export const PRAZOS_MINIMOS: OpcaoSelecao<PrazoMinimo>[] = [
   { valor: 'DIAS_3', rotulo: '3 dias ou mais' },
 ];
 
-export const MODOS_PEDIDO: OpcaoDescrita<ModoPedido>[] = [
+/** destaque: estrelinha no card. soComAgenda: só aparece para os ramos com agenda (serviços presenciais). */
+export const MODOS_PEDIDO: (OpcaoDescrita<ModoPedido> & { destaque?: boolean; soComAgenda?: boolean })[] = [
   {
     valor: 'ENCAMINHAR_AO_DONO',
     rotulo: 'Me chamar na hora',
@@ -84,6 +85,14 @@ export const MODOS_PEDIDO: OpcaoDescrita<ModoPedido>[] = [
     rotulo: 'Coletar os dados do pedido',
     descricao:
       'O assistente pergunta tudo o que você precisa, envia um resumo, pede confirmação e só então te chama.',
+  },
+  {
+    valor: 'AGENDAMENTO_AUTOMATICO',
+    rotulo: 'Agendamento automático',
+    descricao:
+      'O assistente confere sua agenda, oferece os horários livres e marca o cliente sozinho, com confirmação na hora.',
+    destaque: true,
+    soComAgenda: true,
   },
 ];
 

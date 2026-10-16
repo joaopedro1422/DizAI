@@ -40,7 +40,7 @@ export const EXEMPLOS_CONVERSA: ExemploConversa[] = [
       {
         autor: 'loja',
         horario: '09:42',
-        album: { titulo: 'Unhas em gel · Bella Studio', link: 'dizai.com/bella-studio', cores: ['#d9c4bd', '#e8dcd8', '#cdb6ae'] },
+        album: { titulo: 'Unhas em gel · Bella Studio', link: 'dizai.com/l/bella-studio', cores: ['#d9c4bd', '#e8dcd8', '#cdb6ae'] },
       },
       { autor: 'cliente', horario: '09:43', texto: 'Lindas!' },
       { autor: 'cliente', horario: '09:43', texto: 'Tem horário no sabado às 9h?' },
@@ -63,7 +63,7 @@ export const EXEMPLOS_CONVERSA: ExemploConversa[] = [
       {
         autor: 'loja',
         horario: '14:13',
-        album: { titulo: 'Tortas - Doce encanto', link: 'dizai.com/doce-encanto', cores: ['#d9bdca', '#d8dce8', '#aecdb2'] },
+        album: { titulo: 'Tortas - Doce encanto', link: 'dizai.com/l/doce-encanto', cores: ['#d9bdca', '#d8dce8', '#aecdb2'] },
       }
     ],
   },
@@ -131,7 +131,7 @@ export const EXEMPLOS_CONVERSA: ExemploConversa[] = [
       {
         autor: 'loja',
         horario: '19:21',
-        album: { titulo: 'Vestidos · Moda Leve', link: 'dizai.com/moda-leve', cores: ['#b9cbe0', '#cfe0cf', '#e8e0d4'] },
+        album: { titulo: 'Vestidos · Moda Leve', link: 'dizai.com/l/moda-leve', cores: ['#b9cbe0', '#cfe0cf', '#e8e0d4'] },
       },
       { autor: 'cliente', horario: '19:23', texto: 'Amei o azul! Dá para entregar hoje?' },
       { autor: 'loja', horario: '19:23', texto: 'Vou verificar se sai hoje, 1 minuto!' },

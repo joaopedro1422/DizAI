@@ -29,6 +29,17 @@ const rotasDoPainel: Routes = [
       import('./features/galeria/galeria-page.component').then((m) => m.GaleriaPageComponent),
   },
   {
+    path: 'estatisticas',
+    title: 'Estatísticas | DizAI',
+    loadComponent: () =>
+      import('./features/estatisticas/estatisticas-page.component').then((m) => m.EstatisticasPageComponent),
+  },
+  {
+    path: 'agenda',
+    title: 'Agenda | DizAI',
+    loadComponent: () => import('./features/agenda/agenda-page.component').then((m) => m.AgendaPageComponent),
+  },
+  {
     path: 'chats',
     title: 'Chats | DizAI',
     loadComponent: () =>
@@ -93,12 +104,25 @@ export const routes: Routes = [
       import('./features/privacidade/privacidade-page.component').then((m) => m.PrivacidadePageComponent),
   },
   {
-    path: 'loja/:slug',
+    // galeria pública: endereço curto, ex.: dizai.com/l/studio-bella
+    path: 'l/:slug',
     title: 'Galeria de trabalhos',
     loadComponent: () =>
       import('./features/vitrine-publica/vitrine-publica-page.component').then(
         (m) => m.VitrinePublicaPageComponent,
       ),
   },
+  {
+    // a mesma página já aberta na aba Agenda (link para divulgar), ex.: dizai.com/l/studio-bella/agenda
+    path: 'l/:slug/agenda',
+    title: 'Agenda online',
+    data: { aba: 'agenda' },
+    loadComponent: () =>
+      import('./features/vitrine-publica/vitrine-publica-page.component').then(
+        (m) => m.VitrinePublicaPageComponent,
+      ),
+  },
+  // endereço antigo da galeria: links já enviados aos clientes continuam funcionando
+  { path: 'loja/:slug', redirectTo: 'l/:slug' },
   { path: '**', redirectTo: '' },
 ];

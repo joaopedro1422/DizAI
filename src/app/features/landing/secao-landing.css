@@ -1,0 +1,109 @@
+/* Cabeçalho e espaçamento das seções da landing, compartilhados pelos componentes de seção
+   (o mesmo desenho de landing-page.component.css). */
+
+:host {
+  display: block;
+}
+
+.faixa--suave {
+  background: var(--cor-fundo-suave);
+}
+
+.secao {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding-top: 112px;
+  padding-bottom: 112px;
+}
+
+.secao__cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 760px;
+}
+
+.secao__sobretitulo {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cor-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.secao__titulo {
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.secao__descricao {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
+}
+
+@media (max-width: 640px) {
+  .secao {
+    gap: 40px;
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
+}
+
+/* Balões de conversa do WhatsApp usados nos exemplos */
+.conversa {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 18px;
+  background: #ECE5DD;
+}
+
+.balao {
+  max-width: 85%;
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.balao--cliente {
+  align-self: flex-end;
+  border-radius: 14px 14px 4px 14px;
+  background: #DCF8C6;
+}
+
+.balao--assistente {
+  align-self: flex-start;
+  border-radius: 14px 14px 14px 4px;
+  background: #ffffff;
+}
+
+.balao--entra {
+  animation: balao-entra 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.balao--depois {
+  animation-delay: 0.9s;
+}
+
+@keyframes balao-entra {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .balao--entra {
+    animation: none;
+  }
+}

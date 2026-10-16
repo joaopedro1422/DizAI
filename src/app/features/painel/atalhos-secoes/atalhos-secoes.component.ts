@@ -1,9 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { SessaoService } from '../../../core/auth/sessao.service';
 import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
 import { MOTIVOS_ESPERA } from '../../../core/constants/opcoes-conversa';
+import { ramoUsaAgenda } from '../../../core/models/perfil.model';
+import { AgendaService } from '../../../core/services/agenda.service';
+import { EstatisticasService } from '../../../core/services/estatisticas.service';
 import { ContatoIgnoradoService } from '../../../core/services/contato-ignorado.service';
 import { ConversaService } from '../../../core/services/conversa.service';
 import { GaleriaService } from '../../../core/services/galeria.service';
@@ -18,7 +21,7 @@ import { AlvoTourDirective } from '../onboarding/alvo-tour.directive';
 /** Cabem duas fotos e o "+N" no canto do card quadrado. */
 const MINIATURAS_GALERIA = 2;
 
-/** Cards de navegação do painel: Produtos, Perguntas, Galeria, Contatos a ignorar e Chats. */
+/** Cards de navegação do painel: Produtos, Perguntas, Galeria, Contatos a ignorar, Agenda (serviços) e Chats. */
 @Component({
   selector: 'app-atalhos-secoes',
   imports: [RouterLink, IconeComponent, AvatarComponent, AlvoTourDirective, UrlImagemPipe],
@@ -38,6 +41,46 @@ export class AtalhosSecoesComponent {
   /** Só as contas de DIZAI_ADMIN_NUMEROS veem o atalho do gerenciamento. */
   private readonly perfil = inject(PerfilService).perfil;
   protected readonly ehAdmin = computed(() => this.perfil().admin === true);
+
+  private readonly agendaService = inject(AgendaService);
+  private readonly estatisticasService = inject(EstatisticasService);
+  /** Perguntas que o assistente não soube responder, esperando o lojista virar pergunta frequente. */
+  protected readonly perguntasParaResponder = computed(() => this.estatisticasService.perguntasSemResposta().length);
+  /** O card da agenda só existe nos ramos com agenda (serviços presenciais). */
+  protected readonly usaAgenda = computed(() => ramoUsaAgenda(this.perfil().ramo));
+  protected readonly agendaAtiva = computed(() => this.perfil().agendaAtiva === true);
+  /** "Automática" só quando o assistente marca sozinho (agenda ligada + modo Agendamento automático). */
+  protected readonly estadoAgenda = computed(() => {
+    if (!this.agendaAtiva()) {
+      return 'Desligada';
+    }
+    return this.perfil().modoPedido === 'AGENDAMENTO_AUTOMATICO' ? 'Automática' : 'Ligada';
+  });
+
+  protected readonly resumoAgenda = computed(() => {
+    if (!this.agendaAtiva()) {
+      return 'Agendamento automático pelo WhatsApp';
+    }
+    const hoje = this.agendaService.confirmadosHoje().length;
+    return hoje === 0 ? 'Nenhum horário hoje' : `${pluralizar(hoje, 'horário', 'horários')} hoje`;
+  });
+
+  /** O próximo horário de hoje que ainda não passou. */
+  protected readonly proximoHorario = computed(() => {
+    const agora = new Date();
+    const horaAtual = `${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+    return this.agendaService.confirmadosHoje().find((a) => a.fim > horaAtual) ?? null;
+  });
+
+  constructor() {
+    this.estatisticasService.carregarPerguntasSemResposta().catch(() => undefined);
+    // carrega os horários de hoje só para quem tem agenda (falhar aqui não atrapalha o painel)
+    effect(() => {
+      if (this.usaAgenda()) {
+        untracked(() => this.agendaService.carregarAgendamentos().catch(() => undefined));
+      }
+    });
+  }
 
   protected readonly quantidadeAguardando = computed(() => this.conversaService.aguardandoDono().length);
 

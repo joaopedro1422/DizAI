@@ -1,0 +1,35 @@
+<section id="perguntas" class="container secao perguntas" aria-labelledby="perguntas-titulo">
+  <div class="secao__cabecalho perguntas__cabecalho">
+    <span class="secao__sobretitulo">Perguntas</span>
+    <h2 id="perguntas-titulo" class="secao__titulo">Ficou alguma dúvida?</h2>
+    <p class="secao__descricao">O que os lojistas mais perguntam antes de começar.</p>
+  </div>
+
+  <div class="perguntas__lista">
+    @for (item of perguntas; track item.pergunta; let indice = $index) {
+      @let aberta = abertas().has(indice);
+      <div class="pergunta">
+        <h3 class="pergunta__titulo">
+          <button
+            type="button"
+            class="pergunta__botao"
+            [id]="'pergunta-' + indice"
+            [attr.aria-expanded]="aberta"
+            [attr.aria-controls]="'resposta-' + indice"
+            (click)="alternar(indice)"
+          >
+            <span>{{ item.pergunta }}</span>
+            <span class="pergunta__seta" [class.pergunta__seta--aberta]="aberta" aria-hidden="true">
+              <app-icone nome="setaBaixo" [tamanho]="18" [espessura]="2.4" />
+            </span>
+          </button>
+        </h3>
+        @if (aberta) {
+          <p class="pergunta__resposta" [id]="'resposta-' + indice" role="region" [attr.aria-labelledby]="'pergunta-' + indice">
+            {{ item.resposta }}
+          </p>
+        }
+      </div>
+    }
+  </div>
+</section>

@@ -38,13 +38,13 @@
   color: var(--cor-texto-suave);
 }
 
-/* Cada configuração do assistente vira um cartão */
+/* Cada configuração do assistente vira um cartão, com uma sombra leve para destacar do fundo */
 .conteudo > app-secao-configuracao {
   padding: 20px;
   border: 1px solid var(--cor-borda-suave);
   border-radius: var(--raio-grande);
   background: var(--cor-fundo);
-  box-shadow: var(--sombra-card);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.082), 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 /* Espaço para a barra fixa não cobrir o último campo */
@@ -188,4 +188,36 @@
   font-size: 14px;
   line-height: 1.55;
   color: var(--cor-texto-secundario);
+}
+
+/* Modo "Agendamento automático": mostra se a agenda já está pronta para ele funcionar */
+.aviso-agenda {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #F1D9A6;
+  border-radius: var(--raio-medio);
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-ambar);
+  text-decoration: none;
+}
+
+.aviso-agenda--pronta {
+  border-color: #BFE0CC;
+  background: #F2FAF5;
+  color: var(--cor-ativo);
+}
+
+.aviso-agenda__texto {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.aviso-agenda__texto strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--cor-primaria);
 }

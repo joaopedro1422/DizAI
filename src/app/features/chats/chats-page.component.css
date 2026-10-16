@@ -101,7 +101,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--cor-azul);
+  background: rgb(48, 160, 3);
 }
 
 .conversa__status--dono {

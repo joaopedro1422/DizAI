@@ -1,21 +1,34 @@
 <app-telefone-demo>
   <main class="galeria-demo" [class.galeria-demo--marrom]="etapa() === 'cor'">
-    <header class="galeria-demo__topo">
-      <span class="galeria-demo__voltar"><app-icone nome="voltar" [tamanho]="17" /></span>
-      <div class="galeria-demo__titulo"><strong>Galeria de fotos</strong><small>Organize suas fotos por tópico</small></div>
-      <span class="galeria-demo__personalizar"><app-icone nome="ajustes" [tamanho]="18" /></span>
+    <!-- cabeçalho igual ao da tela Galeria do painel: voltar + "Ver página pública", título + "Personalizar vitrine" -->
+    <header class="galeria-demo__cabecalho">
+      <div class="galeria-demo__topo">
+        <span class="galeria-demo__voltar"><app-icone nome="voltar" [tamanho]="17" /></span>
+        <span class="galeria-demo__link"><app-icone nome="externo" [tamanho]="11" [espessura]="2" /> Ver página pública</span>
+      </div>
+      <div class="galeria-demo__linha-titulo">
+        <h1 class="galeria-demo__titulo">Galeria</h1>
+        <span class="galeria-demo__personalizar" [class.galeria-demo__personalizar--tocado]="etapa() === 'cor'">
+          <i class="galeria-demo__amostra"></i> Personalizar vitrine
+        </span>
+      </div>
+      <p class="galeria-demo__resumo">2 tópicos · {{ etapa() === 'atualizada' || etapa() === 'cor' ? '15 fotos' : '14 fotos' }}</p>
+      <div class="galeria-demo__botoes">
+        <span class="galeria-demo__botao-acao galeria-demo__botao-acao--primario"><app-icone nome="pastaMais" [tamanho]="13" [espessura]="2" /> Novo tópico</span>
+        <span class="galeria-demo__botao-acao" [class.galeria-demo__botao-acao--tocado]="etapa() === 'fotos'"><app-icone nome="imagem" [tamanho]="13" [espessura]="2" /> Adicionar fotos</span>
+      </div>
     </header>
 
     <section class="galeria-demo__conteudo">
-      <div class="galeria-demo__acoes">
-        <div><strong>Suas galerias</strong><small>Compartilhe seus trabalhos</small></div>
-        <span><app-icone nome="mais" [tamanho]="13" /> Novo tópico</span>
-      </div>
+      <p class="galeria-demo__visitas"><app-icone nome="olho" [tamanho]="12" [espessura]="2" /> 32 visualizações esta semana</p>
 
       <article class="galeria-demo__album">
         <header class="galeria-demo__album-topo">
           <div><strong>Bolos e tortas</strong><small>{{ etapa() === 'atualizada' || etapa() === 'cor' ? '9 fotos' : '8 fotos' }}</small></div>
-          <span><app-icone nome="mais" [tamanho]="13" /> Fotos</span>
+          <span class="galeria-demo__acoes-album">
+            <span><app-icone nome="mais" [tamanho]="12" [espessura]="2" /> Fotos</span>
+            <b><app-icone nome="maisOpcoes" [tamanho]="13" /></b>
+          </span>
         </header>
         <div class="galeria-demo__grade">
           <img src="/landing/galeria/bolos/01.webp" alt="" />
@@ -35,7 +48,10 @@
       <article class="galeria-demo__album galeria-demo__album--secundario">
         <header class="galeria-demo__album-topo">
           <div><strong>Docinhos</strong><small>6 fotos</small></div>
-          <span><app-icone nome="mais" [tamanho]="13" /> Fotos</span>
+          <span class="galeria-demo__acoes-album">
+            <span><app-icone nome="mais" [tamanho]="12" [espessura]="2" /> Fotos</span>
+            <b><app-icone nome="maisOpcoes" [tamanho]="13" /></b>
+          </span>
         </header>
         <div class="galeria-demo__grade galeria-demo__grade--secundaria">
           <img src="/landing/galeria/bolos/03.webp" alt="" />
@@ -56,13 +72,13 @@
         <div class="galeria-demo__form-fotos">
           <div class="galeria-demo__passo">
             <strong>1. Em qual tópico?</strong>
-            <div class="galeria-demo__chips"><span class="galeria-demo__chip galeria-demo__chip--ativo">Bolos e tortas</span><span class="galeria-demo__chip">Docinhos</span></div>
+            <div class="galeria-demo__chips"><span class="galeria-demo__chip galeria-demo__chip--ativo">Bolos e tortas</span><span class="galeria-demo__chip">Docinhos</span><span class="galeria-demo__chip galeria-demo__chip--tracejado">+ Novo tópico</span></div>
           </div>
           <div class="galeria-demo__passo">
             <div class="galeria-demo__linha"><strong>2. Escolha as fotos</strong><small>1 selecionada</small></div>
             <div class="galeria-demo__grade-fotos">
-              <img [src]="fotoAdicionada" alt="Foto de bolo selecionada" />
               <span><app-icone nome="mais" [tamanho]="19" /><small>Escolher</small></span>
+              <img [src]="fotoAdicionada" alt="Foto de bolo selecionada" />
             </div>
           </div>
           <span class="galeria-demo__botao" [class.galeria-demo__botao--salvando]="etapa() === 'salvando'">

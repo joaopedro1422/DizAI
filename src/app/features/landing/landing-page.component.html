@@ -6,6 +6,7 @@
     <a routerLink="/" fragment="como" class="nav__link">Como funciona</a>
     <a routerLink="/" fragment="para-quem" class="nav__link">Para quem é</a>
     <a routerLink="/" fragment="recursos" class="nav__link">Recursos</a>
+    <a routerLink="/" fragment="perguntas" class="nav__link">Perguntas</a>
     <span class="nav__acoes">
       <a routerLink="/entrar" class="btn btn--secundario nav__entrar">Entrar</a>
       <a routerLink="/cadastro" class="btn btn--primario">Testar grátis</a>
@@ -55,63 +56,11 @@
   <app-jornada-interativa />
   
 
-  <section id="recursos" class="container secao secao--espacosa" aria-labelledby="recursos-titulo">
-    <div class="secao__cabecalho">
-      <span class="secao__sobretitulo">Recursos</span>
-      <h2 id="recursos-titulo" class="secao__titulo">Um vendedor que conhece o seu negócio. E que sabe a hora de te chamar.</h2>
-    </div>
-    <div class="grade grade--recursos">
-      @for (recurso of recursos; track recurso.titulo) {
-        <div class="recurso">
-          <app-icone [nome]="recurso.icone" [tamanho]="24" [espessura]="1.7" />
-          <div class="recurso__textos">
-            <h3 class="recurso__titulo">{{ recurso.titulo }}</h3>
-            <p class="cartao__texto cartao__texto--menor">{{ recurso.texto }}</p>
-          </div>
-        </div>
-      }
-    </div>
-
-    <aside class="duvida" aria-labelledby="duvida-titulo">
-      <span class="duvida__icone">
-        <app-icone nome="pessoaIgnorada" [tamanho]="24" [espessura]="1.8" />
-      </span>
-      <div class="duvida__textos">
-        <h3 id="duvida-titulo" class="duvida__titulo">E se eu uso o mesmo número para a vida pessoal e o trabalho?</h3>
-        <p class="cartao__texto cartao__texto--menor">
-          Sem problema. O DizAI tem uma ferramenta para você escolher os contatos pessoais, como família e amigos,
-          e o assistente simplesmente não responde essas conversas.
-        </p>
-      </div>
-    </aside>
-  </section>
+  <app-secao-recursos />
   <app-secao-galeria />
-  <section id="para-quem" class="faixa faixa--suave" aria-labelledby="quem-titulo">
-    <div class="container secao secao--espacosa">
-      <div class="secao__cabecalho secao__cabecalho--largo">
-        <span class="secao__sobretitulo sobretitulo-publico">
-          Para quem é
-          <app-icone nome="seta" [tamanho]="16" [espessura]="2.4" class="sobretitulo-publico__seta" />
-          <span class="sobretitulo-publico__destaque">Pequenos e médios negócios</span>
-        </span>
-        <h2 id="quem-titulo" class="secao__titulo">Feito para quem vende sob encomenda ou presta serviços autônomos.</h2>
-        <p class="secao__descricao">
-          Para quem toca o negócio quase sozinho e não tem uma equipe só para o WhatsApp.
-          Não é cardápio com carrinho: é conversa de verdade, do jeito que o seu cliente já pergunta.
-        </p>
-      </div>
-      <div class="grade grade--publicos">
-        @for (publico of publicos; track publico.titulo) {
-          <article class="cartao cartao--compacto">
-            <h3 class="cartao__titulo cartao__titulo--menor">{{ publico.titulo }}</h3>
-            <p class="cartao__texto cartao__texto--menor">{{ publico.texto }}</p>
-          </article>
-        }
-      </div>
-    </div>
-  </section>
+  <app-secao-para-quem />
 
-  
+  <app-secao-perguntas />
 
   <section class="chamada-final" aria-labelledby="cta-titulo">
     <div class="chamada-final__caixa">

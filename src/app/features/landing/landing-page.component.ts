@@ -5,6 +5,9 @@ import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { NomeIcone } from '../../shared/components/icone/icones';
 import { LogoComponent } from '../../shared/components/logo/logo.component';
 import { SecaoGaleriaComponent } from './secao-galeria/secao-galeria.component';
+import { SecaoParaQuemComponent } from './secao-para-quem/secao-para-quem.component';
+import { SecaoPerguntasComponent } from './secao-perguntas/secao-perguntas.component';
+import { SecaoRecursosComponent } from './secao-recursos/secao-recursos.component';
 import { SecaoHeroComponent } from './secao-hero/secao-hero.component';
 import { SecaoPropostaComponent } from './secao-proposta/secao-proposta.component';
 import { JornadaInterativaComponent } from './jornada-interativa/jornada-interativa.component';
@@ -22,7 +25,18 @@ interface ItemSimples {
 
 @Component({
   selector: 'app-landing-page',
-  imports: [RouterLink, LogoComponent, IconeComponent, SecaoHeroComponent, SecaoPropostaComponent, SecaoGaleriaComponent, JornadaInterativaComponent],
+  imports: [
+    RouterLink,
+    LogoComponent,
+    IconeComponent,
+    SecaoHeroComponent,
+    SecaoPropostaComponent,
+    SecaoGaleriaComponent,
+    JornadaInterativaComponent,
+    SecaoRecursosComponent,
+    SecaoParaQuemComponent,
+    SecaoPerguntasComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.css',
@@ -61,23 +75,6 @@ export class LandingPageComponent {
       titulo: 'Ele atende, você fecha',
       texto: 'O DizAI tira as dúvidas, explica os seus serviços, mostra seus trabalhos e te chama quando o cliente estiver pronto para comprar ou perguntar algo que não sabe responder.',
     },
-  ];
-
-  /** Os mesmos ramos que o lojista escolhe no cadastro. */
-  protected readonly publicos: ItemSimples[] = [
-    { titulo: 'Serviços', texto: 'Manicures, esteticistas, eletricistas, cabeleireiras, costureiras, pet shops...' },
-    { titulo: 'Doces e salgados', texto: 'Confeitarias, lojas de tortas e salgados, doces, lanches...' },
-    { titulo: 'Produtos personalizados', texto: 'Cortinas, móveis projetados, presentes, estampas, cestas românticas...' },
-    { titulo: 'Produtos em geral', texto: 'Roupas, tênis, acessórios, perfumes...' }
-  ];
-  
-  protected readonly recursos: ItemComIcone[] = [
-    { icone: 'raio', titulo: 'Responde na hora', texto: 'De dia, de noite e no fim de semana, sem deixar ninguém no vácuo.' },
-    { icone: 'escudo', titulo: 'Fala só o que é verdade', texto: 'Usa apenas o que você cadastrou. Se não souber, espera você responder.' },
-    { icone: 'prancheta', titulo: 'Anota o pedido para você', texto: 'Coleta sabor, tamanho, data e endereço, confirma com o cliente e te entrega o resumo.' },
-    { icone: 'pessoa', titulo: 'Você assume quando quiser', texto: 'Mandou uma mensagem no chat? O DizAI sai de cena na hora.' },
-    { icone: 'imagem', titulo: 'Galeria dos seus trabalhos', texto: 'Fotos organizadas por serviço, enviadas no momento certo da conversa.' },
-    { icone: 'ajustes', titulo: 'Do seu jeito', texto: 'Saudação própria e regras que só a sua loja tem. Instruções suas que definem o comportamento do seu assistente".' },
   ];
 
   /** "01", "02", "03" */

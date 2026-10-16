@@ -1,0 +1,386 @@
+/* "Ver página" (mesmo botão da Galeria) */
+.link-publico {
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+}
+
+/* Abas (mesmo desenho da tela de Chats) */
+.abas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-primaria-clara);
+}
+
+.aba {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border: none;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--cor-texto-secundario);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.aba--ativa {
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+}
+
+.agendamentos {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Primeira vez: ainda sem horários */
+.convite {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 18px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio-grande);
+  background: linear-gradient(180deg, var(--cor-primaria-clara) 0%, #ffffff 80%);
+}
+
+.convite__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #ffffff;
+  color: var(--cor-primaria);
+}
+
+.convite__titulo {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.convite__texto {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.faixa-aviso {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #F1D9A6;
+  border-radius: var(--raio-medio);
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-texto-secundario);
+  font-size: 13px;
+  text-align: left;
+}
+
+a.faixa-aviso {
+  text-decoration: none;
+}
+
+.faixa-aviso strong {
+  color: var(--cor-primaria);
+}
+
+.link-agenda {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo-tracejado);
+}
+
+.link-agenda__textos {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.link-agenda__rotulo {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cor-texto-suave);
+}
+
+.link-agenda__url {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cor-primaria);
+  text-decoration: none;
+}
+
+/* Cabeçalho do dia escolhido */
+.dia {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dia__cabecalho {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dia__titulo {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.dia__resumo {
+  flex: none;
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.dia__expediente {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--cor-texto-secundario);
+  font-variant-numeric: tabular-nums;
+}
+
+.folga {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-rosa-fundo);
+  color: var(--cor-rosa);
+}
+
+.folga__texto {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--cor-texto-secundario);
+}
+
+/* Lista de horários do dia (linha do tempo) */
+.lista-horarios {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.horario {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 16px;
+  background: var(--cor-fundo);
+  /* sombra leve, a mesma dos cartões do painel */
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.horario__tempo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: none;
+  width: 64px;
+  padding: 8px 0;
+  border-radius: 12px;
+  background: var(--cor-primaria);
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+.horario__inicio {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.horario__fim {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.horario__corpo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.horario__nome {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.horario__servicos {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--cor-texto-secundario);
+}
+
+.horario__rodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+/* número do cliente: botão que abre a escolha de mensagem pronta */
+.horario__whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cor-ativo);
+  text-decoration: none;
+}
+
+.horario__cancelar {
+  align-self: flex-start;
+  margin: -6px -6px 0 0;
+  color: var(--cor-texto-suave);
+}
+
+.horario--cancelado {
+  background: var(--cor-fundo-suave);
+  box-shadow: none;
+}
+
+.horario--cancelado .horario__tempo {
+  background: var(--cor-borda);
+  color: var(--cor-texto-suave);
+}
+
+.horario--cancelado .horario__nome,
+.horario--cancelado .horario__servicos {
+  color: var(--cor-texto-suave);
+  text-decoration: line-through;
+}
+
+.etiqueta {
+  padding: 3px 8px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto-suave);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.etiqueta--whatsapp {
+  background: #E3F2EA;
+  color: var(--cor-ativo);
+}
+
+.etiqueta--cancelado {
+  background: #FCEEEE;
+  color: var(--cor-erro);
+}
+
+.acoes-dia {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.confirmacao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.confirmacao__texto {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
+}
+
+.acoes-dia__mensagens {
+  align-self: center;
+  color: var(--cor-texto-secundario);
+}
+
+/* Escolha da mensagem antes de abrir o WhatsApp */
+.escolher-mensagem {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.opcao-mensagem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  text-decoration: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.opcao-mensagem:hover {
+  border-color: var(--cor-ativo);
+  background: #F2FAF5;
+}
+
+.opcao-mensagem__titulo {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.opcao-mensagem__texto {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--cor-texto-secundario);
+  white-space: pre-line;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+}
+
+.escolher-mensagem__gerenciar {
+  align-self: center;
+}
+
+/* Faixa de dias numa moldura azul-clara: os dias brancos e o dia escolhido se destacam do fundo da tela */
+.moldura-dias {
+  padding: 10px 8px 4px;
+  border-radius: var(--raio-grande);
+  background: #F6F8FC;   /* só um leve destaque, mais claro que o --cor-primaria-clara */
+  --faixa-fundo: #ffffff;
+}

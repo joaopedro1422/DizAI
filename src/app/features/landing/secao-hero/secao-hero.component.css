@@ -9,9 +9,9 @@
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(circle at 82% 28%, rgba(30, 58, 114, 0.14), transparent 42%),
-    radial-gradient(circle at 70% 85%, rgba(0, 168, 132, 0.1), transparent 38%),
-    radial-gradient(circle at 8% 12%, rgba(30, 58, 114, 0.06), transparent 35%);
+    radial-gradient(circle at 82% 28%, rgba(48, 77, 134, 0.14), transparent 42%),
+    radial-gradient(circle at 70% 85%, rgba(0, 168, 132, 0.055), transparent 38%),
+    radial-gradient(circle at 8% 12%, rgba(38, 70, 133, 0.06), transparent 35%);
 }
 
 .hero__fundo::after {

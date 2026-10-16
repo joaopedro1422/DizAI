@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, signal } from '@angular/core';
+import { Location } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, linkedSignal, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { SessaoService } from '../../core/auth/sessao.service';
@@ -16,23 +17,30 @@ import { CarregandoComponent } from '../../shared/components/carregando/carregan
 import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { LogoComponent } from '../../shared/components/logo/logo.component';
 import { VisualizadorFotoComponent } from '../../shared/components/visualizador-foto/visualizador-foto.component';
+import { AgendaPublicaComponent } from './agenda-publica/agenda-publica.component';
 
 /** Quantas fotos o backend manda por tópico na página da loja (as outras vêm no "Ver todas"). */
 const FOTOS_VISIVEIS_POR_PADRAO = 6;
 
 type SituacaoPagina = 'carregando' | 'pronta' | 'nao-encontrada' | 'erro';
 
+/** Galeria de trabalhos ou agenda online (só lojas de serviço com a agenda ligada). */
+type AbaVitrine = 'galeria' | 'agenda';
+
 /** Página pública com os trabalhos da loja, aberta pelo cliente a partir do link enviado no WhatsApp. */
 @Component({
   selector: 'app-vitrine-publica-page',
-  imports: [RouterLink, IconeComponent, LogoComponent, VisualizadorFotoComponent, CarregandoComponent, UrlImagemPipe ],
+  imports: [RouterLink, IconeComponent, LogoComponent, VisualizadorFotoComponent, CarregandoComponent, UrlImagemPipe, AgendaPublicaComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './vitrine-publica-page.component.html',
   styleUrl: './vitrine-publica-page.component.css',
 })
 export class VitrinePublicaPageComponent implements OnInit {
-  /** Vem da rota /loja/:slug */
+  /** Vem da rota /l/:slug */
   readonly slug = input.required<string>();
+  /** Vem do data da rota: /l/:slug/agenda já abre na agenda. */
+  readonly aba = input<AbaVitrine>('galeria');
+  private readonly location = inject(Location);
   private readonly lojaPublicaService = inject(LojaPublicaService);
   private readonly sessao = inject(SessaoService);
   private readonly toastService = inject(ToastService);
@@ -48,6 +56,10 @@ export class VitrinePublicaPageComponent implements OnInit {
   protected readonly albumCarregando = signal<string | null>(null);
 
   protected readonly albuns = computed(() => this.loja()?.albuns ?? []);
+  protected readonly temAgenda = computed(() => this.loja()?.agendaAtiva === true);
+  protected readonly abaAtual = linkedSignal(() => this.aba());
+  protected readonly mostrandoAgenda = computed(() => this.temAgenda() && this.abaAtual() === 'agenda');
+  protected readonly numeroWhatsapp = computed(() => this.loja()?.numeroWhatsapp ?? '');
   protected readonly nomeLoja = computed(() => this.loja()?.nomeLoja ?? '');
   protected readonly descricao = computed(() => this.loja()?.descricao ?? '');
   protected readonly fotoPerfilUrl = computed(() => this.loja()?.fotoPerfilUrl ?? null);
@@ -87,7 +99,7 @@ export class VitrinePublicaPageComponent implements OnInit {
     try {
       const loja = await this.lojaPublicaService.buscarLoja(this.slug());
       this.loja.set(loja);
-      document.title = `${loja.nomeLoja} | Galeria de trabalhos`;
+      document.title = `${loja.nomeLoja} | ${this.aba() === 'agenda' && loja.agendaAtiva ? 'Agenda online' : 'Galeria de trabalhos'}`;
       this.iniciarIntroducao();
       this.situacao.set('pronta');
       this.contarVisita(loja.slug);
@@ -145,6 +157,13 @@ export class VitrinePublicaPageComponent implements OnInit {
       this.introducaoAtiva.set(false);
       this.introducaoAnimacaoAtiva.set(false);
     }
+  }
+
+  /** Troca a aba e o endereço (/l/slug ou /l/slug/agenda), para o link copiado abrir onde o cliente estava. */
+  protected mudarAba(aba: AbaVitrine): void {
+    this.abaAtual.set(aba);
+    this.location.replaceState(`/l/${this.slug()}${aba === 'agenda' ? '/agenda' : ''}`);
+    document.title = `${this.nomeLoja()} | ${aba === 'agenda' ? 'Agenda online' : 'Galeria de trabalhos'}`;
   }
 
   protected recarregar(): void {

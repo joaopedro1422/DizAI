@@ -1,0 +1,244 @@
+<div class="tela-app">
+  <app-cabecalho-pagina titulo="Agenda" subtitulo="Seus horários e quem vem atender em cada dia.">
+    <a acoesTopo [routerLink]="caminhoAgendaPublica()" class="btn btn--pequeno link-publico">
+      <app-icone nome="externo" [tamanho]="15" [espessura]="2" />
+      Ver página
+    </a>
+
+    <div class="abas" role="tablist" aria-label="Agenda">
+      <button
+        type="button"
+        role="tab"
+        id="aba-agendamentos"
+        aria-controls="painel-agendamentos"
+        class="aba"
+        [class.aba--ativa]="aba() === 'agendamentos'"
+        [attr.aria-selected]="aba() === 'agendamentos'"
+        (click)="mudarAba('agendamentos')"
+      >
+        <app-icone nome="calendario" [tamanho]="16" />
+        Agendamentos
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="aba-horarios"
+        aria-controls="painel-horarios"
+        class="aba"
+        [class.aba--ativa]="aba() === 'horarios'"
+        [attr.aria-selected]="aba() === 'horarios'"
+        (click)="mudarAba('horarios')"
+      >
+        <app-icone nome="relogio" [tamanho]="16" />
+        Horários
+      </button>
+    </div>
+  </app-cabecalho-pagina>
+
+  @if (carregando()) {
+    <app-carregando texto="Abrindo a agenda…" />
+  } @else if (aba() === 'agendamentos') {
+    <main id="painel-agendamentos" role="tabpanel" aria-labelledby="aba-agendamentos" class="conteudo-tela agendamentos">
+      @if (!temHorarios()) {
+        <section class="convite">
+          <span class="convite__icone"><app-icone nome="relogio" [tamanho]="24" /></span>
+          <h2 class="convite__titulo">Comece pelos seus horários</h2>
+          <p class="convite__texto">Diga em quais dias e horários você atende. Depois é só ligar o agendamento automático e o assistente marca os clientes sozinho.</p>
+          <button type="button" class="btn btn--primario btn--bloco" (click)="mudarAba('horarios')">Cadastrar horários</button>
+        </section>
+      } @else if (!agendaAtiva()) {
+        <button type="button" class="faixa-aviso" (click)="mudarAba('horarios')">
+          <app-icone nome="informacao" [tamanho]="18" />
+          <span>A agenda online está desligada. <strong>Ligar</strong></span>
+        </button>
+      } @else {
+        @if (!modoAutomatico()) {
+          <a class="faixa-aviso" [routerLink]="rotaPainel()">
+            <app-icone nome="brilho" [tamanho]="18" [espessura]="2" />
+            <span>O assistente ainda não marca sozinho. <strong>Ativar o agendamento automático</strong></span>
+          </a>
+        }
+        <div class="link-agenda">
+          <span class="link-agenda__textos">
+            <span class="link-agenda__rotulo">Agenda online para divulgar</span>
+            <a class="link-agenda__url" [href]="linkAgendaOnline()" target="_blank" rel="noopener">{{ linkAgendaOnline() }}</a>
+          </span>
+          <button type="button" class="btn btn--secundario btn--pequeno" (click)="copiarLinkAgenda()">
+            <app-icone nome="link" [tamanho]="16" />
+            Copiar
+          </button>
+        </div>
+      }
+
+      <div class="moldura-dias">
+        <app-faixa-dias
+          rotulo="Dias da agenda"
+          [itens]="itensFaixa()"
+          [selecionado]="diaSelecionado()"
+          (escolher)="escolherDia($event)"
+        />
+      </div>
+
+      <div class="dia">
+        <div class="dia__cabecalho">
+          <h2 class="dia__titulo">{{ tituloDia() }}</h2>
+          <span class="dia__resumo">{{ resumoDia() }}</span>
+        </div>
+        @if (!folgaNoDia()) {
+          <span class="dia__expediente">
+            <app-icone nome="relogio" [tamanho]="14" />
+            {{ expedienteDoDia() }}
+          </span>
+        }
+      </div>
+
+      @if (folgaNoDia()) {
+        <div class="folga" role="status">
+          <app-icone nome="calendarioFolga" [tamanho]="20" />
+          <span class="folga__texto">
+            <strong>Folga neste dia.</strong> O assistente não oferece horários nele.
+          </span>
+          <button type="button" class="btn btn--texto btn--pequeno" [disabled]="mudandoFolga()" (click)="alterarFolga(false)">Desfazer</button>
+        </div>
+      }
+
+      <div class="lista-horarios">
+        @for (agendamento of agendamentosDoDia(); track agendamento.id) {
+          @let cancelado = agendamento.status === 'CANCELADO';
+          <article class="horario" [class.horario--cancelado]="cancelado">
+            <div class="horario__tempo">
+              <span class="horario__inicio">{{ agendamento.inicio }}</span>
+              <span class="horario__fim">{{ agendamento.fim }}</span>
+            </div>
+            <div class="horario__corpo">
+              <span class="horario__nome">{{ agendamento.nomeCliente }}</span>
+              <span class="horario__servicos">{{ agendamento.servicos }} · {{ duracao(agendamento) }}</span>
+              <span class="horario__rodape">
+                @if (cancelado) {
+                  <span class="etiqueta etiqueta--cancelado">Cancelado</span>
+                } @else {
+                  <span class="etiqueta" [class.etiqueta--whatsapp]="agendamento.origem === 'WHATSAPP'">
+                    {{ agendamento.origem === 'WHATSAPP' ? 'Pelo assistente' : 'Manual' }}
+                  </span>
+                }
+                @if (agendamento.whatsapp) {
+                  <button type="button" class="horario__whatsapp" [attr.aria-label]="'Mandar mensagem para ' + agendamento.nomeCliente" (click)="paraMensagem.set(agendamento)">
+                    <app-icone nome="conversa" [tamanho]="14" />
+                    {{ agendamento.whatsapp }}
+                  </button>
+                }
+              </span>
+            </div>
+            @if (!cancelado) {
+              <button type="button" class="btn-icone btn-icone--sem-borda horario__cancelar" [attr.aria-label]="'Cancelar o horário de ' + agendamento.nomeCliente" (click)="paraCancelar.set(agendamento)">
+                <app-icone nome="fechar" [tamanho]="18" />
+              </button>
+            }
+          </article>
+        } @empty {
+          <app-estado-vazio
+            icone="calendario"
+            titulo="Nenhum horário neste dia"
+            [descricao]="agendaAtiva() ? 'Quando o assistente marcar alguém, aparece aqui na hora.' : 'Agende à mão ou ligue o agendamento automático.'"
+          />
+        }
+      </div>
+
+      <div class="acoes-dia">
+        <button type="button" class="btn btn--primario btn--grande btn--bloco" (click)="criando.set(true)">
+          <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
+          Agendar horário
+        </button>
+        @if (!folgaNoDia() && temHorarios()) {
+          <button type="button" class="btn btn--secundario btn--bloco" [disabled]="mudandoFolga()" (click)="pedirFolga()">
+            <app-icone nome="calendarioFolga" [tamanho]="18" />
+            Não vou atender neste dia
+          </button>
+        }
+        <button type="button" class="btn btn--texto btn--pequeno acoes-dia__mensagens" (click)="gerenciandoMensagens.set(true)">
+          <app-icone nome="conversa" [tamanho]="16" />
+          Mensagens prontas
+        </button>
+      </div>
+    </main>
+  } @else {
+    <main id="painel-horarios" role="tabpanel" aria-labelledby="aba-horarios" class="conteudo-tela">
+      @if (configuracao(); as configuracao) {
+        <app-horarios-atendimento [configuracao]="configuracao" [servicosSemDuracao]="servicosSemDuracao()" />
+      }
+    </main>
+  }
+</div>
+
+@if (criando()) {
+  <app-bottom-sheet titulo="Agendar horário" (fechar)="criando.set(false)">
+    <app-novo-agendamento [dataInicial]="diaSelecionado()" [salvando]="salvandoNovo()" (salvo)="criar($event)" />
+  </app-bottom-sheet>
+}
+
+@if (paraCancelar(); as agendamento) {
+  <app-bottom-sheet [titulo]="'Cancelar o horário de ' + agendamento.nomeCliente + '?'" (fechar)="paraCancelar.set(null)">
+    <div class="confirmacao">
+      <p class="confirmacao__texto">
+        <strong>{{ diaPorExtenso(agendamento.data) }} às {{ agendamento.inicio }}</strong> · {{ agendamento.servicos }}
+      </p>
+      <p class="confirmacao__texto">O horário fica livre para outro cliente. O cliente não é avisado sozinho: mande uma mensagem para ele.</p>
+      @if (agendamento.whatsapp) {
+        <a class="btn btn--secundario btn--bloco" [href]="linkWhatsapp(agendamento, mensagemCancelamento(agendamento))" target="_blank" rel="noopener">
+          <app-icone nome="conversa" [tamanho]="18" />
+          Avisar no WhatsApp
+        </a>
+      }
+      <button type="button" class="btn btn--excluir btn--grande btn--bloco" [disabled]="cancelando()" [attr.aria-busy]="cancelando()" (click)="confirmarCancelamento()">
+        @if (cancelando()) {
+          <app-carregando modo="inline" variante="claro" [tamanho]="20" />
+          Cancelando…
+        } @else {
+          Cancelar horário
+        }
+      </button>
+    </div>
+  </app-bottom-sheet>
+}
+
+@if (confirmandoFolga()) {
+  <app-bottom-sheet titulo="Não vai atender neste dia?" (fechar)="confirmandoFolga.set(false)">
+    <div class="confirmacao">
+      <p class="confirmacao__texto">
+        {{ tituloDia() }} já tem <strong>{{ resumoDia() }}</strong>. Eles continuam na agenda: cancele ou avise os clientes se for preciso.
+      </p>
+      <p class="confirmacao__texto">A partir de agora o assistente não oferece novos horários neste dia.</p>
+      <button type="button" class="btn btn--primario btn--grande btn--bloco" [disabled]="mudandoFolga()" [attr.aria-busy]="mudandoFolga()" (click)="alterarFolga(true)">
+        Marcar folga
+      </button>
+    </div>
+  </app-bottom-sheet>
+}
+
+@if (paraMensagem(); as agendamento) {
+  <app-bottom-sheet [titulo]="'Mensagem para ' + agendamento.nomeCliente" (fechar)="paraMensagem.set(null)">
+    <div class="escolher-mensagem">
+      @for (opcao of opcoesMensagem(); track opcao.id) {
+        <a class="opcao-mensagem" [href]="opcao.link" target="_blank" rel="noopener" (click)="paraMensagem.set(null)">
+          <span class="opcao-mensagem__titulo">{{ opcao.titulo }}</span>
+          <span class="opcao-mensagem__texto">{{ opcao.texto }}</span>
+        </a>
+      } @empty {
+        <p class="confirmacao__texto">Você ainda não tem mensagens prontas. Crie uma (lembrete, endereço…) para mandar com um toque.</p>
+      }
+      <a class="btn btn--secundario btn--bloco" [href]="linkWhatsapp(agendamento)" target="_blank" rel="noopener" (click)="paraMensagem.set(null)">
+        <app-icone nome="conversa" [tamanho]="18" />
+        Só abrir a conversa
+      </a>
+      <button type="button" class="btn btn--texto btn--pequeno escolher-mensagem__gerenciar" (click)="abrirGerenciarMensagens()">
+        {{ opcoesMensagem().length > 0 ? 'Editar mensagens prontas' : 'Criar mensagem pronta' }}
+      </button>
+    </div>
+  </app-bottom-sheet>
+}
+
+@if (gerenciandoMensagens()) {
+  <app-bottom-sheet titulo="Mensagens prontas" (fechar)="gerenciandoMensagens.set(false)">
+    <app-mensagens-prontas />
+  </app-bottom-sheet>
+}

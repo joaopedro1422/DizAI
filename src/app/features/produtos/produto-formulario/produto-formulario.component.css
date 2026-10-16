@@ -55,3 +55,20 @@
   border-radius: 12px;
   font-size: 14px;
 }
+
+/* Duração do serviço: chips com as mais comuns e o campo em minutos */
+.linha-duracao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.linha-duracao__valor {
+  flex: 0 1 180px;
+}
+
+.linha-duracao__legivel {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cor-texto-secundario);
+}

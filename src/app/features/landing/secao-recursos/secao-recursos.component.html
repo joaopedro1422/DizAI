@@ -1,0 +1,93 @@
+<section id="recursos" class="container secao" aria-labelledby="recursos-titulo">
+  <div class="secao__cabecalho">
+    <span class="secao__sobretitulo">Recursos</span>
+    <h2 id="recursos-titulo" class="secao__titulo">Um vendedor que conhece o seu negócio. E que sabe a hora de te chamar.</h2>
+  </div>
+
+  <div class="destaques">
+    <!-- Para quem vende: os dois modos de fechar -->
+    <article class="destaque destaque--vendas">
+      <div class="destaque__topo">
+        <span class="destaque__etiqueta">Para quem vende</span>
+        <div class="modos" role="radiogroup" aria-label="O que o assistente faz quando o cliente quer fechar">
+          @for (modo of modos; track modo.id) {
+            <button
+              type="button"
+              role="radio"
+              class="modos__opcao"
+              [class.modos__opcao--ativa]="modoVenda() === modo.id"
+              [attr.aria-checked]="modoVenda() === modo.id"
+              (click)="escolherModo(modo.id)"
+            >
+              {{ modo.rotulo }}
+            </button>
+          }
+        </div>
+      </div>
+      <h3 class="destaque__titulo">{{ venda().titulo }}</h3>
+      <p class="destaque__texto">{{ venda().texto }}</p>
+      <div class="conversa destaque__conversa">
+        <span class="balao balao--cliente">Gostaria de 150 salgados para sábado</span>
+        <!-- um bloco por modo: trocar de modo recria o balão e a animação de entrada roda de novo -->
+        @switch (modoVenda()) {
+          @case ('coletar') {
+            <span class="balao balao--assistente balao--entra">{{ venda().resposta }}</span>
+          }
+          @case ('chamar') {
+            <span class="balao balao--assistente balao--entra">{{ venda().resposta }}</span>
+          }
+        }
+      </div>
+      <div class="aviso">
+        <span class="aviso__icone"><app-icone nome="sino" [tamanho]="16" [espessura]="2" /></span>
+        <span class="aviso__textos">
+          <strong>{{ venda().avisoTitulo }}</strong>
+          <span class="aviso__detalhe">{{ venda().avisoTexto }}</span>
+        </span>
+      </div>
+    </article>
+
+    <!-- Para quem presta serviço: a conversa troca de cena sozinha -->
+    <article class="destaque destaque--servicos">
+      <span class="destaque__etiqueta destaque__etiqueta--verde">Para quem presta serviço</span>
+      <h3 class="destaque__titulo">Marca horários sozinho, sem horário duplicado.</h3>
+      <p class="destaque__texto">
+        Você diz em quais dias e horários atende. O assistente oferece só os horários em que o serviço cabe, marca e confirma
+        na hora. O cliente remarca ou cancela pelo próprio WhatsApp.
+      </p>
+      <div class="conversa destaque__conversa destaque__conversa--fixa" aria-live="polite">
+        @if (cenaServico() === 'pergunta') {
+          <span class="balao balao--cliente balao--entra">Quais serviços vocês fazem?</span>
+          <span class="balao balao--assistente balao--entra balao--depois">Fazemos:
+- Manicure
+- Pedicure
+- Esmaltação em gel
+- Design de sobrancelha</span>
+        } @else {
+          <span class="balao balao--cliente balao--entra">Quero agendar pé e mão para amanhã às 14:00</span>
+          <span class="balao balao--assistente balao--entra balao--depois">Agendado! ✅
+Serviços: Manicure + Pedicure
+Data: quarta, 24/10
+Horário: 14:00 às 15:45</span>
+        }
+      </div>
+      <div class="aviso" [class.aviso--escondido]="cenaServico() === 'pergunta'">
+        <span class="aviso__icone"><app-icone nome="sino" [tamanho]="16" [espessura]="2" /></span>
+        <span class="aviso__textos">
+          <strong>Novo agendamento</strong>
+          <span class="aviso__detalhe">Maria · Manicure + Pedicure · qua 24/10 às 14:00</span>
+        </span>
+      </div>
+    </article>
+  </div>
+
+  <div class="recursos">
+    @for (recurso of recursos; track recurso.titulo) {
+      <article class="recurso">
+        <span class="recurso__icone"><app-icone [nome]="recurso.icone" [tamanho]="20" [espessura]="1.9" /></span>
+        <h3 class="recurso__titulo">{{ recurso.titulo }}</h3>
+        <p class="recurso__texto">{{ recurso.texto }}</p>
+      </article>
+    }
+  </div>
+</section>

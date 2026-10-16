@@ -1,3 +1,5 @@
+import { AgendaService } from '../services/agenda.service';
+import { EstatisticasService } from '../services/estatisticas.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
@@ -28,6 +30,8 @@ export class AutenticacaoService {
     inject(ConversaService),
     inject(ContatoIgnoradoService),
     inject(ContatosWhatsappService),
+    inject(AgendaService),
+    inject(EstatisticasService),
   ];
 
   /** Login com o WhatsApp do negócio e a senha. Devolve o caminho do painel: /painel/{uuid} */

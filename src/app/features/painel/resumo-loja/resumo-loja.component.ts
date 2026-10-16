@@ -1,9 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
 
+import { Router } from '@angular/router';
+
 import { mensagemDoErro } from '../../../core/api/erro-api';
+import { SessaoService } from '../../../core/auth/sessao.service';
 import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
 import { FORMAS_RECEBIMENTO, RAMOS_NEGOCIO, obterRotulo } from '../../../core/constants/opcoes-perfil';
 import { buscarCorMarca } from '../../../core/constants/cores-marca';
+import { InstalacaoAppService } from '../../../core/pwa/instalacao-app.service';
 import { ArmazenamentoFotosService } from '../../../core/services/armazenamento-fotos.service';
 import { PerfilService } from '../../../core/services/perfil.service';
 import { ToastService } from '../../../core/services/toast.service';
@@ -13,14 +17,14 @@ import { InterruptorComponent } from '../../../shared/components/interruptor/int
 import { ItemMenuAcoes, MenuAcoesComponent } from '../../../shared/components/menu-acoes/menu-acoes.component';
 import { AlvoTourDirective } from '../onboarding/alvo-tour.directive';
 
-type AcaoPerfil = 'editar' | 'sair';
+type AcaoPerfil = 'editar' | 'estatisticas' | 'atalho' | 'sair';
 
 const TAMANHO_MAXIMO_FOTO_BYTES = 5 * 1024 * 1024;
 
-const ITENS_MENU_PERFIL: ItemMenuAcoes<AcaoPerfil>[] = [
-  { id: 'editar', rotulo: 'Editar dados', icone: 'editar' },
-  { id: 'sair', rotulo: 'Sair da conta', icone: 'sair', perigo: true },
-];
+const ITEM_EDITAR: ItemMenuAcoes<AcaoPerfil> = { id: 'editar', rotulo: 'Editar dados', icone: 'editar' };
+const ITEM_ESTATISTICAS: ItemMenuAcoes<AcaoPerfil> = { id: 'estatisticas', rotulo: 'Estatísticas', icone: 'grafico' };
+const ITEM_ATALHO: ItemMenuAcoes<AcaoPerfil> = { id: 'atalho', rotulo: 'Baixar atalho', icone: 'celular' };
+const ITEM_SAIR: ItemMenuAcoes<AcaoPerfil> = { id: 'sair', rotulo: 'Sair da conta', icone: 'sair', perigo: true };
 
 /** Topo do painel: saudação, identidade da loja, status do assistente e link público. */
 @Component({
@@ -33,6 +37,8 @@ const ITENS_MENU_PERFIL: ItemMenuAcoes<AcaoPerfil>[] = [
 export class ResumoLojaComponent {
   readonly editarDados = output<void>();
   readonly sair = output<void>();
+  /** "Baixar atalho": o painel abre a janela de instalação do app (a mesma do fim do onboarding). */
+  readonly baixarAtalho = output<void>();
 
   private readonly perfilService = inject(PerfilService);
   private readonly toastService = inject(ToastService);
@@ -40,7 +46,15 @@ export class ResumoLojaComponent {
 
   protected readonly perfil = this.perfilService.perfil;
   protected readonly linkPublicoExibicao = this.perfilService.linkPaginaPublicaExibicao;
-  protected readonly itensMenu = ITENS_MENU_PERFIL;
+  private readonly instalacaoApp = inject(InstalacaoAppService);
+  private readonly router = inject(Router);
+  private readonly rotas = inject(SessaoService).rotasDoPainel;
+  /** "Baixar atalho" só aparece enquanto o DizAI ainda não está instalado neste aparelho. */
+  protected readonly itensMenu = computed(() =>
+    this.instalacaoApp.podeInstalar()
+      ? [ITEM_EDITAR, ITEM_ESTATISTICAS, ITEM_ATALHO, ITEM_SAIR]
+      : [ITEM_EDITAR, ITEM_ESTATISTICAS, ITEM_SAIR],
+  );
 
   protected readonly enviandoFoto = signal(false);
   /** Sem foto, a inicial aparece na cor escolhida para a página pública. */
@@ -97,6 +111,10 @@ export class ResumoLojaComponent {
   protected aoEscolherNoMenu(acao: AcaoPerfil): void {
     if (acao === 'editar') {
       this.editarDados.emit();
+    } else if (acao === 'estatisticas') {
+      void this.router.navigateByUrl(this.rotas().estatisticas);
+    } else if (acao === 'atalho') {
+      this.baixarAtalho.emit();
     } else {
       this.sair.emit();
     }

@@ -9,7 +9,8 @@
   <meta name="theme-color" content="#1E3A72">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <!-- App instalado na tela do celular (PWA) -->
-  <link rel="manifest" href="manifest.webmanifest">
+  <!-- use-credentials: manda os cookies ao buscar o manifesto (no ngrok grátis, sem o cookie de confirmação vem a página de aviso) -->
+  <link rel="manifest" href="manifest.webmanifest" crossorigin="use-credentials">
   <link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">

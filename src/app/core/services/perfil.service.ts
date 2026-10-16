@@ -45,6 +45,8 @@ const PERFIL_VAZIO: Perfil = {
   iaAtiva: false,
   whatsappConectado: false,
   onboardingConcluido: false,
+  introGaleriaVista: true,
+  agendaAtiva: false,
   admin: false,
 };
 
@@ -63,8 +65,8 @@ export class PerfilService {
   readonly perfil = this.perfilAtual.asReadonly();
   readonly carregando = this.carregamento.carregando;
 
-  /** Caminho da galeria pública dentro do app, ex.: /loja/bella-studio */
-  readonly caminhoPaginaPublica = computed(() => `/loja/${this.perfilAtual().slug}`);
+  /** Caminho da galeria pública dentro do app, ex.: /l/bella-studio */
+  readonly caminhoPaginaPublica = computed(() => `/l/${this.perfilAtual().slug}`);
 
   /** Endereço completo para copiar e compartilhar. */
   readonly linkPaginaPublica = computed(() => `${window.location.origin}${this.caminhoPaginaPublica()}`);
@@ -128,6 +130,17 @@ export class PerfilService {
   marcarOnboardingConcluido(): void {
     this.perfilAtual.update((perfil) => ({ ...perfil, onboardingConcluido: true }));
     this.http.patch<void>(this.url('/onboarding-concluido'), null).subscribe({ error: () => undefined });
+  }
+
+  /** Fechou a apresentação da galeria. Como no onboarding, a tela não espera a resposta. */
+  /** A tela da agenda salvou: o card do painel e os textos acompanham sem recarregar o perfil. */
+  definirAgendaAtivaLocal(agendaAtiva: boolean): void {
+    this.perfilAtual.update((perfil) => ({ ...perfil, agendaAtiva }));
+  }
+
+  marcarIntroGaleriaVista(): void {
+    this.perfilAtual.update((perfil) => ({ ...perfil, introGaleriaVista: true }));
+    this.http.patch<void>(this.url('/intro-galeria-vista'), null).subscribe({ error: () => undefined });
   }
 
   reiniciar(): void {

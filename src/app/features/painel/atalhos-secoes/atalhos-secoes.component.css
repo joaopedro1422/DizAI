@@ -50,6 +50,108 @@
   color: #ffffff;
 }
 
+.icone-atalho--verde {
+  background: #E3F2EA;
+  color: var(--cor-ativo);
+}
+
+/* Card da Agenda (largura toda, logo acima do de Chats) */
+.atalho-agenda {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+  text-decoration: none;
+  box-shadow: var(--sombra-card);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.atalho-agenda:hover {
+  border-color: var(--cor-borda-forte);
+  transform: translateY(-1px);
+}
+
+.atalho-agenda__topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.atalho-agenda__topo .atalho__textos {
+  flex: 1;
+}
+
+.atalho-agenda__estado {
+  flex: none;
+  padding: 5px 10px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.atalho-agenda__estado--ligada {
+  background: #E3F2EA;
+  color: var(--cor-ativo);
+}
+
+.atalho-agenda__proximo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto);
+}
+
+.atalho-agenda__hora {
+  flex: none;
+  padding: 6px 10px;
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-primaria);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.atalho-agenda__proximo-textos {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.atalho-agenda__proximo-nome {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.atalho-agenda__proximo-servico {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.atalho-agenda__convite {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px dashed var(--cor-borda-forte);
+  border-radius: var(--raio-medio);
+  color: var(--cor-texto-secundario);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 /* Card de Chats (destaque) */
 .atalho-chats {
   display: flex;
@@ -223,4 +325,16 @@
 
 .atalho-admin__texto {
   flex: 1;
+}
+
+/* Perguntas que o assistente não soube responder (sugestões de pergunta frequente) */
+.atalho__pendente {
+  align-self: flex-start;
+  margin-top: 2px;
+  padding: 2px 8px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-ambar);
+  font-size: 11px;
+  font-weight: 800;
 }

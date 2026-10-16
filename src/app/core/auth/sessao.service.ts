@@ -42,6 +42,8 @@ export class SessaoService {
       perguntas: `${inicio}/perguntas`,
       galeria: `${inicio}/galeria`,
       chats: `${inicio}/chats`,
+      agenda: `${inicio}/agenda`,
+      estatisticas: `${inicio}/estatisticas`,
       conectarWhatsapp: `${inicio}/conectar-whatsapp`,
       contatosIgnorados: `${inicio}/contatos-ignorados`,
       admin: `${inicio}/admin`,

@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
 import { Produto } from '../../../core/models/produto.model';
 import { pluralizar } from '../../../core/utils/colecao.utils';
+import { formatarDuracao } from '../../../core/utils/datas-agenda';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { ItemMenuAcoes, MenuAcoesComponent } from '../../../shared/components/menu-acoes/menu-acoes.component';
 import { PrecoProdutoPipe } from '../../../shared/pipes/preco-produto.pipe';
@@ -30,6 +31,12 @@ type AcaoProduto = 'editar' | 'excluir';
         <span class="produto__preco">{{ produto() | precoProduto }}</span>
         <span class="produto__opcoes">{{ resumoOpcoes() }}</span>
       </div>
+      @if (duracao(); as tempo) {
+        <span class="produto__duracao">
+          <app-icone nome="relogio" [tamanho]="14" />
+          {{ tempo }}
+        </span>
+      }
     </div>
 
     <app-menu-acoes
@@ -104,6 +111,15 @@ type AcaoProduto = 'editar' | 'excluir';
       color: var(--cor-texto-suave);
     }
 
+    .produto__duracao {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--cor-texto-secundario);
+    }
+
     .produto__menu {
       width: 36px;
       height: 36px;
@@ -123,6 +139,11 @@ export class ProdutoCardComponent {
   protected readonly resumoOpcoes = computed(() => {
     const total = this.produto().atributos.length;
     return total === 0 ? 'Sem opções' : pluralizar(total, 'opção', 'opções');
+  });
+
+  protected readonly duracao = computed(() => {
+    const minutos = this.produto().duracaoMinutos;
+    return minutos ? formatarDuracao(minutos) : null;
   });
 
   protected aoEscolherAcao(acao: AcaoProduto): void {

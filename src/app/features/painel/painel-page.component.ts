@@ -1,13 +1,14 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 
 import { mensagemDoErro } from '../../core/api/erro-api';
 import { AutenticacaoService } from '../../core/auth/autenticacao.service';
 import { MODOS_FOTOS, MODOS_PEDIDO } from '../../core/constants/opcoes-perfil';
-import { ModoFotos, ModoPedido } from '../../core/models/perfil.model';
+import { ModoFotos, ModoPedido, ramoUsaAgenda } from '../../core/models/perfil.model';
+import { SessaoService } from '../../core/auth/sessao.service';
 import { ContatoIgnoradoService } from '../../core/services/contato-ignorado.service';
 import { ConteudoRamoService } from '../../core/services/conteudo-ramo.service';
 import { ConversaService } from '../../core/services/conversa.service';
@@ -45,6 +46,7 @@ const ESPERA_BOAS_VINDAS_MS = 2500;
   imports: [
     ReactiveFormsModule,
     IconeComponent,
+    RouterLink,
     OpcaoCardComponent,
     SecaoConfiguracaoComponent,
     ResumoLojaComponent,
@@ -84,7 +86,14 @@ export class PainelPageComponent implements OnInit {
 
   protected readonly whatsappConectado = computed(() => this.perfilService.perfil().whatsappConectado);
 
-  protected readonly modosPedido = MODOS_PEDIDO;
+  /** "Agendamento automático" só aparece para os ramos com agenda (serviços presenciais). */
+  protected readonly modosPedido = computed(() =>
+    MODOS_PEDIDO.filter((modo) => !modo.soComAgenda || ramoUsaAgenda(this.perfilService.perfil().ramo)),
+  );
+  /** A agenda online está ligada: com o modo automático, o assistente já marca sozinho. */
+  protected readonly agendaLigada = computed(() => this.perfilService.perfil().agendaAtiva === true);
+  private readonly rotasPainel = inject(SessaoService).rotasDoPainel;
+  protected readonly rotaAgenda = computed(() => this.rotasPainel().agenda);
   protected readonly modosFotos = MODOS_FOTOS;
 
   protected readonly formulario = criarFormularioConfiguracoes(inject(FormBuilder), this.perfilService.perfil());
@@ -286,6 +295,11 @@ export class PainelPageComponent implements OnInit {
     if (this.instalacaoApp.podeInstalar() || this.avisosPush.estado() === 'desativado') {
       this.mostrarConviteApp.set(true);
     }
+  }
+
+  /** "Baixar atalho" no menu do perfil. */
+  protected abrirConviteApp(): void {
+    this.mostrarConviteApp.set(true);
   }
 
   protected fecharConviteApp(): void {

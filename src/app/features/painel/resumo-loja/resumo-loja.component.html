@@ -29,7 +29,7 @@
     <p class="identidade__descricao">{{ perfil().descricao }}</p>
   </div>
 
-  <app-menu-acoes rotuloBotao="Opções da conta" [itens]="itensMenu" (escolher)="aoEscolherNoMenu($event)" />
+  <app-menu-acoes rotuloBotao="Opções da conta" [itens]="itensMenu()" (escolher)="aoEscolherNoMenu($event)" />
 </div>
 
 @if (etiquetas().length > 0) {

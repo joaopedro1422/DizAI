@@ -1,0 +1,100 @@
+@if (editando() === null) {
+  <div class="lista">
+    <p class="explicacao">
+      Ao tocar no WhatsApp de um cliente na agenda, você escolhe uma destas mensagens e ela já abre escrita na conversa.
+    </p>
+
+    @for (mensagem of mensagens(); track mensagem.id) {
+      <article class="mensagem">
+        <div class="mensagem__textos">
+          <span class="mensagem__titulo">{{ mensagem.titulo }}</span>
+          <p class="mensagem__texto">{{ mensagem.texto }}</p>
+        </div>
+        <div class="mensagem__acoes">
+          <button type="button" class="btn-icone btn-icone--sem-borda" [attr.aria-label]="'Editar ' + mensagem.titulo" (click)="editar(mensagem)">
+            <app-icone nome="editar" [tamanho]="18" />
+          </button>
+          <button
+            type="button"
+            class="btn-icone btn-icone--sem-borda"
+            [attr.aria-label]="'Apagar ' + mensagem.titulo"
+            [disabled]="removendo() === mensagem.id"
+            (click)="remover(mensagem)"
+          >
+            <app-icone nome="lixeira" [tamanho]="18" />
+          </button>
+        </div>
+      </article>
+    } @empty {
+      <div class="sugestoes">
+        <span class="rotulo-maiusculo">Comece por um modelo</span>
+        @for (sugestao of sugestoes; track sugestao.titulo) {
+          <button type="button" class="sugestao" (click)="nova(sugestao)">
+            <span class="sugestao__titulo">
+              <app-icone nome="mais" [tamanho]="14" [espessura]="2.2" />
+              {{ sugestao.titulo }}
+            </span>
+            <span class="sugestao__texto">{{ sugestao.texto }}</span>
+          </button>
+        }
+      </div>
+    }
+
+    @if (mensagens().length < maximo) {
+      <button type="button" class="btn btn--secundario btn--bloco" (click)="nova()">
+        <app-icone nome="mais" [tamanho]="16" [espessura]="2" />
+        Nova mensagem
+      </button>
+    }
+  </div>
+} @else {
+  <form class="formulario" [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
+    <button type="button" class="btn btn--texto btn--pequeno voltar" (click)="voltar()">
+      <app-icone nome="voltar" [tamanho]="16" />
+      Mensagens prontas
+    </button>
+
+    <div class="campo">
+      <label for="mensagem-titulo" class="campo__rotulo">Nome da mensagem</label>
+      <input id="mensagem-titulo" class="campo__entrada" type="text" maxlength="40" formControlName="titulo" placeholder="Ex.: Lembrete do horário">
+      @if (temErro('titulo')) {
+        <span class="campo__erro" role="alert">Dê um nome curto para a mensagem.</span>
+      }
+    </div>
+
+    <div class="campo">
+      <label for="mensagem-texto" class="campo__rotulo">Mensagem</label>
+      <textarea
+        #campoTexto
+        id="mensagem-texto"
+        class="campo__entrada"
+        rows="6"
+        maxlength="1000"
+        formControlName="texto"
+        placeholder="Ex.: Olá, {nome}! Passando para lembrar do seu horário {data} às {horario}."
+      ></textarea>
+      <div class="variaveis">
+        <span class="variaveis__rotulo">Inserir:</span>
+        @for (variavel of variaveis; track variavel.chave) {
+          <button type="button" class="chip chip--pequeno" [title]="'Vira, por exemplo: ' + variavel.exemplo" (click)="inserir(variavel.chave)">
+            {{ variavel.rotulo }}
+          </button>
+        }
+      </div>
+      @if (temErro('texto')) {
+        <span class="campo__erro" role="alert">Escreva a mensagem.</span>
+      } @else {
+        <span class="campo__dica">Nome, data, horário e serviço são trocados pelos dados de cada cliente.</span>
+      }
+    </div>
+
+    <button type="submit" class="btn btn--primario btn--grande btn--bloco" [disabled]="salvando()" [attr.aria-busy]="salvando()">
+      @if (salvando()) {
+        <app-carregando modo="inline" variante="claro" [tamanho]="20" />
+        Salvando…
+      } @else {
+        Salvar mensagem
+      }
+    </button>
+  </form>
+}

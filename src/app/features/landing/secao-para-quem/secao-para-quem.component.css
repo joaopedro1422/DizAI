@@ -1,0 +1,168 @@
+/* "Para quem é → Pequenos negócios" */
+.sobretitulo-publico {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.sobretitulo-publico__seta {
+  color: var(--cor-primaria);
+}
+
+.sobretitulo-publico__destaque {
+  padding: 5px 12px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-primaria);
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/* Abas dos ramos */
+.ramos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: -16px;
+}
+
+.ramos__aba {
+  min-height: 46px;
+  padding: 0 20px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-size: 15px;
+  font-weight: 700;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.ramos__aba:hover:not(.ramos__aba--ativa) {
+  border-color: var(--cor-borda-forte);
+}
+
+.ramos__aba--ativa {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria);
+  color: #ffffff;
+}
+
+/* Painel do ramo escolhido */
+.exemplo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  padding: 32px;
+  border-radius: 28px;
+  background: var(--cor-fundo);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+
+.exemplo__textos {
+  display: flex;
+  flex: 1 1 360px;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.exemplo__bloco {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.exemplo__rotulo {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--cor-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.exemplo__quem {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.exemplo__chip {
+  padding: 7px 12px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.exemplo__faz {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.exemplo__faz li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.exemplo__check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: #E3F2EA;
+  color: var(--cor-ativo);
+}
+
+.exemplo__cta {
+  align-self: flex-start;
+}
+
+.exemplo__conversa {
+  display: flex;
+  flex: 1 1 320px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.exemplo__conversa .conversa {
+  padding: 20px;
+  border-radius: 22px;
+}
+
+.exemplo__legenda {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cor-texto-secundario);
+}
+
+@media (max-width: 640px) {
+  /* "Para quem é → Pequenos e médios negócios" cabe numa linha só no celular */
+  .sobretitulo-publico {
+    gap: 8px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  .sobretitulo-publico__destaque {
+    padding: 4px 10px;
+  }
+
+  .exemplo {
+    padding: 20px;
+  }
+}

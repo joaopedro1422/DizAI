@@ -10,7 +10,7 @@ export interface AlbumPublico {
   fotos: string[];
 }
 
-/** Página pública da loja (/loja/:slug), aberta pelo cliente sem login. */
+/** Página pública da loja (/l/:slug), aberta pelo cliente sem login. */
 export interface LojaPublica {
   nomeLoja: string;
   slug: string;
@@ -26,6 +26,8 @@ export interface LojaPublica {
   /** Número normalizado (só dígitos, com 55). */
   numeroWhatsapp: string;
   albuns: AlbumPublico[];
+  /** Mostra a aba "Agenda" (só serviços presenciais com a agenda ligada). */
+  agendaAtiva?: boolean;
 }
 
 export interface FotoPublica {
