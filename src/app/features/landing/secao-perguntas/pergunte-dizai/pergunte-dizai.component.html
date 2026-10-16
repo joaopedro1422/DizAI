@@ -1,64 +1,65 @@
 <section class="pergunte" aria-labelledby="pergunte-titulo">
-  <div class="pergunte__cabecalho">
-    <span class="pergunte__selo" aria-hidden="true"><app-icone nome="brilho" [tamanho]="18" [espessura]="2.2" /></span>
-    <div>
-      <h3 id="pergunte-titulo" class="pergunte__titulo">Ainda com dúvida? Pergunte ao DizAI</h3>
-      <p class="pergunte__descricao">Conte sobre o seu negócio e pergunte se faz sentido para você. Quem responde é a nossa IA.</p>
-    </div>
+  <!-- logo no centro com brilho girando em volta -->
+  <div class="pergunte__orbe" aria-hidden="true">
+    <span class="pergunte__aura"></span>
+    <span class="pergunte__anel"></span>
+    <span class="pergunte__miolo"><app-logo [mostrarNome]="false" [tamanhoSimbolo]="44" /></span>
+    <span class="pergunte__estrela pergunte__estrela--1"><app-icone nome="brilho" [tamanho]="16" [espessura]="2" /></span>
+    <span class="pergunte__estrela pergunte__estrela--2"><app-icone nome="brilho" [tamanho]="11" [espessura]="2" /></span>
   </div>
 
-  <form class="pergunte__form" (ngSubmit)="enviar()">
-    <label class="sr-only" for="pergunte-campo">Sua pergunta para o DizAI</label>
+  <h3 id="pergunte-titulo" class="pergunte__titulo">Pergunte ao <span class="pergunte__brilho-texto">DizAI</span></h3>
+  <p class="pergunte__descricao">Conte do seu negócio. A nossa IA responde na hora.</p>
+
+  <form class="pergunte__caixa" (ngSubmit)="enviar()">
+    <label class="somente-leitor-tela" for="pergunte-campo">Sua pergunta para o DizAI</label>
     <textarea
       #campo
       id="pergunte-campo"
       name="pergunta"
       class="pergunte__campo"
-      rows="2"
-      placeholder="Ex.: tenho uma loja de roupas, o assistente consegue responder sobre tamanhos?"
+      rows="3"
+      placeholder="Tenho uma confeitaria e vendo por encomenda. O DizAI serve para mim?"
       [maxlength]="limiteLetras"
       [ngModel]="texto()"
       (ngModelChange)="texto.set($event)"
       (keydown)="aoTeclar($event)"
     ></textarea>
-    <button
-      type="submit"
-      class="pergunte__enviar"
-      [disabled]="!texto().trim() || perguntaPendente()"
-      aria-label="Enviar pergunta"
-    >
-      <app-icone nome="seta" [tamanho]="18" [espessura]="2.4" />
-    </button>
-  </form>
-
-  @if (trocas().length === 0 && !perguntaPendente()) {
-    <div class="pergunte__sugestoes" aria-label="Sugestões de pergunta">
-      @for (sugestao of sugestoes; track sugestao) {
-        <button type="button" class="pergunte__sugestao" (click)="usarSugestao(sugestao)">{{ sugestao }}</button>
-      }
+    <div class="pergunte__rodape">
+      <span class="pergunte__selo"><app-icone nome="brilho" [tamanho]="13" [espessura]="2.2" /> IA do DizAI</span>
+      <button
+        type="submit"
+        class="pergunte__enviar"
+        [disabled]="!texto().trim() || perguntaPendente()"
+        aria-label="Enviar pergunta"
+      >
+        <app-icone nome="seta" [tamanho]="18" [espessura]="2.4" />
+      </button>
     </div>
-  }
+  </form>
 
   @if (erro(); as mensagem) {
     <p class="pergunte__erro" role="alert">{{ mensagem }}</p>
   }
 
   <div class="pergunte__conversa" aria-live="polite">
-    @for (troca of trocas(); track $index) {
+    @for (troca of trocas(); track $index; let ultima = $last) {
       <div class="pergunte__troca">
         <p class="pergunte__pergunta">{{ troca.pergunta }}</p>
         <div class="pergunte__resposta">
-          <span class="pergunte__autor"><app-icone nome="brilho" [tamanho]="13" [espessura]="2.2" /> DizAI</span>
-          <p>{{ troca.resposta }}</p>
+          <span class="pergunte__avatar" aria-hidden="true"><app-logo [mostrarNome]="false" [tamanhoSimbolo]="18" /></span>
+          <p>{{ ultima ? troca.resposta.slice(0, letrasVisiveis()) : troca.resposta }}</p>
         </div>
       </div>
     }
     @if (perguntaPendente(); as pendente) {
       <div class="pergunte__troca">
         <p class="pergunte__pergunta">{{ pendente }}</p>
-        <div class="pergunte__resposta pergunte__resposta--pensando">
-          <span class="pergunte__autor"><app-icone nome="brilho" [tamanho]="13" [espessura]="2.2" /> DizAI</span>
-          <span class="pergunte__pontinhos" aria-label="Pensando na resposta"><i></i><i></i><i></i></span>
+        <div class="pergunte__resposta">
+          <span class="pergunte__avatar pergunte__avatar--pensando" aria-hidden="true">
+            <app-logo [mostrarNome]="false" [tamanhoSimbolo]="18" />
+          </span>
+          <p class="pergunte__pensando">Pensando…</p>
         </div>
       </div>
     }

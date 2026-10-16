@@ -1,137 +1,206 @@
+/* Ocupa a largura toda da seção, centralizado abaixo das perguntas */
 :host {
   display: block;
-  margin-top: 28px;
+  flex: 1 1 100%;
+  margin-top: 64px;
+}
+
+/* ângulo do brilho que gira na borda da caixa e no anel da logo */
+@property --angulo {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
 }
 
 .pergunte {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 22px;
-  border-radius: 20px;
-  background: #F3F7FD;
-}
-
-.pergunte__cabecalho {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.pergunte__selo {
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  flex: none;
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: var(--cor-primaria);
-  color: #fff;
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
 }
 
+/* ---------- logo com brilho ---------- */
+.pergunte__orbe {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 112px;
+  height: 112px;
+  margin-bottom: 18px;
+}
+
+.pergunte__aura {
+  position: absolute;
+  inset: -24px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(76, 125, 240, 0.35) 0%, rgba(140, 92, 246, 0.16) 40%, transparent 70%);
+  filter: blur(6px);
+  animation: aura-pulsa 3.2s ease-in-out infinite;
+}
+
+.pergunte__anel {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: conic-gradient(from var(--angulo), #1e3a72, #4c7df0, #8c5cf6, #36c2d8, #1e3a72);
+  animation: gira 4s linear infinite;
+}
+
+.pergunte__miolo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--cor-fundo);
+  box-shadow: 0 8px 30px rgba(30, 58, 114, 0.18);
+}
+
+.pergunte__estrela {
+  position: absolute;
+  display: inline-flex;
+  color: #6d6af2;
+  animation: estrela-pisca 2.4s ease-in-out infinite;
+}
+
+.pergunte__estrela--1 {
+  top: 2px;
+  right: -6px;
+}
+
+.pergunte__estrela--2 {
+  bottom: 10px;
+  left: -8px;
+  color: #36a6d8;
+  animation-delay: 1.2s;
+}
+
+/* ---------- textos ---------- */
 .pergunte__titulo {
   margin: 0;
-  font-size: 18px;
+  font-size: clamp(26px, 4vw, 34px);
   font-weight: 800;
+  letter-spacing: -0.03em;
   color: var(--cor-texto);
 }
 
+.pergunte__brilho-texto {
+  background: linear-gradient(90deg, #1e3a72, #4c7df0, #8c5cf6, #4c7df0, #1e3a72);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: texto-brilha 4s linear infinite;
+}
+
 .pergunte__descricao {
-  margin: 4px 0 0;
-  font-size: 14px;
-  line-height: 1.5;
+  margin: 8px 0 28px;
+  font-size: 16px;
   color: var(--cor-texto-secundario);
 }
 
-.pergunte__form {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  padding: 8px 8px 8px 14px;
-  border: 1px solid var(--cor-borda);
-  border-radius: 16px;
-  background: var(--cor-fundo);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+/* ---------- caixa de chat com borda brilhante ---------- */
+.pergunte__caixa {
+  position: relative;
+  width: 100%;
+  padding: 18px 18px 12px 22px;
+  border: 1.5px solid transparent;
+  border-radius: 26px;
+  background:
+    linear-gradient(var(--cor-fundo), var(--cor-fundo)) padding-box,
+    conic-gradient(from var(--angulo), #dce0e8 0%, #4c7df0 12%, #8c5cf6 22%, #dce0e8 34%, #dce0e8 100%) border-box;
+  box-shadow: 0 18px 50px rgba(30, 58, 114, 0.12);
+  text-align: left;
+  animation: gira 5s linear infinite;
+  transition: box-shadow 0.2s ease;
 }
 
-.pergunte__form:focus-within {
-  border-color: var(--cor-primaria);
-  box-shadow: 0 0 0 3px var(--cor-primaria-clara);
+.pergunte__caixa:focus-within {
+  box-shadow: 0 18px 50px rgba(30, 58, 114, 0.12), 0 0 0 5px rgba(76, 125, 240, 0.14);
 }
 
 .pergunte__campo {
-  flex: 1;
-  min-width: 0;
-  min-height: 44px;
-  max-height: 160px;
-  padding: 10px 0;
+  display: block;
+  width: 100%;
+  min-height: 96px;
+  max-height: 260px;
+  padding: 0;
   border: none;
   outline: none;
   background: transparent;
   color: var(--cor-texto);
   font: inherit;
-  font-size: 15px;
-  line-height: 1.45;
-  resize: vertical;
+  font-size: 17px;
+  line-height: 1.5;
+  resize: none;
+  field-sizing: content;
+}
+
+.pergunte__campo::placeholder {
+  color: #98a1b3;
+}
+
+.pergunte__rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.pergunte__selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #eef2fd, #f3eefe);
+  color: #4a4fb8;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .pergunte__enviar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: none;
   width: 44px;
   height: 44px;
   border: none;
-  border-radius: 12px;
-  background: var(--cor-primaria);
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1e3a72, #4c64e0);
   color: #fff;
-  transition: background-color 0.15s ease;
+  box-shadow: 0 6px 16px rgba(30, 58, 114, 0.3);
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
 .pergunte__enviar:hover:not(:disabled) {
-  background: var(--cor-primaria-hover);
+  transform: scale(1.06);
 }
 
 .pergunte__enviar:disabled {
-  background: var(--cor-desabilitado);
-  color: var(--cor-texto-suave);
+  opacity: 0.35;
+  box-shadow: none;
   cursor: default;
 }
 
-.pergunte__sugestoes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.pergunte__sugestao {
-  padding: 8px 12px;
-  border: 1px solid var(--cor-borda);
-  border-radius: 999px;
-  background: var(--cor-fundo);
-  color: var(--cor-texto-secundario);
-  font-size: 13px;
-  font-weight: 600;
-  text-align: left;
-}
-
-.pergunte__sugestao:hover {
-  border-color: var(--cor-primaria);
-  color: var(--cor-primaria);
-}
-
 .pergunte__erro {
-  margin: 0;
+  margin: 14px 0 0;
   font-size: 14px;
   color: var(--cor-erro);
 }
 
+/* ---------- conversa ---------- */
 .pergunte__conversa {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 24px;
+  width: 100%;
+  margin-top: 28px;
+  text-align: left;
 }
 
 .pergunte__conversa:empty {
@@ -141,84 +210,113 @@
 .pergunte__troca {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  animation: troca-aparece 0.25s ease both;
+  gap: 14px;
+  animation: troca-aparece 0.3s ease both;
 }
 
 .pergunte__pergunta {
   align-self: flex-end;
-  max-width: 85%;
+  max-width: 80%;
   margin: 0;
-  padding: 10px 14px;
-  border-radius: 16px 16px 4px 16px;
-  background: var(--cor-primaria);
-  color: #fff;
-  font-size: 14px;
+  padding: 11px 16px;
+  border-radius: 20px;
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto);
+  font-size: 15px;
   line-height: 1.5;
   white-space: pre-line;
 }
 
 .pergunte__resposta {
-  align-self: flex-start;
-  max-width: 92%;
-  padding: 12px 16px;
-  border-radius: 16px 16px 16px 4px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.pergunte__avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
   background: var(--cor-fundo);
-  box-shadow: 0 2px 10px rgba(20, 26, 38, 0.06);
+  box-shadow: 0 0 0 1.5px #dfe5f5, 0 4px 12px rgba(76, 125, 240, 0.18);
+}
+
+.pergunte__avatar--pensando {
+  animation: avatar-pulsa 1.4s ease-in-out infinite;
 }
 
 .pergunte__resposta p {
   margin: 6px 0 0;
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.65;
   color: var(--cor-texto);
   white-space: pre-line;
 }
 
-.pergunte__autor {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--cor-primaria);
+/* "Pensando…" com um brilho passando pelo texto */
+.pergunte__resposta .pergunte__pensando {
+  background: linear-gradient(90deg, #98a1b3 0%, #98a1b3 35%, #4c7df0 50%, #98a1b3 65%, #98a1b3 100%);
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 600;
+  animation: texto-brilha 1.6s linear infinite;
 }
 
-.pergunte__pontinhos {
-  display: flex;
-  gap: 5px;
-  padding: 10px 2px 4px;
+@keyframes gira {
+  to {
+    --angulo: 360deg;
+  }
 }
 
-.pergunte__pontinhos i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--cor-borda-forte);
-  animation: pontinho 1.2s ease-in-out infinite;
+@keyframes aura-pulsa {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
 }
 
-.pergunte__pontinhos i:nth-child(2) {
-  animation-delay: 0.15s;
+@keyframes estrela-pisca {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(0.7) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1) rotate(20deg);
+  }
 }
 
-.pergunte__pontinhos i:nth-child(3) {
-  animation-delay: 0.3s;
+@keyframes texto-brilha {
+  from {
+    background-position: 200% center;
+  }
+  to {
+    background-position: 0% center;
+  }
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
+@keyframes avatar-pulsa {
+  0%, 100% {
+    box-shadow: 0 0 0 1.5px #dfe5f5, 0 0 0 0 rgba(76, 125, 240, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 1.5px #c9d5f7, 0 0 0 7px rgba(76, 125, 240, 0);
+  }
 }
 
 @keyframes troca-aparece {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -226,26 +324,30 @@
   }
 }
 
-@keyframes pontinho {
-  0%, 80%, 100% {
-    opacity: 0.35;
-    transform: translateY(0);
-  }
-  40% {
-    opacity: 1;
-    transform: translateY(-3px);
-  }
-}
-
 @media (max-width: 560px) {
-  .pergunte {
-    padding: 18px 16px;
+  :host {
+    margin-top: 48px;
+  }
+
+  .pergunte__caixa {
+    padding: 16px 14px 10px 16px;
+  }
+
+  .pergunte__campo {
+    min-height: 80px;
+    font-size: 16px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .pergunte__aura,
+  .pergunte__anel,
+  .pergunte__estrela,
+  .pergunte__brilho-texto,
+  .pergunte__caixa,
   .pergunte__troca,
-  .pergunte__pontinhos i {
+  .pergunte__avatar--pensando,
+  .pergunte__resposta .pergunte__pensando {
     animation: none;
   }
 }
