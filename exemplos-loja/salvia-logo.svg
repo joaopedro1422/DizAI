@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="fundo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2A7449"/>
+      <stop offset="1" stop-color="#1D5A36"/>
+    </linearGradient>
+    <linearGradient id="unha" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#E6F2EA"/>
+    </linearGradient>
+  </defs>
+
+  <!-- fundo quadrado: no app a foto de perfil é cortada em círculo -->
+  <rect width="512" height="512" fill="url(#fundo)"/>
+  <circle cx="256" cy="256" r="212" fill="none" stroke="#CFE6D6" stroke-opacity="0.35" stroke-width="3"/>
+
+  <!-- folha de sálvia saindo de trás da unha -->
+  <g transform="translate(318 236) rotate(42)">
+    <path d="M0 -118 C 54 -82 62 -10 0 40 C -62 -10 -54 -82 0 -118 Z" fill="#9CCBA9"/>
+    <path d="M0 -104 L0 32" stroke="#2A7449" stroke-width="5" stroke-linecap="round"/>
+    <path d="M0 -66 L24 -84 M0 -34 L28 -52 M0 -66 L-24 -84 M0 -34 L-28 -52" stroke="#2A7449" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(196 250) rotate(-40) scale(0.7)">
+    <path d="M0 -118 C 54 -82 62 -10 0 40 C -62 -10 -54 -82 0 -118 Z" fill="#7DB58D"/>
+    <path d="M0 -104 L0 32" stroke="#1D5A36" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <!-- unha (formato amendoado) -->
+  <path d="M256 92 C 300 92 318 140 318 196 L318 262 C 318 292 296 312 256 312 C 216 312 194 292 194 262 L194 196 C 194 140 212 92 256 92 Z"
+        fill="url(#unha)"/>
+  <path d="M230 128 C 222 150 220 178 221 206" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.9"/>
+  <path d="M196 262 C 214 282 298 282 316 262" stroke="#CFE6D6" stroke-width="6" fill="none"/>
+
+  <!-- nome -->
+  <text x="256" y="392" text-anchor="middle" font-family="'Playfair Display', Georgia, serif" font-size="68" font-weight="600" fill="#FFFFFF" letter-spacing="2">Sálvia</text>
+  <text x="256" y="434" text-anchor="middle" font-family="'Montserrat', 'Segoe UI', Arial, sans-serif" font-size="20" font-weight="600" fill="#CFE6D6" letter-spacing="9">NAIL STUDIO</text>
+</svg>
