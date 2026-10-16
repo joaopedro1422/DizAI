@@ -44,6 +44,7 @@ export class SessaoService {
       chats: `${inicio}/chats`,
       conectarWhatsapp: `${inicio}/conectar-whatsapp`,
       contatosIgnorados: `${inicio}/contatos-ignorados`,
+      admin: `${inicio}/admin`,
     };
   });
 

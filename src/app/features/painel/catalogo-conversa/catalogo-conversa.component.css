@@ -1,0 +1,187 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.lista-opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.catalogo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Aviso de que a IA não lê o arquivo: o cadastro dos produtos é o que vale */
+.aviso-cadastro {
+  position: relative;
+  display: flex;
+  gap: 12px;
+  padding: 16px 44px 16px 16px;
+  border: 1px solid #F1D9A6;
+  border-radius: var(--raio-medio);
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-texto);
+}
+
+/* X no canto: fecha o aviso até o lojista trocar a opção de novo */
+.aviso-cadastro__fechar {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 36px;
+  height: 36px;
+  color: var(--cor-texto-secundario);
+}
+
+.aviso-cadastro--sem-itens {
+  border-color: #EBC3C0;
+  background: #FCEEEE;
+}
+
+.aviso-cadastro__icone {
+  flex: none;
+  margin-top: 1px;
+  color: var(--cor-ambar);
+}
+
+.aviso-cadastro--sem-itens .aviso-cadastro__icone {
+  color: var(--cor-erro);
+}
+
+.aviso-cadastro__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.aviso-cadastro__textos p {
+  margin: 0;
+}
+
+.aviso-cadastro__titulo {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--cor-texto);
+}
+
+.aviso-cadastro__alerta {
+  font-weight: 700;
+  color: var(--cor-erro);
+}
+
+.aviso-cadastro__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  text-decoration: none;
+}
+
+.catalogo__enviar {
+  min-height: 120px;
+  cursor: pointer;
+  color: var(--cor-primaria);
+}
+
+.catalogo__enviar:focus-within {
+  outline: 2px solid var(--cor-azul);
+  outline-offset: 2px;
+}
+
+.catalogo__enviar--erro {
+  border-color: var(--cor-erro);
+}
+
+.catalogo__formatos {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--cor-texto-suave);
+  text-align: center;
+}
+
+.catalogo__arquivos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.arquivo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo);
+}
+
+.arquivo__miniatura {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--raio-pequeno);
+  object-fit: cover;
+  background: var(--cor-fundo-suave);
+}
+
+.arquivo__miniatura--pdf {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FCEEEE;
+  color: var(--cor-erro);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.arquivo__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* Até duas linhas: no celular sobra pouco espaço ao lado da miniatura e dos botões */
+.arquivo__nome {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.arquivo__detalhe {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+.catalogo__trocar {
+  align-self: flex-start;
+  cursor: pointer;
+}
+
+.catalogo__trocar:focus-within {
+  outline: 2px solid var(--cor-azul);
+  outline-offset: 2px;
+}

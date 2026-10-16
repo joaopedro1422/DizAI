@@ -1,0 +1,65 @@
+:host {
+  display: block;
+}
+
+.app-celular {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* No painel vira um cartão próprio; no convite do onboarding fica solto dentro da janela */
+.app-celular--cartao {
+  margin-top: 12px;
+  padding: 16px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio-grande);
+  background: var(--cor-primaria-clara);
+}
+
+.app-celular__cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 2px;
+}
+
+.app-celular__icone {
+  flex: none;
+  border-radius: 12px;
+}
+
+.app-celular__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.app-celular__titulo {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--cor-primaria);
+}
+
+.app-celular__descricao,
+.app-celular__nota {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--cor-texto-secundario);
+}
+
+.passos-iphone {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 12px 14px 12px 32px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--cor-texto);
+}

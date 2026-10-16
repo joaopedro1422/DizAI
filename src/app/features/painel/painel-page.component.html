@@ -12,6 +12,7 @@
       <section class="grupo" aria-labelledby="titulo-sua-loja">
         <h2 id="titulo-sua-loja" class="grupo__titulo">Seu Negócio</h2>
         <app-atalhos-secoes />
+        <app-no-celular />
       </section>
 
       <div class="grupo__cabecalho">
@@ -105,6 +106,19 @@
       </app-secao-configuracao>
 
       <app-secao-configuracao
+        titulo="Enviar catálogo em imagem ou PDF?"
+        descricao="O assistente envia o seu catálogo ou tabela de preços na conversa. Não substitui as respostas por mensagem."
+      >
+        <app-catalogo-conversa
+          [formulario]="formulario"
+          [modo]="valores().modoCatalogo"
+          [arquivosSalvos]="valores().catalogoArquivos"
+          [mostrarErro]="tentouSalvar() && faltaCatalogo()"
+          [(pendentes)]="pendentesCatalogo"
+        />
+      </app-secao-configuracao>
+
+      <app-secao-configuracao
         titulo="Instruções obrigatórias"
         selo="Prioridade máxima"
         descricao="Regras que o assistente segue acima de qualquer comportamento padrão."
@@ -165,6 +179,19 @@
     rotuloBotao="Vamos começar"
     (confirmar)="iniciarTourAposBoasVindas()"
   />
+}
+
+@if (mostrarConviteApp()) {
+  <app-bottom-sheet titulo="Leve o DizAI no seu celular" (fechar)="fecharConviteApp()">
+    <div class="convite-app">
+      <p class="convite-app__texto">
+        Instale o painel na tela do celular para abrir como um app e receba um aviso sempre que um pedido estiver
+        pronto para fechar.
+      </p>
+      <app-no-celular modo="convite" />
+      <button type="button" class="btn btn--texto btn--bloco" (click)="fecharConviteApp()">Agora não</button>
+    </div>
+  </app-bottom-sheet>
 }
 
 @if (editandoPerfil()) {

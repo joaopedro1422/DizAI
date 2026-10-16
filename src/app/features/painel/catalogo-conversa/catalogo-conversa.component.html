@@ -1,0 +1,104 @@
+<div class="lista-opcoes" role="radiogroup" aria-label="Enviar catálogo em imagem ou PDF?">
+  @for (opcao of modos; track opcao.valor) {
+    <app-opcao-card
+      [titulo]="opcao.rotulo"
+      [descricao]="opcao.descricao"
+      [selecionado]="modo() === opcao.valor"
+      (selecionar)="escolherModo(opcao.valor)"
+    />
+  }
+</div>
+
+@if (ligado()) {
+  <div class="catalogo">
+    @if (!avisoFechado()) {
+      <div class="aviso-cadastro" [class.aviso-cadastro--sem-itens]="totalProdutos() === 0" role="note">
+        <button type="button" class="btn-icone btn-icone--sem-borda aviso-cadastro__fechar" aria-label="Fechar aviso" (click)="fecharAviso()">
+          <app-icone nome="fechar" [tamanho]="16" [espessura]="2" />
+        </button>
+        <app-icone nome="alerta" [tamanho]="20" class="aviso-cadastro__icone" />
+        <div class="aviso-cadastro__textos">
+          <strong class="aviso-cadastro__titulo">
+            O cadastro dos seus {{ tituloItens().toLowerCase() }} continua sendo fundamental
+          </strong>
+          <p>
+            O assistente <strong>não lê</strong> o catálogo enviado. Ele só responde preços, opções e disponibilidade
+            do que estiver cadastrado em {{ tituloItens() }}.
+          </p>
+          @if (totalProdutos() === 0) {
+            <p class="aviso-cadastro__alerta">
+              Você ainda não cadastrou nenhum. Sem cadastro, o assistente não consegue responder sobre eles.
+            </p>
+          }
+          <a class="aviso-cadastro__link" [routerLink]="rotaProdutos()">
+            {{ totalProdutos() === 0 ? 'Cadastrar agora' : 'Ver meus ' + tituloItens().toLowerCase() + ' · ' + resumoProdutos() }}
+            <app-icone nome="avancar" [tamanho]="16" [espessura]="2" />
+          </a>
+        </div>
+      </div>
+    }
+
+    <div class="campo">
+      <span class="campo__rotulo">Seu catálogo</span>
+
+      @if (itens().length === 0) {
+        <label class="area-tracejada catalogo__enviar" [class.catalogo__enviar--erro]="mostrarErro()">
+          <input
+            class="somente-leitor-tela"
+            type="file"
+            accept="application/pdf,image/jpeg,image/png"
+            multiple
+            aria-describedby="dica-arquivo-catalogo"
+            (change)="aoEscolherArquivos($event)"
+          >
+          <app-icone nome="prancheta" [tamanho]="24" />
+          <span>Enviar PDF ou imagem</span>
+          <span class="catalogo__formatos">1 PDF (até 15 MB) ou até 2 imagens JPG/PNG (até 5 MB)</span>
+        </label>
+      } @else {
+        <ul class="catalogo__arquivos">
+          @for (item of itens(); track item.chave) {
+            <li class="arquivo">
+              @if (item.pdf) {
+                <span class="arquivo__miniatura arquivo__miniatura--pdf" aria-hidden="true">PDF</span>
+              } @else {
+                <img class="arquivo__miniatura" [src]="item.url" alt="">
+              }
+              <span class="arquivo__textos">
+                <span class="arquivo__nome">{{ item.nome }}</span>
+                <span class="arquivo__detalhe">{{ item.detalhe }}</span>
+              </span>
+              @if (item.pdf && item.url) {
+                <a class="btn-icone btn-icone--suave" [href]="item.url" target="_blank" rel="noopener" aria-label="Abrir o PDF">
+                  <app-icone nome="externo" [tamanho]="16" />
+                </a>
+              }
+              <button type="button" class="btn-icone btn-icone--suave" [attr.aria-label]="'Remover ' + item.nome" (click)="item.remover()">
+                <app-icone nome="lixeira" [tamanho]="16" />
+              </button>
+            </li>
+          }
+        </ul>
+
+        <label class="btn btn--secundario btn--pequeno catalogo__trocar">
+          <input
+            class="somente-leitor-tela"
+            type="file"
+            accept="application/pdf,image/jpeg,image/png"
+            multiple
+            (change)="aoEscolherArquivos($event)"
+          >
+          {{ podeAdicionarImagem() ? 'Adicionar a 2ª imagem ou trocar' : 'Trocar catálogo' }}
+        </label>
+      }
+
+      @if (mostrarErro() && itens().length === 0) {
+        <span class="campo__erro" role="alert">Envie o catálogo para o assistente poder mandar na conversa.</span>
+      } @else {
+        <span class="campo__dica" id="dica-arquivo-catalogo">
+          Prefira imagem: ela aparece direto na conversa. Use PDF quando o catálogo tiver várias páginas.
+        </span>
+      }
+    </div>
+  </div>
+}

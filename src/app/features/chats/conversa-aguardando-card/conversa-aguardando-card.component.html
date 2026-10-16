@@ -21,7 +21,7 @@
   <div class="resumo caixa-suave">
     <span class="rotulo-maiusculo">Resumo do pedido</span>
     <dl class="resumo__lista">
-      @for (item of conversa().resumoPedido; track item.campo) {
+      @for (item of conversa().resumoPedido; track $index) {
         <div class="resumo__item">
           <dt class="resumo__campo">{{ item.campo }}</dt>
           <dd class="resumo__valor">{{ item.valor }}</dd>

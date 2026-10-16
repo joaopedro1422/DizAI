@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 
-import { painelGuard, perfilResolver, redirecionarParaPainel, visitanteGuard } from './core/auth/painel.guard';
+import { adminGuard, painelGuard, perfilResolver, redirecionarParaPainel, visitanteGuard } from './core/auth/painel.guard';
 
 /** Telas do painel: ficam em /painel/{uuid-do-perfil}/... e só abrem para o dono da loja. */
 const rotasDoPainel: Routes = [
@@ -49,6 +49,12 @@ const rotasDoPainel: Routes = [
       import('./features/contatos-ignorados/contatos-ignorados-page.component').then(
         (m) => m.ContatosIgnoradosPageComponent,
       ),
+  },
+  {
+    path: 'admin',
+    title: 'Gerenciamento | DizAI',
+    canActivate: [adminGuard],
+    loadComponent: () => import('./features/admin/admin-page.component').then((m) => m.AdminPageComponent),
   },
 ];
 

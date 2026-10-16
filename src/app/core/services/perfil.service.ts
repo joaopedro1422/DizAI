@@ -40,9 +40,12 @@ const PERFIL_VAZIO: Perfil = {
   linkPortfolioExterno: '',
   saudacaoPersonalizada: '',
   instrucoesObrigatorias: '',
+  modoCatalogo: 'NAO',
+  catalogoArquivos: [],
   iaAtiva: false,
   whatsappConectado: false,
   onboardingConcluido: false,
+  admin: false,
 };
 
 /**

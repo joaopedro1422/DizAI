@@ -13,7 +13,9 @@ export type DestinoImagem =
   | { tipo: 'PERFIL' }
   | { tipo: 'CAPA' }
   | { tipo: 'GALERIA'; albumId: number }
-  | { tipo: 'PRODUTOS' };
+  | { tipo: 'PRODUTOS' }
+  /** Catálogo enviado na conversa: aceita também PDF (lojas/{slug}/catalogo). */
+  | { tipo: 'CATALOGO' };
 
 /**
  * Envia as imagens ao backend (POST /api/perfis/{perfilId}/arquivos, multipart), que grava no Firebase Storage

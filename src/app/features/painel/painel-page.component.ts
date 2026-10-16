@@ -14,6 +14,7 @@ import { ConversaService } from '../../core/services/conversa.service';
 import { GaleriaService } from '../../core/services/galeria.service';
 import { PerfilService } from '../../core/services/perfil.service';
 import { PerguntaFrequenteService } from '../../core/services/pergunta-frequente.service';
+import { ArmazenamentoFotosService } from '../../core/services/armazenamento-fotos.service';
 import { ProdutoService } from '../../core/services/produto.service';
 import { ToastService } from '../../core/services/toast.service';
 import { BottomSheetComponent } from '../../shared/components/bottom-sheet/bottom-sheet.component';
@@ -23,7 +24,11 @@ import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { OpcaoCardComponent } from '../../shared/components/opcao-card/opcao-card.component';
 import { SecaoConfiguracaoComponent } from '../../shared/components/secao-configuracao/secao-configuracao.component';
 import { AlertaConexaoWhatsappComponent } from './alerta-conexao-whatsapp/alerta-conexao-whatsapp.component';
+import { InstalacaoAppService } from '../../core/pwa/instalacao-app.service';
+import { NotificacoesPushService } from '../../core/pwa/notificacoes-push.service';
+import { AppNoCelularComponent } from './app-no-celular/app-no-celular.component';
 import { AtalhosSecoesComponent } from './atalhos-secoes/atalhos-secoes.component';
+import { CatalogoConversaComponent } from './catalogo-conversa/catalogo-conversa.component';
 import { EditarPerfilComponent } from './editar-perfil/editar-perfil.component';
 import { AlvoTourDirective } from './onboarding/alvo-tour.directive';
 import { OnboardingTourComponent } from './onboarding/onboarding-tour.component';
@@ -44,6 +49,8 @@ const ESPERA_BOAS_VINDAS_MS = 2500;
     SecaoConfiguracaoComponent,
     ResumoLojaComponent,
     AtalhosSecoesComponent,
+    AppNoCelularComponent,
+    CatalogoConversaComponent,
     AlertaConexaoWhatsappComponent,
     BottomSheetComponent,
     EditarPerfilComponent,
@@ -64,6 +71,7 @@ export class PainelPageComponent implements OnInit {
   private readonly conversaService = inject(ConversaService);
   private readonly contatoIgnoradoService = inject(ContatoIgnoradoService);
   private readonly toastService = inject(ToastService);
+  private readonly armazenamentoFotos = inject(ArmazenamentoFotosService);
   private readonly autenticacaoService = inject(AutenticacaoService);
   private readonly router = inject(Router);
   private readonly rotaAtual = inject(ActivatedRoute);
@@ -90,9 +98,21 @@ export class PainelPageComponent implements OnInit {
   /** Último estado salvo, usado para saber se o lojista mudou alguma coisa. */
   private readonly valoresSalvos = signal(this.formulario.getRawValue());
 
-  /** A barra de salvar só aparece quando o formulário difere do que está salvo. */
+  /** Arquivos do catálogo escolhidos e ainda não enviados: sobem no "Salvar alterações". */
+  protected readonly pendentesCatalogo = signal<File[]>([]);
+
+  /** A barra de salvar só aparece quando o formulário difere do que está salvo (ou há catálogo novo). */
   protected readonly temAlteracoes = computed(
-    () => JSON.stringify(this.valores()) !== JSON.stringify(this.valoresSalvos()),
+    () =>
+      JSON.stringify(this.valores()) !== JSON.stringify(this.valoresSalvos()) || this.pendentesCatalogo().length > 0,
+  );
+
+  /** Envio do catálogo ligado, mas sem nenhum arquivo salvo nem escolhido. */
+  protected readonly faltaCatalogo = computed(
+    () =>
+      this.valores().modoCatalogo !== 'NAO' &&
+      this.valores().catalogoArquivos.length === 0 &&
+      this.pendentesCatalogo().length === 0,
   );
 
   protected readonly tentouSalvar = signal(false);
@@ -108,6 +128,11 @@ export class PainelPageComponent implements OnInit {
     return this.conteudoRamo().instrucoesSugeridas.filter((instrucao) => !instrucoesAtuais.includes(instrucao.toLowerCase()));
   });
   protected readonly editandoPerfil = signal(false);
+
+  private readonly instalacaoApp = inject(InstalacaoAppService);
+  private readonly avisosPush = inject(NotificacoesPushService);
+  /** Fim do onboarding: convite para instalar o app e ativar os avisos (só se houver algo a fazer). */
+  protected readonly mostrarConviteApp = signal(false);
 
   /** Conta nova: primeiro a janela de boas-vindas, depois o tour em passos. */
   protected readonly mostrarBoasVindas = signal(false);
@@ -197,9 +222,14 @@ export class PainelPageComponent implements OnInit {
       this.toastService.mostrar('Confira os campos destacados antes de salvar.');
       return;
     }
-    const valoresAtuais = this.formulario.getRawValue();
+    if (this.faltaCatalogo()) {
+      this.toastService.mostrar('Envie o catálogo (PDF ou imagem) ou escolha "Não" no envio do catálogo.');
+      return;
+    }
     this.salvandoConfiguracoes.set(true);
     try {
+      await this.enviarCatalogoPendente();
+      const valoresAtuais = this.formulario.getRawValue();
       await this.perfilService.salvarConfiguracoes(valoresAtuais);
       this.valoresSalvos.set(valoresAtuais);
       this.formulario.markAsPristine();
@@ -212,9 +242,22 @@ export class PainelPageComponent implements OnInit {
     }
   }
 
+  /** Sobe os arquivos escolhidos do catálogo e junta as referências às que já estavam salvas. */
+  private async enviarCatalogoPendente(): Promise<void> {
+    const pendentes = this.pendentesCatalogo();
+    if (pendentes.length === 0) {
+      return;
+    }
+    const referencias = await this.armazenamentoFotos.enviar(pendentes, { tipo: 'CATALOGO' });
+    const controle = this.formulario.controls.catalogoArquivos;
+    controle.setValue([...controle.value, ...referencias]);
+    this.pendentesCatalogo.set([]);
+  }
+
   /** Volta o formulário para o último estado salvo. */
   protected descartarAlteracoes(): void {
     this.formulario.reset(this.valoresSalvos());
+    this.pendentesCatalogo.set([]);
     this.tentouSalvar.set(false);
   }
 
@@ -240,5 +283,12 @@ export class PainelPageComponent implements OnInit {
     this.perfilService.marcarOnboardingConcluido();
     this.router.navigate([], { relativeTo: this.rotaAtual, queryParams: {}, replaceUrl: true });
     this.toastService.mostrar('Tudo pronto! Comece cadastrando seus produtos.');
+    if (this.instalacaoApp.podeInstalar() || this.avisosPush.estado() === 'desativado') {
+      this.mostrarConviteApp.set(true);
+    }
+  }
+
+  protected fecharConviteApp(): void {
+    this.mostrarConviteApp.set(false);
   }
 }

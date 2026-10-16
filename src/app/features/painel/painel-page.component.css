@@ -73,6 +73,29 @@
   line-height: 1.6;
 }
 
+/* Campos de escrita do painel: fundo levemente acinzentado e borda mais visível, para não sumirem no cartão branco */
+.conteudo textarea.campo__entrada {
+  border-color: #C3CBDA;
+  background: var(--cor-fundo-tracejado);
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05);
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.conteudo textarea.campo__entrada:hover {
+  border-color: var(--cor-borda-forte);
+}
+
+/* Ao escrever, volta ao branco com o contorno azul da marca */
+.conteudo textarea.campo__entrada:focus {
+  border-color: var(--cor-primaria);
+  background: var(--cor-fundo);
+  box-shadow: 0 0 0 3px rgba(30, 58, 114, 0.15);
+}
+
+.conteudo textarea.campo__entrada.ng-invalid.ng-touched {
+  border-color: var(--cor-erro);
+}
+
 .aviso-informativo {
   align-items: flex-start;
   padding: 0;
@@ -151,4 +174,18 @@
   flex: none;
   margin-top: 2px;
   color: var(--cor-primaria);
+}
+
+/* Convite do fim do onboarding: instalar o app e ativar os avisos */
+.convite-app {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.convite-app__texto {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
 }

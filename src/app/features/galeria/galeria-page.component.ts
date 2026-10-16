@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 
 import { ERRO_AO_CARREGAR, mensagemDoErro } from '../../core/api/erro-api';
 import { Album, NovoAlbum } from '../../core/models/galeria.model';
+import { VisitasGaleria } from '../../core/models/visitas.model';
 import { buscarCorMarca } from '../../core/constants/cores-marca';
 import { ArmazenamentoFotosService } from '../../core/services/armazenamento-fotos.service';
 import { ConteudoRamoService } from '../../core/services/conteudo-ramo.service';
@@ -63,6 +64,14 @@ export class GaleriaPageComponent implements OnInit {
   protected readonly ordemRascunho = signal<number[]>([]);
   protected readonly ordemSalva = signal<number[]>([]);
   protected readonly salvandoOrdem = signal(false);
+  /** Visitas à página pública; null enquanto carrega ou se a busca falhar (o card some). */
+  protected readonly visitas = signal<VisitasGaleria | null>(null);
+  protected readonly tituloVisitas = computed(() => {
+    const semana = this.visitas()?.ultimos7Dias ?? 0;
+    return semana === 0
+      ? 'Sua galeria ainda não teve visitas nos últimos 7 dias'
+      : `${pluralizar(semana, 'visita', 'visitas')} na sua galeria nos últimos 7 dias`;
+  });
 
   protected readonly semTopicos = computed(() => this.albuns().length === 0);
   protected readonly albunsNaOrdemRascunho = computed(() => {
@@ -82,6 +91,10 @@ export class GaleriaPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.galeriaService
+      .buscarVisitas()
+      .then((visitas) => this.visitas.set(visitas))
+      .catch(() => undefined);   // só informativo: sem aviso de erro
     this.galeriaService
       .carregar()
       .then(() => {

@@ -8,6 +8,50 @@
   <meta name="description" content="O DizAI responde seus clientes no WhatsApp na hora, com os produtos, preços e regras da sua loja.">
   <meta name="theme-color" content="#1E3A72">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- App instalado na tela do celular (PWA) -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="DizAI">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <style>
+    /* Abertura estilo app nativo: só quando o DizAI é aberto pelo atalho instalado (display-mode standalone) */
+    .abertura {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: #1E3A72;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    @media (display-mode: standalone) {
+      .abertura { display: flex; }
+    }
+    .abertura--ios { display: flex; }
+    .abertura--saindo { opacity: 0; transform: scale(1.04); pointer-events: none; }
+    .abertura__simbolo { width: 92px; height: 92px; animation: abertura-entrada 0.5s ease both; }
+    .abertura__balao { fill: #ffffff; }
+    .abertura__ponto { fill: #1E3A72; animation: abertura-digitando 1.2s ease-in-out infinite; }
+    .abertura__ponto:nth-of-type(2) { animation-delay: 0.15s; }
+    .abertura__ponto:nth-of-type(3) { animation-delay: 0.3s; }
+    .abertura__nome {
+      font: 800 28px/1 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      letter-spacing: -0.05em;
+      color: #ffffff;
+      animation: abertura-entrada 0.5s 0.1s ease both;
+    }
+    .abertura__nome span { color: #9aa6bd; }
+    @keyframes abertura-entrada { from { opacity: 0; transform: translateY(8px) scale(0.96); } }
+    @keyframes abertura-digitando { 0%, 60%, 100% { opacity: 1; } 30% { opacity: 0.35; } }
+    @media (prefers-reduced-motion: reduce) {
+      .abertura__simbolo, .abertura__nome, .abertura__ponto { animation: none; }
+    }
+  </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500&display=swap" rel="stylesheet">
@@ -20,6 +64,29 @@
 >
 </head>
 <body>
+  <div class="abertura" id="abertura" aria-hidden="true">
+    <svg class="abertura__simbolo" viewBox="0 0 48 48" focusable="false">
+      <path class="abertura__balao" d="M8 6H22A18 17 0 0 1 22 40H16L8 46Z" />
+      <circle class="abertura__ponto" cx="16" cy="23" r="2.7" />
+      <circle class="abertura__ponto" cx="23.7" cy="23" r="2.7" />
+      <circle class="abertura__ponto" cx="31.4" cy="23" r="2.7" />
+    </svg>
+    <span class="abertura__nome">Diz<span>AI</span></span>
+  </div>
+  <script>
+    // iPhone antigo não entende display-mode no CSS; o navigator.standalone diz que veio do atalho
+    if (window.navigator.standalone) document.getElementById('abertura').classList.add('abertura--ios');
+    // o Chrome oferece a instalação antes do Angular carregar: guarda o convite para o InstalacaoAppService
+    window.addEventListener('beforeinstallprompt', function (evento) {
+      evento.preventDefault();
+      window.__dizaiConviteInstalacao = evento;
+    });
+    // segurança: se o app não carregar, a abertura não fica presa na tela
+    setTimeout(function () {
+      var abertura = document.getElementById('abertura');
+      if (abertura) abertura.remove();
+    }, 10000);
+  </script>
   <app-root></app-root>
 </body>
 </html>

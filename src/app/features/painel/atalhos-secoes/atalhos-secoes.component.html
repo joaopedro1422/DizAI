@@ -89,4 +89,12 @@
       </span>
     }
   </a>
+
+  @if (ehAdmin()) {
+    <a [routerLink]="rotas().admin" class="atalho-admin">
+      <app-icone nome="ajustes" [tamanho]="18" />
+      <span class="atalho-admin__texto">Gerenciamento da plataforma</span>
+      <app-icone nome="avancar" [tamanho]="18" [espessura]="2" />
+    </a>
+  }
 </nav>

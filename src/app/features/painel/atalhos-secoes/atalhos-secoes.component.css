@@ -206,3 +206,21 @@
   justify-content: space-between;
   min-height: 140px;
 }
+
+/* Só aparece para as contas de admin */
+.atalho-admin {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px dashed var(--cor-borda-forte);
+  border-radius: var(--raio-medio);
+  color: var(--cor-primaria);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.atalho-admin__texto {
+  flex: 1;
+}

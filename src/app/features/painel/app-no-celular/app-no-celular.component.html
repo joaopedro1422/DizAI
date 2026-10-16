@@ -1,0 +1,53 @@
+@if (temAlgoAFazer()) {
+  <section class="app-celular" [class.app-celular--cartao]="modo() === 'cartao'" aria-labelledby="titulo-app-celular">
+    @if (modo() === 'cartao') {
+      <div class="app-celular__cabecalho">
+        <img class="app-celular__icone" src="/icones/icone-192.png" width="44" height="44" alt="">
+        <div class="app-celular__textos">
+          <h2 id="titulo-app-celular" class="app-celular__titulo">DizAI no seu celular</h2>
+          <p class="app-celular__descricao">
+            Abra o painel como um app e receba um aviso quando um pedido estiver pronto para fechar.
+          </p>
+        </div>
+      </div>
+    } @else {
+      <h2 id="titulo-app-celular" class="somente-leitor-tela">DizAI no seu celular</h2>
+    }
+
+    @if (mostrarInstalar()) {
+      <button type="button" class="btn btn--primario btn--bloco" (click)="instalar()">
+        Instalar na tela do celular
+      </button>
+
+      @if (mostrarPassosIphone()) {
+        <ol class="passos-iphone">
+          <li>No Safari, toque em <strong>Compartilhar</strong> (o quadrado com a seta para cima).</li>
+          <li>Escolha <strong>Adicionar à Tela de Início</strong>.</li>
+          <li>Toque em <strong>Adicionar</strong>. O DizAI aparece junto dos seus apps.</li>
+        </ol>
+      }
+    }
+
+    @switch (estadoAvisos()) {
+      @case ('desativado') {
+        <button
+          type="button"
+          class="btn btn--secundario btn--bloco"
+          [disabled]="ativando()"
+          [attr.aria-busy]="ativando()"
+          (click)="ativarAvisos()"
+        >
+          {{ ativando() ? 'Ativando…' : 'Ativar avisos de pedidos' }}
+        </button>
+      }
+      @case ('precisa-instalar') {
+        <p class="app-celular__nota">No iPhone, os avisos de pedido funcionam depois que o DizAI estiver na tela de início.</p>
+      }
+      @case ('bloqueado') {
+        <p class="app-celular__nota">
+          Os avisos estão bloqueados neste navegador. Libere as notificações nas configurações do site para receber os pedidos.
+        </p>
+      }
+    }
+  </section>
+}

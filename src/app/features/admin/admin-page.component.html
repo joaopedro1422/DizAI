@@ -1,0 +1,142 @@
+<div class="tela-app tela-admin">
+  <app-cabecalho-pagina titulo="Gerenciamento" [subtitulo]="subtitulo()" [comDivisor]="true">
+    <button
+      acoesTopo
+      type="button"
+      class="btn btn--secundario btn--pequeno"
+      [disabled]="carregando()"
+      [attr.aria-busy]="carregando()"
+      (click)="recarregar()"
+    >
+      {{ carregando() ? 'Atualizando…' : 'Atualizar' }}
+    </button>
+  </app-cabecalho-pagina>
+
+  <main class="conteudo-tela admin">
+    @if (painel(); as dados) {
+      <section class="metricas" aria-label="Resumo da plataforma">
+        @for (metrica of metricas(); track metrica.rotulo) {
+          <div class="metrica">
+            <span class="metrica__rotulo">{{ metrica.rotulo }}</span>
+            <strong class="metrica__valor">{{ metrica.valor }}</strong>
+            <span class="metrica__detalhe">{{ metrica.detalhe }}</span>
+          </div>
+        }
+      </section>
+
+      <section class="lojas" aria-labelledby="titulo-lojas">
+        <div class="lojas__topo">
+          <h2 id="titulo-lojas" class="titulo-secao">Lojas</h2>
+          <span class="texto-pequeno texto-suave">{{ resumoLista() }}</span>
+        </div>
+
+        <div class="lojas__controles">
+          <input
+            type="search"
+            class="campo__entrada"
+            placeholder="Buscar por loja, dono ou número"
+            aria-label="Buscar lojas"
+            [value]="busca()"
+            (input)="buscar($event)"
+          >
+          <select class="campo__entrada lojas__ordem" aria-label="Ordenar lojas" (change)="ordenar($event)">
+            <option value="recentes" [selected]="ordem() === 'recentes'">Mais novas</option>
+            <option value="ativas" [selected]="ordem() === 'ativas'">Mais conversas</option>
+            <option value="custo" [selected]="ordem() === 'custo'">Maior custo de IA</option>
+          </select>
+        </div>
+
+        <div class="lojas__filtros" role="group" aria-label="Filtrar lojas">
+          @for (filtro of filtros; track filtro.valor) {
+            @let ativo = filtro.valor === filtroAtual();
+            <button
+              type="button"
+              class="chip chip--pequeno"
+              [class.chip--ativo]="ativo"
+              [attr.aria-pressed]="ativo"
+              (click)="filtrar(filtro.valor)"
+            >
+              {{ filtro.rotulo }}
+            </button>
+          }
+        </div>
+
+        <ul class="lista lojas__lista">
+          @for (loja of lojasFiltradas(); track loja.id) {
+            @let whatsapp = situacaoWhatsapp(loja);
+            <li class="loja">
+              <div class="loja__cabecalho">
+                <div class="loja__identificacao">
+                  <h3 class="loja__nome">{{ loja.nomeLoja }}</h3>
+                  <p class="loja__dono">
+                    {{ loja.nomeDono }} · {{ loja.whatsapp }}@if (loja.ramo) { · {{ loja.ramo }}}
+                  </p>
+                </div>
+                <span class="loja__custo" title="Custo estimado da IA neste mês">{{ custo(loja) }}</span>
+              </div>
+
+              <div class="loja__selos">
+                <span class="selo" [class]="whatsapp.classe">{{ whatsapp.rotulo }}</span>
+                <span class="selo" [class]="loja.iaAtiva ? 'selo--ok' : 'selo--neutro'">
+                  Assistente {{ loja.iaAtiva ? 'ligado' : 'desligado' }}
+                </span>
+                @if (!loja.onboardingConcluido) {
+                  <span class="selo selo--neutro">Tour pendente</span>
+                }
+              </div>
+
+              <dl class="loja__numeros">
+                <div><dt>Produtos</dt><dd>{{ loja.produtos }}</dd></div>
+                <div><dt>Perguntas</dt><dd>{{ loja.perguntas }}</dd></div>
+                <div><dt>Fotos</dt><dd>{{ loja.fotos }}</dd></div>
+                <div><dt>Chamadas IA</dt><dd>{{ loja.chamadasIaMes }}</dd></div>
+              </dl>
+
+              <div class="loja__rodape">
+                <p class="loja__atividade">Desde {{ dataCadastro(loja) }} · {{ atividade(loja) }}</p>
+                <span class="loja__acoes">
+                  <a
+                    class="btn-icone btn-icone--suave"
+                    [href]="linkWhatsapp(loja)"
+                    target="_blank"
+                    rel="noopener"
+                    [attr.aria-label]="'Conversar com ' + loja.nomeDono + ' no WhatsApp'"
+                  >
+                    <app-icone nome="conversa" [tamanho]="18" />
+                  </a>
+                  @if (loja.slug) {
+                    <a
+                      class="btn-icone btn-icone--suave"
+                      [href]="'/loja/' + loja.slug"
+                      target="_blank"
+                      rel="noopener"
+                      [attr.aria-label]="'Abrir a galeria pública de ' + loja.nomeLoja"
+                    >
+                      <app-icone nome="externo" [tamanho]="18" />
+                    </a>
+                  }
+                </span>
+              </div>
+            </li>
+          } @empty {
+            <li>
+              <app-estado-vazio
+                icone="busca"
+                titulo="Nenhuma loja encontrada"
+                descricao="Troque o filtro ou a busca para ver outras lojas."
+              />
+            </li>
+          }
+        </ul>
+      </section>
+    } @else if (carregando()) {
+      <app-carregando texto="Carregando a plataforma…" />
+    } @else {
+      <app-estado-vazio
+        icone="alerta"
+        titulo="Não foi possível carregar"
+        descricao="Confira se o backend está no ar e toque em Atualizar."
+      />
+    }
+  </main>
+</div>

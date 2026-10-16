@@ -1,6 +1,6 @@
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
-import { ConfiguracoesAtendimento, ModoFotos, ModoPedido } from '../../core/models/perfil.model';
+import { ConfiguracoesAtendimento, ModoCatalogo, ModoFotos, ModoPedido } from '../../core/models/perfil.model';
 import { urlValida } from '../../core/utils/validadores';
 
 /** No modo "link externo", o link do portfólio passa a ser obrigatório. */
@@ -20,6 +20,9 @@ export function criarFormularioConfiguracoes(fb: FormBuilder, valores: Configura
       linkPortfolioExterno: [valores.linkPortfolioExterno, [urlValida, Validators.maxLength(500)]],
       saudacaoPersonalizada: [valores.saudacaoPersonalizada, Validators.maxLength(1000)],
       instrucoesObrigatorias: [valores.instrucoesObrigatorias, Validators.maxLength(1500)],
+      modoCatalogo: fb.nonNullable.control<ModoCatalogo>(valores.modoCatalogo ?? 'NAO'),
+      /** Arquivos já salvos; os escolhidos agora ficam no painel e sobem ao salvar. */
+      catalogoArquivos: fb.nonNullable.control<string[]>(valores.catalogoArquivos ?? []),
     },
     { validators: linkObrigatorioNoModoExterno },
   );

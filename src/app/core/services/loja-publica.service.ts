@@ -14,6 +14,15 @@ export class LojaPublicaService {
     return firstValueFrom(this.http.get<LojaPublica>(urlApi(`/public/lojas/${encodeURIComponent(slug)}`)));
   }
 
+  /** Conta uma visita à galeria. Falhar aqui não pode atrapalhar a página do cliente. */
+  async registrarVisita(slug: string): Promise<void> {
+    try {
+      await firstValueFrom(this.http.post<void>(urlApi(`/public/lojas/${encodeURIComponent(slug)}/visitas`), null));
+    } catch {
+      // só um contador: sem aviso para o cliente
+    }
+  }
+
   /** Todas as fotos de um tópico (a página da loja traz só as primeiras). */
   buscarAlbum(slugLoja: string, slugAlbum: string): Promise<AlbumPublicoDetalhe> {
     const caminho = `/public/lojas/${encodeURIComponent(slugLoja)}/albuns/${encodeURIComponent(slugAlbum)}`;

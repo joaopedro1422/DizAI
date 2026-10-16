@@ -14,6 +14,9 @@ export type ModoPedido = 'ENCAMINHAR_AO_DONO' | 'COLETAR_DADOS';
 /** Qual link o assistente envia quando o cliente pede fotos. */
 export type ModoFotos = 'GALERIA' | 'LINK_EXTERNO';
 
+/** Quando o assistente envia o catálogo (1 PDF ou até 2 imagens) na conversa. Sempre no máximo 1 vez por conversa. */
+export type ModoCatalogo = 'SAUDACAO' | 'AO_PERGUNTAR' | 'NAO';
+
 export type FormaPagamento = 'PIX' | 'CARTAO_CREDITO' | 'CARTAO_DEBITO' | 'DINHEIRO' | 'LINK_PAGAMENTO';
 
 export type FormaRecebimento = 'ENTREGA' | 'RETIRADA' | 'ATENDIMENTO_LOCAL';
@@ -64,11 +67,16 @@ export interface Perfil {
   linkPortfolioExterno: string;
   saudacaoPersonalizada: string;
   instrucoesObrigatorias: string;
+  modoCatalogo: ModoCatalogo;
+  /** Referências de lojas/{slug}/catalogo: 1 PDF ou até 2 imagens. Exiba com o pipe urlImagem. */
+  catalogoArquivos: string[];
   /** Liga e desliga as respostas automáticas. O lojista controla no painel. */
   iaAtiva: boolean;
   /** O número já foi vinculado à API oficial do WhatsApp (Meta). Sem isso o assistente não responde. */
   whatsappConectado: boolean;
   onboardingConcluido: boolean;
+  /** Conta com acesso ao gerenciamento da plataforma (/painel/{id}/admin). Definido no backend por DIZAI_ADMIN_NUMEROS. */
+  admin?: boolean;
 }
 
 /** Campos que o lojista altera na tela inicial do painel. */
@@ -80,6 +88,8 @@ export type ConfiguracoesAtendimento = Pick<
   | 'linkPortfolioExterno'
   | 'saudacaoPersonalizada'
   | 'instrucoesObrigatorias'
+  | 'modoCatalogo'
+  | 'catalogoArquivos'
 >;
 
 /** Dados editados no modal "Dados da loja" do painel. */

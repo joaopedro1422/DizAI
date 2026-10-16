@@ -142,3 +142,46 @@
   from { transform: translate(-50%, 100%); }
   to { transform: translate(-50%, 0); }
 }
+
+/* Visitas à galeria pública */
+.visitas {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-primaria-clara);
+}
+
+.visitas__icone {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--cor-fundo);
+  color: var(--cor-primaria);
+}
+
+.visitas__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.visitas__titulo {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--cor-primaria);
+}
+
+.visitas__detalhe {
+  margin: 0;
+  font-size: 13px;
+  color: var(--cor-texto-secundario);
+}

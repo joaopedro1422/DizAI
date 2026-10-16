@@ -1,6 +1,7 @@
 import {
   FormaPagamento,
   FormaRecebimento,
+  ModoCatalogo,
   ModoFotos,
   ModoPedido,
   PrazoMinimo,
@@ -96,6 +97,25 @@ export const MODOS_FOTOS: OpcaoDescrita<ModoFotos>[] = [
     valor: 'LINK_EXTERNO',
     rotulo: 'Link externo',
     descricao: 'Envia o seu portfólio em outro lugar, como Instagram, Drive ou Canva.',
+  },
+];
+
+/** "Enviar catálogo em imagem ou PDF?": nas duas opções de "Sim", o catálogo vai no máximo 1 vez por conversa. */
+export const MODOS_CATALOGO: OpcaoDescrita<ModoCatalogo>[] = [
+  {
+    valor: 'SAUDACAO',
+    rotulo: 'Sim, na saudação inicial',
+    descricao: 'Logo no início da conversa: a saudação, a resposta do assistente e o seu catálogo.',
+  },
+  {
+    valor: 'AO_PERGUNTAR',
+    rotulo: 'Sim, quando perguntarem sobre produtos',
+    descricao: 'Uma única vez,quando o cliente perguntar sobre produtos, opções, detalhes... ou pedir o menu.',
+  },
+  {
+    valor: 'NAO',
+    rotulo: 'Não',
+    descricao: 'O assistente não envia catálogo. Responde sobre produtos por mensagem com base no que você cadastrou..',
   },
 ];
 

@@ -7,6 +7,7 @@ import { MOTIVOS_ESPERA } from '../../../core/constants/opcoes-conversa';
 import { ContatoIgnoradoService } from '../../../core/services/contato-ignorado.service';
 import { ConversaService } from '../../../core/services/conversa.service';
 import { GaleriaService } from '../../../core/services/galeria.service';
+import { PerfilService } from '../../../core/services/perfil.service';
 import { PerguntaFrequenteService } from '../../../core/services/pergunta-frequente.service';
 import { ProdutoService } from '../../../core/services/produto.service';
 import { pluralizar } from '../../../core/utils/colecao.utils';
@@ -33,6 +34,10 @@ export class AtalhosSecoesComponent {
   private readonly contatoIgnoradoService = inject(ContatoIgnoradoService);
 
   protected readonly rotas = inject(SessaoService).rotasDoPainel;
+
+  /** Só as contas de DIZAI_ADMIN_NUMEROS veem o atalho do gerenciamento. */
+  private readonly perfil = inject(PerfilService).perfil;
+  protected readonly ehAdmin = computed(() => this.perfil().admin === true);
 
   protected readonly quantidadeAguardando = computed(() => this.conversaService.aguardandoDono().length);
 

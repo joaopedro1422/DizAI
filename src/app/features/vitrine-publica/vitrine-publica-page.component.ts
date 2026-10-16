@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { SessaoService } from '../../core/auth/sessao.service';
 import { buscarCorMarca } from '../../core/constants/cores-marca';
 import { UrlImagemPipe } from '../../core/imagens/url-imagem';
 import { Foto } from '../../core/models/galeria.model';
@@ -33,6 +34,7 @@ export class VitrinePublicaPageComponent implements OnInit {
   /** Vem da rota /loja/:slug */
   readonly slug = input.required<string>();
   private readonly lojaPublicaService = inject(LojaPublicaService);
+  private readonly sessao = inject(SessaoService);
   private readonly toastService = inject(ToastService);
 
   protected readonly situacao = signal<SituacaoPagina>('carregando');
@@ -88,11 +90,32 @@ export class VitrinePublicaPageComponent implements OnInit {
       document.title = `${loja.nomeLoja} | Galeria de trabalhos`;
       this.iniciarIntroducao();
       this.situacao.set('pronta');
+      this.contarVisita(loja.slug);
 
     } catch (erro) {
       const naoExiste = erro instanceof HttpErrorResponse && erro.status === 404;
       this.situacao.set(naoExiste ? 'nao-encontrada' : 'erro');
     }
+  }
+
+  /**
+   * Uma visita por aba (sessionStorage), para recarregar a página não contar de novo.
+   * Quem está logado no painel é o próprio lojista conferindo a galeria: não conta.
+   */
+  private contarVisita(slug: string): void {
+    if (this.sessao.estaAutenticado()) {
+      return;
+    }
+    const chave = `dizai:visita:${slug}`;
+    try {
+      if (sessionStorage.getItem(chave)) {
+        return;
+      }
+      sessionStorage.setItem(chave, '1');
+    } catch {
+      // navegação privada sem sessionStorage: conta mesmo assim
+    }
+    void this.lojaPublicaService.registrarVisita(slug);
   }
 
   private iniciarIntroducao(): void {

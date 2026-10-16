@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { urlDoPerfil } from '../api/api-url';
 import { SessaoService } from '../auth/sessao.service';
 import { Album, Foto, NovoAlbum } from '../models/galeria.model';
+import { VisitasGaleria } from '../models/visitas.model';
 import { CarregamentoUnico } from '../utils/carregamento-unico';
 
 /** Resposta de GET /albuns: cada tópico traz a contagem e a prévia das primeiras fotos. */
@@ -82,6 +83,11 @@ export class GaleriaService {
       this.http.delete<ExclusaoAlbumApi>(this.url(`/albuns/${albumId}`)),
     );
     this.listaAlbuns.update((albuns) => albuns.filter((album) => album.id !== albumId));
+  }
+
+  /** Quantas vezes a galeria pública foi aberta (GET /albuns/visitas). Sempre busca de novo. */
+  buscarVisitas(): Promise<VisitasGaleria> {
+    return firstValueFrom(this.http.get<VisitasGaleria>(this.url('/albuns/visitas')));
   }
 
   buscarAlbum(albumId: number): Album | undefined {

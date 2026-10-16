@@ -28,6 +28,24 @@
   </app-cabecalho-pagina>
 
   <main class="lista conteudo-tela" [class.lista--com-barra]="temAlteracoesOrdem()">
+    @if (visitas(); as v) {
+      <section class="visitas" aria-labelledby="titulo-visitas">
+        <span class="visitas__icone" aria-hidden="true">
+          <app-icone nome="olho" [tamanho]="20" [espessura]="2" />
+        </span>
+        <div class="visitas__textos">
+          <h2 id="titulo-visitas" class="visitas__titulo">{{ tituloVisitas() }}</h2>
+          <p class="visitas__detalhe">
+            @if (v.ultimos7Dias > 0) {
+              {{ v.hoje }} hoje · {{ v.ultimos30Dias }} nos últimos 30 dias
+            } @else {
+              Envie o link da sua página para os clientes verem seus trabalhos.
+            }
+          </p>
+        </div>
+      </section>
+    }
+
     <p class="aviso-informativo">
       <app-icone nome="informacao" [tamanho]="16" />
       <span>Toda foto fica dentro de um tópico, como "{{ exemploTopico() }}". É o link do tópico que o assistente envia ao cliente. Use as setas para mudar a ordem da vitrine.</span>
