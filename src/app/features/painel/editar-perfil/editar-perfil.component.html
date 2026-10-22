@@ -38,6 +38,35 @@
     <app-etapa-pagamento-entrega [grupo]="formulario.controls.pagamentoEntrega" [exibirCabecalho]="false" />
   </section>
 
+  @if (mostrarHorario()) {
+  <section class="bloco" aria-labelledby="perfil-horario">
+    <h3 id="perfil-horario" class="rotulo-maiusculo">Horário de funcionamento</h3>
+    <p class="bloco__dica">
+      O assistente não aceita pedido fora desse horário e, se você escolher "Só no meu horário de funcionamento",
+      só promete a sua confirmação dentro dele.
+    </p>
+    <div class="grupo-chips" role="radiogroup" aria-labelledby="perfil-horario">
+      <button type="button" role="radio" class="chip" [class.chip--ativo]="!horarioLivre()" [attr.aria-checked]="!horarioLivre()" (click)="horarioLivre.set(false)">
+        Dias e horários
+      </button>
+      <button type="button" role="radio" class="chip" [class.chip--ativo]="horarioLivre()" [attr.aria-checked]="horarioLivre()" (click)="horarioLivre.set(true)">
+        Sempre
+      </button>
+    </div>
+    @if (horarioLivre()) {
+      <p class="bloco__dica">Sem horário fixo: você atende a qualquer hora (por exemplo, leva o celular para casa). Só a antecedência dos pedidos conta.</p>
+    } @else {
+      @if (usaAgenda()) {
+        <button type="button" class="btn btn--texto btn--pequeno horario__agenda" (click)="usarHorariosDaAgenda()">Usar os da agenda</button>
+      }
+      <app-horario-funcionamento [periodos]="horarios()" (mudou)="horarios.set($event)" />
+      @if (horarioInvalido()) {
+        <span class="campo__erro" role="alert">Em cada dia, o horário de fechar precisa ser depois do de abrir.</span>
+      }
+    }
+  </section>
+  }
+
   <button type="submit" class="btn btn--primario btn--grande btn--bloco" [disabled]="salvando()" [attr.aria-busy]="salvando()">
     @if (salvando()) {
       <app-carregando modo="inline" variante="claro" [tamanho]="22" />

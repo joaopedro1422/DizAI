@@ -1,0 +1,168 @@
+@if (situacao() === 'carregando') {
+  <app-carregando texto="Abrindo o orçamento…" />
+} @else if (situacao() === 'erro') {
+  <div class="vazio">
+    <p>Não foi possível abrir o orçamento agora.</p>
+    <button type="button" class="botao-contorno" (click)="recarregar()">Tentar de novo</button>
+  </div>
+} @else {
+  <div class="orcamento">
+    @for (categoria of categorias(); track categoria.nome) {
+      <section class="categoria" [attr.aria-label]="categoria.nome">
+        @if (categorias().length > 1) {
+          <h2 class="categoria__nome">{{ categoria.nome }}</h2>
+        }
+        @for (produto of categoria.produtos; track produto.id) {
+          @let aberto = produtoAberto()?.id === produto.id;
+          <article class="produto" [class.produto--aberto]="aberto">
+            <div class="produto__topo">
+              @if (produto.fotoUrl) {
+                <img class="produto__foto" [src]="produto.fotoUrl | urlImagem" [alt]="produto.nome" loading="lazy">
+              }
+              <div class="produto__textos">
+                <h3 class="produto__nome">{{ produto.nome }}</h3>
+                @if (produto.descricao) {
+                  <p class="produto__descricao">{{ produto.descricao }}</p>
+                }
+                <span class="produto__preco">{{ produto | precoProduto }}</span>
+                @if (antecedencia(produto); as aviso) {
+                  <span class="produto__aviso"><app-icone nome="relogio" [tamanho]="13" /> {{ aviso }}</span>
+                }
+              </div>
+              @if (!aberto) {
+                <button type="button" class="produto__adicionar" [attr.aria-label]="'Adicionar ' + produto.nome" (click)="abrir(produto)">
+                  <app-icone nome="mais" [tamanho]="18" [espessura]="2.4" />
+                </button>
+              }
+            </div>
+
+            @if (aberto && rascunho(); as r) {
+              <div class="montar">
+                @if ((produto.variacoes ?? []).length > 0) {
+                  <div class="montar__bloco">
+                    <span class="montar__rotulo">Escolha uma opção</span>
+                    <div class="chips" role="radiogroup" [attr.aria-label]="'Opções de preço de ' + produto.nome">
+                      @for (variacao of produto.variacoes; track variacao.nome) {
+                        <button
+                          type="button"
+                          role="radio"
+                          class="chip"
+                          [class.chip--ativo]="r.variacao?.nome === variacao.nome"
+                          [attr.aria-checked]="r.variacao?.nome === variacao.nome"
+                          (click)="escolherVariacao(variacao)"
+                        >
+                          {{ variacao.nome }} · {{ real(variacao.preco) }}
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <div class="montar__bloco montar__linha">
+                  <span class="montar__rotulo">Quantidade</span>
+                  <span class="contador">
+                    <button type="button" class="contador__botao" aria-label="Menos" (click)="mudarQuantidade(-1)">−</button>
+                    <input
+                      class="contador__valor"
+                      type="number"
+                      inputmode="numeric"
+                      min="1"
+                      aria-label="Quantidade"
+                      [value]="r.quantidade"
+                      (change)="digitarQuantidade($event)"
+                    >
+                    <button type="button" class="contador__botao" aria-label="Mais" (click)="mudarQuantidade(1)">+</button>
+                  </span>
+                </div>
+
+                @for (escolha of escolhasDe(produto); track escolha.nome) {
+                  <div class="montar__bloco">
+                    <span class="montar__rotulo">{{ escolha.nome }} <small>· {{ regra(escolha) }}</small></span>
+                    <div class="chips" role="group" [attr.aria-label]="escolha.nome">
+                      @for (opcao of escolha.opcoes; track opcao) {
+                        @let marcada = marcadas(escolha).includes(opcao);
+                        <button type="button" class="chip" [class.chip--ativo]="marcada" [attr.aria-pressed]="marcada" (click)="alternarOpcao(escolha, opcao)">
+                          {{ opcao }}
+                        </button>
+                      }
+                    </div>
+                    @if (podeDividir(escolha)) {
+                      <div class="divisao">
+                        <span class="divisao__titulo">Quantos de cada?</span>
+                        @for (opcao of marcadas(escolha); track opcao) {
+                          <label class="divisao__linha">
+                            <span>{{ opcao }}</span>
+                            <input
+                              class="divisao__numero"
+                              type="number"
+                              inputmode="numeric"
+                              min="0"
+                              placeholder="0"
+                              [value]="quantidadeDaOpcao(escolha, opcao)"
+                              (input)="dividir(escolha, opcao, $event)"
+                            >
+                          </label>
+                        }
+                        @let divisaoAtual = situacaoDivisao(escolha);
+                        <span class="divisao__nota" [class.divisao__nota--erro]="divisaoAtual.erro">{{ divisaoAtual.texto }}</span>
+                      </div>
+                    }
+                  </div>
+                }
+
+                @if (erroRascunho()) {
+                  <span class="montar__erro" role="alert">{{ erroRascunho() }}</span>
+                }
+                <div class="montar__acoes">
+                  <span class="montar__subtotal">{{ subtotal() === null ? 'Valor a confirmar' : real(subtotal()!) }}</span>
+                  <button type="button" class="botao-contorno" (click)="cancelar()">Cancelar</button>
+                  <button type="button" class="botao-cheio" (click)="adicionar()">Adicionar</button>
+                </div>
+              </div>
+            }
+          </article>
+        }
+      </section>
+    } @empty {
+      <p class="vazio">Nenhum produto disponível no momento.</p>
+    }
+
+    @if (itens().length > 0) {
+      <section class="pedido" aria-labelledby="titulo-pedido">
+        <h2 class="pedido__titulo" id="titulo-pedido">Seu pedido</h2>
+        <ul class="pedido__lista">
+          @for (item of itens(); track item.chave) {
+            <li class="pedido__item">
+              <div class="pedido__textos">
+                <span class="pedido__nome">{{ item.quantidade }} {{ item.nome }}</span>
+                @if (item.detalhes) {
+                  <span class="pedido__detalhes">{{ item.detalhes }}</span>
+                }
+              </div>
+              <span class="pedido__valor">{{ item.total === null ? 'a confirmar' : real(item.total) }}</span>
+              <button type="button" class="pedido__remover" [attr.aria-label]="'Remover ' + item.nome" (click)="remover(item)">
+                <app-icone nome="lixeira" [tamanho]="16" />
+              </button>
+            </li>
+          }
+        </ul>
+        <div class="pedido__total">
+          <span>Total</span>
+          <strong>{{ textoTotal() }}</strong>
+        </div>
+        <p class="pedido__nota">Valores de referência: o pedido, o prazo e a entrega são confirmados pelo WhatsApp.</p>
+      </section>
+    }
+  </div>
+
+  <div class="enviar">
+    @if (linkEnviar(); as link) {
+      <a class="enviar__botao" [href]="link" target="_blank" rel="noopener">
+        <app-icone nome="conversa" [tamanho]="20" />
+        Enviar pelo WhatsApp · {{ real(total()) }}
+      </a>
+    } @else {
+      <span class="enviar__botao enviar__botao--inativo" aria-disabled="true">Adicione um produto ao pedido</span>
+    }
+  </div>
+}

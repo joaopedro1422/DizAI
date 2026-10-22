@@ -15,6 +15,24 @@ export interface ResumoAdmin {
   custoIaMesUsd: number;
 }
 
+/** "Esqueci minha senha" aberto (GET /api/admin/solicitacoes-senha). Sem conta = ninguém usa o número. */
+export interface SolicitacaoSenha {
+  id: string;
+  whatsapp: string;
+  nomeInformado: string;
+  criadoEm: string;
+  contaEncontrada: boolean;
+  nomeLoja: string;
+  nomeDono: string;
+}
+
+/** A senha temporária só aparece nesta resposta. */
+export interface SenhaTemporaria {
+  senha: string;
+  whatsapp: string;
+  numeroWhatsapp: string;
+}
+
 export type StatusWhatsappLoja = 'CONECTADO' | 'DESCONECTADO';
 
 /** Uma loja na tela de gerenciamento (GET /api/admin/painel). */

@@ -3,7 +3,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { urlApi } from '../api/api-url';
-import { PainelAdmin } from '../models/admin.model';
+import { PainelAdmin, SenhaTemporaria, SolicitacaoSenha } from '../models/admin.model';
 
 /**
  * Gerenciamento da plataforma: GET /api/admin/painel.
@@ -16,16 +16,43 @@ export class AdminService {
   private readonly dados = signal<PainelAdmin | null>(null);
   private readonly emAndamento = signal(false);
 
+  private readonly pedidosSenha = signal<SolicitacaoSenha[]>([]);
+
   readonly painel = this.dados.asReadonly();
   readonly carregando = this.emAndamento.asReadonly();
+  /** "Esqueci minha senha" ainda abertos, os mais antigos primeiro. */
+  readonly solicitacoesSenha = this.pedidosSenha.asReadonly();
 
   /** Sempre busca de novo: os números mudam a cada mensagem e o botão "Atualizar" usa o mesmo método. */
   async carregar(): Promise<void> {
     this.emAndamento.set(true);
     try {
-      this.dados.set(await firstValueFrom(this.http.get<PainelAdmin>(urlApi('/api/admin/painel'))));
+      const [painel, solicitacoes] = await Promise.all([
+        firstValueFrom(this.http.get<PainelAdmin>(urlApi('/api/admin/painel'))),
+        firstValueFrom(this.http.get<SolicitacaoSenha[]>(urlApi('/api/admin/solicitacoes-senha'))),
+      ]);
+      this.dados.set(painel);
+      this.pedidosSenha.set(solicitacoes);
     } finally {
       this.emAndamento.set(false);
     }
+  }
+
+  /** Troca a senha da conta por uma temporária; o pedido sai da lista. */
+  async gerarSenhaTemporaria(solicitacaoId: string): Promise<SenhaTemporaria> {
+    const senha = await firstValueFrom(
+      this.http.post<SenhaTemporaria>(urlApi(`/api/admin/solicitacoes-senha/${solicitacaoId}/senha-temporaria`), null),
+    );
+    this.tirarDaLista(solicitacaoId);
+    return senha;
+  }
+
+  async descartarSolicitacao(solicitacaoId: string): Promise<void> {
+    await firstValueFrom(this.http.delete<void>(urlApi(`/api/admin/solicitacoes-senha/${solicitacaoId}`)));
+    this.tirarDaLista(solicitacaoId);
+  }
+
+  private tirarDaLista(solicitacaoId: string): void {
+    this.pedidosSenha.update((lista) => lista.filter((s) => s.id !== solicitacaoId));
   }
 }

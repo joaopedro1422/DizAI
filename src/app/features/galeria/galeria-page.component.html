@@ -159,13 +159,5 @@
 }
 
 @if (mostrarIntro()) {
-  <app-dica-sobreposta
-    icone="imagem"
-    sobretitulo="Sua galeria"
-    titulo="Uma vitrine para o seu negócio"
-    descricao=""
-    [itens]="itensIntro"
-    rotuloBotao="Começar a montar"
-    (confirmar)="fecharIntro()"
-  />
+  <app-video-galeria rotuloBotao="Começar a montar" (confirmar)="fecharIntro()" (fechar)="fecharIntro()" />
 }

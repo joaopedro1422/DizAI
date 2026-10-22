@@ -27,9 +27,6 @@
 
     <div
       class="galeria__demonstracao"
-      [style.--galeria-marca]="exemploAtual().corMarca"
-      [style.--galeria-fundo]="exemploAtual().corFundoGaleria"
-      [style.--galeria-fonte]="fonteVitrine()"
       (mouseenter)="pausado.set(true)"
       (mouseleave)="pausado.set(false)"
       (focusin)="pausado.set(true)"
@@ -45,62 +42,10 @@
         </div>
       }
 
+      <!-- a página pública da loja (/l/{slug}) aberta no celular -->
       <figure class="celular" [attr.aria-label]="'Exemplo da galeria pública de ' + exemploAtual().nomeLoja + ' no celular'">
         <div class="celular__tela">
-          @for (exemplo of [exemploAtual()]; track exemplo.id) {
-            <div class="navegador" aria-hidden="true">
-              <app-icone nome="escudo" [tamanho]="12" [espessura]="2" />
-              {{ exemplo.link }}
-            </div>
-
-            <div
-              class="vitrine"
-              [class.vitrine--fundo-pagina]="exemplo.areaCorFundoGaleria === 'PAGINA'"
-            >
-              <div
-                class="vitrine__cabecalho"
-                [class.vitrine__cabecalho--fundo]="exemplo.areaCorFundoGaleria === 'CABECALHO'"
-              >
-                <div class="vitrine__loja">
-                  <span class="vitrine__logo" aria-hidden="true">
-                    @if (exemplo.logoUrl; as logo) {
-                      <img class="vitrine__imagem-logo" [src]="logo" alt="">
-                    } @else {
-                      {{ inicialLoja() }}
-                    }
-                  </span>
-                  <span class="vitrine__nome">{{ exemplo.nomeLoja }}</span>
-                  <span class="vitrine__descricao">{{ exemplo.descricao }}</span>
-                </div>
-
-                <div class="vitrine__categorias" aria-hidden="true">
-                  @for (categoria of exemplo.categorias; track categoria; let primeira = $first) {
-                    <span class="vitrine__categoria" [class.vitrine__categoria--ativa]="primeira">{{ categoria }}</span>
-                  }
-                </div>
-              </div>
-
-              <div class="vitrine__album">
-                <span class="vitrine__album-nome">{{ exemplo.nomeAlbum }}</span>
-                <span class="vitrine__album-contagem">{{ exemplo.quantidadeFotos }} fotos</span>
-              </div>
-
-              <div class="vitrine__fotos" aria-hidden="true">
-                @for (foto of exemplo.fotos; track $index; let ordem = $index) {
-                  <span class="vitrine__foto" [style.background]="fundoDaFoto(foto)" [style.animation-delay.ms]="ordem * 40">
-                    @if (foto.url) {
-                      <img class="vitrine__imagem" [src]="foto.url" alt="" loading="lazy" decoding="async">
-                    }
-                  </span>
-                }
-              </div>
-            </div>
-          }
-
-          <span class="vitrine__whatsapp" aria-hidden="true">
-            <app-icone nome="conversa" [tamanho]="16" [espessura]="2" />
-            Falar pelo WhatsApp
-          </span>
+          <app-vitrine-miniatura [exemplo]="exemploAtual()" [fase]="fase()" />
         </div>
       </figure>
     </div>

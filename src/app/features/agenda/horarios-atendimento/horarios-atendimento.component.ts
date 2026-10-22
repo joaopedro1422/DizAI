@@ -13,6 +13,7 @@ import { BottomSheetComponent } from '../../../shared/components/bottom-sheet/bo
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { InterruptorComponent } from '../../../shared/components/interruptor/interruptor.component';
+import { MensagemConfirmacaoComponent } from '../mensagem-confirmacao/mensagem-confirmacao.component';
 
 interface Trecho {
   inicio: string;
@@ -21,11 +22,34 @@ interface Trecho {
 
 /** O que está na tela (só vai para o backend no "Salvar"). */
 interface Rascunho {
-  agendaAtiva: boolean;
   intervaloMinutos: number;
   antecedenciaMinutos: number;
+  lembreteMinutos: number;
+  mensagemConfirmacao: string;
+  agradecimentoAtivo: boolean;
+  mensagemAgradecimento: string;
+  mensagemLembrete: string;
   periodos: Record<DiaSemana, Trecho[]>;
 }
+
+/** Usada só se o backend não mandar a padrão (o texto é o de AgendaService.CONFIRMACAO_PADRAO). */
+const CONFIRMACAO_PADRAO =
+  'Agendado! ✅\n\nServiço: {servico}\nData: {data}\nHorário: {horario}\nNome: {nome}\n\n' +
+  'Se precisar remarcar ou cancelar, é só me avisar por aqui.';
+
+/** Usada só se o backend não mandar o padrão (o texto é o de AgendaService.AGRADECIMENTO_PADRAO). */
+const AGRADECIMENTO_PADRAO =
+  'Obrigado pela visita, {nome}! 😊\n\nFoi um prazer te atender. Quando quiser marcar o próximo horário, é só me chamar por aqui.';
+
+/** Usada só se o backend não mandar o padrão (o texto é o de AgendaService.LEMBRETE_PADRAO). */
+const LEMBRETE_PADRAO =
+  'Oi, {nome}! 😊 Passando para lembrar do seu horário de {data} às {horario} ({servico}).\nVocê confirma a presença?';
+
+/** As três mensagens do fim da tela, que abrem e fecham. */
+export type MensagemDaAgenda = 'agendamento' | 'lembrete' | 'agradecimento';
+
+/** O agradecimento só conhece o nome e o serviço. */
+const ETIQUETAS_AGRADECIMENTO = ['servico', 'nome'];
 
 const INTERVALOS = [
   { minutos: 15, rotulo: '15 min' },
@@ -42,6 +66,15 @@ const ANTECEDENCIAS = [
   { minutos: 1440, rotulo: '1 dia' },
 ];
 
+const LEMBRETES = [
+  { minutos: 0, rotulo: 'Não enviar' },
+  { minutos: 60, rotulo: '1 hora antes' },
+  { minutos: 120, rotulo: '2 horas antes' },
+  { minutos: 240, rotulo: '4 horas antes' },
+  { minutos: 480, rotulo: '8 horas antes' },
+  { minutos: 1440, rotulo: '1 dia antes' },
+];
+
 /** Quem liga o dia ganha o horário mais comum: manhã e tarde com pausa para o almoço. */
 const DIA_PADRAO: Trecho[] = [
   { inicio: '08:00', fim: '12:00' },
@@ -52,11 +85,20 @@ const MAXIMO_PERIODOS_POR_DIA = 4;
 
 /**
  * Aba "Horários" da agenda: em quais dias e horários o negócio atende (vários períodos por dia, para o almoço),
- * de quanto em quanto tempo os horários começam, a antecedência mínima e a chave da agenda automática.
+ * de quanto em quanto tempo os horários começam, a antecedência mínima, o lembrete e, no fim, as mensagens
+ * (agendamento, lembrete e agradecimento), cada uma num card que abre e fecha.
+ * A agenda não tem chave própria: fica ativa com "Agendamento automático" em "Quando o cliente quiser fechar".
  */
 @Component({
   selector: 'app-horarios-atendimento',
-  imports: [RouterLink, IconeComponent, InterruptorComponent, BottomSheetComponent, CarregandoComponent],
+  imports: [
+    RouterLink,
+    IconeComponent,
+    InterruptorComponent,
+    BottomSheetComponent,
+    CarregandoComponent,
+    MensagemConfirmacaoComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './horarios-atendimento.component.html',
   styleUrl: './horarios-atendimento.component.css',
@@ -71,20 +113,24 @@ export class HorariosAtendimentoComponent {
   private readonly toastService = inject(ToastService);
   private readonly rotas = inject(SessaoService).rotasDoPainel;
   protected readonly rotaProdutos = computed(() => this.rotas().produtos);
-  /** "Quando o cliente quiser fechar" fica no início do painel. */
-  protected readonly rotaPainel = computed(() => this.rotas().inicio);
-  /** Só no modo "Agendamento automático" o assistente marca sozinho; ligar a agenda não basta. */
+  /** "Quando o cliente quiser fechar" fica na tela do assistente. */
+  protected readonly rotaAtendimento = computed(() => this.rotas().atendimento);
+  /** "Agendamento automático" escolhido = agenda ativa (página pública e o assistente marcando sozinho). */
   protected readonly modoAutomatico = computed(() => this.perfilService.perfil().modoPedido === 'AGENDAMENTO_AUTOMATICO');
 
   protected readonly diasSemana = DIAS_SEMANA;
   protected readonly intervalos = INTERVALOS;
   protected readonly antecedencias = ANTECEDENCIAS;
+  protected readonly lembretes = LEMBRETES;
+  protected readonly etiquetasAgradecimento = ETIQUETAS_AGRADECIMENTO;
   protected readonly maximoPeriodos = MAXIMO_PERIODOS_POR_DIA;
 
   protected readonly rascunho = linkedSignal(() => paraRascunho(this.configuracao()));
   protected readonly diaAberto = signal<DiaSemana>(diaDeHoje());
   protected readonly salvando = signal(false);
   protected readonly copiando = signal(false);
+  /** Os cards de mensagem abertos (começam fechados, para a tela não ficar comprida). */
+  protected readonly mensagensAbertas = signal<MensagemDaAgenda[]>([]);
   protected readonly diasParaCopiar = signal<DiaSemana[]>([]);
 
   protected readonly infoDiaAberto = computed(() => DIAS_SEMANA.find((d) => d.valor === this.diaAberto())!);
@@ -123,6 +169,18 @@ export class HorariosAtendimentoComponent {
     }),
   );
 
+  protected readonly confirmacaoPadrao = computed(
+    () => this.configuracao().mensagemConfirmacaoPadrao ?? CONFIRMACAO_PADRAO,
+  );
+
+  protected readonly lembretePadrao = computed(
+    () => this.configuracao().mensagemLembretePadrao ?? LEMBRETE_PADRAO,
+  );
+
+  protected readonly agradecimentoPadrao = computed(
+    () => this.configuracao().mensagemAgradecimentoPadrao ?? AGRADECIMENTO_PADRAO,
+  );
+
   protected readonly textoServicosSemDuracao = computed(() =>
     pluralizar(this.servicosSemDuracao(), 'serviço está', 'serviços estão'),
   );
@@ -131,8 +189,24 @@ export class HorariosAtendimentoComponent {
     this.diaAberto.set(dia);
   }
 
-  protected alternarAgenda(ligada: boolean): void {
-    this.rascunho.update((r) => ({ ...r, agendaAtiva: ligada }));
+  protected definirConfirmacao(texto: string): void {
+    this.rascunho.update((r) => ({ ...r, mensagemConfirmacao: texto }));
+  }
+
+  protected alternarMensagem(mensagem: MensagemDaAgenda): void {
+    this.mensagensAbertas.update((abertas) => alternarItem(abertas, mensagem));
+  }
+
+  protected definirLembrete(texto: string): void {
+    this.rascunho.update((r) => ({ ...r, mensagemLembrete: texto }));
+  }
+
+  protected alternarAgradecimento(ativo: boolean): void {
+    this.rascunho.update((r) => ({ ...r, agradecimentoAtivo: ativo }));
+  }
+
+  protected definirAgradecimento(texto: string): void {
+    this.rascunho.update((r) => ({ ...r, mensagemAgradecimento: texto }));
   }
 
   protected alternarDiaAberto(aberto: boolean): void {
@@ -146,6 +220,18 @@ export class HorariosAtendimentoComponent {
     }
     const trechos = this.trechosDiaAberto().map((t, i) => (i === indice ? { ...t, [campo]: valor.slice(0, 5) } : t));
     this.definirTrechos(this.diaAberto(), trechos);
+  }
+
+  /**
+   * O ícone do relógio fica escondido (para o horário caber no celular): sem ele, no computador o clique no campo
+   * não abria nada. Agora o clique abre o seletor de horas; digitar continua funcionando.
+   */
+  protected abrirSeletor(evento: Event): void {
+    try {
+      (evento.target as HTMLInputElement).showPicker();
+    } catch {
+      // navegador sem showPicker ou sem gesto do usuário: segue digitando no campo
+    }
   }
 
   /** Novo período depois do último, com 1 hora de pausa (ex.: almoço). */
@@ -167,6 +253,10 @@ export class HorariosAtendimentoComponent {
 
   protected escolherAntecedencia(minutos: number): void {
     this.rascunho.update((r) => ({ ...r, antecedenciaMinutos: minutos }));
+  }
+
+  protected escolherLembrete(minutos: number): void {
+    this.rascunho.update((r) => ({ ...r, lembreteMinutos: minutos }));
   }
 
   protected abrirCopia(): void {
@@ -206,15 +296,14 @@ export class HorariosAtendimentoComponent {
       return;
     }
     const rascunho = this.rascunho();
-    if (rascunho.agendaAtiva && !this.algumDiaAberto()) {
-      this.toastService.mostrar('Marque pelo menos um dia de atendimento para ligar a agenda.');
-      return;
-    }
     this.salvando.set(true);
     try {
       await this.agendaService.salvarConfiguracao(paraConfiguracao(rascunho, this.configuracao()));
-      this.perfilService.definirAgendaAtivaLocal(rascunho.agendaAtiva);
-      this.toastService.mostrar(rascunho.agendaAtiva ? 'Agenda online salva e ligada' : 'Horários salvos');
+      this.toastService.mostrar(
+        this.modoAutomatico() && !this.algumDiaAberto()
+          ? 'Salvo. Sem nenhum dia de atendimento, o assistente não oferece horários.'
+          : 'Agenda salva',
+      );
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível salvar os horários. Tente de novo.'));
     } finally {
@@ -233,9 +322,15 @@ function paraRascunho(configuracao: ConfiguracaoAgenda): Rascunho {
     .sort((a, b) => a.inicio.localeCompare(b.inicio))
     .forEach((p) => periodos[p.diaSemana].push({ inicio: p.inicio, fim: p.fim }));
   return {
-    agendaAtiva: configuracao.agendaAtiva,
     intervaloMinutos: configuracao.intervaloMinutos,
     antecedenciaMinutos: configuracao.antecedenciaMinutos,
+    lembreteMinutos: configuracao.lembreteMinutos ?? 0,
+    mensagemConfirmacao:
+      configuracao.mensagemConfirmacao ?? configuracao.mensagemConfirmacaoPadrao ?? CONFIRMACAO_PADRAO,
+    agradecimentoAtivo: configuracao.agradecimentoAtivo ?? false,
+    mensagemAgradecimento:
+      configuracao.mensagemAgradecimento ?? configuracao.mensagemAgradecimentoPadrao ?? AGRADECIMENTO_PADRAO,
+    mensagemLembrete: configuracao.mensagemLembrete ?? configuracao.mensagemLembretePadrao ?? LEMBRETE_PADRAO,
     periodos,
   };
 }
@@ -245,9 +340,14 @@ function paraConfiguracao(rascunho: Rascunho, atual: ConfiguracaoAgenda): Config
     rascunho.periodos[dia.valor].map((t) => ({ diaSemana: dia.valor, inicio: t.inicio, fim: t.fim })),
   );
   return {
-    agendaAtiva: rascunho.agendaAtiva,
+    agendaAtiva: atual.agendaAtiva,
     intervaloMinutos: rascunho.intervaloMinutos,
     antecedenciaMinutos: rascunho.antecedenciaMinutos,
+    lembreteMinutos: rascunho.lembreteMinutos,
+    mensagemConfirmacao: rascunho.mensagemConfirmacao,
+    agradecimentoAtivo: rascunho.agradecimentoAtivo,
+    mensagemAgradecimento: rascunho.mensagemAgradecimento,
+    mensagemLembrete: rascunho.mensagemLembrete,
     periodos,
     diasBloqueados: atual.diasBloqueados,
   };

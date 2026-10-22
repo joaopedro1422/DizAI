@@ -1,8 +1,6 @@
 @if (editando() === null) {
   <div class="lista">
-    <p class="explicacao">
-      Ao tocar no WhatsApp de um cliente na agenda, você escolhe uma destas mensagens e ela já abre escrita na conversa.
-    </p>
+    <p class="explicacao">{{ atual().explicacao }}</p>
 
     @for (mensagem of mensagens(); track mensagem.id) {
       <article class="mensagem">
@@ -28,7 +26,7 @@
     } @empty {
       <div class="sugestoes">
         <span class="rotulo-maiusculo">Comece por um modelo</span>
-        @for (sugestao of sugestoes; track sugestao.titulo) {
+        @for (sugestao of atual().sugestoes; track sugestao.titulo) {
           <button type="button" class="sugestao" (click)="nova(sugestao)">
             <span class="sugestao__titulo">
               <app-icone nome="mais" [tamanho]="14" [espessura]="2.2" />
@@ -56,7 +54,7 @@
 
     <div class="campo">
       <label for="mensagem-titulo" class="campo__rotulo">Nome da mensagem</label>
-      <input id="mensagem-titulo" class="campo__entrada" type="text" maxlength="40" formControlName="titulo" placeholder="Ex.: Lembrete do horário">
+      <input id="mensagem-titulo" class="campo__entrada" type="text" maxlength="40" formControlName="titulo" [placeholder]="atual().exemploTitulo">
       @if (temErro('titulo')) {
         <span class="campo__erro" role="alert">Dê um nome curto para a mensagem.</span>
       }
@@ -71,11 +69,11 @@
         rows="6"
         maxlength="1000"
         formControlName="texto"
-        placeholder="Ex.: Olá, {nome}! Passando para lembrar do seu horário {data} às {horario}."
+        [placeholder]="atual().exemploTexto"
       ></textarea>
       <div class="variaveis">
         <span class="variaveis__rotulo">Inserir:</span>
-        @for (variavel of variaveis; track variavel.chave) {
+        @for (variavel of atual().variaveis; track variavel.chave) {
           <button type="button" class="chip chip--pequeno" [title]="'Vira, por exemplo: ' + variavel.exemplo" (click)="inserir(variavel.chave)">
             {{ variavel.rotulo }}
           </button>
@@ -84,7 +82,7 @@
       @if (temErro('texto')) {
         <span class="campo__erro" role="alert">Escreva a mensagem.</span>
       } @else {
-        <span class="campo__dica">Nome, data, horário e serviço são trocados pelos dados de cada cliente.</span>
+        <span class="campo__dica">{{ atual().dicaVariaveis }}</span>
       }
     </div>
 

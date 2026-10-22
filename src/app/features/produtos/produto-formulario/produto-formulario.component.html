@@ -62,7 +62,52 @@
     @if (temErro('preco')) {
       <span class="campo__erro" role="alert">Use apenas números, por exemplo 70 ou 70,50.</span>
     }
+    @if (variacoes.length > 0) {
+      <span class="campo__dica">Com variações, o cliente escolhe uma e o valor dela vale no lugar deste preço.</span>
+    }
   </div>
+
+  @if (!pedeDuracao()) {
+    <div class="campo">
+      <div class="atributos__cabecalho">
+        <span class="campo__rotulo">Variações de preço <span class="campo__rotulo-opcional">(opcional)</span></span>
+        <span class="campo__dica">
+          Quando o preço muda conforme a escolha, ex.: Tamanho P e Tamanho M. Cada variação tem o seu valor e o cliente
+          escolhe uma.
+        </span>
+      </div>
+      <div formArrayName="variacoes" class="atributos__lista">
+        @for (variacao of variacoes.controls; track variacao; let indice = $index) {
+          <div class="variacao" [formGroupName]="indice">
+            <input
+              class="campo__entrada variacao__nome"
+              [class.campo__entrada--erro]="variacaoComErro(indice, 'nome')"
+              type="text"
+              formControlName="nome"
+              placeholder="Ex.: Tamanho P"
+              [attr.aria-label]="'Nome da variação ' + (indice + 1)"
+            >
+            <span class="campo-prefixado variacao__preco" [class.campo-prefixado--erro]="variacaoComErro(indice, 'preco')">
+              <span class="campo-prefixado__prefixo">R$</span>
+              <input type="text" inputmode="decimal" formControlName="preco" placeholder="0,00" [attr.aria-label]="'Valor da variação ' + (indice + 1)">
+            </span>
+            <button type="button" class="btn-icone" aria-label="Remover variação" (click)="removerVariacao(indice)">
+              <app-icone nome="fechar" [tamanho]="16" [espessura]="2" />
+            </button>
+          </div>
+          @if (variacaoComErro(indice, 'nome') || variacaoComErro(indice, 'preco')) {
+            <span class="campo__erro" role="alert">Cada variação precisa de nome e valor (ex.: 120 ou 120,50).</span>
+          }
+        }
+      </div>
+      @if (variacoes.length < 12) {
+        <button type="button" class="btn btn--secundario btn--pequeno variacao__adicionar" (click)="adicionarVariacao()">
+          <app-icone nome="mais" [tamanho]="16" [espessura]="2" />
+          Adicionar variação
+        </button>
+      }
+    </div>
+  }
 
   @if (pedeDuracao()) {
     <div class="campo">
@@ -97,6 +142,39 @@
     </div>
   }
 
+  @if (!pedeDuracao()) {
+    <div class="campo">
+      <label for="produto-antecedencia" class="campo__rotulo">
+        Antecedência mínima <span class="campo__rotulo-opcional">(opcional)</span>
+      </label>
+      <span class="campo__dica">
+        Só se este {{ conteudo().termoItem }} precisa de um tempo de preparo diferente do cadastrado para a loja
+        (ex.: tortas com 1 dia de antecedência). Em branco, vale a antecedência da loja.
+      </span>
+      <div class="linha-duracao">
+        <span class="linha-duracao__valor">
+          <input
+            id="produto-antecedencia"
+            class="campo__entrada"
+            [class.campo__entrada--erro]="temErro('antecedencia')"
+            type="text"
+            inputmode="numeric"
+            formControlName="antecedencia"
+            placeholder="Igual à da loja"
+          >
+        </span>
+        <select class="campo__entrada linha-antecedencia__unidade" formControlName="antecedenciaUnidade" aria-label="Unidade da antecedência">
+          <option value="MINUTOS">minutos</option>
+          <option value="HORAS">horas</option>
+          <option value="DIAS">dias</option>
+        </select>
+      </div>
+      @if (temErro('antecedencia')) {
+        <span class="campo__erro" role="alert">Use um número inteiro de 0 a 720.</span>
+      }
+    </div>
+  }
+
   <div class="campo">
     <div class="atributos__cabecalho">
       <span class="campo__rotulo">Opções que o cliente escolhe</span>
@@ -113,6 +191,33 @@
             </button>
           </div>
           <input class="campo__entrada atributo__entrada" type="text" formControlName="opcoes" [placeholder]="conteudo().produto.valoresOpcao + ' (separe por vírgula)'" [attr.aria-label]="'Valores da opção ' + (indice + 1)">
+          @if (!pedeDuracao()) {
+            <div class="atributo__quantidade">
+              <span class="atributo__quantidade-rotulo" [id]="'quantidade-opcao-' + indice">Quantas o cliente escolhe</span>
+              <div class="atributo__quantidade-campos" role="group" [attr.aria-labelledby]="'quantidade-opcao-' + indice">
+                <input
+                  class="campo__entrada atributo__entrada atributo__quantidade-numero"
+                  type="number"
+                  inputmode="numeric"
+                  min="0"
+                  max="20"
+                  formControlName="quantidade"
+                  aria-label="Quantidade"
+                  [class.atributo__quantidade-numero--inativo]="atributo.controls.modo.value === 'QUANTAS_QUISER'"
+                >
+                <select class="campo__entrada atributo__entrada atributo__quantidade-modo" formControlName="modo" aria-label="Como contar">
+                  @for (modo of modosEscolha; track modo.valor) {
+                    <option [value]="modo.valor">{{ modo.rotulo }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+            @if (atributo.controls.quantidade.value === 0) {
+              <span class="campo__dica">Não obrigatória: o assistente só usa como informação e não pergunta ao cliente.</span>
+            } @else {
+              <span class="campo__dica">Coloque 0 se for opcional: o assistente pergunta se o cliente deseja, sem obrigar.</span>
+            }
+          }
         </div>
       }
     </div>

@@ -1,0 +1,167 @@
+/* Peças das cenas deste vídeo; a base comum está em shared/components/video-tutorial/cenas-video.css */
+
+/* --------------------------------------------------------------------------
+   Chats (painel)
+   -------------------------------------------------------------------------- */
+
+.abas-mini {
+  display: flex;
+  gap: 3cqw;
+  padding: 0 3cqw;
+  border-bottom: 0.25cqw solid var(--cor-borda-suave);
+  font-size: 2.6cqw;
+  font-weight: 700;
+  color: var(--cor-texto-suave);
+}
+
+.abas-mini span {
+  display: flex;
+  align-items: center;
+  gap: 1cqw;
+  padding: 1.6cqw 0;
+}
+
+.abas-mini .aba-mini--ativa {
+  border-bottom: 0.6cqw solid var(--cor-primaria);
+  color: var(--cor-primaria);
+}
+
+.contador-mini {
+  padding: 0 1.2cqw;
+  border-radius: 999px;
+  background: var(--cor-primaria);
+  color: #ffffff;
+  font-size: 2.1cqw;
+}
+
+.card-conversa {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6cqw;
+  padding: 2.4cqw;
+  border: 0.25cqw solid var(--cor-borda);
+  border-radius: 2.8cqw;
+  background: #ffffff;
+}
+
+.card-conversa__cliente {
+  display: flex;
+  align-items: center;
+  gap: 2cqw;
+  line-height: 1.25;
+}
+
+.card-conversa__cliente small {
+  display: block;
+  font-size: 2.2cqw;
+  color: var(--cor-texto-suave);
+}
+
+.avatar-mini {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 7cqw;
+  height: 7cqw;
+  border-radius: 50%;
+  background: var(--cor-rosa-fundo);
+  color: var(--cor-rosa);
+  font-weight: 800;
+}
+
+.motivo-mini {
+  align-self: flex-start;
+  padding: 0.5cqw 1.8cqw;
+  border-radius: 999px;
+  background: var(--cor-azul-fundo);
+  color: var(--cor-azul);
+  font-size: 2.2cqw;
+  font-weight: 700;
+}
+
+.resumo-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8cqw;
+  padding: 2cqw;
+  border-radius: 2cqw;
+  background: var(--cor-fundo-suave);
+}
+
+.resumo-mini__titulo {
+  font-size: 2.1cqw;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--cor-texto-suave);
+  text-transform: uppercase;
+}
+
+.resumo-mini__linha {
+  display: grid;
+  grid-template-columns: 13cqw 1fr;
+  gap: 1.4cqw;
+  font-size: 2.5cqw;
+  line-height: 1.3;
+}
+
+.resumo-mini__linha span:first-child {
+  color: var(--cor-texto-suave);
+}
+
+.resumo-mini__linha span:last-child {
+  font-weight: 700;
+}
+
+.contador-mini {
+  font-style: normal;
+}
+
+.avatar-mini--azul {
+  background: var(--cor-azul-fundo);
+  color: var(--cor-azul);
+}
+
+.motivo-mini--ambar {
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-ambar);
+}
+
+.mensagem-mini {
+  font-style: italic;
+  color: var(--cor-texto-secundario);
+}
+
+.zap__avatar--rosa {
+  background: var(--cor-rosa-fundo);
+  color: var(--cor-rosa);
+}
+
+/* Separador de data no meio da conversa */
+.aviso-zap {
+  align-self: center;
+  padding: 0.6cqw 2cqw;
+  border-radius: 1.4cqw;
+  background: #ffffff;
+  font-size: 2.2cqw;
+  color: var(--cor-texto-suave);
+}
+
+.estado-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8cqw;
+  padding: 6cqw 3cqw;
+  font-size: 2.5cqw;
+  color: var(--cor-texto-suave);
+  text-align: center;
+}
+
+.estado-mini b {
+  font-size: 3cqw;
+  color: var(--cor-texto);
+}
+
+.botao-mini {
+  white-space: nowrap;
+}

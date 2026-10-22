@@ -1,0 +1,58 @@
+<div class="etiquetas">
+  <p class="etiquetas__dica">Toque numa etiqueta para colocá-la no texto.</p>
+  <div class="etiquetas__lista" role="group" aria-label="Etiquetas da mensagem">
+    @for (variavel of variaveis(); track variavel.chave) {
+      <button type="button" class="etiqueta" (click)="inserir(variavel.marcador)">
+        <span class="etiqueta__codigo">{{ variavel.marcador }}</span>
+        <span class="etiqueta__rotulo">{{ variavel.rotulo }}</span>
+      </button>
+    }
+  </div>
+</div>
+
+<div class="editor" [class.editor--erro]="desconhecidas().length > 0">
+  <div class="editor__ferramentas">
+    <!-- mousedown sem foco: a seleção do texto continua lá quando o clique chega -->
+    <button
+      type="button"
+      class="editor__ferramenta"
+      title="Negrito (*texto*)"
+      aria-label="Negrito"
+      (mousedown)="$event.preventDefault()"
+      (click)="negrito()"
+    >
+      <strong>B</strong>
+    </button>
+    <span class="editor__ajuda">Selecione um trecho e toque no <strong>B</strong> (ou escreva entre *asteriscos*)</span>
+  </div>
+  <textarea
+    #campo
+    class="editor__campo"
+    [value]="texto()"
+    [attr.maxlength]="maximo"
+    spellcheck="true"
+    [attr.aria-label]="rotulo()"
+    (input)="digitar($event)"
+  ></textarea>
+  <div class="editor__rodape">
+    <button type="button" class="btn btn--texto btn--pequeno" [disabled]="ehPadrao()" (click)="restaurarPadrao()">
+      Voltar para a padrão
+    </button>
+    <span class="editor__contador" [class.editor__contador--limite]="texto().length >= maximo">
+      {{ texto().length }}/{{ maximo }}
+    </span>
+  </div>
+</div>
+@if (desconhecidas().length > 0) {
+  <span class="campo__erro" role="alert">
+    {{ desconhecidas().join(', ') }} não {{ desconhecidas().length > 1 ? 'são etiquetas' : 'é uma etiqueta' }}: o cliente
+    vai receber do jeito que está escrito.
+  </span>
+}
+
+<div class="previa">
+  <span class="previa__rotulo">Como o cliente recebe</span>
+  <div class="previa__conversa">
+    <p class="previa__bolha" [innerHTML]="previa()"></p>
+  </div>
+</div>

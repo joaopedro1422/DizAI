@@ -14,6 +14,10 @@ export interface Estatisticas {
   perguntasSemResposta: number;
   /** Estimativa: 1,5 min por resposta + 3 min por agendamento. */
   minutosEconomizados: number;
+  /** Há quantos dias a conta foi criada (0 = hoje); null se não se sabe. */
+  diasDeConta: number | null;
+  /** Tempo economizado dividido pelos dias do período em que a conta já existia. */
+  minutosPorDia: number;
 }
 
 /** Pergunta que o assistente não soube responder: sugestão de pergunta frequente. */

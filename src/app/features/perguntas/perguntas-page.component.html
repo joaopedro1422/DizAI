@@ -1,5 +1,6 @@
 <div class="tela-app">
   <app-cabecalho-pagina titulo="Perguntas frequentes" [subtitulo]="subtitulo()" [comDivisor]="true">
+    <app-botao-video acoesTopo (abrir)="mostrarVideo.set(true)" />
     <button type="button" class="btn btn--primario btn--bloco btn--acao-principal" (click)="abrirModal()">
       <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
       Adicionar pergunta
@@ -35,9 +36,12 @@
             <h2 class="pergunta__titulo">{{ item.pergunta }}</h2>
             <p class="pergunta__resposta">{{ item.resposta }}</p>
           </div>
-          <button type="button" class="btn-icone btn-icone--sem-borda pergunta__editar" aria-label="Editar pergunta">
-            <app-icone nome="editar" [tamanho]="17" />
-          </button>
+          <app-menu-acoes
+            class="pergunta__menu"
+            rotuloBotao="Opções da pergunta"
+            [itens]="itensMenu"
+            (escolher)="aoEscolherAcao($event, item)"
+          />
         </article>
       } @empty {
         <app-estado-vazio
@@ -62,7 +66,43 @@
 </div>
 
 @if (modalAberto()) {
-  <app-bottom-sheet titulo="Nova pergunta" (fechar)="fecharModal()">
-    <app-pergunta-formulario [modelo]="modeloEscolhido()" [salvando]="salvando()" (salvo)="adicionarPergunta($event)" />
+  <app-bottom-sheet [titulo]="perguntaEmEdicao() ? 'Editar pergunta' : 'Nova pergunta'" (fechar)="fecharModal()">
+    <app-pergunta-formulario
+      [modelo]="modeloEscolhido()"
+      [emEdicao]="!!perguntaEmEdicao()"
+      [salvando]="salvando()"
+      (salvo)="adicionarPergunta($event)"
+    />
   </app-bottom-sheet>
+}
+
+@if (perguntaParaExcluir(); as item) {
+  <app-bottom-sheet titulo="Excluir pergunta?" (fechar)="cancelarExclusao()">
+    <div class="confirmar-exclusao">
+      <p>
+        <strong>{{ item.pergunta }}</strong> sai das suas perguntas frequentes e o assistente deixa de usar essa resposta.
+        Esta ação não pode ser desfeita.
+      </p>
+      <button
+        type="button"
+        class="btn btn--excluir btn--grande btn--bloco"
+        [disabled]="excluindo()"
+        [attr.aria-busy]="excluindo()"
+        (click)="excluirPergunta()"
+      >
+        @if (excluindo()) {
+          Excluindo…
+        } @else {
+          Excluir pergunta
+        }
+      </button>
+      <button type="button" class="btn btn--secundario btn--grande btn--bloco" [disabled]="excluindo()" (click)="cancelarExclusao()">
+        Cancelar
+      </button>
+    </div>
+  </app-bottom-sheet>
+}
+
+@if (mostrarVideo()) {
+  <app-video-perguntas [tipo]="tipoVideo()" (confirmar)="fecharVideo()" (fechar)="fecharVideo()" />
 }

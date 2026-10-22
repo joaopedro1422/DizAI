@@ -39,8 +39,8 @@ type FaseTour = 'inativo' | 'boas-vindas' | 'passo';
 const PASSOS_TOUR: PassoTour[] = [
   {
     alvo: 'perfil',
-    titulo: 'Dados da sua loja',
-    texto: 'Comece por aqui: toque em "Editar dados da loja" e preencha as formas de pagamento, como o cliente recebe e a antecedência dos pedidos. O assistente usa essas informações para responder seus clientes.',
+    titulo: 'Dados da loja e estatísticas',
+    texto: 'Comece por aqui, nos três pontinhos. Em "Editar dados da loja", preencha as formas de pagamento, como o cliente recebe e a antecedência dos pedidos: o assistente usa essas informações para responder. Em "Estatísticas", acompanhe quantos clientes ele atendeu e quanto tempo você economizou.',
   },
   {
     alvo: 'produtos',
@@ -64,8 +64,8 @@ const PASSOS_TOUR: PassoTour[] = [
   },
   {
     alvo: 'modo-pedido',
-    titulo: 'Quando o cliente quiser fechar',
-    texto: 'Escolha se o assistente te chama na hora ou se coleta os dados do pedido antes. Dá para mudar quando quiser.',
+    titulo: 'Configure o seu assistente',
+    texto: 'É aqui que você deixa o assistente com a cara do seu negócio: a saudação, as fotos dos seus trabalhos, o envio do catálogo, como ele fecha os pedidos e as instruções que ele sempre segue. Dá para mudar quando quiser.',
   },
 ];
 
@@ -92,6 +92,14 @@ function adaptarPassoAoRamo(passo: PassoTour, conteudo: ConteudoRamo): PassoTour
         ? { ...passo, texto: `Organize as fotos em tópicos, como "${exemplo}". Quando o cliente pedir para ver, o assistente envia o link do tópico certo.` }
         : passo;
     }
+    case 'modo-pedido':
+      // serviço fala em atendimento e horário, não em pedido
+      return conteudo.termoItem === 'serviço'
+        ? {
+            ...passo,
+            texto: 'É aqui que você deixa o assistente com a cara do seu negócio: a saudação, as fotos dos seus trabalhos, o envio do catálogo, como ele fecha os atendimentos e marca os horários, e as instruções que ele sempre segue. Dá para mudar quando quiser.',
+          }
+        : passo;
     default:
       return passo;
   }
@@ -127,8 +135,8 @@ const MARGEM_LATERAL_PX = 16;
   },
 })
 export class OnboardingTourComponent implements OnDestroy {
-  /** Disparado quando o lojista conclui ou pula o tour. */
-  readonly encerrado = output<void>();
+  /** Disparado quando o tour acaba: true se o lojista foi até o fim ("Próximo" no último passo), false se pulou. */
+  readonly encerrado = output<boolean>();
 
   private readonly tourService = inject(OnboardingTourService);
   private readonly botaoAvancar = viewChild<ElementRef<HTMLButtonElement>>('botaoAvancar');
@@ -203,7 +211,7 @@ export class OnboardingTourComponent implements OnDestroy {
 
   protected avancar(): void {
     if (this.ehUltimoPasso()) {
-      this.encerrar();
+      this.encerrar(true);   // o painel continua o tour na tela do assistente
       return;
     }
     void this.irParaPasso(this.indicePasso() + 1);
@@ -213,13 +221,13 @@ export class OnboardingTourComponent implements OnDestroy {
     void this.irParaPasso(Math.max(0, this.indicePasso() - 1));
   }
 
-  protected encerrar(): void {
+  protected encerrar(concluido = false): void {
     this.trocaAtual++;
     this.limparTemporizadores();
     this.fase.set('inativo');
     this.balaoVisivel.set(false);
     this.medidas.set(null);
-    this.encerrado.emit();
+    this.encerrado.emit(concluido);
   }
 
   protected aoPressionarEsc(): void {

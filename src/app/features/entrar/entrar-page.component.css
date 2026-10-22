@@ -69,3 +69,16 @@
   background: #FDECEA;
   color: var(--cor-erro);
 }
+
+/* "Esqueci minha senha", embaixo do campo de senha */
+.esqueci {
+  align-self: flex-end;
+  padding: 4px 0;
+  border: none;
+  background: none;
+  color: var(--cor-primaria);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}

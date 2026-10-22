@@ -1,0 +1,201 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Etiquetas clicáveis: {servico}, {data}... */
+.etiquetas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.etiquetas__dica {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+.etiquetas__lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 6px 12px 6px 6px;
+  border: 1px solid #C9D4EA;
+  border-radius: 999px;
+  background: var(--cor-azul-fundo);
+  font: inherit;
+  font-size: 13px;
+  color: var(--cor-primaria);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.etiqueta:hover {
+  border-color: var(--cor-primaria);
+}
+
+.etiqueta:active {
+  transform: scale(0.97);
+}
+
+.etiqueta:focus-visible {
+  outline: 2px solid var(--cor-primaria);
+  outline-offset: 2px;
+}
+
+.etiqueta__codigo {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--cor-primaria);
+  font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.etiqueta__rotulo {
+  font-weight: 600;
+}
+
+/* Campo de altura fixa: não muda de tamanho enquanto o lojista digita */
+.editor {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.editor:focus-within {
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 4px rgba(30, 58, 114, 0.1);
+}
+
+.editor--erro {
+  border-color: var(--cor-ambar);
+}
+
+.editor__ferramentas {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--cor-borda-suave);
+  background: var(--cor-fundo-suave);
+}
+
+.editor__ferramenta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 36px;
+  height: 32px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  background: var(--cor-fundo);
+  font: inherit;
+  font-size: 16px;
+  color: var(--cor-texto);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.editor__ferramenta:hover {
+  border-color: var(--cor-primaria);
+  color: var(--cor-primaria);
+}
+
+.editor__ferramenta:focus-visible {
+  outline: 2px solid var(--cor-primaria);
+  outline-offset: 2px;
+}
+
+.editor__ajuda {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--cor-texto-suave);
+}
+
+.editor__campo {
+  display: block;
+  width: 100%;
+  height: 232px;
+  padding: 14px 16px;
+  border: none;
+  outline: none;
+  resize: none;
+  overflow-y: auto;
+  background: transparent;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--cor-texto);
+}
+
+.editor__rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px 6px 12px;
+  border-top: 1px solid var(--cor-borda-suave);
+  background: var(--cor-fundo-suave);
+}
+
+.editor__contador {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--cor-texto-suave);
+}
+
+.editor__contador--limite {
+  font-weight: 700;
+  color: var(--cor-erro);
+}
+
+/* Prévia no jeito do WhatsApp */
+.previa {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.previa__rotulo {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cor-texto-suave);
+}
+
+.previa__conversa {
+  display: flex;
+  padding: 14px;
+  border-radius: var(--raio-grande);
+  background: #EFE7DD;
+}
+
+.previa__bolha {
+  max-width: 88%;
+  padding: 8px 12px;
+  border-radius: 10px 10px 10px 2px;
+  background: #FFFFFF;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: #111B21;
+}

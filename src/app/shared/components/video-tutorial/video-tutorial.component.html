@@ -1,0 +1,70 @@
+<div class="fundo" aria-hidden="true"></div>
+
+<section class="janela" role="dialog" aria-modal="true" aria-labelledby="video-tutorial-titulo">
+  <header class="janela__cabecalho">
+    <div class="janela__textos">
+      <span class="janela__sobretitulo">{{ sobretitulo() }}</span>
+      <h2 id="video-tutorial-titulo" class="janela__titulo">{{ titulo() }}</h2>
+    </div>
+    <button type="button" class="btn-icone btn-icone--suave" aria-label="Fechar o vídeo" (click)="fechar.emit()">
+      <app-icone nome="fechar" [tamanho]="18" [espessura]="2" />
+    </button>
+  </header>
+
+  <div class="video" [class.video--pausado]="!tocando()">
+    <div class="video__palco" (click)="alternar()">
+      <!-- Legenda da cena: o leitor de tela anuncia cada uma -->
+      <div class="legenda" aria-live="polite">
+        @for (chave of [chaveCena()]; track chave) {
+          <ng-container [ngTemplateOutlet]="templateLegenda()" [ngTemplateOutletContext]="{ $implicit: cenaAtual() }" />
+        }
+      </div>
+
+      <!-- Celular desenhado: só ilustra a legenda -->
+      <div class="celular" aria-hidden="true">
+        <div class="celular__tela">
+          <div class="celular__conteudo">
+            @for (chave of [chaveCena()]; track chave) {
+              <ng-container [ngTemplateOutlet]="templateTela()" [ngTemplateOutletContext]="{ $implicit: cenaAtual() }" />
+            }
+          </div>
+        </div>
+      </div>
+
+      @if (!tocando()) {
+        <span class="video__icone-play" aria-hidden="true">
+          <app-icone nome="reproduzir" [tamanho]="28" [espessura]="2" />
+        </span>
+      }
+    </div>
+
+    <div class="video__controles">
+      <button
+        type="button"
+        class="video__botao"
+        [attr.aria-label]="tocando() ? 'Pausar' : terminou() ? 'Ver de novo' : 'Continuar'"
+        (click)="alternar()"
+      >
+        <app-icone [nome]="tocando() ? 'pausar' : 'reproduzir'" [tamanho]="16" [espessura]="2.2" />
+      </button>
+      <div class="video__segmentos">
+        @for (cena of cenas(); track cena.nome; let indice = $index) {
+          <button
+            type="button"
+            class="video__segmento"
+            [attr.aria-label]="'Ir para: ' + cena.nome"
+            [attr.aria-current]="indice === cenaAtual() ? 'step' : null"
+            (click)="irParaCena(indice)"
+          >
+            <span class="video__preenchimento" [style.transform]="'scaleX(' + progressoDasCenas()[indice] + ')'"></span>
+          </button>
+        }
+      </div>
+      <span class="video__tempo">{{ tempoLegivel() }}</span>
+    </div>
+  </div>
+
+  <button #botao type="button" class="btn btn--primario btn--grande btn--bloco" (click)="confirmar.emit()">
+    {{ rotuloBotao() }}
+  </button>
+</section>

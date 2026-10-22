@@ -11,5 +11,5 @@ import { TelefoneDemoComponent } from './telefone-demo.component';
   styleUrl: './mock-vitrine.component.css',
 })
 export class MockVitrineJornadaComponent {
-  protected readonly logoUrl = '/landing/galeria/pedacinho.png';
+  protected readonly logoUrl = '/landing/galeria/logos/pedacinho-do-ceu.jpg';
 }

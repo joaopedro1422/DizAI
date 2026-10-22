@@ -1,3 +1,4 @@
+import { PeriodoAtendimento } from './agenda.model';
 import { AreaCorFundoVitrine, CorFundoVitrine, FonteVitrine } from './vitrine.model';
 
 export type RamoNegocio =
@@ -50,7 +51,18 @@ export function ramoDeServico(ramo: RamoNegocio): boolean {
   return ramo === 'SERVICOS_PRESENCIAIS' || ramo === 'SERVICOS_PERSONALIZADOS';
 }
 
-export type PrazoMinimo = 'SEM_ANTECEDENCIA' | 'HORAS_24' | 'HORAS_48' | 'DIAS_3';
+/** A antecedência é digitada em minutos ou em horas; vai para o backend sempre em minutos. */
+export type UnidadeAntecedencia = 'MINUTOS' | 'HORAS' | 'DIAS';
+
+export type PrazoMinimo =
+  | 'SEM_ANTECEDENCIA'
+  | 'HORAS_1'
+  | 'HORAS_2'
+  | 'HORAS_4'
+  | 'HORAS_12'
+  | 'HORAS_24'
+  | 'HORAS_48'
+  | 'DIAS_3';
 
 export interface Perfil {
   /** UUID do perfil: identifica a loja na URL do painel (/painel/{id}). */
@@ -74,6 +86,8 @@ export interface Perfil {
   distanciaMaximaKm: string;
   taxaEntrega: string;
   prazoMinimo: PrazoMinimo;
+  /** Antecedência mínima dos pedidos (= tempo mínimo de preparo), em minutos (0 = sem). Substitui o prazoMinimo. */
+  antecedenciaMinutos?: number;
   modoPedido: ModoPedido;
   camposPedido: string;
   modoFotos: ModoFotos;
@@ -94,6 +108,16 @@ export interface Perfil {
   agendaAtiva?: boolean;
   /** Conta com acesso ao gerenciamento da plataforma (/painel/{id}/admin). Definido no backend por DIZAI_ADMIN_NUMEROS. */
   admin?: boolean;
+  /** Confirma os pedidos a qualquer momento; false = só no horário de funcionamento (Dados da loja). */
+  confirmaQualquerHora: boolean;
+  /** Horário de funcionamento (Dados da loja): limita os pedidos e a confirmação. Um ou mais períodos por dia aberto. */
+  horariosFuncionamento: PeriodoAtendimento[];
+  /** "Sempre": a loja não tem horário fixo (o dono atende a qualquer hora). */
+  horarioLivre?: boolean;
+  /** "Facilitador de orçamentos" ligado: a aba Orçamento aparece na página pública (só produtos). */
+  orcamentoAtivo?: boolean;
+  /** Entrou com a senha temporária do "Esqueci minha senha": o painel pede para criar a senha nova. */
+  senhaTemporaria?: boolean;
 }
 
 /** Campos que o lojista altera na tela inicial do painel. */
@@ -107,6 +131,7 @@ export type ConfiguracoesAtendimento = Pick<
   | 'instrucoesObrigatorias'
   | 'modoCatalogo'
   | 'catalogoArquivos'
+  | 'confirmaQualquerHora'
 >;
 
 /** Dados editados no modal "Dados da loja" do painel. */
@@ -115,6 +140,10 @@ export interface DadosLoja {
   ramo: RamoNegocio;
   pagamentoEntrega: Pick<
     Perfil,
-    'formasPagamento' | 'formasRecebimento' | 'distanciaMaximaKm' | 'taxaEntrega' | 'prazoMinimo'
-  >;
+    'formasPagamento' | 'formasRecebimento' | 'distanciaMaximaKm' | 'taxaEntrega'
+  > & { antecedenciaMinutos: number };
+  /** Dias e horários em que a loja funciona: limitam os pedidos e a confirmação. */
+  horariosFuncionamento?: PeriodoAtendimento[];
+  /** "Sempre": sem horário fixo. */
+  horarioLivre?: boolean;
 }

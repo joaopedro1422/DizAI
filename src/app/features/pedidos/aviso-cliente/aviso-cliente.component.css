@@ -1,0 +1,38 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.aviso__ligar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.aviso__ligar input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--cor-primaria);
+}
+
+.aviso__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.aviso__modelos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.aviso__texto {
+  min-height: 104px;
+  resize: none;
+  line-height: 1.5;
+}

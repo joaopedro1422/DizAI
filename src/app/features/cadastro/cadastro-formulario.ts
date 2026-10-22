@@ -1,6 +1,6 @@
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
-import { FormaPagamento, FormaRecebimento, PrazoMinimo, RamoNegocio } from '../../core/models/perfil.model';
+import { FormaPagamento, FormaRecebimento, RamoNegocio, UnidadeAntecedencia } from '../../core/models/perfil.model';
 import { listaNaoVazia, telefoneValido } from '../../core/utils/validadores';
 
 export const TAMANHO_MINIMO_SENHA = 8;
@@ -28,7 +28,14 @@ export function criarGrupoPagamentoEntrega(fb: FormBuilder) {
     formasRecebimento: fb.nonNullable.control<FormaRecebimento[]>([], listaNaoVazia),
     distanciaMaximaKm: [''],
     taxaEntrega: [''],
-    prazoMinimo: fb.nonNullable.control<PrazoMinimo>('SEM_ANTECEDENCIA'),
+    /** Antecedência mínima dos pedidos (tempo mínimo de preparo): número + unidade; 0 = sem. */
+    antecedenciaValor: fb.nonNullable.control<number>(0, [
+      Validators.required,
+      Validators.min(0),
+      Validators.max(720),
+      Validators.pattern(/^\d+$/),
+    ]),
+    antecedenciaUnidade: fb.nonNullable.control<UnidadeAntecedencia>('HORAS'),
   });
 }
 

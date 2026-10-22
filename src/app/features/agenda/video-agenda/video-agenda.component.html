@@ -1,0 +1,191 @@
+<app-video-tutorial
+  titulo="Como funciona a sua agenda"
+  [cenas]="cenas"
+  [rotuloBotao]="rotuloBotao()"
+  (confirmar)="confirmar.emit()"
+  (fechar)="fechar.emit()"
+>
+  <ng-template #legenda let-cena>
+    @switch (cena) {
+      @case (0) {
+        <span class="legenda__selo surge">Agenda</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Sua agenda, organizada sozinha</p>
+        <p class="legenda__texto surge" style="--atraso: 1.4s">Os horários do dia, quem vem e o que vai fazer, tudo num lugar só.</p>
+      }
+      @case (1) {
+        <span class="legenda__selo legenda__selo--dica surge">Se você quiser</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">A IA pode marcar sozinha</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Ligue o agendamento automático. Prefere confirmar cada horário? Ela passa para você.</p>
+      }
+      @case (2) {
+        <span class="legenda__selo surge">Agendamento automático</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Marca direto na conversa</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Só oferece horários livres, do tamanho certo de cada serviço.</p>
+      }
+      @case (3) {
+        <span class="legenda__selo surge">Pelo WhatsApp</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Remarcar e cancelar, do jeito natural</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">O cliente só escreve. A IA acha o horário dele, resolve e a agenda se atualiza.</p>
+      }
+      @case (4) {
+        <span class="legenda__selo surge">Lembrete</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Confirmação de presença também</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">O lembrete sai antes do horário e, quando o cliente confirma, aparece o selo “Presença confirmada”.</p>
+      }
+      @case (5) {
+        <span class="legenda__selo legenda__selo--dica surge">Agenda online</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Uma página para o cliente marcar</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Ele escolhe serviço, dia e hora e manda tudo pronto pelo WhatsApp.</p>
+      }
+      @case (6) {
+        <p class="legenda__titulo surge">Menos mensagens, mais horários marcados ✨</p>
+        <p class="legenda__texto surge" style="--atraso: 0.8s">Comece cadastrando seus horários na aba “Configure”.</p>
+      }
+    }
+  </ng-template>
+
+  <ng-template #tela let-cena>
+    @switch (cena) {
+      @case (0) {
+        <div class="app">
+          <div class="app__barra">Minha Agenda</div>
+          <div class="app__corpo">
+            <div class="dias-mini surge" style="--atraso: 0.5s">
+              <span class="dia-mini">Seg<b>20</b></span>
+              <span class="dia-mini dia-mini--hoje">Ter<b>21</b></span>
+              <span class="dia-mini">Qua<b>22</b></span>
+              <span class="dia-mini">Qui<b>23</b></span>
+              <span class="dia-mini">Sex<b>24</b></span>
+            </div>
+            <span class="campo__rotulo surge" style="--atraso: 1s">Terça, 21 de outubro</span>
+            <div class="agendamento-mini surge" style="--atraso: 1.4s">
+              <b>9:00</b>
+              <span>Esmaltação em gel<small>Mariana · 1h</small></span>
+            </div>
+            <div class="agendamento-mini agendamento-mini--rosa surge" style="--atraso: 1.9s">
+              <b>10:30</b>
+              <span>Pé e mão<small>Júlia · 1h30</small><em class="selo-presenca">✓ Presença confirmada</em></span>
+            </div>
+            <div class="agendamento-mini agendamento-mini--ambar surge" style="--atraso: 2.4s">
+              <b>14:00</b>
+              <span>Alongamento em fibra<small>Bruna · 2h</small></span>
+            </div>
+          </div>
+        </div>
+      }
+      @case (1) {
+        <div class="app">
+          <div class="app__barra">Configure</div>
+          <div class="app__corpo">
+            <div class="linha-ajuste destaca" style="--atraso: 0.8s">
+              <span><b>Agenda online</b><small>Clientes marcam pela sua página</small></span>
+              <span class="chave" style="--atraso: 1.6s"></span>
+            </div>
+            <span class="campo__rotulo surge" style="--atraso: 2.6s">Quando o cliente quiser fechar</span>
+            <div class="escolha escolha--sai" style="--atraso: 4s">
+              <i></i>
+              <span><b>Me chamar para confirmar</b><small>Você confirma o horário pelo WhatsApp</small></span>
+            </div>
+            <div class="escolha escolha--entra" style="--atraso: 4s">
+              <i></i>
+              <span><b>Agendar automaticamente</b><small>A IA marca sozinha, só em horário livre</small></span>
+            </div>
+            <span class="aviso-mini surge" style="--atraso: 5.2s">✓ Agendamento automático ligado</span>
+          </div>
+        </div>
+      }
+      @case (2) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar zap__avatar--salvia">S</span>
+            <span class="zap__nome"><b>Sálvia Unhas</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            <span class="balao balao--cliente surge" style="--atraso: 0.6s">Oi! Tem horário sexta à tarde pra pé e mão?</span>
+            <span class="digitando digitando--1"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 3s">Tenho sim! 💅 Sexta: 14h, 15h30 ou 17h. Qual prefere?</span>
+            <span class="balao balao--cliente surge" style="--atraso: 5.8s">15h30</span>
+            <span class="digitando digitando--2"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 8.2s">Agendado! ✅ Pé e mão, sexta às 15h30. Até lá!</span>
+          </div>
+        </div>
+      }
+      @case (3) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar zap__avatar--salvia">S</span>
+            <span class="zap__nome"><b>Sálvia Unhas</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            <span class="balao balao--cliente surge" style="--atraso: 0.6s">Oi, não vou conseguir ir sexta 😕 dá pra passar pra sábado?</span>
+            <span class="digitando digitando--1"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 3s">Sem problema! Sábado tenho 9h ou 11h. Qual fica melhor?</span>
+            <span class="balao balao--cliente surge" style="--atraso: 5.8s">11h</span>
+            <span class="digitando digitando--2"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 8.2s">Prontinho! ✅ Remarquei para sábado às 11h.</span>
+          </div>
+        </div>
+      }
+      @case (4) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar zap__avatar--salvia">S</span>
+            <span class="zap__nome"><b>Sálvia Unhas</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            <span class="balao surge" style="--atraso: 0.6s">Oi, Júlia! Passando para lembrar: amanhã às 11h, pé e mão 💅 Podemos confirmar?</span>
+            <span class="balao balao--cliente surge" style="--atraso: 2.8s">Confirmado! Estarei aí 😊</span>
+            <span class="digitando" style="animation-delay: 3.8s"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 5.2s">Ótimo, te esperamos! 💚</span>
+          </div>
+        </div>
+        <div class="notificacao" style="--atraso: 6.6s">
+          <span class="notificacao__icone notificacao__icone--ok">✓</span>
+          <span class="notificacao__textos">
+            <b>Presença confirmada</b>
+            <small>Júlia · sábado, 11h · Pé e mão</small>
+          </span>
+        </div>
+      }
+      @case (5) {
+        <div class="ap">
+          <div class="ap__cabeca">
+            <div class="ap__topo">
+              <span class="ap__logo">S</span>
+              <span><b>Sálvia Unhas</b><small>Unhas em gel, fibra e nail art</small></span>
+            </div>
+            <div class="ap__abas"><span>Fotos</span><span class="ap__aba-ativa">Agendar horário</span></div>
+          </div>
+          <div class="ap__corpo rola" style="--atraso: 4.4s">
+            <span class="ap__passo"><i>1</i> Escolha o serviço</span>
+            <span class="ap__servico"><i></i><span>Esmaltação em gel</span><small>1h</small></span>
+            <span class="ap__servico escolhe" style="--atraso: 1.2s"><i></i><span>Pé e mão</span><small>1h30</small></span>
+            <span class="ap__servico"><i></i><span>Alongamento em fibra</span><small>2h</small></span>
+            <span class="ap__passo"><i>2</i> Escolha o dia</span>
+            <div class="ap__opcoes">
+              <span class="ap__opcao"><small>Sex</small>24</span>
+              <span class="ap__opcao escolhe" style="--atraso: 2.8s"><small>Sáb</small>25</span>
+              <span class="ap__opcao"><small>Seg</small>27</span>
+              <span class="ap__opcao"><small>Ter</small>28</span>
+            </div>
+            <span class="ap__passo"><i>3</i> Escolha o horário</span>
+            <div class="ap__opcoes">
+              <span class="ap__opcao">9:00</span>
+              <span class="ap__opcao escolhe" style="--atraso: 5.6s">11:00</span>
+              <span class="ap__opcao">14:00</span>
+              <span class="ap__opcao">15:30</span>
+            </div>
+            <span class="tocado" style="--atraso: 7.4s"><span class="ap__enviar">Enviar pelo WhatsApp</span></span>
+          </div>
+        </div>
+      }
+      @case (6) {
+        <div class="final">
+          <span class="final__check surge" style="--atraso: 0.4s">✓</span>
+          <b class="surge" style="--atraso: 1s">Pronto para configurar?</b>
+          <small class="surge" style="--atraso: 1.6s">Comece pelos seus horários de atendimento.</small>
+        </div>
+      }
+    }
+  </ng-template>
+</app-video-tutorial>

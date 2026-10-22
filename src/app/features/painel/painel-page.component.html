@@ -2,187 +2,50 @@
   @if (carregandoPainel()) {
     <app-carregando modo="tela" texto="Abrindo seu painel…" />
   } @else {
-    <app-resumo-loja (editarDados)="abrirEdicaoPerfil()" (sair)="sairDaConta()" (baixarAtalho)="abrirConviteApp()" />
+    <app-resumo-loja
+      (editarDados)="abrirEdicaoPerfil()"
+      (sair)="sairDaConta()"
+      (baixarAtalho)="abrirConviteApp()"
+      (alterarSenha)="alterandoSenha.set(true)"
+    />
 
-    <form class="conteudo" [class.conteudo--com-barra]="temAlteracoes()" [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
+    <div class="conteudo">
+      @if (senhaTemporaria()) {
+        <div class="aviso-senha" role="status">
+          <app-icone nome="cadeado" [tamanho]="20" />
+          <span class="aviso-senha__texto">Você entrou com uma senha temporária. Crie a sua senha para continuar seguro.</span>
+          <button type="button" class="btn btn--primario btn--pequeno" (click)="alterandoSenha.set(true)">Criar senha</button>
+        </div>
+      }
+
       @if (!whatsappConectado()) {
         <app-alerta-conexao-whatsapp />
       }
 
-      <section class="grupo" aria-labelledby="titulo-sua-loja">
+      <section class="grupo grupo--negocio" aria-labelledby="titulo-sua-loja">
         <h2 id="titulo-sua-loja" class="grupo__titulo">Seu Negócio</h2>
         <app-atalhos-secoes />
       </section>
 
-      <div class="grupo__cabecalho">
-        <h2 class="grupo__titulo">Como o assistente atende</h2>
-        <p class="grupo__descricao">Ajuste o jeito que ele conversa com seus clientes.</p>
-      </div>
-
-      <app-secao-configuracao
-        #secaoPedido
-        appAlvoTour="modo-pedido"
-        titulo="Quando o cliente quiser fechar"
-        descricao="Escolha até onde o assistente vai antes de passar a conversa para você."
-      >
-        <div class="lista-opcoes" role="radiogroup" [attr.aria-labelledby]="secaoPedido.idTitulo">
-          @for (modo of modosPedido(); track modo.valor) {
-            <app-opcao-card
-              [titulo]="modo.rotulo"
-              [descricao]="modo.descricao"
-              [destaque]="modo.destaque === true"
-              [selecionado]="valores().modoPedido === modo.valor"
-              (selecionar)="escolherModoPedido(modo.valor)"
-            />
-          }
-        </div>
-
-        @if (valores().modoPedido === 'AGENDAMENTO_AUTOMATICO') {
-          <a class="aviso-agenda" [class.aviso-agenda--pronta]="agendaLigada()" [routerLink]="rotaAgenda()">
-            <app-icone [nome]="agendaLigada() ? 'check' : 'calendario'" [tamanho]="18" [espessura]="2" />
-            <span class="aviso-agenda__texto">
-              @if (agendaLigada()) {
-                Tudo pronto: o assistente confere sua agenda e marca os clientes sozinho.
-              } @else {
-                Falta pouco: cadastre seus horários e ligue a agenda para o assistente começar a marcar.
-              }
-              <strong>{{ agendaLigada() ? 'Ver agenda' : 'Configurar agenda' }}</strong>
-            </span>
-            <app-icone nome="avancar" [tamanho]="16" [espessura]="2" />
-          </a>
-        }
-
-        @if (valores().modoPedido === 'COLETAR_DADOS') {
-          <div class="campo caixa-destaque">
-            <label for="campos-pedido" class="campo__rotulo">O que o assistente precisa coletar?</label>
-            <textarea
-              id="campos-pedido"
-              class="campo__entrada"
-              rows="4"
-              formControlName="camposPedido"
-              [placeholder]="conteudoRamo().camposPedido"
-            ></textarea>
-            <span class="campo__dica">Escreva do seu jeito, separando os itens por vírgula.</span>
-          </div>
-        }
-      </app-secao-configuracao>
-
-      <app-secao-configuracao
-        #secaoFotos
-        titulo="Quando o cliente pedir fotos"
-        descricao="Escolha o link que o assistente envia quando alguém quiser ver seus trabalhos."
-      >
-        <div class="lista-opcoes" role="radiogroup" [attr.aria-labelledby]="secaoFotos.idTitulo">
-          @for (modo of modosFotos; track modo.valor) {
-            <app-opcao-card
-              [titulo]="modo.rotulo"
-              [descricao]="modo.descricao"
-              [selecionado]="valores().modoFotos === modo.valor"
-              (selecionar)="escolherModoFotos(modo.valor)"
-            />
-          }
-        </div>
-
-        @if (valores().modoFotos === 'LINK_EXTERNO') {
-          <div class="campo caixa-destaque">
-            <label for="link-portfolio" class="campo__rotulo">Link do portfólio</label>
-            <span class="campo-prefixado" [class.campo-prefixado--erro]="mostrarErroLink()">
-              <app-icone nome="link" [tamanho]="16" class="campo-prefixado__prefixo" />
-              <input
-                id="link-portfolio"
-                type="url"
-                inputmode="url"
-                formControlName="linkPortfolioExterno"
-                placeholder="https://instagram.com/sualoja"
-              >
-            </span>
-            @if (mostrarErroLink()) {
-              <span class="campo__erro" role="alert">Informe um link válido para o seu portfólio.</span>
-            } @else {
-              <span class="campo__dica">O assistente envia sempre este mesmo link, sem separar por serviço.</span>
-            }
-          </div>
-        }
-      </app-secao-configuracao>
-
-      <app-secao-configuracao
-        titulo="Saudação inicial"
-        descricao="Primeira mensagem que o cliente recebe. Evite cordialidades como 'Posso te ajudar?' ou 'Como vai?', o seu assistente já fará isso por você. Faça apenas uma breve saudação. Use Emojis ou informações que quiser."
-      >
-        <label for="saudacao" class="somente-leitor-tela">Saudação inicial</label>
-        <textarea
-          id="saudacao"
-          class="campo__entrada"
-          rows="3"
-          formControlName="saudacaoPersonalizada"
-          [placeholder]="exemploSaudacao()"
-        ></textarea>
-
-      </app-secao-configuracao>
-
-      <app-secao-configuracao
-        titulo="Enviar catálogo em imagem ou PDF?"
-        descricao="O assistente envia o seu catálogo ou tabela de preços na conversa. Não substitui as respostas por mensagem."
-      >
-        <app-catalogo-conversa
-          [formulario]="formulario"
-          [modo]="valores().modoCatalogo"
-          [arquivosSalvos]="valores().catalogoArquivos"
-          [mostrarErro]="tentouSalvar() && faltaCatalogo()"
-          [(pendentes)]="pendentesCatalogo"
-        />
-      </app-secao-configuracao>
-
-      <app-secao-configuracao
-        titulo="Instruções obrigatórias"
-        selo="Prioridade máxima"
-        descricao="Regras que o assistente segue acima de qualquer comportamento padrão."
-      >
-        <label for="instrucoes" class="somente-leitor-tela">Instruções obrigatórias</label>
-        <textarea
-          id="instrucoes"
-          class="campo__entrada campo__entrada--instrucoes"
-          rows="6"
-          formControlName="instrucoesObrigatorias"
-          [placeholder]="conteudoRamo().instrucoes"
-        ></textarea>
-        <p class="aviso-informativo">
-          <app-icone nome="alerta" [tamanho]="16" />
-          <span>Uma regra por linha. Evite contradizer seus produtos e perguntas frequentes.</span>
-        </p>
-
-        @if (instrucoesSugeridas().length > 0) {
-          <div class="sugestoes-instrucoes">
-            <span class="rotulo-maiusculo">Regras comuns no seu ramo</span>
-            <div class="sugestoes-instrucoes__lista">
-              @for (instrucao of instrucoesSugeridas(); track instrucao) {
-                <button type="button" class="sugestao-instrucao" (click)="adicionarInstrucao(instrucao)">
-                  <app-icone nome="mais" [tamanho]="14" [espessura]="2.2" />
-                  {{ instrucao }}
-                </button>
-              }
-            </div>
-          </div>
-        }
-      </app-secao-configuracao>
+      <section class="grupo grupo--assistente" aria-labelledby="titulo-seu-assistente">
+        <h2 id="titulo-seu-assistente" class="grupo__titulo">Seu assistente</h2>
+        <a class="cartao-atendimento" [routerLink]="rotaAtendimento()" appAlvoTour="modo-pedido">
+          <span class="cartao-atendimento__icone" aria-hidden="true">
+            <app-icone nome="ajustes" [tamanho]="22" />
+          </span>
+          <span class="cartao-atendimento__textos">
+            <span class="cartao-atendimento__titulo">Como o assistente atende</span>
+            <span class="cartao-atendimento__descricao">Defina o comportamento do seu assistente durante o atendimento</span>
+          </span>
+          <app-icone nome="avancar" [tamanho]="18" [espessura]="2" class="cartao-atendimento__seta" />
+        </a>
+        <app-cartao-chats />
+      </section>
 
       <!-- último item do painel: instalar o app e ativar os avisos (some quando não há nada a fazer) -->
       <app-no-celular />
 
-      @if (temAlteracoes()) {
-        <div class="barra-salvar barra-fixa-inferior" role="region" aria-label="Alterações não salvas">
-          <button type="button" class="btn btn--secundario barra-salvar__descartar" (click)="descartarAlteracoes()">Descartar</button>
-          <button type="submit" class="btn btn--primario barra-salvar__salvar" [disabled]="salvandoConfiguracoes()" [attr.aria-busy]="salvandoConfiguracoes()">
-            @if (salvandoConfiguracoes()) {
-              <app-carregando modo="inline" variante="claro" [tamanho]="22" />
-              Salvando…
-            } @else {
-              Salvar alterações
-            }
-          </button>
-        </div>
-      }
-    </form>
+    </div>
   }
 </div>
 
@@ -215,5 +78,11 @@
 @if (editandoPerfil()) {
   <app-bottom-sheet titulo="Dados da loja" (fechar)="fecharEdicaoPerfil()">
     <app-editar-perfil (salvo)="aoSalvarPerfil()" />
+  </app-bottom-sheet>
+}
+
+@if (alterandoSenha()) {
+  <app-bottom-sheet titulo="Alterar senha" (fechar)="alterandoSenha.set(false)">
+    <app-alterar-senha (salvo)="aoAlterarSenha()" />
   </app-bottom-sheet>
 }

@@ -1,0 +1,164 @@
+.tela-pedidos {
+  min-height: 100dvh;
+}
+
+/* No celular as abas vão embaixo do título (quebram a linha); no computador, ao lado */
+.topo-pedidos {
+  flex-wrap: wrap;
+}
+
+.topo-pedidos .abas {
+  flex: 1 1 100%;
+}
+
+.pedidos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 20px;
+  padding-bottom: 32px;
+}
+
+.pedidos__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pedidos__rodape {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.pedidos__chats {
+  width: 100%;
+}
+
+.aba__contador {
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: var(--raio-pilula);
+  background: #ffffff;
+  color: var(--cor-primaria);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.aba--ativa .aba__contador {
+  background: var(--cor-primaria);
+  color: #ffffff;
+}
+
+/* =====================================================================================
+   Tablet e computador: a tela ocupa a largura toda (pode ficar aberta numa tela da cozinha)
+   ===================================================================================== */
+@media (min-width: 760px) {
+  .tela-pedidos {
+    --largura-tela-app: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .topo-pedidos {
+    flex-wrap: nowrap;
+  }
+
+  .topo-pedidos .abas {
+    flex: none;
+  }
+
+  .pedidos {
+    padding: 24px 32px 40px;
+  }
+
+  .pedidos__lista {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .pedidos__rodape {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .pedidos__chats {
+    width: auto;
+  }
+}
+
+/* Computador: quadro com duas colunas, "Em preparo" (mais larga) e "Prontos para entregar" */
+@media (min-width: 1024px) {
+  .quadro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 24px;
+  }
+
+  .quadro__coluna {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 320px;
+    padding: 16px;
+    border-radius: var(--raio-grande);
+    background: var(--cor-fundo-suave);
+  }
+
+  .quadro__titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 800;
+  }
+
+  .quadro__ponto {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #D9A23B;
+  }
+
+  .quadro__coluna--prontos .quadro__ponto {
+    background: var(--cor-ativo);
+  }
+
+  .quadro__contador {
+    min-width: 26px;
+    padding: 2px 8px;
+    border-radius: var(--raio-pilula);
+    background: var(--cor-fundo);
+    color: var(--cor-texto-secundario);
+    font-size: 13px;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .quadro__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    align-items: start;
+    gap: 14px;
+  }
+
+  .quadro__vazio {
+    padding: 28px 12px;
+    border: 1px dashed var(--cor-borda-forte);
+    border-radius: var(--raio-medio);
+    color: var(--cor-texto-suave);
+    font-size: 14px;
+    text-align: center;
+  }
+}
+
+/* Telas largas: o que está em preparo ganha mais espaço (é o que a cozinha olha) */
+@media (min-width: 1280px) {
+  .quadro {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+}

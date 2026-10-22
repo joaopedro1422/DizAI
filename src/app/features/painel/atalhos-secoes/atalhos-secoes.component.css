@@ -14,7 +14,7 @@
   gap: 12px;
 }
 
-/* Ícone em quadrado colorido */
+/* Ícone em quadrado de cor bem clarinha (o tom do fundo misturado com branco) */
 .icone-atalho {
   display: flex;
   align-items: center;
@@ -26,36 +26,31 @@
 }
 
 .icone-atalho--azul {
-  background: var(--cor-azul-fundo);
+  background: color-mix(in srgb, var(--cor-azul-fundo) 55%, #ffffff);
   color: var(--cor-azul);
 }
 
 .icone-atalho--ambar {
-  background: var(--cor-ambar-fundo);
+  background: color-mix(in srgb, var(--cor-ambar-fundo) 55%, #ffffff);
   color: var(--cor-ambar);
 }
 
 .icone-atalho--rosa {
-  background: var(--cor-rosa-fundo);
+  background: color-mix(in srgb, var(--cor-rosa-fundo) 55%, #ffffff);
   color: var(--cor-rosa);
 }
 
 .icone-atalho--marinho {
-  background: var(--cor-primaria-clara);
+  background: color-mix(in srgb, var(--cor-primaria-clara) 55%, #ffffff);
   color: var(--cor-primaria);
 }
 
-.icone-atalho--sobre-escuro {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-}
-
 .icone-atalho--verde {
-  background: #E3F2EA;
+  background: color-mix(in srgb, #E3F2EA 55%, #ffffff);
   color: var(--cor-ativo);
 }
 
-/* Card da Agenda (largura toda, logo acima do de Chats) */
+/* Card da Agenda (largura toda, o primeiro, acima da grade) */
 .atalho-agenda {
   display: flex;
   flex-direction: column;
@@ -150,82 +145,6 @@
   color: var(--cor-texto-secundario);
   font-size: 13px;
   line-height: 1.45;
-}
-
-/* Card de Chats (destaque) */
-.atalho-chats {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 18px;
-  border-radius: var(--raio-grande);
-  background: var(--cor-primaria);
-  color: #ffffff;
-  text-decoration: none;
-  box-shadow: 0 10px 24px rgba(30, 58, 114, 0.25);
-  transition: transform 0.15s ease;
-}
-
-.atalho-chats:hover {
-  color: #ffffff;
-  transform: translateY(-1px);
-}
-
-.atalho-chats__topo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.atalho-chats__titulo {
-  font-size: 17px;
-  font-weight: 700;
-}
-
-.atalho-chats__resumo {
-  font-size: 13px;
-  color: var(--cor-texto-sobre-escuro);
-}
-
-.atalho-chats__selo {
-  flex: none;
-  margin-left: auto;
-  padding: 6px 10px;
-  border-radius: var(--raio-pilula);
-  background: #ffffff;
-  color: var(--cor-primaria);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.atalho-chats__previa {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  border-radius: var(--raio-medio);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.atalho-chats__previa-textos {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.atalho-chats__previa-nome {
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.atalho-chats__previa-mensagem {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 13px;
-  color: var(--cor-texto-sobre-escuro);
 }
 
 /* Cards claros */
@@ -327,14 +246,24 @@
   flex: 1;
 }
 
-/* Perguntas que o assistente não soube responder (sugestões de pergunta frequente) */
-.atalho__pendente {
-  align-self: flex-start;
-  margin-top: 2px;
-  padding: 2px 8px;
-  border-radius: var(--raio-pilula);
-  background: var(--cor-ambar-fundo);
-  color: var(--cor-ambar);
-  font-size: 11px;
-  font-weight: 800;
+/* Perguntas que o assistente não soube responder: bolinha amarela com "!" ao lado do resumo */
+.atalho__resumo--com-alerta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.atalho__alerta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #F5B83D;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
 }

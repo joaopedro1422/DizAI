@@ -103,7 +103,7 @@
       <section class="passo passo--entrada" aria-labelledby="passo-nome">
         <h2 class="passo__titulo" id="passo-nome">
           <span class="passo__numero" [class.passo__numero--feito]="nome().trim().length > 0">4</span>
-          Seu nome <span class="passo__opcional">(opcional)</span>
+          Seu nome
         </h2>
         <input
           class="campo-nome"
@@ -111,6 +111,8 @@
           autocomplete="name"
           placeholder="Como podemos te chamar?"
           aria-labelledby="passo-nome"
+          required
+          aria-required="true"
           [value]="nome()"
           (input)="digitarNome($event)"
         >
@@ -134,7 +136,7 @@
       </a>
     } @else {
       <span class="enviar__botao enviar__botao--inativo" aria-disabled="true">
-        {{ escolhidos().length === 0 ? 'Escolha um serviço' : !horaSelecionada() ? 'Escolha o dia e o horário' : 'Enviar pelo WhatsApp' }}
+        {{ escolhidos().length === 0 ? 'Escolha um serviço' : !horaSelecionada() ? 'Escolha o dia e o horário' : faltaNome() ? 'Escreva o seu nome' : 'Enviar pelo WhatsApp' }}
       </span>
     }
   </div>

@@ -1,9 +1,10 @@
 import { Component, OnInit, computed, inject, input, output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { ramoDeServico, ramoUsaAgenda } from '../../../core/models/perfil.model';
-import { NovoProduto, Produto } from '../../../core/models/produto.model';
+import { ramoDeServico, ramoUsaAgenda, UnidadeAntecedencia } from '../../../core/models/perfil.model';
+import { MODOS_ESCOLHA, ModoEscolha, NovoProduto, Produto, escolhaParaFormulario } from '../../../core/models/produto.model';
 import { PerfilService } from '../../../core/services/perfil.service';
+import { antecedenciaEmMinutos, antecedenciaNaTela } from '../../../core/utils/antecedencia';
 import { formatarDuracao } from '../../../core/utils/datas-agenda';
 import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.service';
 import { separarPorVirgula } from '../../../core/utils/texto.utils';
@@ -20,7 +21,8 @@ const PADRAO_PRECO = /^\d{1,7}([.,]\d{1,2})?$/;
 /** Atalhos de duração (minutos) mostrados como chips; outro valor vai no campo. */
 const DURACOES_COMUNS = [30, 45, 60, 90, 120];
 
-type GrupoAtributo = FormGroup<{ nome: FormControl<string>; opcoes: FormControl<string> }>;
+type GrupoVariacao = FormGroup<{ nome: FormControl<string>; preco: FormControl<string> }>;
+type GrupoAtributo = FormGroup<{ nome: FormControl<string>; opcoes: FormControl<string>; quantidade: FormControl<number>; modo: FormControl<ModoEscolha> }>;
 
 /** Formulário do modal "Novo produto". */
 @Component({
@@ -48,6 +50,8 @@ export class ProdutoFormularioComponent implements OnInit {
   /** Serviços mostram a duração; nos ramos com agenda ela é obrigatória (a agenda conta os horários por ela). */
   protected readonly pedeDuracao = computed(() => ramoDeServico(this.ramo()));
   protected readonly duracaoObrigatoria = computed(() => ramoUsaAgenda(this.ramo()));
+  /** "Quantas o cliente escolhe" em cada opção: número + modo (só produtos: os serviços não usam). */
+  protected readonly modosEscolha = MODOS_ESCOLHA;
   protected readonly duracoesComuns = DURACOES_COMUNS.map((minutos) => ({ minutos, rotulo: formatarDuracao(minutos) }));
 
   protected readonly formulario = this.fb.nonNullable.group({
@@ -58,8 +62,17 @@ export class ProdutoFormularioComponent implements OnInit {
     preco: ['', Validators.pattern(PADRAO_PRECO)],
     precoAPartirDe: [false],
     duracao: ['', [Validators.pattern(/^\d{1,3}$/), Validators.min(5), Validators.max(720)]],
+    /** Produtos: antecedência própria (opcional). Vazio = a antecedência da loja. */
+    antecedencia: ['', [Validators.pattern(/^\d{1,3}$/), Validators.max(720)]],
+    antecedenciaUnidade: ['HORAS' as UnidadeAntecedencia],
     atributos: this.fb.array<GrupoAtributo>([]),
+    /** Variações de preço (só produtos): nome + valor, os dois obrigatórios. */
+    variacoes: this.fb.array<GrupoVariacao>([]),
   });
+
+  protected get variacoes(): FormArray<GrupoVariacao> {
+    return this.formulario.controls.variacoes;
+  }
 
   protected get atributos(): FormArray<GrupoAtributo> {
     return this.formulario.controls.atributos;
@@ -73,17 +86,23 @@ export class ProdutoFormularioComponent implements OnInit {
     if (produto) {
       this.formulario.patchValue({
         duracao: produto.duracaoMinutos ? String(produto.duracaoMinutos) : '',
+        ...antecedenciaNoFormulario(produto.antecedenciaMinutos),
         nome: produto.nome,
         categoria: produto.categoria,
         descricao: produto.descricao ?? '',
         preco: produto.preco === null ? '' : String(produto.preco),
         precoAPartirDe: produto.precoAPartirDe,
       });
+      (produto.variacoes ?? []).forEach((variacao) =>
+        this.variacoes.push(this.novaVariacao(variacao.nome, String(variacao.preco).replace('.', ','))),
+      );
       produto.atributos.forEach((atributo) => {
         this.atributos.push(
           this.fb.nonNullable.group({
             nome: [atributo.nome, Validators.maxLength(40)],
             opcoes: [atributo.opcoes.join(', '), Validators.maxLength(300)],
+            quantidade: [escolhaParaFormulario(atributo).quantidade, [Validators.min(0), Validators.max(20)]],
+            modo: [escolhaParaFormulario(atributo).modo],
           }),
         );
       });
@@ -120,8 +139,29 @@ export class ProdutoFormularioComponent implements OnInit {
       this.fb.nonNullable.group({
         nome: ['', Validators.maxLength(40)],
         opcoes: ['', Validators.maxLength(300)],
+        quantidade: [1, [Validators.min(0), Validators.max(20)]],
+        modo: ['EXATAMENTE' as ModoEscolha],
       }),
     );
+  }
+
+  protected adicionarVariacao(): void {
+    this.variacoes.push(this.novaVariacao());
+  }
+
+  protected removerVariacao(indice: number): void {
+    this.variacoes.removeAt(indice);
+  }
+
+  protected variacaoComErro(indice: number, campo: 'nome' | 'preco'): boolean {
+    return campoComErro(this.variacoes.at(indice).controls[campo]);
+  }
+
+  private novaVariacao(nome = '', preco = ''): GrupoVariacao {
+    return this.fb.nonNullable.group({
+      nome: [nome, [Validators.required, Validators.maxLength(60)]],
+      preco: [preco, [Validators.required, Validators.pattern(PADRAO_PRECO)]],
+    });
   }
 
   protected removerAtributo(indice: number): void {
@@ -132,7 +172,7 @@ export class ProdutoFormularioComponent implements OnInit {
     return this.formulario.controls.categoria.value === NOVA_CATEGORIA;
   }
 
-  protected temErro(campo: 'nome' | 'preco' | 'novaCategoria' | 'duracao'): boolean {
+  protected temErro(campo: 'nome' | 'preco' | 'novaCategoria' | 'duracao' | 'antecedencia'): boolean {
     return campoComErro(this.formulario.controls[campo]);
   }
 
@@ -159,6 +199,7 @@ export class ProdutoFormularioComponent implements OnInit {
     const categoria = this.ehNovaCategoria() ? valores.novaCategoria.trim() : valores.categoria;
     const preco = valores.preco.trim();
     const duracao = valores.duracao.trim();
+    const antecedencia = valores.antecedencia.trim();
 
     return {
       nome: valores.nome.trim(),
@@ -167,9 +208,33 @@ export class ProdutoFormularioComponent implements OnInit {
       preco: preco ? Number(preco.replace(',', '.')) : null,
       precoAPartirDe: valores.precoAPartirDe,
       duracaoMinutos: this.pedeDuracao() && duracao ? Number(duracao) : null,
+      antecedenciaMinutos:
+        !this.pedeDuracao() && antecedencia
+          ? antecedenciaEmMinutos(antecedencia, valores.antecedenciaUnidade)
+          : null,
+      variacoes: this.pedeDuracao()
+        ? []
+        : valores.variacoes.map((v) => ({ nome: v.nome.trim(), preco: Number(v.preco.trim().replace(',', '.')) })),
       atributos: valores.atributos
-        .map((atributo) => ({ nome: atributo.nome.trim(), opcoes: separarPorVirgula(atributo.opcoes) }))
+        .map((atributo) => ({
+          nome: atributo.nome.trim(),
+          opcoes: separarPorVirgula(atributo.opcoes),
+          quantidadeEscolha: Math.max(0, Math.round(Number(atributo.quantidade) || 0)),
+          modoEscolha: atributo.modo,
+        }))
         .filter((atributo) => atributo.nome && atributo.opcoes.length > 0),
     };
   }
+}
+
+/** Minutos salvos -> número + unidade do formulário (horas quando é hora cheia). Vazio = a da loja. */
+function antecedenciaNoFormulario(minutos?: number | null): {
+  antecedencia: string;
+  antecedenciaUnidade: UnidadeAntecedencia;
+} {
+  if (minutos === null || minutos === undefined) {
+    return { antecedencia: '', antecedenciaUnidade: 'HORAS' };
+  }
+  const { valor, unidade } = antecedenciaNaTela(minutos);
+  return { antecedencia: String(valor), antecedenciaUnidade: unidade };
 }

@@ -1,0 +1,160 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.09), 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.topo {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.topo__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.topo__nome {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.topo__detalhe {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+.selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-ambar-fundo);
+  color: #7a4c00;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.selo__ponto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.selo--pronto {
+  background: #E3F2EA;
+  color: #1E6B45;
+}
+
+.selo--teste {
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto-suave);
+}
+
+/* "Anexo" (foto do modelo): link discreto no fim da linha dos selos */
+.anexo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  color: var(--cor-primaria);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.resumo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+}
+
+.resumo__item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.resumo__campo {
+  flex: none;
+  color: var(--cor-texto-suave);
+}
+
+.resumo__valor {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+}
+
+.rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rodape__valor {
+  font-size: 18px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.rodape__whatsapp {
+  color: var(--cor-primaria);
+}
+
+.acoes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.acoes--uma {
+  grid-template-columns: 1fr;
+}
+
+.acoes .btn {
+  min-height: 46px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+/* Computador (quadro da cozinha): um pouco maior, para ler de longe */
+@media (min-width: 1024px) {
+  :host {
+    gap: 14px;
+    padding: 18px 20px;
+  }
+
+  .topo__nome {
+    font-size: 18px;
+  }
+
+  .resumo__item {
+    font-size: 14px;
+  }
+
+  .rodape__valor {
+    font-size: 20px;
+  }
+}

@@ -12,6 +12,7 @@ import { ConversaService } from '../services/conversa.service';
 import { GaleriaService } from '../services/galeria.service';
 import { PerfilService } from '../services/perfil.service';
 import { PerguntaFrequenteService } from '../services/pergunta-frequente.service';
+import { PedidoService } from '../services/pedido.service';
 import { ProdutoService } from '../services/produto.service';
 import { RespostaAutenticacao, SessaoService } from './sessao.service';
 
@@ -32,6 +33,7 @@ export class AutenticacaoService {
     inject(ContatosWhatsappService),
     inject(AgendaService),
     inject(EstatisticasService),
+    inject(PedidoService),
   ];
 
   /** Login com o WhatsApp do negócio e a senha. Devolve o caminho do painel: /painel/{uuid} */
@@ -40,6 +42,11 @@ export class AutenticacaoService {
       this.http.post<RespostaAutenticacao>(urlApi('/api/auth/login'), { whatsapp, senha }),
     );
     return this.iniciarSessao(resposta);
+  }
+
+  /** "Esqueci minha senha": o pedido vai para o gerenciamento (a resposta é a mesma existindo a conta ou não). */
+  async pedirNovaSenha(whatsapp: string, nome: string): Promise<void> {
+    await firstValueFrom(this.http.post<void>(urlApi('/api/auth/esqueci-senha'), { whatsapp, nome }));
   }
 
   /**

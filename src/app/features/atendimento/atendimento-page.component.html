@@ -1,0 +1,244 @@
+<div class="tela-app tela-atendimento">
+  <!-- topo azul: o que é a tela e o "Testar atendimento" em destaque -->
+  <header class="topo">
+    <a class="topo__voltar" [routerLink]="rotaInicio()" aria-label="Voltar para o painel">
+      <app-icone nome="voltar" [tamanho]="22" />
+    </a>
+    <div class="topo__identidade">
+      <!-- headset num círculo branco; a bolinha verde aparece com o assistente respondendo -->
+      <span class="topo__icone">
+        <app-icone nome="headset" [tamanho]="26" [espessura]="2" />
+        @if (assistenteAtivo()) {
+          <span class="topo__ativo" role="img" aria-label="Assistente ativo"></span>
+        }
+      </span>
+      <div class="topo__textos">
+        <h1 class="topo__titulo">Seu assistente</h1>
+        <p class="topo__descricao">Defina o comportamento do seu assistente durante o atendimento.</p>
+      </div>
+    </div>
+    <button type="button" class="topo__testar" (click)="testando.set(true)">
+      <app-icone nome="brilho" [tamanho]="18" [espessura]="2" />
+      Testar atendimento
+    </button>
+  </header>
+
+  <!-- atalhos para cada configuração (ficam presos no topo ao rolar) -->
+  <nav class="atalhos" aria-label="Ir para a configuração">
+    @for (atalho of atalhos(); track atalho.id) {
+      <button type="button" class="atalho" (click)="irPara(atalho.id)">{{ atalho.rotulo }}</button>
+    }
+  </nav>
+
+  @if (carregando()) {
+    <app-carregando texto="Abrindo as configurações…" />
+  } @else {
+    <form class="conteudo" [class.conteudo--com-barra]="temAlteracoes()" [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
+      <app-secao-configuracao
+        id="secao-saudacao"
+        titulo="Saudação inicial"
+        descricao="Primeira mensagem que o cliente recebe. Evite cordialidades como 'Posso te ajudar?' ou 'Como vai?', o seu assistente já fará isso por você. Faça apenas uma breve saudação. Use Emojis ou informações que quiser."
+      >
+        <label for="saudacao" class="somente-leitor-tela">Saudação inicial</label>
+        <textarea
+          id="saudacao"
+          class="campo__entrada"
+          rows="3"
+          formControlName="saudacaoPersonalizada"
+          [placeholder]="exemploSaudacao()"
+        ></textarea>
+
+      </app-secao-configuracao>
+
+      <app-secao-configuracao
+        id="secao-fechamento"
+        #secaoPedido
+        titulo="Quando o cliente quiser fechar"
+        descricao="Escolha até onde o assistente vai antes de passar a conversa para você."
+      >
+        <div class="lista-opcoes" role="radiogroup" [attr.aria-labelledby]="secaoPedido.idTitulo">
+          @for (modo of modosPedido(); track modo.valor) {
+            <app-opcao-card
+              [titulo]="modo.rotulo"
+              [descricao]="modo.descricao"
+              [destaque]="modo.destaque === true"
+              [selecionado]="valores().modoPedido === modo.valor"
+              (selecionar)="escolherModoPedido(modo.valor)"
+            />
+          }
+        </div>
+
+        @if (valores().modoPedido === 'AGENDAMENTO_AUTOMATICO') {
+          <a class="aviso-agenda" [class.aviso-agenda--pronta]="agendaComHorarios()" [routerLink]="rotaAgenda()">
+            <app-icone [nome]="agendaComHorarios() ? 'check' : 'calendario'" [tamanho]="18" [espessura]="2" />
+            <span class="aviso-agenda__texto">
+              @if (agendaComHorarios()) {
+                Com esta opção a agenda fica ativa: o assistente confere seus horários e marca os clientes sozinho.
+              } @else {
+                Falta pouco: cadastre seus dias e horários na Agenda para o assistente começar a marcar.
+              }
+              <strong>{{ agendaComHorarios() ? 'Ver agenda' : 'Configurar agenda' }}</strong>
+            </span>
+            <app-icone nome="avancar" [tamanho]="16" [espessura]="2" />
+          </a>
+        }
+
+        @if (valores().modoPedido === 'COLETAR_DADOS') {
+          <div class="campo caixa-destaque">
+            <label for="campos-pedido" class="campo__rotulo">O que o assistente precisa coletar?</label>
+            <textarea
+              id="campos-pedido"
+              class="campo__entrada"
+              rows="4"
+              formControlName="camposPedido"
+              [placeholder]="conteudoRamo().camposPedido"
+            ></textarea>
+            <span class="campo__dica">Escreva do seu jeito, separando os itens por vírgula.</span>
+          </div>
+        }
+      </app-secao-configuracao>
+
+      <!-- no agendamento automático o assistente confirma sozinho: a pergunta só confundiria -->
+      @if (mostrarConfirmacao()) {
+        <app-secao-configuracao
+          id="secao-confirmacao"
+          #secaoHorario
+          titulo="Quando você confirma os pedidos?"
+          descricao="O assistente atende sozinho. Você só entra quando o cliente fecha um pedido ou numa dúvida que ele não sabe responder."
+        >
+          <div class="lista-opcoes" role="radiogroup" [attr.aria-labelledby]="secaoHorario.idTitulo">
+            <app-opcao-card
+              titulo="A qualquer momento"
+              descricao="Nesses casos, o assistente avisa o cliente que você já confirma."
+              [selecionado]="valores().confirmaQualquerHora"
+              (selecionar)="escolherQualquerHora(true)"
+            />
+            <app-opcao-card
+              titulo="Só no meu horário de funcionamento"
+              descricao="Fora do horário, ele avisa o cliente que a loja está fechada e quando você confirma. Ex.: amanhã a partir das 9h."
+              [selecionado]="!valores().confirmaQualquerHora"
+              (selecionar)="escolherQualquerHora(false)"
+            />
+          </div>
+
+          @if (!valores().confirmaQualquerHora) {
+            <!-- o horário é o de Dados da loja (o mesmo que limita os pedidos): aqui só o resumo e o atalho -->
+            <div class="caixa-destaque horario">
+              <div class="horario__topo">
+                <span class="campo__rotulo">Seu horário de funcionamento</span>
+                <button type="button" class="btn btn--texto btn--pequeno" (click)="editandoDadosLoja.set(true)">Configure</button>
+              </div>
+              @if (resumoHorario(); as resumo) {
+                <p class="horario__resumo">{{ resumo }}</p>
+              } @else {
+                <span class="campo__erro" role="alert">Ainda não cadastrado. Toque em Configure para informar os dias e horários.</span>
+              }
+              <p class="horario__dica">Vem de Dados da loja e vale também para os pedidos: o assistente não aceita pedido fora dele.</p>
+            </div>
+          }
+        </app-secao-configuracao>
+      }
+
+      <app-secao-configuracao
+        id="secao-fotos"
+        #secaoFotos
+        titulo="Quando o cliente pedir fotos"
+        descricao="Escolha o link que o assistente envia quando alguém quiser ver seus trabalhos."
+      >
+        <div class="lista-opcoes" role="radiogroup" [attr.aria-labelledby]="secaoFotos.idTitulo">
+          @for (modo of modosFotos; track modo.valor) {
+            <app-opcao-card
+              [titulo]="modo.rotulo"
+              [descricao]="modo.descricao"
+              [selecionado]="valores().modoFotos === modo.valor"
+              (selecionar)="escolherModoFotos(modo.valor)"
+            />
+          }
+        </div>
+
+        @if (valores().modoFotos === 'LINK_EXTERNO') {
+          <div class="campo caixa-destaque">
+            <label for="link-portfolio" class="campo__rotulo">Link do portfólio</label>
+            <span class="campo-prefixado" [class.campo-prefixado--erro]="mostrarErroLink()">
+              <app-icone nome="link" [tamanho]="16" class="campo-prefixado__prefixo" />
+              <input
+                id="link-portfolio"
+                type="url"
+                inputmode="url"
+                formControlName="linkPortfolioExterno"
+                placeholder="https://instagram.com/sualoja"
+              >
+            </span>
+            @if (mostrarErroLink()) {
+              <span class="campo__erro" role="alert">Informe um link válido para o seu portfólio.</span>
+            } @else {
+              <span class="campo__dica">O assistente envia sempre este mesmo link, sem separar por serviço.</span>
+            }
+          </div>
+        }
+      </app-secao-configuracao>
+
+      <app-secao-configuracao
+        id="secao-catalogo"
+        titulo="Enviar catálogo em imagem ou PDF?"
+        descricao="O assistente envia o seu catálogo ou tabela de preços na conversa. Não substitui as respostas por mensagem."
+      >
+        <app-catalogo-conversa
+          [formulario]="formulario"
+          [modo]="valores().modoCatalogo"
+          [arquivosSalvos]="valores().catalogoArquivos"
+          [mostrarErro]="tentouSalvar() && faltaCatalogo()"
+          [(pendentes)]="pendentesCatalogo"
+        />
+      </app-secao-configuracao>
+
+      <app-secao-configuracao
+        id="secao-regras"
+        titulo="Instruções obrigatórias"
+        selo="Prioridade máxima"
+        descricao="Regras que o assistente segue acima de qualquer comportamento padrão."
+      >
+        <app-regras-negocio
+          [texto]="valores().instrucoesObrigatorias"
+          [sugestoes]="conteudoRamo().instrucoesSugeridas"
+          (mudou)="definirInstrucoes($event)"
+        />
+        @if (formulario.controls.instrucoesObrigatorias.invalid) {
+          <span class="campo__erro" role="alert">As regras passaram do limite de 1500 letras. Encurte ou junte algumas.</span>
+        }
+        <p class="aviso-informativo">
+          <app-icone nome="alerta" [tamanho]="16" />
+          <span>Toque numa regra para editar. Evite contradizer seus produtos e perguntas frequentes.</span>
+        </p>
+      </app-secao-configuracao>
+
+      @if (temAlteracoes()) {
+        <div class="barra-salvar barra-fixa-inferior" role="region" aria-label="Alterações não salvas">
+          <button type="button" class="btn btn--secundario barra-salvar__descartar" (click)="descartarAlteracoes()">Descartar</button>
+          <button type="submit" class="btn btn--primario barra-salvar__salvar" [disabled]="salvandoConfiguracoes()" [attr.aria-busy]="salvandoConfiguracoes()">
+            @if (salvandoConfiguracoes()) {
+              <app-carregando modo="inline" variante="claro" [tamanho]="22" />
+              Salvando…
+            } @else {
+              Salvar alterações
+            }
+          </button>
+        </div>
+      }
+    </form>
+  }
+</div>
+
+@if (testando()) {
+  <app-teste-atendimento (fechar)="testando.set(false)" />
+}
+
+@if (mostrarVideo()) {
+  <app-video-atendimento [tipo]="tipoVideo()" (confirmar)="fecharVideo()" (fechar)="fecharVideo()" />
+}
+
+@if (editandoDadosLoja()) {
+  <app-bottom-sheet titulo="Dados da loja" (fechar)="editandoDadosLoja.set(false)">
+    <app-editar-perfil (salvo)="aoSalvarDadosLoja()" />
+  </app-bottom-sheet>
+}

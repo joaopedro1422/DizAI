@@ -1,0 +1,107 @@
+<app-telefone-demo>
+  <div class="tela-real">
+    <!-- topo azul da agenda: voltar, link da agenda online, título e as abas -->
+    <header class="topo-azul">
+      <div class="topo-azul__linha">
+        <span class="topo-azul__voltar"><app-icone nome="voltar" [tamanho]="22" /></span>
+        <span class="link-topo">
+          <span class="link-topo__url">
+            <app-icone nome="link" [tamanho]="15" [espessura]="2" />
+            <span class="link-topo__texto">dizai.com/l/camila-rocha/agenda</span>
+          </span>
+          <span class="link-topo__copiar"><app-icone nome="copiar" [tamanho]="15" [espessura]="2" /></span>
+        </span>
+      </div>
+      <div class="topo-azul__identidade">
+        <h1 class="topo-azul__titulo">Minha Agenda</h1>
+      </div>
+      <div class="abas">
+        <span class="aba aba--ativa"><app-icone nome="calendario" [tamanho]="16" /> Agendamentos</span>
+        <span class="aba"><app-icone nome="ajustes" [tamanho]="16" /> Configure</span>
+      </div>
+    </header>
+
+    <main class="agendamentos">
+      <div class="calendario">
+        <div class="calendario__topo">
+          <span class="calendario__mes">Outubro</span>
+          <span class="calendario__setas">
+            <span class="seta seta--desativada"><app-icone nome="voltar" [tamanho]="18" [espessura]="2" /></span>
+            <span class="seta"><app-icone nome="avancar" [tamanho]="18" [espessura]="2" /></span>
+          </span>
+        </div>
+        <div class="faixa">
+          @for (dia of dias(); track dia.numero) {
+            <span class="dia" [class.dia--escolhido]="dia.numero === '23'" [class.dia--hoje]="dia.hoje">
+              <span class="dia__semana">{{ dia.semana }}</span>
+              <span class="dia__numero">{{ dia.numero }}</span>
+              <span class="dia__detalhe">
+                @if (dia.marcado) {
+                  <span class="dia__ponto"></span>
+                }
+                {{ dia.detalhe }}
+              </span>
+            </span>
+          }
+        </div>
+      </div>
+
+      <div class="dia-aberto">
+        <h2 class="dia-aberto__titulo">Sexta, 23/10</h2>
+        <span class="dia-aberto__resumo">{{ novoHorario() ? '2 clientes' : '1 cliente' }}</span>
+      </div>
+
+      <div class="visualizacao">
+        <span class="visualizacao__rotulo">Visualização</span>
+        <span class="visualizacao__campo">Resumida <app-icone nome="setaBaixo" [tamanho]="14" [espessura]="2.4" /></span>
+      </div>
+
+      <div class="lista-horarios">
+        <article class="horario">
+          <div class="horario__tempo">
+            <span class="horario__inicio">09:00</span>
+            <span class="horario__fim">10:30</span>
+          </div>
+          <div class="horario__corpo">
+            <span class="horario__nome">Júlia Martins</span>
+            <span class="horario__servicos">Pé e mão <span class="horario__duracao">· 1h30</span></span>
+            <span class="horario__rodape">
+              <span class="horario__whatsapp"><app-icone nome="conversa" [tamanho]="14" /> (83) 99812-3344</span>
+            </span>
+          </div>
+          <div class="horario__lateral">
+            <span class="horario__assistente"><app-icone nome="brilho" [tamanho]="16" [espessura]="2" /></span>
+            <span class="horario__cancelar"><app-icone nome="fechar" [tamanho]="18" /></span>
+          </div>
+        </article>
+
+        @if (novoHorario()) {
+          <article class="horario horario--novo">
+            <div class="horario__tempo">
+              <span class="horario__inicio">14:00</span>
+              <span class="horario__fim">15:00</span>
+            </div>
+            <div class="horario__corpo">
+              <span class="horario__nome">Mariana</span>
+              <span class="horario__servicos">Esmaltação em gel <span class="horario__duracao">· 1h</span></span>
+              <span class="horario__rodape">
+                <span class="horario__whatsapp"><app-icone nome="conversa" [tamanho]="14" /> (83) 98765-4321</span>
+              </span>
+            </div>
+            <div class="horario__lateral">
+              <span class="horario__assistente"><app-icone nome="brilho" [tamanho]="16" [espessura]="2" /></span>
+              <span class="horario__cancelar"><app-icone nome="fechar" [tamanho]="18" /></span>
+            </div>
+          </article>
+        }
+      </div>
+
+      <div class="acoes-dia">
+        <span class="btn btn--primario btn--grande btn--bloco">
+          <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
+          Agendar horário
+        </span>
+      </div>
+    </main>
+  </div>
+</app-telefone-demo>

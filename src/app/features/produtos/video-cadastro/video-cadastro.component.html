@@ -1,0 +1,462 @@
+<app-video-tutorial
+  [titulo]="'Como cadastrar seus ' + termoItens()"
+  [cenas]="cenas()"
+  [rotuloBotao]="rotuloBotao()"
+  (confirmar)="confirmar.emit()"
+  (fechar)="fechar.emit()"
+>
+  <ng-template #legenda let-cena>
+    @if (tipo() === 'servicos') {
+      @switch (cena) {
+        @case (0) {
+          <span class="legenda__selo surge">Olá! 👋</span>
+          <p class="legenda__titulo surge" style="--atraso: 0.3s">Esta é uma parte fundamental do seu assistente</p>
+          <p class="legenda__texto surge" style="--atraso: 1.4s">O cadastro dos seus serviços: é daqui que ele tira as respostas.</p>
+        }
+        @case (1) {
+          <p class="legenda__titulo surge">Aqui você informa cada serviço que faz</p>
+          <p class="legenda__texto surge" style="--atraso: 0.9s">Nome, descrição, preço, duração e as opções que o cliente escolhe.</p>
+        }
+        @case (2) {
+          <span class="legenda__selo legenda__selo--dica surge">Muito importante</span>
+          <p class="legenda__titulo surge" style="--atraso: 0.3s">Informe quanto tempo cada serviço leva</p>
+          <p class="legenda__texto surge" style="--atraso: 1.2s">É pela duração que a agenda automática sabe quais horários cabem.</p>
+        }
+        @case (3) {
+          <span class="legenda__selo surge">Agenda automática</span>
+          <p class="legenda__titulo surge" style="--atraso: 0.3s">A IA marca sozinha, no horário certo</p>
+          <p class="legenda__texto surge" style="--atraso: 1.2s">Ela só oferece horários em que o serviço cabe inteiro, sem encavalar clientes.</p>
+        }
+        @case (4) {
+          <span class="legenda__selo legenda__selo--dica surge">Dica 1</span>
+          <p class="legenda__titulo surge" style="--atraso: 0.3s">O preço muda conforme o tipo?</p>
+          <p class="legenda__texto surge" style="--atraso: 1.2s">Coloque as variações e os valores na descrição e deixe o preço em branco.</p>
+        }
+        @case (5) {
+          <span class="legenda__selo legenda__selo--dica surge">Dica 2</span>
+          <p class="legenda__titulo surge" style="--atraso: 0.3s">O cliente precisa escolher algo?</p>
+          <p class="legenda__texto surge" style="--atraso: 1.2s">Crie uma opção, como “Formato da unha”, e a IA pergunta antes de marcar.</p>
+        }
+        @case (6) {
+          <p class="legenda__titulo surge">São só sugestões ✨</p>
+          <p class="legenda__texto surge" style="--atraso: 0.8s">Monte do jeito que funcionar melhor para o seu negócio.</p>
+        }
+      }
+    } @else {
+      @switch (cena) {
+        @case (0) {
+          <span class="legenda__selo surge">Olá! 👋</span>
+          <p class="legenda__titulo surge" style="--atraso: 0.3s">Esta é uma parte fundamental do seu assistente</p>
+          <p class="legenda__texto surge" style="--atraso: 1.4s">O cadastro de produtos e serviços: é daqui que ele tira as respostas.</p>
+        }
+        @case (1) {
+          <p class="legenda__titulo surge">Aqui você informa tudo com que trabalha</p>
+          <p class="legenda__texto surge" style="--atraso: 0.9s">Nome, descrição, preço e as opções que o cliente escolhe.</p>
+        }
+        @case (2) {
+          <span class="legenda__selo legenda__selo--dica surge">Dica 1</span>
+          <p class="legenda__titulo surge" style="--atraso: 0.3s">O preço depende do tamanho?</p>
+          <p class="legenda__texto surge" style="--atraso: 1.2s">Use as variações de preço: cada tamanho com o seu valor. O cliente escolhe um.</p>
+        }
+        @case (3) {
+          <span class="legenda__selo legenda__selo--dica surge">Dica 2</span>
+          <p class="legenda__titulo surge" style="--atraso: 0.3s">Mesmo preço, vários sabores?</p>
+          <p class="legenda__texto surge" style="--atraso: 1.2s">Cadastre um produto genérico e crie a opção “Sabores” com tudo o que você tem.</p>
+        }
+        @case (4) {
+          <span class="legenda__selo legenda__selo--dica surge">Dica 3</span>
+          <p class="legenda__titulo surge" style="--atraso: 0.3s">E se forem os 2 juntos? Não tem problema</p>
+          <p class="legenda__texto surge" style="--atraso: 1.2s">Os tamanhos nas variações de preço e os recheios nas opções.</p>
+        }
+        @case (5) {
+          <span class="legenda__selo surge">Descrição × opções</span>
+          <p class="legenda__titulo surge" style="--atraso: 0.3s">As opções fazem a IA perguntar</p>
+          <p class="legenda__texto surge" style="--atraso: 1.2s">A descrição informa o cliente. As opções viram pergunta: a IA pede para ele escolher.</p>
+        }
+        @case (6) {
+          <span class="legenda__selo legenda__selo--dica surge">Dica 4</span>
+          <p class="legenda__titulo surge" style="--atraso: 0.3s">Algum produto leva mais tempo para ficar pronto?</p>
+          <p class="legenda__texto surge" style="--atraso: 1.2s">Informe a antecedência só nele. Os outros seguem a antecedência da loja.</p>
+        }
+        @case (7) {
+          <p class="legenda__titulo surge">São só sugestões ✨</p>
+          <p class="legenda__texto surge" style="--atraso: 0.8s">Monte do jeito que funcionar melhor para o seu negócio.</p>
+        }
+      }
+    }
+  </ng-template>
+
+  <ng-template #tela let-cena>
+    @if (tipo() === 'servicos') {
+      @switch (cena) {
+        @case (0) {
+          <div class="app">
+            <div class="app__barra">Serviços</div>
+            <div class="app__corpo">
+              <div class="item surge" style="--atraso: 0.8s">
+                <span class="item__foto item__foto--rosa">💅</span>
+                <span class="item__textos"><b>Esmaltação em gel</b><small>Manicure · 1h</small></span>
+                <span class="item__preco">R$ 60</span>
+              </div>
+              <div class="item surge" style="--atraso: 1.3s">
+                <span class="item__foto">💈</span>
+                <span class="item__textos"><b>Corte masculino</b><small>Barbearia · 40 min</small></span>
+                <span class="item__preco item__preco--suave">ver tipos</span>
+              </div>
+              <div class="item surge" style="--atraso: 1.8s">
+                <span class="item__foto item__foto--ambar">🧔</span>
+                <span class="item__textos"><b>Barba completa</b><small>Barbearia · 30 min</small></span>
+                <span class="item__preco">R$ 35</span>
+              </div>
+              <div class="app__botao surge" style="--atraso: 2.6s">+ Adicionar serviço</div>
+            </div>
+          </div>
+        }
+        @case (1) {
+          <div class="app">
+            <div class="app__barra">Novo serviço</div>
+            <div class="app__corpo rola" style="--atraso: 4.4s">
+              <div class="campo destaca" style="--atraso: 1.2s">
+                <span class="campo__rotulo">Nome do serviço</span>
+                <span class="campo__caixa campo__caixa--vazia">Ex.: Esmaltação em gel</span>
+              </div>
+              <div class="campo destaca" style="--atraso: 2.2s">
+                <span class="campo__rotulo">Descrição</span>
+                <span class="campo__caixa campo__caixa--alta campo__caixa--vazia">O que está incluso, cuidados…</span>
+              </div>
+              <div class="campo destaca" style="--atraso: 3.2s">
+                <span class="campo__rotulo">Preço</span>
+                <span class="campo__caixa campo__caixa--vazia">R$ 0,00</span>
+              </div>
+              <div class="campo destaca" style="--atraso: 5.2s">
+                <span class="campo__rotulo">Duração do atendimento</span>
+                <span class="opcao__chips">
+                  <span class="chip-mini">30 min</span>
+                  <span class="chip-mini">1h</span>
+                  <span class="chip-mini">1h30</span>
+                  <span class="chip-mini">2h</span>
+                </span>
+              </div>
+              <div class="campo destaca" style="--atraso: 6.8s">
+                <span class="campo__rotulo">Opções que o cliente escolhe</span>
+                <span class="campo__caixa campo__caixa--tracejada">+ Adicionar opção</span>
+              </div>
+            </div>
+          </div>
+        }
+        @case (2) {
+          <div class="app">
+            <div class="app__barra">Novo serviço</div>
+            <div class="app__corpo rola" style="--atraso: 4.2s">
+              <div class="campo">
+                <span class="campo__rotulo">Nome do serviço</span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">Esmaltação em gel</span></span>
+              </div>
+              <div class="campo destaca" style="--atraso: 2s">
+                <span class="campo__rotulo">Duração do atendimento</span>
+                <span class="opcao__chips">
+                  <span class="chip-mini">30 min</span>
+                  <span class="chip-mini">45 min</span>
+                  <span class="chip-mini ativa" style="--atraso: 3s">1h</span>
+                  <span class="chip-mini">1h30</span>
+                </span>
+                <span class="campo__caixa campo__caixa--com-selo">
+                  <span class="surge" style="--atraso: 3.2s">60 min</span>
+                  <span class="selo-ok surge" style="--atraso: 3.4s">= 1 hora</span>
+                </span>
+              </div>
+              <div class="campo">
+                <span class="campo__rotulo surge" style="--atraso: 4.6s">Na agenda de amanhã</span>
+                <span class="horario horario--ocupado surge" style="--atraso: 5s"><b>9:00</b> Esmaltação em gel · até 10:00</span>
+                <span class="horario surge" style="--atraso: 5.6s"><b>10:00</b> Livre para o próximo cliente</span>
+              </div>
+            </div>
+          </div>
+        }
+        @case (3) {
+          <div class="zap">
+            <div class="zap__barra">
+              <span class="zap__avatar">B</span>
+              <span class="zap__nome"><b>Studio Bela Unha</b><small>online</small></span>
+            </div>
+            <div class="zap__corpo">
+              <span class="balao balao--cliente surge" style="--atraso: 0.6s">Oi! Queria fazer esmaltação em gel amanhã</span>
+              <span class="digitando digitando--1"><i></i><i></i><i></i></span>
+              <span class="balao surge" style="--atraso: 3s">
+                Claro! 💅 Leva <mark class="marca" style="--atraso: 3.8s">1 hora</mark>. Amanhã tenho 9h, 13h ou 15h30.
+                Qual fica melhor?
+              </span>
+              <span class="balao balao--cliente surge" style="--atraso: 5.8s">13h</span>
+              <span class="digitando digitando--2"><i></i><i></i><i></i></span>
+              <span class="balao surge" style="--atraso: 8.2s">Agendado! ✅ Esmaltação em gel amanhã às 13h.</span>
+            </div>
+          </div>
+        }
+        @case (4) {
+          <div class="app">
+            <div class="app__barra">Novo serviço</div>
+            <div class="app__corpo">
+              <div class="campo">
+                <span class="campo__rotulo">Nome do serviço</span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">Corte masculino</span></span>
+              </div>
+              <div class="campo destaca" style="--atraso: 1.8s">
+                <span class="campo__rotulo">Descrição</span>
+                <span class="campo__caixa campo__caixa--alta campo__caixa--linhas">
+                  <span class="surge" style="--atraso: 2.2s">Na máquina: R$ 30</span>
+                  <span class="surge" style="--atraso: 2.8s">Na tesoura: R$ 40</span>
+                  <span class="surge" style="--atraso: 3.4s">Degradê: R$ 45</span>
+                </span>
+              </div>
+              <div class="campo destaca" style="--atraso: 4.4s">
+                <span class="campo__rotulo">Preço</span>
+                <span class="campo__caixa campo__caixa--vazia campo__caixa--com-selo">
+                  R$
+                  <span class="selo-ok surge" style="--atraso: 4.8s">✓ Em branco</span>
+                </span>
+              </div>
+              <div class="campo">
+                <span class="campo__rotulo">Duração do atendimento</span>
+                <span class="campo__caixa">40 min</span>
+              </div>
+            </div>
+          </div>
+        }
+        @case (5) {
+          <div class="app">
+            <div class="app__barra">Novo serviço</div>
+            <div class="app__corpo rola" style="--atraso: 3.6s">
+              <div class="campo">
+                <span class="campo__rotulo">Nome do serviço</span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">Pé e mão</span></span>
+              </div>
+              <div class="campo">
+                <span class="campo__rotulo">Preço</span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 1.6s">R$ 50,00</span></span>
+              </div>
+              <div class="campo">
+                <span class="campo__rotulo">Duração do atendimento</span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 2.4s">1h30</span></span>
+              </div>
+              <div class="campo destaca" style="--atraso: 4.4s">
+                <span class="campo__rotulo">Opções que o cliente escolhe</span>
+                <span class="opcao">
+                  <span class="campo__caixa"><span class="digita" style="--atraso: 4.7s">Formato da unha</span></span>
+                  <span class="opcao__chips">
+                    <span class="chip-mini surge" style="--atraso: 5.6s">Quadrada</span>
+                    <span class="chip-mini surge" style="--atraso: 6s">Redonda</span>
+                    <span class="chip-mini surge" style="--atraso: 6.4s">Amendoada</span>
+                    <span class="chip-mini surge" style="--atraso: 6.8s">Bailarina</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+        @case (6) {
+          <div class="final">
+            <span class="final__check surge" style="--atraso: 0.4s">✓</span>
+            <b class="surge" style="--atraso: 1s">Pronto para cadastrar?</b>
+            <small class="surge" style="--atraso: 1.6s">Não esqueça a duração de cada serviço.</small>
+          </div>
+        }
+      }
+    } @else {
+      @switch (cena) {
+        @case (0) {
+          <div class="app">
+            <div class="app__barra">Produtos</div>
+            <div class="app__corpo">
+              <div class="item surge" style="--atraso: 0.8s">
+                <span class="item__foto">🥟</span>
+                <span class="item__textos"><b>Coxinha grande</b><small>Salgados</small></span>
+                <span class="item__preco">R$ 7,00</span>
+              </div>
+              <div class="item surge" style="--atraso: 1.3s">
+                <span class="item__foto item__foto--rosa">🍰</span>
+                <span class="item__textos"><b>Bolo de pote</b><small>Doces</small></span>
+                <span class="item__preco item__preco--suave">ver tamanhos</span>
+              </div>
+              <div class="item surge" style="--atraso: 1.8s">
+                <span class="item__foto item__foto--ambar">🥐</span>
+                <span class="item__textos"><b>Mini salgados</b><small>Salgados</small></span>
+                <span class="item__preco">R$ 90,00</span>
+              </div>
+              <div class="app__botao surge" style="--atraso: 2.6s">+ Adicionar produto</div>
+            </div>
+          </div>
+        }
+        @case (1) {
+          <div class="app">
+            <div class="app__barra">Novo produto</div>
+            <div class="app__corpo">
+              <div class="campo destaca" style="--atraso: 1.4s">
+                <span class="campo__rotulo">Nome do produto</span>
+                <span class="campo__caixa campo__caixa--vazia">Ex.: Coxinha grande</span>
+              </div>
+              <div class="campo destaca" style="--atraso: 2.8s">
+                <span class="campo__rotulo">Descrição</span>
+                <span class="campo__caixa campo__caixa--alta campo__caixa--vazia">O que vem, tamanho, prazo…</span>
+              </div>
+              <div class="campo destaca" style="--atraso: 4.2s">
+                <span class="campo__rotulo">Preço</span>
+                <span class="campo__caixa campo__caixa--vazia">R$ 0,00</span>
+              </div>
+              <div class="campo destaca" style="--atraso: 5.6s">
+                <span class="campo__rotulo">Opções que o cliente escolhe</span>
+                <span class="campo__caixa campo__caixa--tracejada">+ Adicionar opção</span>
+              </div>
+            </div>
+          </div>
+        }
+        @case (2) {
+          <div class="app">
+            <div class="app__barra">Novo produto</div>
+            <div class="app__corpo">
+              <div class="campo">
+                <span class="campo__rotulo">Nome do produto</span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">Bolo de pote</span></span>
+              </div>
+              <div class="campo">
+                <span class="campo__rotulo">Preço</span>
+                <span class="campo__caixa campo__caixa--vazia">R$</span>
+              </div>
+              <div class="campo destaca" style="--atraso: 2s">
+                <span class="campo__rotulo">Variações de preço</span>
+                <span class="campo__caixa campo__caixa--alta campo__caixa--linhas">
+                  <span class="surge" style="--atraso: 2.4s">Tamanho P (150 ml) · R$ 10</span>
+                  <span class="surge" style="--atraso: 3.2s">Tamanho M (250 ml) · R$ 15</span>
+                  <span class="surge" style="--atraso: 4s">Tamanho G (400 ml) · R$ 22</span>
+                </span>
+              </div>
+              <div class="campo surge" style="--atraso: 5.6s">
+                <span class="campo__caixa campo__caixa--com-selo">
+                  Cada uma com o seu valor
+                  <span class="selo-ok surge" style="--atraso: 6s">✓ O cliente escolhe</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+        @case (3) {
+          <div class="app">
+            <div class="app__barra">Novo produto</div>
+            <div class="app__corpo">
+              <div class="campo">
+                <span class="campo__rotulo">Nome do produto</span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">Mini salgados</span></span>
+              </div>
+              <div class="campo">
+                <span class="campo__rotulo">Preço</span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 1.8s">R$ 90,00 o cento</span></span>
+              </div>
+              <div class="campo destaca" style="--atraso: 3s">
+                <span class="campo__rotulo">Opções que o cliente escolhe</span>
+                <span class="opcao">
+                  <span class="campo__caixa"><span class="digita" style="--atraso: 3.4s">Sabores</span></span>
+                  <span class="opcao__chips">
+                    <span class="chip-mini surge" style="--atraso: 4.4s">Coxinha</span>
+                    <span class="chip-mini surge" style="--atraso: 4.8s">Kibe</span>
+                    <span class="chip-mini surge" style="--atraso: 5.2s">Risole</span>
+                    <span class="chip-mini surge" style="--atraso: 5.6s">Bolinha de queijo</span>
+                    <span class="chip-mini surge" style="--atraso: 6s">Enroladinho</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+        @case (4) {
+          <div class="app">
+            <div class="app__barra">Novo produto</div>
+            <div class="app__corpo rola" style="--atraso: 5.4s">
+              <div class="campo">
+                <span class="campo__rotulo">Nome do produto</span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">Torta doce</span></span>
+              </div>
+              <div class="campo destaca" style="--atraso: 1.6s">
+                <span class="campo__rotulo">Variações de preço</span>
+                <span class="campo__caixa campo__caixa--alta campo__caixa--linhas">
+                  <span class="surge" style="--atraso: 2s">Pequena (15 cm) · R$ 60</span>
+                  <span class="surge" style="--atraso: 2.6s">Média (20 cm) · R$ 85</span>
+                  <span class="surge" style="--atraso: 3.2s">Grande (25 cm) · R$ 120</span>
+                </span>
+              </div>
+              <div class="campo destaca" style="--atraso: 4s">
+                <span class="campo__rotulo">Preço</span>
+                <span class="campo__caixa campo__caixa--vazia campo__caixa--com-selo">
+                  R$
+                  <span class="selo-ok surge" style="--atraso: 4.4s">✓ Vem da variação</span>
+                </span>
+              </div>
+              <div class="campo destaca" style="--atraso: 6.2s">
+                <span class="campo__rotulo">Opções que o cliente escolhe</span>
+                <span class="opcao">
+                  <span class="campo__caixa"><span class="digita" style="--atraso: 6.5s">Recheios</span></span>
+                  <span class="opcao__chips">
+                    <span class="chip-mini surge" style="--atraso: 7.4s">Morango</span>
+                    <span class="chip-mini surge" style="--atraso: 7.8s">Limão</span>
+                    <span class="chip-mini surge" style="--atraso: 8.2s">Chocolate</span>
+                    <span class="chip-mini surge" style="--atraso: 8.6s">Maracujá</span>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+        @case (5) {
+          <div class="zap">
+            <div class="zap__barra">
+              <span class="zap__avatar">S</span>
+              <span class="zap__nome"><b>Sabor da Vó</b><small>online</small></span>
+            </div>
+            <div class="zap__corpo">
+              <span class="balao balao--cliente surge" style="--atraso: 0.6s">Oi! Quero um cento de mini salgados</span>
+              <span class="digitando digitando--1"><i></i><i></i><i></i></span>
+              <span class="balao surge" style="--atraso: 3s">
+                Claro! 😊 Quais <mark class="marca" style="--atraso: 3.8s">sabores</mark> você quer? Temos coxinha, kibe,
+                risole, bolinha de queijo e enroladinho.
+              </span>
+              <span class="balao balao--cliente surge" style="--atraso: 5.8s">Metade coxinha e metade kibe</span>
+              <span class="digitando digitando--2"><i></i><i></i><i></i></span>
+              <span class="balao surge" style="--atraso: 8.2s">Anotado! 50 coxinhas e 50 kibes ✅</span>
+            </div>
+          </div>
+        }
+        @case (6) {
+          <div class="app">
+            <div class="app__barra">Novo produto</div>
+            <div class="app__corpo">
+              <div class="campo">
+                <span class="campo__rotulo">Nome do produto</span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">Torta de frango</span></span>
+              </div>
+              <div class="campo">
+                <span class="campo__rotulo">Preço</span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 1.8s">R$ 90,00</span></span>
+              </div>
+              <div class="campo destaca" style="--atraso: 3s">
+                <span class="campo__rotulo">Antecedência própria (opcional)</span>
+                <span class="campo__caixa campo__caixa--com-selo">
+                  <span class="digita" style="--atraso: 3.4s">24 horas</span>
+                  <span class="selo-ok surge" style="--atraso: 4.6s">✓ só neste</span>
+                </span>
+              </div>
+              <div class="campo surge" style="--atraso: 5.8s">
+                <span class="campo__rotulo">Mini salgados</span>
+                <span class="campo__caixa campo__caixa--vazia">Em branco: segue a da loja (30 min)</span>
+              </div>
+            </div>
+          </div>
+        }
+        @case (7) {
+          <div class="final">
+            <span class="final__check surge" style="--atraso: 0.4s">✓</span>
+            <b class="surge" style="--atraso: 1s">Pronto para cadastrar?</b>
+            <small class="surge" style="--atraso: 1.6s">Seu assistente aprende com cada detalhe.</small>
+          </div>
+        }
+      }
+    }
+  </ng-template>
+</app-video-tutorial>

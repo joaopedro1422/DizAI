@@ -1,179 +1,291 @@
 <div class="horarios" [class.horarios--com-barra]="alterado()">
-  <section class="cartao chave" [class.chave--ligada]="rascunho().agendaAtiva">
-    <div class="chave__linha">
-      <span class="chave__icone">
-        <app-icone nome="calendario" [tamanho]="22" />
-      </span>
-      <div class="chave__textos">
-        <h2 class="cartao__titulo">Agenda online</h2>
-        <span class="chave__estado">{{ rascunho().agendaAtiva ? 'Ligada' : 'Desligada' }}</span>
+  <!-- tablet e computador: agenda online e dias à esquerda, as opções à direita (no celular, "display: contents") -->
+  <div class="horarios__coluna">
+    <!-- sem chave: a agenda segue o "Quando o cliente quiser fechar" da tela do assistente -->
+    <section class="cartao chave" [class.chave--ligada]="modoAutomatico()">
+      <div class="chave__linha">
+        <span class="chave__icone">
+          <app-icone nome="calendario" [tamanho]="22" />
+        </span>
+        <div class="chave__textos">
+          <h2 class="cartao__titulo">Agenda online</h2>
+          <span class="chave__estado">{{ modoAutomatico() ? 'Ativa' : 'Desativada' }}</span>
+        </div>
       </div>
-      <app-interruptor
-        rotulo="Agenda online"
-        [ligado]="rascunho().agendaAtiva"
-        (alternar)="alternarAgenda($event)"
-      />
-    </div>
-    <p class="cartao__descricao chave__descricao">
-      @if (rascunho().agendaAtiva) {
-        Seus horários livres aparecem na sua página e o cliente escolhe o horário e manda pelo WhatsApp.
-      } @else {
-        Ligue para mostrar seus horários livres na sua página e deixar o assistente usar a agenda.
-      }
-    </p>
-    @if (rascunho().agendaAtiva) {
       @if (modoAutomatico()) {
+        <p class="cartao__descricao chave__descricao">
+          Seus horários livres aparecem na sua página e o assistente marca os clientes pelo WhatsApp.
+        </p>
         <ul class="chave__vantagens">
           <li><app-icone nome="check" [tamanho]="16" [espessura]="2.2" /> O assistente marca os clientes sozinho no WhatsApp</li>
           <li><app-icone nome="check" [tamanho]="16" [espessura]="2.2" /> Só oferece horários em que o serviço cabe inteiro</li>
           <li><app-icone nome="check" [tamanho]="16" [espessura]="2.2" /> O cliente remarca ou cancela pelo próprio WhatsApp</li>
         </ul>
       } @else {
-        <a class="chave__modo" [routerLink]="rotaPainel()">
+        <a class="chave__modo" [routerLink]="rotaAtendimento()">
           <app-icone nome="brilho" [tamanho]="18" [espessura]="2" />
           <span>
-            O assistente ainda não marca sozinho: ele passa os pedidos de horário para você.
-            <strong>Ativar o agendamento automático</strong>
+            A agenda fica ativa quando você escolhe "Agendamento automático" em "Quando o cliente quiser fechar".
+            <strong>Escolher agendamento automático</strong>
           </span>
         </a>
       }
+    </section>
+
+    @if (servicosSemDuracao() > 0) {
+      <div class="aviso-duracao" role="status">
+        <app-icone nome="alerta" [tamanho]="18" />
+        <span>
+          {{ textoServicosSemDuracao() }} sem duração e não podem ser agendados.
+          <a [routerLink]="rotaProdutos()">Informar a duração</a>
+        </span>
+      </div>
     }
-  </section>
 
-  @if (servicosSemDuracao() > 0) {
-    <div class="aviso-duracao" role="status">
-      <app-icone nome="alerta" [tamanho]="18" />
-      <span>
-        {{ textoServicosSemDuracao() }} sem duração e não podem ser agendados.
-        <a [routerLink]="rotaProdutos()">Informar a duração</a>
-      </span>
-    </div>
-  }
-
-  <section class="cartao">
-    <div>
-      <h2 class="cartao__titulo">Dias e horários de atendimento</h2>
-      <p class="cartao__descricao">Toque em um dia para ajustar. Use mais de um período para a pausa do almoço.</p>
-    </div>
-
-    <div class="semana" role="tablist" aria-label="Dias da semana">
-      @for (dia of diasSemana; track dia.valor) {
-        @let trechos = rascunho().periodos[dia.valor];
-        <button
-          type="button"
-          role="tab"
-          class="semana__dia"
-          [class.semana__dia--escolhido]="diaAberto() === dia.valor"
-          [class.semana__dia--aberto]="trechos.length > 0"
-          [class.semana__dia--erro]="erros()[dia.valor]"
-          [attr.aria-selected]="diaAberto() === dia.valor"
-          [attr.aria-label]="dia.nome + (trechos.length > 0 ? ', atende' : ', fechado')"
-          (click)="escolherDia(dia.valor)"
-        >
-          <span class="semana__letra">{{ dia.curto }}</span>
-          <span class="semana__ponto" aria-hidden="true"></span>
-        </button>
-      }
-    </div>
-
-    <div class="dia-aberto caixa-suave">
-      <div class="dia-aberto__cabecalho">
-        <span class="dia-aberto__nome">{{ infoDiaAberto().nome }}</span>
-        <label class="dia-aberto__atende">
-          <span>{{ trechosDiaAberto().length > 0 ? 'Atendo' : 'Fechado' }}</span>
-          <app-interruptor
-            [rotulo]="'Atendo neste dia (' + infoDiaAberto().nome + ')'"
-            [ligado]="trechosDiaAberto().length > 0"
-            (alternar)="alternarDiaAberto($event)"
-          />
-        </label>
+    <section class="cartao">
+      <div>
+        <h2 class="cartao__titulo">Dias e horários de atendimento</h2>
+        <p class="cartao__descricao">Toque em um dia para ajustar. Use mais de um período para a pausa do almoço.</p>
       </div>
 
-      @if (trechosDiaAberto().length > 0) {
-        <ul class="trechos">
-          @for (trecho of trechosDiaAberto(); track $index; let indice = $index) {
-            <li class="trecho">
-              <input
-                class="trecho__hora"
-                type="time"
-                step="900"
-                [value]="trecho.inicio"
-                [attr.aria-label]="'Início do período ' + (indice + 1)"
-                (change)="alterarTrecho(indice, 'inicio', $event)"
-              >
-              <span class="trecho__ate">até</span>
-              <input
-                class="trecho__hora"
-                type="time"
-                step="900"
-                [value]="trecho.fim"
-                [attr.aria-label]="'Fim do período ' + (indice + 1)"
-                (change)="alterarTrecho(indice, 'fim', $event)"
-              >
-              <button type="button" class="btn-icone trecho__remover" aria-label="Remover período" (click)="removerTrecho(indice)">
-                <app-icone nome="lixeira" [tamanho]="16" />
-              </button>
-            </li>
-          }
-        </ul>
-        @if (erros()[diaAberto()]; as erro) {
-          <span class="campo__erro" role="alert">{{ erro }}</span>
+      <div class="semana" role="tablist" aria-label="Dias da semana">
+        @for (dia of diasSemana; track dia.valor) {
+          @let trechos = rascunho().periodos[dia.valor];
+          <button
+            type="button"
+            role="tab"
+            class="semana__dia"
+            [class.semana__dia--escolhido]="diaAberto() === dia.valor"
+            [class.semana__dia--aberto]="trechos.length > 0"
+            [class.semana__dia--erro]="erros()[dia.valor]"
+            [attr.aria-selected]="diaAberto() === dia.valor"
+            [attr.aria-label]="dia.nome + (trechos.length > 0 ? ', atende' : ', fechado')"
+            (click)="escolherDia(dia.valor)"
+          >
+            <span class="semana__letra">{{ dia.curto }}</span>
+            <span class="semana__ponto" aria-hidden="true"></span>
+          </button>
         }
-        <div class="dia-aberto__acoes">
-          @if (trechosDiaAberto().length < maximoPeriodos) {
-            <button type="button" class="btn btn--secundario btn--pequeno" (click)="adicionarTrecho()">
-              <app-icone nome="mais" [tamanho]="16" [espessura]="2" />
-              Adicionar período
-            </button>
-          }
-          <button type="button" class="btn btn--texto btn--pequeno" (click)="abrirCopia()">
-            Copiar para outros dias
-          </button>
+      </div>
+
+      <div class="dia-aberto caixa-suave">
+        <div class="dia-aberto__cabecalho">
+          <span class="dia-aberto__nome">{{ infoDiaAberto().nome }}</span>
+          <label class="dia-aberto__atende">
+            <span>{{ trechosDiaAberto().length > 0 ? 'Atendo' : 'Fechado' }}</span>
+            <app-interruptor
+              [rotulo]="'Atendo neste dia (' + infoDiaAberto().nome + ')'"
+              [ligado]="trechosDiaAberto().length > 0"
+              (alternar)="alternarDiaAberto($event)"
+            />
+          </label>
         </div>
-      } @else {
-        <p class="dia-aberto__fechado">Sem atendimento neste dia da semana: o assistente não oferece horários nele.</p>
-      }
-    </div>
 
-    <ul class="resumo-semana" aria-label="Resumo da semana">
-      @for (dia of resumoSemana(); track dia.valor) {
-        <li>
-          <button type="button" class="resumo-semana__linha" [class.resumo-semana__linha--fechado]="!dia.aberto" (click)="escolherDia(dia.valor)">
-            <span class="resumo-semana__dia">{{ dia.curto }}</span>
-            <span class="resumo-semana__texto">{{ dia.texto }}</span>
+        @if (trechosDiaAberto().length > 0) {
+          <ul class="trechos">
+            @for (trecho of trechosDiaAberto(); track $index; let indice = $index) {
+              <li class="trecho">
+                <input
+                  class="trecho__hora"
+                  type="time"
+                  step="900"
+                  [value]="trecho.inicio"
+                  [attr.aria-label]="'Início do período ' + (indice + 1)"
+                  (click)="abrirSeletor($event)"
+                  (change)="alterarTrecho(indice, 'inicio', $event)"
+                >
+                <span class="trecho__ate">até</span>
+                <input
+                  class="trecho__hora"
+                  type="time"
+                  step="900"
+                  [value]="trecho.fim"
+                  [attr.aria-label]="'Fim do período ' + (indice + 1)"
+                  (click)="abrirSeletor($event)"
+                  (change)="alterarTrecho(indice, 'fim', $event)"
+                >
+                <button type="button" class="btn-icone trecho__remover" aria-label="Remover período" (click)="removerTrecho(indice)">
+                  <app-icone nome="lixeira" [tamanho]="16" />
+                </button>
+              </li>
+            }
+          </ul>
+          @if (erros()[diaAberto()]; as erro) {
+            <span class="campo__erro" role="alert">{{ erro }}</span>
+          }
+          <div class="dia-aberto__acoes">
+            @if (trechosDiaAberto().length < maximoPeriodos) {
+              <button type="button" class="btn btn--secundario btn--pequeno" (click)="adicionarTrecho()">
+                <app-icone nome="mais" [tamanho]="16" [espessura]="2" />
+                Adicionar período
+              </button>
+            }
+            <button type="button" class="btn btn--texto btn--pequeno" (click)="abrirCopia()">
+              Copiar para outros dias
+            </button>
+          </div>
+        } @else {
+          <p class="dia-aberto__fechado">Sem atendimento neste dia da semana: o assistente não oferece horários nele.</p>
+        }
+      </div>
+
+      <ul class="resumo-semana" aria-label="Resumo da semana">
+        @for (dia of resumoSemana(); track dia.valor) {
+          <li>
+            <button type="button" class="resumo-semana__linha" [class.resumo-semana__linha--fechado]="!dia.aberto" (click)="escolherDia(dia.valor)">
+              <span class="resumo-semana__dia">{{ dia.curto }}</span>
+              <span class="resumo-semana__texto">{{ dia.texto }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+
+  <div class="horarios__coluna">
+    <section class="cartao">
+      <div>
+        <h2 class="cartao__titulo">Os horários começam a cada</h2>
+        <p class="cartao__descricao">Com 30 min e abertura às 08:00, o cliente vê 08:00, 08:30, 09:00…</p>
+      </div>
+      <div class="grupo-chips" role="radiogroup" aria-label="Intervalo entre os horários">
+        @for (opcao of intervalos; track opcao.minutos) {
+          <button type="button" role="radio" class="chip" [class.chip--ativo]="rascunho().intervaloMinutos === opcao.minutos" [attr.aria-checked]="rascunho().intervaloMinutos === opcao.minutos" (click)="escolherIntervalo(opcao.minutos)">
+            {{ opcao.rotulo }}
           </button>
-        </li>
-      }
-    </ul>
-  </section>
+        }
+      </div>
+    </section>
 
-  <section class="cartao">
-    <div>
-      <h2 class="cartao__titulo">Os horários começam a cada</h2>
-      <p class="cartao__descricao">Com 30 min e abertura às 08:00, o cliente vê 08:00, 08:30, 09:00…</p>
-    </div>
-    <div class="grupo-chips" role="radiogroup" aria-label="Intervalo entre os horários">
-      @for (opcao of intervalos; track opcao.minutos) {
-        <button type="button" role="radio" class="chip" [class.chip--ativo]="rascunho().intervaloMinutos === opcao.minutos" [attr.aria-checked]="rascunho().intervaloMinutos === opcao.minutos" (click)="escolherIntervalo(opcao.minutos)">
-          {{ opcao.rotulo }}
-        </button>
-      }
-    </div>
-  </section>
+    <section class="cartao">
+      <div>
+        <h2 class="cartao__titulo">Antecedência mínima</h2>
+        <p class="cartao__descricao">Quanto tempo antes o cliente precisa marcar. Evita alguém marcar para daqui a 10 minutos.</p>
+      </div>
+      <div class="grupo-chips" role="radiogroup" aria-label="Antecedência mínima">
+        @for (opcao of antecedencias; track opcao.minutos) {
+          <button type="button" role="radio" class="chip" [class.chip--ativo]="rascunho().antecedenciaMinutos === opcao.minutos" [attr.aria-checked]="rascunho().antecedenciaMinutos === opcao.minutos" (click)="escolherAntecedencia(opcao.minutos)">
+            {{ opcao.rotulo }}
+          </button>
+        }
+      </div>
+    </section>
 
-  <section class="cartao">
-    <div>
-      <h2 class="cartao__titulo">Antecedência mínima</h2>
-      <p class="cartao__descricao">Quanto tempo antes o cliente precisa marcar. Evita alguém marcar para daqui a 10 minutos.</p>
-    </div>
-    <div class="grupo-chips" role="radiogroup" aria-label="Antecedência mínima">
-      @for (opcao of antecedencias; track opcao.minutos) {
-        <button type="button" role="radio" class="chip" [class.chip--ativo]="rascunho().antecedenciaMinutos === opcao.minutos" [attr.aria-checked]="rascunho().antecedenciaMinutos === opcao.minutos" (click)="escolherAntecedencia(opcao.minutos)">
-          {{ opcao.rotulo }}
-        </button>
+    <section class="cartao">
+      <div>
+        <h2 class="cartao__titulo">Lembrete para o cliente</h2>
+        <p class="cartao__descricao">O assistente manda um lembrete pelo WhatsApp antes do horário e pergunta se o cliente confirma. Quando ele responde que vem, o horário fica marcado como confirmado.</p>
+      </div>
+      <div class="grupo-chips" role="radiogroup" aria-label="Quando enviar o lembrete">
+        @for (opcao of lembretes; track opcao.minutos) {
+          <button type="button" role="radio" class="chip" [class.chip--ativo]="rascunho().lembreteMinutos === opcao.minutos" [attr.aria-checked]="rascunho().lembreteMinutos === opcao.minutos" (click)="escolherLembrete(opcao.minutos)">
+            {{ opcao.rotulo }}
+          </button>
+        }
+      </div>
+    </section>
+
+    <!-- as três mensagens: só o nome e a setinha; ao tocar, abrem com o editor -->
+    @let abertas = mensagensAbertas();
+    <section class="cartao expansivel" [class.expansivel--aberto]="abertas.includes('agendamento')">
+      <button
+        type="button"
+        class="expansivel__cabecalho"
+        aria-controls="mensagem-agendamento"
+        [attr.aria-expanded]="abertas.includes('agendamento')"
+        (click)="alternarMensagem('agendamento')"
+      >
+        <h2 class="cartao__titulo">Mensagem de agendamento</h2>
+        <app-icone class="expansivel__seta" nome="setaBaixo" [tamanho]="20" [espessura]="2" />
+      </button>
+      @if (abertas.includes('agendamento')) {
+        <div id="mensagem-agendamento" class="expansivel__corpo">
+          <app-mensagem-confirmacao
+            [texto]="rascunho().mensagemConfirmacao"
+            [padrao]="confirmacaoPadrao()"
+            (mudou)="definirConfirmacao($event)"
+          />
+        </div>
       }
-    </div>
-  </section>
+    </section>
+
+    <section class="cartao expansivel" [class.expansivel--aberto]="abertas.includes('lembrete')">
+      <button
+        type="button"
+        class="expansivel__cabecalho"
+        aria-controls="mensagem-lembrete"
+        [attr.aria-expanded]="abertas.includes('lembrete')"
+        (click)="alternarMensagem('lembrete')"
+      >
+        <h2 class="cartao__titulo">Mensagem de lembrete</h2>
+        <app-icone class="expansivel__seta" nome="setaBaixo" [tamanho]="20" [espessura]="2" />
+      </button>
+      @if (abertas.includes('lembrete')) {
+        <div id="mensagem-lembrete" class="expansivel__corpo">
+          <p class="cartao__descricao">
+            O lembrete que vai antes do horário. Termine pedindo a confirmação (ex.: "Você confirma a presença?"):
+            é a resposta do cliente que marca a presença.
+          </p>
+          @if (rascunho().lembreteMinutos === 0) {
+            <p class="agradecimento__aviso" role="status">
+              <app-icone nome="alerta" [tamanho]="16" />
+              O "Lembrete para o cliente" está em "Não enviar": escolha quando ele sai para esta mensagem ser usada.
+            </p>
+          }
+          <app-mensagem-confirmacao
+            rotulo="Mensagem de lembrete antes do horário"
+            exemploHorario="11:00"
+            exemploData="amanhã"
+            [texto]="rascunho().mensagemLembrete"
+            [padrao]="lembretePadrao()"
+            (mudou)="definirLembrete($event)"
+          />
+        </div>
+      }
+    </section>
+
+    <section class="cartao expansivel" [class.expansivel--aberto]="abertas.includes('agradecimento')">
+      <button
+        type="button"
+        class="expansivel__cabecalho"
+        aria-controls="mensagem-agradecimento"
+        [attr.aria-expanded]="abertas.includes('agradecimento')"
+        (click)="alternarMensagem('agradecimento')"
+      >
+        <h2 class="cartao__titulo">Mensagem de agradecimento</h2>
+        <app-icone class="expansivel__seta" nome="setaBaixo" [tamanho]="20" [espessura]="2" />
+      </button>
+      @if (abertas.includes('agradecimento')) {
+        <div id="mensagem-agradecimento" class="expansivel__corpo">
+          <div class="agradecimento__linha">
+            <p class="cartao__descricao">
+              Sai 30 minutos depois do fim do horário, só para os clientes que confirmaram a presença pelo lembrete.
+            </p>
+            <app-interruptor
+              rotulo="Enviar agradecimento depois do atendimento"
+              [ligado]="rascunho().agradecimentoAtivo"
+              (alternar)="alternarAgradecimento($event)"
+            />
+          </div>
+          @if (rascunho().agradecimentoAtivo) {
+            @if (rascunho().lembreteMinutos === 0) {
+              <p class="agradecimento__aviso" role="status">
+                <app-icone nome="alerta" [tamanho]="16" />
+                Ligue o "Lembrete para o cliente": sem ele ninguém confirma a presença e o agradecimento não sai.
+              </p>
+            }
+            <app-mensagem-confirmacao
+              rotulo="Mensagem de agradecimento depois do atendimento"
+              [etiquetas]="etiquetasAgradecimento"
+              [texto]="rascunho().mensagemAgradecimento"
+              [padrao]="agradecimentoPadrao()"
+              (mudou)="definirAgradecimento($event)"
+            />
+          }
+        </div>
+      }
+    </section>
+  </div>
 </div>
 
 @if (alterado()) {
@@ -184,7 +296,7 @@
         <app-carregando modo="inline" variante="claro" [tamanho]="20" />
         Salvando…
       } @else {
-        Salvar horários
+        Salvar
       }
     </button>
   </div>

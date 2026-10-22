@@ -30,6 +30,20 @@
           {{ tempoEconomizado().valor }}<span class="economia__unidade">{{ tempoEconomizado().unidade }}</span>
         </span>
         <span class="economia__periodo">nos últimos {{ n.dias }} dias</span>
+
+        <!-- média por dia (só os dias em que a conta já existia) e há quanto tempo a conta existe -->
+        <div class="economia__extras">
+          <span class="economia__extra">
+            <strong>{{ mediaPorDia() }}</strong>
+            por dia, em média
+          </span>
+          @if (idadeDaConta(); as idade) {
+            <span class="economia__extra">
+              <strong>{{ idade.valor }}</strong>
+              {{ idade.texto }}
+            </span>
+          }
+        </div>
       </section>
 
       <div class="indicadores" [class.indicadores--atualizando]="carregando()">
@@ -60,6 +74,7 @@
       <p class="como-calculamos">
         Como calculamos o tempo: cerca de 1,5 minuto por mensagem que o assistente mandou no seu lugar
         (ler, pensar e digitar){{ n.agendamentos !== null ? ' e mais 3 minutos por agendamento marcado (conferir a agenda e anotar)' : '' }}.
+        A média por dia divide esse tempo pelos dias do período, contando só os dias desde que você criou a conta.
       </p>
     }
   </main>

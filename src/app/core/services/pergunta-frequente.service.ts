@@ -31,6 +31,17 @@ export class PerguntaFrequenteService {
     return pergunta;
   }
 
+  async atualizar(id: number, dados: NovaPerguntaFrequente): Promise<PerguntaFrequente> {
+    const pergunta = await firstValueFrom(this.http.put<PerguntaFrequente>(`${this.url()}/${id}`, dados));
+    this.listaPerguntas.update((perguntas) => perguntas.map((item) => (item.id === id ? pergunta : item)));
+    return pergunta;
+  }
+
+  async remover(id: number): Promise<void> {
+    await firstValueFrom(this.http.delete<void>(`${this.url()}/${id}`));
+    this.listaPerguntas.update((perguntas) => perguntas.filter((item) => item.id !== id));
+  }
+
   reiniciar(): void {
     this.carregamento.reiniciar();
     this.listaPerguntas.set([]);

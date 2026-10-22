@@ -1,0 +1,148 @@
+@let ex = exemplo();
+<app-video-tutorial
+  titulo="Como usar as perguntas frequentes"
+  [cenas]="cenas"
+  [rotuloBotao]="rotuloBotao()"
+  (confirmar)="confirmar.emit()"
+  (fechar)="fechar.emit()"
+>
+  <ng-template #legenda let-cena>
+    @switch (cena) {
+      @case (0) {
+        <span class="legenda__selo surge">Perguntas frequentes</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">As dúvidas de sempre, respondidas uma vez só</p>
+        <p class="legenda__texto surge" style="--atraso: 1.4s">Horário, pagamento, entrega… Cadastre aqui e o assistente responde por você.</p>
+      }
+      @case (1) {
+        <p class="legenda__titulo surge">Escreva a pergunta como o cliente faria</p>
+        <p class="legenda__texto surge" style="--atraso: 0.9s">E a resposta do jeito que você responderia no WhatsApp.</p>
+      }
+      @case (2) {
+        <span class="legenda__selo surge">Na conversa</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">O assistente responde na hora</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Com as suas informações, mesmo que o cliente pergunte de outro jeito.</p>
+      }
+      @case (3) {
+        <span class="legenda__selo legenda__selo--dica surge">E se ele não souber?</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Ele não inventa: chama você</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Avisa o cliente que vai confirmar e te manda uma notificação.</p>
+      }
+      @case (4) {
+        <span class="legenda__selo legenda__selo--dica surge">Sugestão</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">A pergunta vira sugestão aqui</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Responda uma vez e, da próxima, o assistente já sabe.</p>
+      }
+      @case (5) {
+        <p class="legenda__titulo surge">Quanto mais perguntas, menos você é chamado ✨</p>
+        <p class="legenda__texto surge" style="--atraso: 0.8s">Comece pelas dúvidas que seus clientes mais mandam.</p>
+      }
+    }
+  </ng-template>
+
+  <ng-template #tela let-cena>
+    @switch (cena) {
+      @case (0) {
+        <div class="app">
+          <div class="app__barra">Perguntas frequentes</div>
+          <div class="app__corpo">
+            @for (item of ex.lista; track item.pergunta; let i = $index) {
+              <div class="pergunta-card surge" [style.--atraso]="0.8 + i * 0.5 + 's'">
+                <b>{{ item.pergunta }}</b>
+                <small>{{ item.resposta }}</small>
+              </div>
+            }
+            <div class="app__botao surge" style="--atraso: 2.6s">+ Adicionar pergunta</div>
+          </div>
+        </div>
+      }
+      @case (1) {
+        <div class="app">
+          <div class="app__barra">Nova pergunta</div>
+          <div class="app__corpo">
+            <div class="campo destaca" style="--atraso: 0.6s">
+              <span class="campo__rotulo">Pergunta</span>
+              <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">{{ ex.nova.pergunta }}</span></span>
+            </div>
+            <div class="campo destaca" style="--atraso: 2s">
+              <span class="campo__rotulo">Resposta</span>
+              <span class="campo__caixa campo__caixa--alta campo__caixa--linhas">
+                @for (linha of ex.nova.linhas; track linha; let i = $index) {
+                  <span class="surge" [style.--atraso]="2.3 + i * 0.6 + 's'">{{ linha }}</span>
+                }
+              </span>
+            </div>
+            <div class="app__botao tocado" style="--atraso: 5s">Salvar pergunta</div>
+            <span class="aviso-mini surge" style="--atraso: 5.8s">✓ Pergunta salva</span>
+          </div>
+        </div>
+      }
+      @case (2) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar">{{ ex.inicial }}</span>
+            <span class="zap__nome"><b>{{ ex.loja }}</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            <span class="balao balao--cliente surge" style="--atraso: 0.6s">{{ ex.conversa.cliente }}</span>
+            <span class="digitando digitando--1"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 3s">{{ ex.conversa.assistente }}</span>
+            <span class="balao balao--cliente surge" style="--atraso: 5.8s">{{ ex.conversa.agradecimento }}</span>
+          </div>
+        </div>
+      }
+      @case (3) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar">{{ ex.inicial }}</span>
+            <span class="zap__nome"><b>{{ ex.loja }}</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            <span class="balao balao--cliente surge" style="--atraso: 0.6s">{{ ex.semResposta.pergunta }}</span>
+            <span class="digitando digitando--1"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 3s">Vou confirmar, 1 minuto 😊</span>
+          </div>
+        </div>
+        <div class="notificacao" style="--atraso: 5.2s">
+          <span class="notificacao__icone">D</span>
+          <span class="notificacao__textos">
+            <b>Cliente precisa de você</b>
+            <small>“{{ ex.semResposta.pergunta }}”</small>
+          </span>
+        </div>
+      }
+      @case (4) {
+        <div class="app">
+          <div class="app__barra">Perguntas frequentes</div>
+          <div class="app__corpo">
+            <div class="sugestao some" style="--atraso: 4.4s">
+              <span class="sugestao__titulo">💡 O assistente não soube responder</span>
+              <span class="sugestao__pergunta">“{{ ex.semResposta.pergunta }}”</span>
+              <span class="botoes-mini">
+                <span class="botao-mini botao-mini--primario tocado" style="--atraso: 3s">Responder</span>
+                <span class="botao-mini">Descartar</span>
+              </span>
+            </div>
+            <div class="pergunta-card pergunta-card--nova surge" style="--atraso: 5s">
+              <b>{{ ex.semResposta.pergunta }}</b>
+              <small><span class="digita" style="--atraso: 5.6s">{{ ex.semResposta.resposta }}</span></small>
+            </div>
+            <span class="aviso-mini surge" style="--atraso: 7.4s">✓ Agora o assistente sabe responder</span>
+            @for (item of ex.lista.slice(0, 2); track item.pergunta) {
+              <div class="pergunta-card">
+                <b>{{ item.pergunta }}</b>
+                <small>{{ item.resposta }}</small>
+              </div>
+            }
+          </div>
+        </div>
+      }
+      @case (5) {
+        <div class="final">
+          <span class="final__check surge" style="--atraso: 0.4s">✓</span>
+          <b class="surge" style="--atraso: 1s">Pronto para cadastrar?</b>
+          <small class="surge" style="--atraso: 1.6s">{{ ex.dicaFinal }}</small>
+        </div>
+      }
+    }
+  </ng-template>
+</app-video-tutorial>

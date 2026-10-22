@@ -6,67 +6,35 @@
         <app-icone nome="seta" [tamanho]="16" [espessura]="2.4" class="sobretitulo-publico__seta" />
         <span class="sobretitulo-publico__destaque">Pequenos e médios negócios</span>
       </span>
-      <h2 id="quem-titulo" class="secao__titulo">Escolha o seu negócio e veja o DizAI trabalhando.</h2>
+      <h2 id="quem-titulo" class="secao__titulo">Para quem toca o negócio quase sozinho.</h2>
       <p class="secao__descricao">
-        Para quem toca o negócio quase sozinho. Não é cardápio com carrinho: é conversa de verdade, do jeito que o seu
-        cliente já pergunta.
+        Não é cardápio com carrinho: é conversa de verdade, do jeito que o seu cliente já pergunta.
       </p>
     </div>
 
-    <div class="ramos" role="tablist" aria-label="Tipo de negócio">
-      @for (ramo of ramos; track ramo.id) {
-        <button
-          type="button"
-          role="tab"
-          class="ramos__aba"
-          [id]="'aba-ramo-' + ramo.id"
-          aria-controls="painel-ramo"
-          [class.ramos__aba--ativa]="ramoAtual() === ramo.id"
-          [attr.aria-selected]="ramoAtual() === ramo.id"
-          (click)="escolher(ramo.id)"
-        >
-          {{ ramo.rotulo }}
-        </button>
-      }
-    </div>
-
-    <div id="painel-ramo" class="exemplo" role="tabpanel" [attr.aria-labelledby]="'aba-ramo-' + ramoAtual()">
-      <div class="exemplo__textos">
-        <div class="exemplo__bloco">
-          <span class="exemplo__rotulo">Quem usa</span>
-          <div class="exemplo__quem">
-            @for (quem of atual().quem; track quem) {
-              <span class="exemplo__chip">{{ quem }}</span>
+    <div class="ramos">
+      @for (ramo of ramos; track ramo.rotulo) {
+        <article class="ramo">
+          <h3 class="ramo__titulo">{{ ramo.rotulo }}</h3>
+          <div class="ramo__quem">
+            @for (quem of ramo.quem; track quem) {
+              <span class="ramo__chip">{{ quem }}</span>
             }
           </div>
-        </div>
-        <div class="exemplo__bloco">
-          <span class="exemplo__rotulo">O que o DizAI faz por você</span>
-          <ul class="exemplo__faz">
-            @for (item of atual().faz; track item) {
+          <ul class="ramo__faz">
+            @for (item of ramo.faz; track item) {
               <li>
-                <span class="exemplo__check"><app-icone nome="check" [tamanho]="12" [espessura]="3" /></span>
+                <span class="ramo__check"><app-icone nome="check" [tamanho]="12" [espessura]="3" /></span>
                 {{ item }}
               </li>
             }
           </ul>
-        </div>
-        <a routerLink="/cadastro" class="btn btn--primario exemplo__cta">
-          Testar grátis no meu negócio
-          <app-icone nome="seta" [tamanho]="16" [espessura]="2" />
-        </a>
-      </div>
-
-      <div class="exemplo__conversa">
-        <!-- @for com track no ramo: trocar de aba recria os balões e a animação roda de novo -->
-        @for (conversa of [atual()]; track conversa.id) {
-          <div class="conversa">
-            <span class="balao balao--cliente balao--entra">{{ conversa.cliente }}</span>
-            <span class="balao balao--assistente balao--entra balao--depois">{{ conversa.resposta }}</span>
-          </div>
-        }
-        <span class="exemplo__legenda">Respondido pelo assistente em segundos</span>
-      </div>
+          <a routerLink="/demonstracao" [queryParams]="ramo.demonstracao" class="ramo__ver">
+            <app-icone nome="reproduzir" [tamanho]="14" />
+            Ver uma conversa
+          </a>
+        </article>
+      }
     </div>
   </div>
 </section>

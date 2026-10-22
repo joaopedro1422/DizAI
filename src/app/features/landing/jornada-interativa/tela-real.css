@@ -1,0 +1,60 @@
+/*
+ * Telas do app desenhadas no tamanho real (375 px de largura, as mesmas medidas e classes do painel e da vitrine)
+ * e reduzidas para caber no celular da demonstração. Assim a tela fica igual à de verdade.
+ */
+:host {
+  display: block;
+  width: min(100%, 362px);
+  height: 680px;
+}
+
+.tela-real {
+  --escala: 0.893;   /* 335 px de tela do celular da demonstração / 375 px do app */
+  position: relative;
+  width: 375px;
+  height: calc(100% / var(--escala));
+  overflow: hidden;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-size: 16px;
+  transform: scale(var(--escala));
+  transform-origin: 0 0;
+}
+
+/* o "toque" que mostra um botão sendo apertado */
+.tocado {
+  transform: scale(0.97);
+  filter: brightness(0.92);
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+@media (max-width: 720px) {
+  :host {
+    height: 650px;
+  }
+}
+
+@media (max-width: 420px) {
+  :host {
+    width: min(100%, 340px);
+  }
+
+  .tela-real {
+    --escala: 0.853;
+  }
+}
+
+@keyframes tela-real-entra-de-cima {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tela-real-aparece {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes tela-real-sobe {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

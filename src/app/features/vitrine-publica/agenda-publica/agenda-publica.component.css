@@ -53,12 +53,6 @@
   color: #ffffff;
 }
 
-.passo__opcional {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--vitrine-suave);
-}
-
 .passo__nota {
   font-size: 13px;
   color: var(--vitrine-suave);

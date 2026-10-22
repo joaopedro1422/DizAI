@@ -26,19 +26,14 @@
       </div>
       <h3 class="destaque__titulo">{{ venda().titulo }}</h3>
       <p class="destaque__texto">{{ venda().texto }}</p>
-      <div class="conversa destaque__conversa">
-        <span class="balao balao--cliente">Gostaria de 150 salgados para sábado</span>
-        <!-- um bloco por modo: trocar de modo recria o balão e a animação de entrada roda de novo -->
-        @switch (modoVenda()) {
-          @case ('coletar') {
-            <span class="balao balao--assistente balao--entra">{{ venda().resposta }}</span>
-          }
-          @case ('chamar') {
-            <span class="balao balao--assistente balao--entra">{{ venda().resposta }}</span>
-          }
+      <div class="conversa destaque__conversa destaque__conversa--fixa" aria-live="polite">
+        <!-- @for com track na cena: trocar de cena ou de modo recria os balões e a animação de entrada roda de novo -->
+        @for (cena of [cenaVenda()]; track cena.id) {
+          <span class="balao balao--cliente balao--entra">{{ cena.cliente }}</span>
+          <span class="balao balao--assistente balao--entra balao--depois">{{ cena.resposta }}</span>
         }
       </div>
-      <div class="aviso">
+      <div class="aviso" [class.aviso--escondido]="!avisoVendaVisivel()">
         <span class="aviso__icone"><app-icone nome="sino" [tamanho]="16" [espessura]="2" /></span>
         <span class="aviso__textos">
           <strong>{{ venda().avisoTitulo }}</strong>
@@ -56,7 +51,7 @@
         na hora. O cliente remarca ou cancela pelo próprio WhatsApp.
       </p>
       <div class="conversa destaque__conversa destaque__conversa--fixa" aria-live="polite">
-        @if (cenaServico() === 'pergunta') {
+        @if (cena() === 'primeira') {
           <span class="balao balao--cliente balao--entra">Quais serviços vocês fazem?</span>
           <span class="balao balao--assistente balao--entra balao--depois">Fazemos:
 - Manicure
@@ -71,7 +66,7 @@ Data: quarta, 24/10
 Horário: 14:00 às 15:45</span>
         }
       </div>
-      <div class="aviso" [class.aviso--escondido]="cenaServico() === 'pergunta'">
+      <div class="aviso" [class.aviso--escondido]="cena() === 'primeira'">
         <span class="aviso__icone"><app-icone nome="sino" [tamanho]="16" [espessura]="2" /></span>
         <span class="aviso__textos">
           <strong>Novo agendamento</strong>
@@ -81,13 +76,16 @@ Horário: 14:00 às 15:45</span>
     </article>
   </div>
 
-  <div class="recursos">
-    @for (recurso of recursos; track recurso.titulo) {
-      <article class="recurso">
-        <span class="recurso__icone"><app-icone [nome]="recurso.icone" [tamanho]="20" [espessura]="1.9" /></span>
-        <h3 class="recurso__titulo">{{ recurso.titulo }}</h3>
-        <p class="recurso__texto">{{ recurso.texto }}</p>
-      </article>
+  <!-- você no controle -->
+  <div class="controle">
+    @for (recurso of controle; track recurso.titulo) {
+      <div class="controle__item">
+        <app-icone [nome]="recurso.icone" [tamanho]="20" [espessura]="2" />
+        <span>
+          <strong class="controle__titulo">{{ recurso.titulo }}</strong>
+          <span class="controle__texto">{{ recurso.texto }}</span>
+        </span>
+      </div>
     }
   </div>
 </section>

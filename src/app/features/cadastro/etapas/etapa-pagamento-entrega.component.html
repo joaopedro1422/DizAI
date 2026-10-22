@@ -64,19 +64,34 @@
 
 <fieldset class="etapa__grupo">
   <legend class="etapa__legenda">Antecedência mínima para pedidos</legend>
-  <div class="grupo-chips" role="radiogroup">
-    @for (prazo of prazos; track prazo.valor) {
-      @let selecionado = controles.prazoMinimo.value === prazo.valor;
-      <button
-        type="button"
-        role="radio"
-        class="chip"
-        [class.chip--ativo]="selecionado"
-        [attr.aria-checked]="selecionado"
-        (click)="escolherPrazo(prazo.valor)"
+  <div class="campo">
+    <div class="antecedencia">
+      <!-- [formControl] e não formControlName: este trecho fica fora de um [formGroup] -->
+      <input
+        id="antecedencia-valor"
+        class="campo__entrada antecedencia__numero"
+        type="number"
+        inputmode="numeric"
+        min="0"
+        max="720"
+        step="1"
+        [formControl]="controles.antecedenciaValor"
+        aria-label="Antecedência mínima"
+        aria-describedby="antecedencia-dica"
       >
-        {{ prazo.rotulo }}
-      </button>
+      <select class="campo__entrada antecedencia__unidade" [formControl]="controles.antecedenciaUnidade" aria-label="Unidade da antecedência">
+        <option value="MINUTOS">minutos</option>
+        <option value="HORAS">horas</option>
+        <option value="DIAS">dias</option>
+      </select>
+    </div>
+    <span class="antecedencia__exemplo">{{ exemplo(controles.antecedenciaValor.value, controles.antecedenciaUnidade.value) }}</span>
+    <span id="antecedencia-dica" class="antecedencia__dica">
+      É usada como o tempo mínimo de preparo de um pedido. Digite 0 se é pronta entrega.
+      Produtos com tempo de preparo diferente (ex.: tortas com 1 dia): informe a antecedência no cadastro de cada um.
+    </span>
+    @if (temErro(controles.antecedenciaValor)) {
+      <span class="campo__erro" role="alert">Use um número inteiro de 0 a 720.</span>
     }
   </div>
 </fieldset>

@@ -4,7 +4,8 @@ import { firstValueFrom } from 'rxjs';
 
 import { urlApi } from '../api/api-url';
 import { AgendaPublica, DiaHorarios } from '../models/agenda.model';
-import { AlbumPublicoDetalhe, LojaPublica } from '../models/loja-publica.model';
+import { AlbumPublicoDetalhe, FotoCompartilhada, LojaPublica } from '../models/loja-publica.model';
+import { Produto } from '../models/produto.model';
 
 /** Página pública da loja (sem login): /public/lojas/{slug} */
 @Injectable({ providedIn: 'root' })
@@ -33,6 +34,17 @@ export class LojaPublicaService {
   buscarHorarios(slug: string, servicoIds: number[]): Promise<DiaHorarios[]> {
     const caminho = `/public/lojas/${encodeURIComponent(slug)}/agenda/horarios?servicos=${servicoIds.join(',')}`;
     return firstValueFrom(this.http.get<DiaHorarios[]>(urlApi(caminho)));
+  }
+
+  /** Produtos disponíveis para o cliente montar o pedido na aba "Orçamento". */
+  buscarOrcamento(slug: string): Promise<Produto[]> {
+    return firstValueFrom(this.http.get<Produto[]>(urlApi(`/public/lojas/${encodeURIComponent(slug)}/orcamento`)));
+  }
+
+  /** Uma foto da galeria (página /l/{slug}/foto/{id}). */
+  buscarFoto(slugLoja: string, fotoId: string): Promise<FotoCompartilhada> {
+    const caminho = `/public/lojas/${encodeURIComponent(slugLoja)}/fotos/${encodeURIComponent(fotoId)}`;
+    return firstValueFrom(this.http.get<FotoCompartilhada>(urlApi(caminho)));
   }
 
   /** Todas as fotos de um tópico (a página da loja traz só as primeiras). */

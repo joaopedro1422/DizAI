@@ -1,7 +1,49 @@
 /* "Ver página" (mesmo botão da Galeria) */
-.link-publico {
+/* Link da agenda online no topo (ao lado do voltar): clicável, com o botão de copiar */
+.link-topo {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 70%;
+  border-radius: var(--raio-pilula);
   background: var(--cor-primaria-clara);
   color: var(--cor-primaria);
+}
+
+.link-topo__url {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 7px 4px 7px 12px;
+  color: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.link-topo__texto {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link-topo__copiar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 34px;
+  height: 32px;
+  border: none;
+  border-left: 1px solid rgba(30, 58, 114, 0.15);
+  border-radius: 0 var(--raio-pilula) var(--raio-pilula) 0;
+  background: transparent;
+  color: inherit;
+}
+
+.link-topo__copiar:hover {
+  background: rgba(30, 58, 114, 0.08);
 }
 
 /* Abas (mesmo desenho da tela de Chats) */
@@ -39,6 +81,7 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
+  padding-top: 4px;   /* a faixa de dias fica logo abaixo das abas */
 }
 
 /* Primeira vez: ainda sem horários */
@@ -96,40 +139,6 @@ a.faixa-aviso {
   color: var(--cor-primaria);
 }
 
-.link-agenda {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border: 1px solid var(--cor-borda-suave);
-  border-radius: var(--raio-medio);
-  background: var(--cor-fundo-tracejado);
-}
-
-.link-agenda__textos {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.link-agenda__rotulo {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--cor-texto-suave);
-}
-
-.link-agenda__url {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--cor-primaria);
-  text-decoration: none;
-}
-
 /* Cabeçalho do dia escolhido */
 .dia {
   display: flex;
@@ -153,15 +162,6 @@ a.faixa-aviso {
   flex: none;
   font-size: 13px;
   color: var(--cor-texto-suave);
-}
-
-.dia__expediente {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--cor-texto-secundario);
-  font-variant-numeric: tabular-nums;
 }
 
 .folga {
@@ -197,7 +197,7 @@ a.faixa-aviso {
   border-radius: 16px;
   background: var(--cor-fundo);
   /* sombra leve, a mesma dos cartões do painel */
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.09), 0 1px 3px rgba(15, 23, 42, 0.06);
 }
 
 .horario__tempo {
@@ -266,20 +266,53 @@ a.faixa-aviso {
   text-decoration: none;
 }
 
-.horario__cancelar {
+/* estrelinha (marcado pelo assistente) e o X de cancelar, no canto do card */
+.horario__lateral {
+  display: flex;
+  align-items: center;
   align-self: flex-start;
-  margin: -6px -6px 0 0;
+  flex: none;
+  margin: -6px -8px 0 -8px;   /* encosta no canto e não rouba largura do texto */
+}
+
+.horario__assistente {
+  display: inline-flex;
+  color: var(--cor-ativo);
+}
+
+.horario__cancelar {
+  width: 34px;
+  height: 34px;
   color: var(--cor-texto-suave);
 }
 
-.horario--cancelado {
+/* "· 45 min" nunca se separa: se não couber, desce inteiro */
+.horario__duracao {
+  white-space: nowrap;
+}
+
+.horario--cancelado,
+.horario--passou {
   background: var(--cor-fundo-suave);
   box-shadow: none;
 }
 
-.horario--cancelado .horario__tempo {
+.horario--cancelado .horario__tempo,
+.horario--passou .horario__tempo {
   background: var(--cor-borda);
   color: var(--cor-texto-suave);
+}
+
+/* já atendido: cinza como o cancelado, mas sem riscar */
+.horario--passou .horario__nome,
+.horario--passou .horario__servicos {
+  color: var(--cor-texto-suave);
+}
+
+/* a estrelinha e o número também saem do verde */
+.horario--passou .horario__assistente,
+.horario--passou .horario__whatsapp {
+  color: var(--cor-texto-secundario);
 }
 
 .horario--cancelado .horario__nome,
@@ -297,9 +330,19 @@ a.faixa-aviso {
   font-weight: 700;
 }
 
-.etiqueta--whatsapp {
-  background: #E3F2EA;
-  color: var(--cor-ativo);
+/* o cliente respondeu ao lembrete confirmando que vem */
+.etiqueta--presenca {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--cor-ativo);
+  color: #ffffff;
+}
+
+/* lembrete enviado, ainda sem resposta */
+.etiqueta--lembrete {
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-ambar);
 }
 
 .etiqueta--cancelado {
@@ -307,11 +350,337 @@ a.faixa-aviso {
   color: var(--cor-erro);
 }
 
+/* Seletor discreto de visualização, logo acima do primeiro card: texto e setinha, sem fundo */
+.visualizacao {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin: -4px 0 -6px;
+  font-size: 13px;
+}
+
+.visualizacao__rotulo {
+  color: var(--cor-texto-suave);
+}
+
+.visualizacao__campo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: var(--cor-texto);
+}
+
+.visualizacao__select {
+  padding: 4px 20px 4px 2px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 800;
+  appearance: none;
+  cursor: pointer;
+}
+
+.visualizacao__select:focus-visible {
+  outline: 2px solid var(--cor-primaria);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.visualizacao__campo app-icone {
+  position: absolute;
+  right: 2px;
+  pointer-events: none;
+}
+
+/* ---------- Visualização completa: linha do tempo (o topo e a altura vêm do linha-do-tempo.ts) ---------- */
+.linha {
+  --coluna-horas: 46px;
+  position: relative;
+  margin: 8px 0 4px;
+}
+
+.linha__marca {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 1px solid #E3E7EE;
+  margin-left: var(--coluna-horas);
+}
+
+.linha__marca--meia {
+  border-top: 1px dashed #EEF0F4;
+}
+
+.linha__hora {
+  position: absolute;
+  left: calc(-1 * var(--coluna-horas));
+  top: -8px;
+  width: 38px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: right;
+  color: #8A93A5;
+  font-variant-numeric: tabular-nums;
+}
+
+.linha__marca--meia .linha__hora {
+  font-weight: 500;
+  color: #A9B0BE;
+}
+
+.linha__hora--destaque,
+.linha__marca--meia .linha__hora--destaque {
+  font-weight: 800;
+  color: var(--cor-primaria);
+}
+
+/* começo ou fim fora da grade de 30 min (ex.: 09:45) */
+.linha__hora--extra {
+  left: 0;
+  margin-top: -8px;
+  top: auto;
+  z-index: 1;
+  background: var(--cor-fundo);
+  color: var(--cor-primaria);
+  font-weight: 800;
+}
+
+/* os blocos ficam 1 px para dentro em cima e embaixo: dois seguidos não se colam */
+.bloco {
+  position: absolute;
+  left: var(--coluna-horas);
+  right: 0;
+  margin-top: 1px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bloco--agendamento {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1px;
+  padding: 6px 8px 6px 11px;
+  border-left: 3px solid #A9B3C6;
+  background: #F1F3F7;
+  color: var(--cor-texto);
+}
+
+/* acontecendo agora: a barra da esquerda fica verde e mais grossa */
+.bloco--em-andamento {
+  padding-left: 10px;
+  border-left: 4px solid var(--cor-ativo);
+}
+
+.bloco__linha {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.bloco__horario {
+  flex: none;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--cor-texto-secundario);
+  font-variant-numeric: tabular-nums;
+}
+
+.bloco__nome {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.bloco__nome--junto {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.bloco__presenca,
+.bloco__assistente {
+  display: inline-flex;
+  flex: none;
+  color: var(--cor-ativo);
+}
+
+/* os ícones e o X vão para a direita quando o nome não está na mesma linha */
+.bloco__horario + .bloco__presenca,
+.bloco__horario + .bloco__assistente,
+.bloco__horario + .bloco__cancelar {
+  margin-left: auto;
+}
+
+.bloco__cancelar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 24px;
+  height: 22px;
+  margin: -2px -4px -2px 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--cor-texto-suave);
+}
+
+.bloco__cancelar:hover {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.bloco__detalhe {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--cor-texto-secundario);
+}
+
+.bloco__servico {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* número do cliente: abre a escolha de mensagem pronta */
+.bloco__whatsapp {
+  flex: none;
+  margin-left: auto;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.bloco--medio {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.bloco--curto {
+  justify-content: center;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.bloco--livre {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px dashed #C7CFDD;
+  background: var(--cor-fundo);
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+.bloco--sem-texto {
+  border-style: dotted;
+}
+
+.bloco--fechado {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: repeating-linear-gradient(135deg, #F3F5F8 0 6px, #ffffff 6px 12px);
+  color: #9AA2B1;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* linha do agora */
+.linha__agora {
+  position: absolute;
+  z-index: 2;
+  left: calc(var(--coluna-horas) - 4px);
+  right: 0;
+  height: 2px;
+  margin-top: -1px;
+  background: #D14343;
+  pointer-events: none;
+}
+
+.linha__agora::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -3.5px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #D14343;
+}
+
+.linha__agora-hora {
+  position: absolute;
+  left: calc(-1 * var(--coluna-horas) + 4px);
+  top: -8px;
+  width: 38px;
+  padding-right: 2px;
+  background: var(--cor-fundo);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 16px;
+  text-align: right;
+  color: #D14343;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Cancelados do dia (fora da linha do tempo) */
+.cancelados {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 4px;
+}
+
+.cancelados__titulo {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--cor-texto-suave);
+}
+
+.cancelados__item {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+  text-decoration: line-through;
+}
+
 .acoes-dia {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 4px;
+  margin-top: 24px;
+}
+
+/* Os botões do dia têm uma cópia na coluna lateral, que só aparece em tela grande */
+.acoes-dia--lateral {
+  display: none;
+}
+
+/* No celular os agrupadores das colunas não existem para o layout */
+.agenda-lateral,
+.agenda-principal {
+  display: contents;
 }
 
 .confirmacao {
@@ -378,9 +747,158 @@ a.faixa-aviso {
 }
 
 /* Faixa de dias numa moldura azul-clara: os dias brancos e o dia escolhido se destacam do fundo da tela */
-.moldura-dias {
-  padding: 10px 8px 4px;
-  border-radius: var(--raio-grande);
-  background: #F6F8FC;   /* só um leve destaque, mais claro que o --cor-primaria-clara */
-  --faixa-fundo: #ffffff;
+/* Mês do dia escolhido com as setas de semana, e a faixa de dias logo abaixo (sem moldura) */
+.calendario {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.calendario__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.calendario__mes {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.calendario__setas {
+  display: flex;
+  gap: 2px;
+  margin-right: -8px;
+  color: var(--cor-texto-secundario);
+}
+
+.calendario__setas .btn-icone:disabled {
+  opacity: 0.35;
+}
+
+/* No topo azul (estilos-topo-azul.css) o link da agenda online fica translúcido */
+.topo-azul .link-topo {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.topo-azul .link-topo__copiar {
+  border-left-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.topo-azul .link-topo__copiar:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* =====================================================================================
+   Tablet e computador: a agenda ocupa a tela inteira (muita gente deixa aberta no computador).
+   Nada aqui vale abaixo de 760px: o celular continua igual.
+   ===================================================================================== */
+@media (min-width: 760px) {
+  .tela-agenda {
+    --largura-tela-app: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  /* abas na linha do título: um seletor compacto, do tamanho do texto */
+  .abas-titulo {
+    display: inline-flex;
+    flex: none;
+  }
+
+  .abas {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 12px;
+    background: var(--cor-fundo-suave);
+    border: 1px solid var(--cor-borda-suave);
+  }
+
+  .aba {
+    min-height: 36px;
+    padding: 0 16px;
+    border-radius: 9px;
+    color: var(--cor-texto-suave);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .aba:not(.aba--ativa):hover {
+    color: var(--cor-texto);
+    background: rgba(15, 23, 42, 0.04);
+  }
+
+  .aba--ativa {
+    color: var(--cor-primaria);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.1), 0 0 0 1px var(--cor-borda-suave);
+  }
+
+  .agendamentos {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    align-items: start;
+    gap: 28px;
+  }
+
+  .agenda-lateral,
+  .agenda-principal {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+  }
+
+  /* calendário e botões colados à esquerda, sempre à vista enquanto o dia rola */
+  .agenda-lateral {
+    position: sticky;
+    top: 16px;
+  }
+
+  .acoes-dia--lateral {
+    display: flex;
+    margin-top: 0;
+  }
+
+  .agenda-principal > .acoes-dia {
+    display: none;
+  }
+
+  /* o dia ocupa todo o resto da largura e, no mínimo, a altura da tela */
+  .agenda-principal {
+    min-height: calc(100dvh - 190px);
+    padding: 20px 24px 28px;
+    border: 1px solid var(--cor-borda-suave);
+    border-radius: var(--raio-grande);
+    background: var(--cor-fundo);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  }
+
+  .dia__titulo {
+    font-size: 22px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .agendamentos {
+    grid-template-columns: 340px minmax(0, 1fr);
+    gap: 32px;
+  }
+}
+
+/* Computador largo: os cards do dia em colunas */
+@media (min-width: 1280px) {
+  .lista-horarios {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+@media (min-width: 1680px) {
+  .lista-horarios {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }

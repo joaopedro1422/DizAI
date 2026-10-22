@@ -29,6 +29,12 @@ const rotasDoPainel: Routes = [
       import('./features/galeria/galeria-page.component').then((m) => m.GaleriaPageComponent),
   },
   {
+    path: 'atendimento',
+    title: 'Como o assistente atende | DizAI',
+    loadComponent: () =>
+      import('./features/atendimento/atendimento-page.component').then((m) => m.AtendimentoPageComponent),
+  },
+  {
     path: 'estatisticas',
     title: 'Estatísticas | DizAI',
     loadComponent: () =>
@@ -38,6 +44,12 @@ const rotasDoPainel: Routes = [
     path: 'agenda',
     title: 'Agenda | DizAI',
     loadComponent: () => import('./features/agenda/agenda-page.component').then((m) => m.AgendaPageComponent),
+  },
+  {
+    // lojas de produtos: os pedidos confirmados no Chats até a entrega, e o faturamento
+    path: 'pedidos',
+    title: 'Pedidos | DizAI',
+    loadComponent: () => import('./features/pedidos/pedidos-page.component').then((m) => m.PedidosPageComponent),
   },
   {
     path: 'chats',
@@ -77,6 +89,12 @@ export const routes: Routes = [
       import('./features/landing/landing-page.component').then((m) => m.LandingPageComponent),
   },
   {
+    path: 'demonstracao',
+    title: 'Veja o DizAI atendendo | DizAI',
+    loadComponent: () =>
+      import('./features/demonstracao/demonstracao-page.component').then((m) => m.DemonstracaoPageComponent),
+  },
+  {
     path: 'cadastro',
     title: 'Criar minha loja | DizAI',
     canActivate: [visitanteGuard],
@@ -113,10 +131,29 @@ export const routes: Routes = [
       ),
   },
   {
+    // uma foto da galeria, sozinha: o link que o cliente manda pelo "Enviar pelo WhatsApp", ex.: dizai.com/l/studio-bella/foto/42
+    path: 'l/:slug/foto/:fotoId',
+    title: 'Foto',
+    loadComponent: () =>
+      import('./features/vitrine-publica/foto-compartilhada/foto-compartilhada-page.component').then(
+        (m) => m.FotoCompartilhadaPageComponent,
+      ),
+  },
+  {
     // a mesma página já aberta na aba Agenda (link para divulgar), ex.: dizai.com/l/studio-bella/agenda
     path: 'l/:slug/agenda',
     title: 'Agenda online',
     data: { aba: 'agenda' },
+    loadComponent: () =>
+      import('./features/vitrine-publica/vitrine-publica-page.component').then(
+        (m) => m.VitrinePublicaPageComponent,
+      ),
+  },
+  {
+    // a mesma página já aberta na aba Orçamento (lojas de produtos), ex.: dizai.com/l/mix-salgados/orcamento
+    path: 'l/:slug/orcamento',
+    title: 'Orçamento',
+    data: { aba: 'orcamento' },
     loadComponent: () =>
       import('./features/vitrine-publica/vitrine-publica-page.component').then(
         (m) => m.VitrinePublicaPageComponent,

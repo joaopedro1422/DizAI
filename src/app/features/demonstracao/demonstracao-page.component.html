@@ -1,0 +1,150 @@
+<nav class="nav container" aria-label="Principal">
+  <a routerLink="/" class="nav__marca" aria-label="DizAI, voltar para o início">
+    <app-logo />
+  </a>
+  <a routerLink="/cadastro" class="btn btn--primario">Testar grátis</a>
+</nav>
+
+<main class="container demo">
+  <header class="demo__cabecalho">
+    <span class="demo__etiqueta">
+      <span class="demo__pulso" aria-hidden="true"></span>
+      Demonstração ao vivo
+    </span>
+    <h1 class="demo__titulo">Assista o DizAI atendendo um cliente.</h1>
+    <p class="demo__descricao">
+      Uma conversa como as que chegam no seu WhatsApp todo dia. Escolha o seu tipo de negócio e só assista:
+      as mensagens vão chegando sozinhas.
+    </p>
+  </header>
+
+  <div class="escolha">
+    <div class="escolha__tipos" role="radiogroup" aria-label="Tipo de negócio">
+      @for (tipo of tipos; track tipo) {
+        @let opcao = demonstracoes[tipo];
+        <button
+          type="button"
+          role="radio"
+          class="escolha__tipo"
+          [class.escolha__tipo--ativo]="reprodutor.tipo() === tipo"
+          [attr.aria-checked]="reprodutor.tipo() === tipo"
+          (click)="reprodutor.tipo() !== tipo && escolher(tipo)"
+        >
+          <span class="escolha__icone"><app-icone [nome]="opcao.icone" [tamanho]="20" [espessura]="2" /></span>
+          <span class="escolha__textos">
+            <span class="escolha__rotulo">{{ opcao.rotulo }}</span>
+            <span class="escolha__exemplos">{{ opcao.exemplos }}</span>
+          </span>
+        </button>
+      }
+    </div>
+    <div class="escolha__segmentos" role="radiogroup" aria-label="Segmento">
+      @for (opcao of demonstracoes[reprodutor.tipo()].segmentos; track opcao.id) {
+        <button
+          type="button"
+          role="radio"
+          class="escolha__segmento"
+          [attr.aria-checked]="segmento().id === opcao.id"
+          (click)="escolher(reprodutor.tipo(), opcao.id)"
+        >
+          {{ opcao.rotulo }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <section class="destaques" aria-labelledby="destaques-titulo">
+    <h2 id="destaques-titulo" class="destaques__titulo">Repare no que o assistente faz</h2>
+    <ol class="destaques__lista">
+      @for (destaque of destaques(); track destaque) {
+        <li class="destaque" [class.destaque--feito]="reprodutor.alcancados().has(destaque)">
+          <span class="destaque__marca"><app-icone nome="check" [tamanho]="12" [espessura]="3" /></span>
+          {{ destaque }}
+        </li>
+      }
+    </ol>
+  </section>
+
+  <div class="demo__cta">
+    <a routerLink="/cadastro" class="btn btn--primario btn--hero">
+      Quero isso no meu WhatsApp
+      <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
+    </a>
+    <span class="demo__cta-nota">Grátis para testar · pronto em poucos minutos</span>
+  </div>
+
+  <!-- o celular: a conversa do WhatsApp do lado do cliente -->
+  <section class="celular" aria-label="Conversa de demonstração">
+    <header class="whats-topo">
+      <app-icone nome="voltar" [tamanho]="22" [espessura]="2.2" aria-hidden="true" />
+      <span class="whats-topo__foto" [style.background]="segmento().cor" aria-hidden="true">{{ segmento().inicial }}</span>
+      <span class="whats-topo__textos">
+        <span class="whats-topo__nome">{{ segmento().loja }}</span>
+        <span class="whats-topo__status">{{ reprodutor.digitando() ? 'digitando…' : 'online' }}</span>
+      </span>
+    </header>
+
+    <div #rolagem class="conversa" aria-live="polite">
+      <p class="nota-cripto">🔒 Conversa de demonstração. Nenhuma mensagem é enviada de verdade.</p>
+
+      @for (item of reprodutor.visiveis(); track $index) {
+        @if (item.de === 'notificacao') {
+          <div class="notificacao" role="status">
+            <span class="notificacao__icone"><app-icone nome="sino" [tamanho]="16" [espessura]="2" /></span>
+            <span class="notificacao__textos">
+              <span class="notificacao__origem">DizAI · no celular {{ segmento().artigo }} {{ segmento().dono }}</span>
+              <strong>{{ item.titulo }}</strong>
+              <span class="notificacao__texto">{{ item.texto }}</span>
+            </span>
+          </div>
+        } @else {
+          <app-balao-conversa [item]="item" [segmento]="segmento()" />
+        }
+      }
+
+      @if (reprodutor.digitando()) {
+        <div class="digitando" aria-label="O assistente está escrevendo"><i></i><i></i><i></i></div>
+      }
+
+      @if (reprodutor.terminou()) {
+        <div class="final">
+          <strong class="final__titulo">E se essa fosse a sua loja?</strong>
+          <span class="final__texto">Cadastre o seu negócio e o assistente atende assim, no seu número de sempre.</span>
+          <a routerLink="/cadastro" class="btn btn--primario btn--bloco">Testar grátis</a>
+          <button type="button" class="final__outra" (click)="escolher(reprodutor.tipo(), proximoSegmento().id)">
+            Ver a conversa de {{ proximoSegmento().rotulo }}
+          </button>
+        </div>
+      }
+    </div>
+
+    <footer class="whats-rodape" aria-hidden="true">
+      <span class="whats-rodape__campo">Mensagem</span>
+      <span class="whats-rodape__botao"><app-icone nome="microfone" [tamanho]="20" [espessura]="2" /></span>
+    </footer>
+  </section>
+
+  <div class="controles">
+    <button type="button" class="controles__botao" (click)="alternarPausa()">
+      @if (reprodutor.terminou()) {
+        <app-icone nome="reproduzir" [tamanho]="16" /> Assistir de novo
+      } @else if (reprodutor.pausado()) {
+        <app-icone nome="reproduzir" [tamanho]="16" /> Continuar
+      } @else {
+        <app-icone nome="pausar" [tamanho]="16" /> Pausar
+      }
+    </button>
+    <button
+      type="button"
+      class="controles__botao"
+      [class.controles__botao--ativo]="reprodutor.rapido()"
+      [attr.aria-pressed]="reprodutor.rapido()"
+      (click)="reprodutor.alternarVelocidade()"
+    >
+      <app-icone nome="raio" [tamanho]="16" /> {{ reprodutor.rapido() ? 'Mais rápido' : 'Velocidade normal' }}
+    </button>
+    @if (!reprodutor.terminou() && reprodutor.mostrados() > 0) {
+      <button type="button" class="controles__botao" (click)="reprodutor.recomecar()">Recomeçar</button>
+    }
+  </div>
+</main>

@@ -1,0 +1,141 @@
+<div class="tela-app tela-pedidos">
+  <!-- topo azul (o mesmo da agenda). No computador as abas ficam na linha do título, à direita -->
+  <header class="topo-azul">
+    <div class="topo-azul__linha">
+      <a class="topo-azul__voltar" [routerLink]="rotaInicio()" aria-label="Voltar para o painel">
+        <app-icone nome="voltar" [tamanho]="22" />
+      </a>
+    </div>
+    <div class="topo-azul__identidade topo-pedidos">
+      <div class="topo-azul__textos">
+        <h1 class="topo-azul__titulo">Pedidos</h1>
+      </div>
+      <div class="abas" role="tablist" aria-label="Pedidos">
+        <button
+          type="button"
+          role="tab"
+          id="aba-andamento"
+          aria-controls="painel-andamento"
+          class="aba"
+          [class.aba--ativa]="aba() === 'andamento'"
+          [attr.aria-selected]="aba() === 'andamento'"
+          (click)="aba.set('andamento')"
+        >
+          <app-icone nome="caixa" [tamanho]="16" />
+          Em andamento
+          @if (pedidos().length > 0) {
+            <span class="aba__contador">{{ pedidos().length }}</span>
+          }
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="aba-numeros"
+          aria-controls="painel-numeros"
+          class="aba"
+          [class.aba--ativa]="aba() === 'numeros'"
+          [attr.aria-selected]="aba() === 'numeros'"
+          (click)="aba.set('numeros')"
+        >
+          <app-icone nome="grafico" [tamanho]="16" />
+          Números
+        </button>
+      </div>
+    </div>
+  </header>
+
+  @if (aba() === 'andamento') {
+    <main id="painel-andamento" role="tabpanel" aria-labelledby="aba-andamento" class="conteudo-tela pedidos">
+      @if (carregando()) {
+        <app-carregando texto="Carregando seus pedidos…" />
+      } @else if (pedidos().length === 0) {
+        <app-estado-vazio
+          icone="caixa"
+          titulo="Nenhum pedido em andamento"
+          descricao="Quando o assistente fechar um pedido, ele aparece no Chats. Depois de confirmar com o cliente, toque em “Pedido confirmado” e ele vem para cá."
+        />
+      } @else if (quadro()) {
+        <!-- computador (ex.: na cozinha): um quadro com o que falta fazer e o que já está pronto, sem filtro -->
+        <div class="quadro">
+          <section class="quadro__coluna quadro__coluna--preparo" aria-labelledby="coluna-preparo">
+            <h2 class="quadro__titulo" id="coluna-preparo">
+              <span class="quadro__ponto" aria-hidden="true"></span>
+              Em preparo
+              <span class="quadro__contador">{{ emPreparo().length }}</span>
+            </h2>
+            <div class="quadro__cards">
+              @for (pedido of emPreparo(); track pedido.id) {
+                <app-pedido-card [pedido]="pedido" (acao)="acaoAberta.set({ pedido, acao: $event })" />
+              } @empty {
+                <p class="quadro__vazio">Nada em preparo agora.</p>
+              }
+            </div>
+          </section>
+          <section class="quadro__coluna quadro__coluna--prontos" aria-labelledby="coluna-prontos">
+            <h2 class="quadro__titulo" id="coluna-prontos">
+              <span class="quadro__ponto" aria-hidden="true"></span>
+              Prontos para entregar
+              <span class="quadro__contador">{{ prontos().length }}</span>
+            </h2>
+            <div class="quadro__cards">
+              @for (pedido of prontos(); track pedido.id) {
+                <app-pedido-card [pedido]="pedido" (acao)="acaoAberta.set({ pedido, acao: $event })" />
+              } @empty {
+                <p class="quadro__vazio">Quando um pedido ficar pronto, ele passa para cá.</p>
+              }
+            </div>
+          </section>
+        </div>
+      } @else {
+        <div class="grupo-chips" role="radiogroup" aria-label="Filtrar pedidos">
+          <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="filtro() === 'todos'" [attr.aria-checked]="filtro() === 'todos'" (click)="filtro.set('todos')">
+            Todos · {{ pedidos().length }}
+          </button>
+          <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="filtro() === 'preparo'" [attr.aria-checked]="filtro() === 'preparo'" (click)="filtro.set('preparo')">
+            Em preparo · {{ emPreparo().length }}
+          </button>
+          <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="filtro() === 'prontos'" [attr.aria-checked]="filtro() === 'prontos'" (click)="filtro.set('prontos')">
+            Prontos · {{ prontos().length }}
+          </button>
+        </div>
+
+        <div class="pedidos__lista">
+          @for (pedido of pedidosFiltrados(); track pedido.id) {
+            <app-pedido-card [pedido]="pedido" (acao)="acaoAberta.set({ pedido, acao: $event })" />
+          } @empty {
+            <app-estado-vazio icone="caixa" titulo="Nenhum pedido aqui" />
+          }
+        </div>
+      }
+
+      @if (!carregando()) {
+        <div class="pedidos__rodape">
+          <a class="btn btn--secundario pedidos__chats" [routerLink]="rotaChats()">
+            <app-icone nome="conversa" [tamanho]="16" />
+            Pedidos esperando no Chats
+          </a>
+          <button type="button" class="btn btn--texto btn--pequeno" (click)="abrirMensagens()">
+            <app-icone nome="conversa" [tamanho]="16" />
+            Mensagens prontas
+          </button>
+        </div>
+      }
+    </main>
+  } @else {
+    <main id="painel-numeros" role="tabpanel" aria-labelledby="aba-numeros" class="conteudo-tela pedidos">
+      <app-numeros-pedidos />
+    </main>
+  }
+</div>
+
+@if (acaoAberta(); as aberta) {
+  <app-bottom-sheet [titulo]="titulosAcao[aberta.acao]" (fechar)="acaoAberta.set(null)">
+    <app-acao-pedido [pedido]="aberta.pedido" [acao]="aberta.acao" (concluido)="acaoAberta.set(null)" />
+  </app-bottom-sheet>
+}
+
+@if (gerenciandoMensagens()) {
+  <app-bottom-sheet titulo="Mensagens prontas" (fechar)="gerenciandoMensagens.set(false)">
+    <app-mensagens-prontas [config]="configMensagens" />
+  </app-bottom-sheet>
+}

@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 
 import { SessaoService } from '../../../core/auth/sessao.service';
 import { IconeComponent } from '../icone/icone.component';
+import { NomeIcone } from '../icone/icones';
 
 /**
  * Cabeçalho das telas internas do painel: voltar, título, subtítulo
@@ -24,7 +25,12 @@ import { IconeComponent } from '../icone/icone.component';
 
       <div class="cabecalho__textos">
         <div class="cabecalho__linha-titulo">
-          <h1 class="titulo-pagina">{{ titulo() }}</h1>
+          <h1 class="titulo-pagina cabecalho__titulo">
+            @if (icone(); as nome) {
+              <span class="cabecalho__icone" aria-hidden="true"><app-icone [nome]="nome" [tamanho]="26" [espessura]="2" /></span>
+            }
+            {{ titulo() }}
+          </h1>
           <ng-content select="[acaoTitulo]" />
         </div>
         @if (subtitulo()) {
@@ -72,6 +78,18 @@ import { IconeComponent } from '../icone/icone.component';
       gap: 12px;
     }
 
+    .cabecalho__titulo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cabecalho__icone {
+      display: inline-flex;
+      flex: none;
+      color: var(--cor-texto);
+    }
+
     .cabecalho__subtitulo {
       font-size: 14px;
       line-height: 1.5;
@@ -82,6 +100,8 @@ import { IconeComponent } from '../icone/icone.component';
 export class CabecalhoPaginaComponent {
   readonly titulo = input.required<string>();
   readonly subtitulo = input('');
+  /** Ícone opcional à esquerda do título. */
+  readonly icone = input<NomeIcone | null>(null);
   /** Sem valor, volta para a tela inicial do painel da loja logada. */
   readonly linkVoltar = input<string | null>(null);
   readonly rotuloVoltar = input('Voltar para o painel');

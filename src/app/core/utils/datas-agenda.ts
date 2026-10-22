@@ -1,4 +1,4 @@
-import { DiaSemana } from '../models/agenda.model';
+import { DiaSemana, PeriodoAtendimento } from '../models/agenda.model';
 
 /** Os dias da semana na ordem da tela (segunda primeiro), com os rótulos usados na agenda. */
 export const DIAS_SEMANA: { valor: DiaSemana; letra: string; curto: string; nome: string }[] = [
@@ -10,6 +10,39 @@ export const DIAS_SEMANA: { valor: DiaSemana; letra: string; curto: string; nome
   { valor: 'SATURDAY', letra: 'S', curto: 'Sáb', nome: 'sábado' },
   { valor: 'SUNDAY', letra: 'D', curto: 'Dom', nome: 'domingo' },
 ];
+
+/**
+ * Resumo do horário de funcionamento: dias seguidos com o mesmo horário ficam juntos.
+ * Ex.: "Seg a Sex, 09:00–18:00 · Sáb, 09:00–13:00". Vazio quando nenhum dia abre.
+ */
+export function resumirHorarioFuncionamento(periodos: PeriodoAtendimento[]): string {
+  const horarioDoDia = DIAS_SEMANA.map((dia) =>
+    periodos
+      .filter((p) => p.diaSemana === dia.valor)
+      .sort((a, b) => a.inicio.localeCompare(b.inicio))
+      .map((p) => `${p.inicio}–${p.fim}`)
+      .join(' e '),
+  );
+  const grupos: { de: number; ate: number; horario: string }[] = [];
+  horarioDoDia.forEach((horario, i) => {
+    const ultimo = grupos[grupos.length - 1];
+    if (ultimo && ultimo.horario === horario && ultimo.ate === i - 1) {
+      ultimo.ate = i;
+    } else {
+      grupos.push({ de: i, ate: i, horario });
+    }
+  });
+  return grupos
+    .filter((g) => g.horario)
+    .map((g) => {
+      const dias =
+        g.de === g.ate
+          ? DIAS_SEMANA[g.de].curto
+          : `${DIAS_SEMANA[g.de].curto} ${g.ate === g.de + 1 ? 'e' : 'a'} ${DIAS_SEMANA[g.ate].curto}`;
+      return `${dias}, ${g.horario}`;
+    })
+    .join(' · ');
+}
 
 const MESES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
 

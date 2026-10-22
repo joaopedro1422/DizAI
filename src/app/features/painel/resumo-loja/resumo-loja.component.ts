@@ -6,7 +6,7 @@ import { mensagemDoErro } from '../../../core/api/erro-api';
 import { SessaoService } from '../../../core/auth/sessao.service';
 import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
 import { FORMAS_RECEBIMENTO, RAMOS_NEGOCIO, obterRotulo } from '../../../core/constants/opcoes-perfil';
-import { buscarCorMarca } from '../../../core/constants/cores-marca';
+import { COR_MARCA_PADRAO, buscarCorMarca } from '../../../core/constants/cores-marca';
 import { InstalacaoAppService } from '../../../core/pwa/instalacao-app.service';
 import { ArmazenamentoFotosService } from '../../../core/services/armazenamento-fotos.service';
 import { PerfilService } from '../../../core/services/perfil.service';
@@ -17,12 +17,13 @@ import { InterruptorComponent } from '../../../shared/components/interruptor/int
 import { ItemMenuAcoes, MenuAcoesComponent } from '../../../shared/components/menu-acoes/menu-acoes.component';
 import { AlvoTourDirective } from '../onboarding/alvo-tour.directive';
 
-type AcaoPerfil = 'editar' | 'estatisticas' | 'atalho' | 'sair';
+type AcaoPerfil = 'editar' | 'estatisticas' | 'senha' | 'atalho' | 'sair';
 
 const TAMANHO_MAXIMO_FOTO_BYTES = 5 * 1024 * 1024;
 
-const ITEM_EDITAR: ItemMenuAcoes<AcaoPerfil> = { id: 'editar', rotulo: 'Editar dados', icone: 'editar' };
+const ITEM_EDITAR: ItemMenuAcoes<AcaoPerfil> = { id: 'editar', rotulo: 'Editar dados da loja', icone: 'editar' };
 const ITEM_ESTATISTICAS: ItemMenuAcoes<AcaoPerfil> = { id: 'estatisticas', rotulo: 'Estatísticas', icone: 'grafico' };
+const ITEM_SENHA: ItemMenuAcoes<AcaoPerfil> = { id: 'senha', rotulo: 'Alterar senha', icone: 'cadeado' };
 const ITEM_ATALHO: ItemMenuAcoes<AcaoPerfil> = { id: 'atalho', rotulo: 'Baixar atalho', icone: 'celular' };
 const ITEM_SAIR: ItemMenuAcoes<AcaoPerfil> = { id: 'sair', rotulo: 'Sair da conta', icone: 'sair', perigo: true };
 
@@ -33,12 +34,16 @@ const ITEM_SAIR: ItemMenuAcoes<AcaoPerfil> = { id: 'sair', rotulo: 'Sair da cont
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './resumo-loja.component.html',
   styleUrl: './resumo-loja.component.css',
+  host: {
+    '[style.--brilho-topo]': 'brilhoTopo()',
+  },
 })
 export class ResumoLojaComponent {
   readonly editarDados = output<void>();
   readonly sair = output<void>();
   /** "Baixar atalho": o painel abre a janela de instalação do app (a mesma do fim do onboarding). */
   readonly baixarAtalho = output<void>();
+  readonly alterarSenha = output<void>();
 
   private readonly perfilService = inject(PerfilService);
   private readonly toastService = inject(ToastService);
@@ -52,13 +57,20 @@ export class ResumoLojaComponent {
   /** "Baixar atalho" só aparece enquanto o DizAI ainda não está instalado neste aparelho. */
   protected readonly itensMenu = computed(() =>
     this.instalacaoApp.podeInstalar()
-      ? [ITEM_EDITAR, ITEM_ESTATISTICAS, ITEM_ATALHO, ITEM_SAIR]
-      : [ITEM_EDITAR, ITEM_ESTATISTICAS, ITEM_SAIR],
+      ? [ITEM_EDITAR, ITEM_ESTATISTICAS, ITEM_SENHA, ITEM_ATALHO, ITEM_SAIR]
+      : [ITEM_EDITAR, ITEM_ESTATISTICAS, ITEM_SENHA, ITEM_SAIR],
   );
 
   protected readonly enviandoFoto = signal(false);
   /** Sem foto, a inicial aparece na cor escolhida para a página pública. */
   protected readonly corMarca = computed(() => buscarCorMarca(this.perfil().corMarca).hex);
+  /**
+   * Brilho do topo no tom da cor de destaque da vitrine (bem clarinho). Preto é a cor padrão de quem nunca
+   * personalizou a vitrine: aí fica o azul claro de sempre (null = o valor do CSS).
+   */
+  protected readonly brilhoTopo = computed(() =>
+    this.perfil().corMarca === COR_MARCA_PADRAO ? null : `color-mix(in srgb, ${this.corMarca()} 16%, white)`,
+  );
 
   protected readonly inicial = computed(() => this.perfil().nomeLoja.trim().charAt(0).toUpperCase() || '?');
 
@@ -85,7 +97,7 @@ export class ResumoLojaComponent {
 
   protected readonly textoStatus = computed(() => {
     if (!this.perfil().whatsappConectado) {
-      return 'WhatsApp não conectado';
+      return 'WhatsApp desconectado';
     }
     return this.perfil().iaAtiva ? 'Assistente ativo' : 'Assistente pausado';
   });
@@ -113,6 +125,8 @@ export class ResumoLojaComponent {
       this.editarDados.emit();
     } else if (acao === 'estatisticas') {
       void this.router.navigateByUrl(this.rotas().estatisticas);
+    } else if (acao === 'senha') {
+      this.alterarSenha.emit();
     } else if (acao === 'atalho') {
       this.baixarAtalho.emit();
     } else {

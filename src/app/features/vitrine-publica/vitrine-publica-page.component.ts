@@ -1,11 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '@angular/common';
+import { Meta } from '@angular/platform-browser';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, linkedSignal, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { SessaoService } from '../../core/auth/sessao.service';
 import { buscarCorMarca } from '../../core/constants/cores-marca';
-import { UrlImagemPipe } from '../../core/imagens/url-imagem';
+import { UrlImagemPipe, urlDaImagem } from '../../core/imagens/url-imagem';
 import { Foto } from '../../core/models/galeria.model';
 import { AlbumPublico, LojaPublica } from '../../core/models/loja-publica.model';
 import { FonteVitrine } from '../../core/models/vitrine.model';
@@ -18,19 +19,23 @@ import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { LogoComponent } from '../../shared/components/logo/logo.component';
 import { VisualizadorFotoComponent } from '../../shared/components/visualizador-foto/visualizador-foto.component';
 import { AgendaPublicaComponent } from './agenda-publica/agenda-publica.component';
+import { OrcamentoPublicoComponent } from './orcamento-publico/orcamento-publico.component';
 
 /** Quantas fotos o backend manda por tópico na página da loja (as outras vêm no "Ver todas"). */
 const FOTOS_VISIVEIS_POR_PADRAO = 6;
 
-type SituacaoPagina = 'carregando' | 'pronta' | 'nao-encontrada' | 'erro';
+/** Facilitador de orçamentos em standby: com false, lojas de produtos mostram só a galeria (como antes). */
+const ORCAMENTO_NA_VITRINE = false;
 
-/** Galeria de trabalhos ou agenda online (só lojas de serviço com a agenda ligada). */
-type AbaVitrine = 'galeria' | 'agenda';
+type SituacaoPagina ='carregando' | 'pronta' | 'nao-encontrada' | 'erro';
+
+/** Galeria de trabalhos, agenda online (serviços com a agenda ligada) ou orçamento (lojas de produtos). */
+type AbaVitrine = 'galeria' | 'agenda' | 'orcamento';
 
 /** Página pública com os trabalhos da loja, aberta pelo cliente a partir do link enviado no WhatsApp. */
 @Component({
   selector: 'app-vitrine-publica-page',
-  imports: [RouterLink, IconeComponent, LogoComponent, VisualizadorFotoComponent, CarregandoComponent, UrlImagemPipe, AgendaPublicaComponent],
+  imports: [RouterLink, IconeComponent, LogoComponent, VisualizadorFotoComponent, CarregandoComponent, UrlImagemPipe, AgendaPublicaComponent, OrcamentoPublicoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './vitrine-publica-page.component.html',
   styleUrl: './vitrine-publica-page.component.css',
@@ -41,6 +46,7 @@ export class VitrinePublicaPageComponent implements OnInit {
   /** Vem do data da rota: /l/:slug/agenda já abre na agenda. */
   readonly aba = input<AbaVitrine>('galeria');
   private readonly location = inject(Location);
+  private readonly meta = inject(Meta);
   private readonly lojaPublicaService = inject(LojaPublicaService);
   private readonly sessao = inject(SessaoService);
   private readonly toastService = inject(ToastService);
@@ -59,6 +65,9 @@ export class VitrinePublicaPageComponent implements OnInit {
   protected readonly temAgenda = computed(() => this.loja()?.agendaAtiva === true);
   protected readonly abaAtual = linkedSignal(() => this.aba());
   protected readonly mostrandoAgenda = computed(() => this.temAgenda() && this.abaAtual() === 'agenda');
+  /** Aba "Orçamento" em standby: o componente está pronto, mas a aba só volta depois de replanejada. */
+  protected readonly temOrcamento = computed(() => ORCAMENTO_NA_VITRINE && this.loja()?.orcamentoAtivo === true);
+  protected readonly mostrandoOrcamento = computed(() => this.temOrcamento() && this.abaAtual() === 'orcamento');
   protected readonly numeroWhatsapp = computed(() => this.loja()?.numeroWhatsapp ?? '');
   protected readonly nomeLoja = computed(() => this.loja()?.nomeLoja ?? '');
   protected readonly descricao = computed(() => this.loja()?.descricao ?? '');
@@ -95,11 +104,27 @@ export class VitrinePublicaPageComponent implements OnInit {
     void this.carregarLoja();
   }
 
+  /**
+   * Descrição e cartão de compartilhamento para quem lê a página já montada (Google). WhatsApp e Instagram não rodam
+   * o Angular: para eles a hospedagem manda para a prévia do backend (vercel.json → /public/previa/l/{slug}).
+   */
+  private atualizarMetaTags(loja: LojaPublica): void {
+    const descricao = loja.descricao?.trim() || 'Veja os nossos trabalhos e fale com a gente pelo WhatsApp.';
+    this.meta.updateTag({ name: 'description', content: descricao });
+    this.meta.updateTag({ property: 'og:title', content: loja.nomeLoja });
+    this.meta.updateTag({ property: 'og:description', content: descricao });
+    const imagem = urlDaImagem(loja.capaUrl ?? loja.fotoPerfilUrl);
+    if (imagem) {
+      this.meta.updateTag({ property: 'og:image', content: new URL(imagem, location.origin).href });
+    }
+  }
+
   private async carregarLoja(): Promise<void> {
     try {
       const loja = await this.lojaPublicaService.buscarLoja(this.slug());
       this.loja.set(loja);
-      document.title = `${loja.nomeLoja} | ${this.aba() === 'agenda' && loja.agendaAtiva ? 'Agenda online' : 'Galeria de trabalhos'}`;
+      document.title = `${loja.nomeLoja} | ${tituloDaAba(this.aba(), loja)}`;
+      this.atualizarMetaTags(loja);
       this.iniciarIntroducao();
       this.situacao.set('pronta');
       this.contarVisita(loja.slug);
@@ -162,8 +187,8 @@ export class VitrinePublicaPageComponent implements OnInit {
   /** Troca a aba e o endereço (/l/slug ou /l/slug/agenda), para o link copiado abrir onde o cliente estava. */
   protected mudarAba(aba: AbaVitrine): void {
     this.abaAtual.set(aba);
-    this.location.replaceState(`/l/${this.slug()}${aba === 'agenda' ? '/agenda' : ''}`);
-    document.title = `${this.nomeLoja()} | ${aba === 'agenda' ? 'Agenda online' : 'Galeria de trabalhos'}`;
+    this.location.replaceState(`/l/${this.slug()}${aba === 'galeria' ? '' : '/' + aba}`);
+    document.title = `${this.nomeLoja()} | ${tituloDaAba(aba, this.loja())}`;
   }
 
   protected recarregar(): void {
@@ -176,7 +201,10 @@ export class VitrinePublicaPageComponent implements OnInit {
     if (completas && this.estaExpandido(album)) {
       return completas;
     }
-    return album.fotos.slice(0, FOTOS_VISIVEIS_POR_PADRAO).map((url, indice) => ({ id: indice, url }));
+    // id de verdade (o do link da foto); sem ele (resposta antiga), a posição
+    return album.fotos
+      .slice(0, FOTOS_VISIVEIS_POR_PADRAO)
+      .map((url, indice) => ({ id: album.idsFotos?.[indice] ?? -1 - indice, url }));
   }
 
   protected temMaisFotos(album: AlbumPublico): boolean {
@@ -204,7 +232,11 @@ export class VitrinePublicaPageComponent implements OnInit {
       this.albumCarregando.set(album.slug);
       try {
         const detalhe = await this.lojaPublicaService.buscarAlbum(this.slug(), album.slug);
-        const fotos: Foto[] = detalhe.fotos.map((foto, indice) => ({ id: indice, url: foto.url, legenda: foto.legenda }));
+        const fotos: Foto[] = detalhe.fotos.map((foto, indice) => ({
+          id: foto.id ?? -1 - indice,
+          url: foto.url,
+          legenda: foto.legenda,
+        }));
         this.fotosCompletas.update((mapa) => new Map(mapa).set(album.slug, fotos));
       } catch {
         this.toastService.mostrar('Não foi possível abrir as fotos. Tente de novo.');
@@ -251,4 +283,14 @@ export class VitrinePublicaPageComponent implements OnInit {
     const familia = serifadas.includes(fonte) ? 'serif' : manuscritas.includes(fonte) ? 'cursive' : 'sans-serif';
     return `'${fonte}', ${familia}`;
   });
+}
+
+function tituloDaAba(aba: AbaVitrine, loja: LojaPublica | null): string {
+  if (aba === 'agenda' && loja?.agendaAtiva) {
+    return 'Agenda online';
+  }
+  if (aba === 'orcamento' && loja?.orcamentoAtivo) {
+    return 'Orçamento';
+  }
+  return 'Galeria de trabalhos';
 }

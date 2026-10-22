@@ -14,6 +14,7 @@ import {
 
 import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
 import { Foto } from '../../../core/models/galeria.model';
+import { gerarLinkWhatsapp } from '../../../core/utils/texto.utils';
 import { IconeComponent } from '../icone/icone.component';
 
 /**
@@ -38,11 +39,27 @@ export class VisualizadorFotoComponent implements OnInit, AfterViewInit, OnDestr
   readonly indiceInicial = input(0);
   /** Nome do álbum, usado na legenda e no texto alternativo. */
   readonly titulo = input('');
+  /**
+   * Galeria pública: com o WhatsApp e o slug da loja, aparece "Enviar pelo WhatsApp". A mensagem leva o link da
+   * foto (/l/{slug}/foto/{id}), que no WhatsApp vira a prévia com a própria foto, sem o cliente tirar print.
+   */
+  readonly whatsappLoja = input('');
+  readonly slugLoja = input('');
   readonly fechar = output<void>();
 
   protected readonly indice = signal(0);
   protected readonly fotoAtual = computed(() => this.fotos()[this.indice()]);
   protected readonly temVarias = computed(() => this.fotos().length > 1);
+  protected readonly linkEnviar = computed(() => {
+    const foto = this.fotoAtual();
+    if (!this.whatsappLoja() || !this.slugLoja() || !foto || foto.id < 0) {
+      return null;
+    }
+    const linkFoto = `${window.location.origin}/l/${this.slugLoja()}/foto/${foto.id}`;
+    const topico = this.titulo() ? ` (${this.titulo()})` : '';
+    const texto = `Olá! Gostei desta foto${topico}:\n${linkFoto}`;
+    return `${gerarLinkWhatsapp(this.whatsappLoja())}?text=${encodeURIComponent(texto)}`;
+  });
 
   private readonly botaoFechar = viewChild.required<ElementRef<HTMLButtonElement>>('botaoFechar');
   private overflowAnteriorDoBody = '';

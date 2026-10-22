@@ -3,34 +3,34 @@ import { RouterLink } from '@angular/router';
 
 import { SessaoService } from '../../../core/auth/sessao.service';
 import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
-import { MOTIVOS_ESPERA } from '../../../core/constants/opcoes-conversa';
-import { ramoUsaAgenda } from '../../../core/models/perfil.model';
+import { ramoDeServico, ramoUsaAgenda } from '../../../core/models/perfil.model';
 import { AgendaService } from '../../../core/services/agenda.service';
 import { EstatisticasService } from '../../../core/services/estatisticas.service';
+import { PedidoService } from '../../../core/services/pedido.service';
 import { ContatoIgnoradoService } from '../../../core/services/contato-ignorado.service';
-import { ConversaService } from '../../../core/services/conversa.service';
 import { GaleriaService } from '../../../core/services/galeria.service';
 import { PerfilService } from '../../../core/services/perfil.service';
 import { PerguntaFrequenteService } from '../../../core/services/pergunta-frequente.service';
 import { ProdutoService } from '../../../core/services/produto.service';
 import { pluralizar } from '../../../core/utils/colecao.utils';
-import { AvatarComponent } from '../../../shared/components/avatar/avatar.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { AlvoTourDirective } from '../onboarding/alvo-tour.directive';
 
 /** Cabem duas fotos e o "+N" no canto do card quadrado. */
 const MINIATURAS_GALERIA = 2;
 
-/** Cards de navegação do painel: Produtos, Perguntas, Galeria, Contatos a ignorar, Agenda (serviços) e Chats. */
+/**
+ * Cards de navegação do painel ("Seu negócio"): Agenda (serviços) ou Pedidos (produtos), Produtos, Perguntas,
+ * Galeria e Contatos a ignorar.
+ */
 @Component({
   selector: 'app-atalhos-secoes',
-  imports: [RouterLink, IconeComponent, AvatarComponent, AlvoTourDirective, UrlImagemPipe],
+  imports: [RouterLink, IconeComponent, AlvoTourDirective, UrlImagemPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './atalhos-secoes.component.html',
   styleUrl: './atalhos-secoes.component.css',
 })
 export class AtalhosSecoesComponent {
-  private readonly conversaService = inject(ConversaService);
   private readonly produtoService = inject(ProdutoService);
   private readonly perguntaService = inject(PerguntaFrequenteService);
   private readonly galeriaService = inject(GaleriaService);
@@ -49,13 +49,8 @@ export class AtalhosSecoesComponent {
   /** O card da agenda só existe nos ramos com agenda (serviços presenciais). */
   protected readonly usaAgenda = computed(() => ramoUsaAgenda(this.perfil().ramo));
   protected readonly agendaAtiva = computed(() => this.perfil().agendaAtiva === true);
-  /** "Automática" só quando o assistente marca sozinho (agenda ligada + modo Agendamento automático). */
-  protected readonly estadoAgenda = computed(() => {
-    if (!this.agendaAtiva()) {
-      return 'Desligada';
-    }
-    return this.perfil().modoPedido === 'AGENDAMENTO_AUTOMATICO' ? 'Automática' : 'Ligada';
-  });
+  /** A agenda ativa é o modo "Agendamento automático": o assistente marca sozinho. */
+  protected readonly estadoAgenda = computed(() => (this.agendaAtiva() ? 'Automática' : 'Desligada'));
 
   protected readonly resumoAgenda = computed(() => {
     if (!this.agendaAtiva()) {
@@ -72,8 +67,28 @@ export class AtalhosSecoesComponent {
     return this.agendaService.confirmadosHoje().find((a) => a.fim > horaAtual) ?? null;
   });
 
+  private readonly pedidoService = inject(PedidoService);
+  /** Lojas de produtos têm a tela de pedidos (os serviços têm a agenda), no mesmo lugar do card da agenda. */
+  protected readonly usaPedidos = computed(() => !ramoDeServico(this.perfil().ramo));
+  protected readonly prontos = computed(() => this.pedidoService.prontos().length);
+  protected readonly resumoPedidos = computed(() => {
+    const total = this.pedidoService.emAndamento().length;
+    return total === 0 ? 'Nenhum pedido em andamento' : `${pluralizar(total, 'pedido', 'pedidos')} em andamento`;
+  });
+  /** O pedido mais antigo em andamento: é o próximo a sair. */
+  protected readonly proximoPedido = computed(() => this.pedidoService.emAndamento()[0] ?? null);
+
+  protected descricaoPedido(resumo: { campo: string; valor: string }[]): string {
+    return resumo.find((item) => item.campo.trim().toLowerCase().startsWith('item'))?.valor ?? '';
+  }
+
   constructor() {
     this.estatisticasService.carregarPerguntasSemResposta().catch(() => undefined);
+    effect(() => {
+      if (this.usaPedidos()) {
+        untracked(() => this.pedidoService.carregar().catch(() => undefined));
+      }
+    });
     // carrega os horários de hoje só para quem tem agenda (falhar aqui não atrapalha o painel)
     effect(() => {
       if (this.usaAgenda()) {
@@ -81,26 +96,6 @@ export class AtalhosSecoesComponent {
       }
     });
   }
-
-  protected readonly quantidadeAguardando = computed(() => this.conversaService.aguardandoDono().length);
-
-  protected readonly resumoChats = computed(() => {
-    const total = this.conversaService.totalConversas();
-    return total === 0 ? 'Nenhuma conversa ainda' : pluralizar(total, 'conversa', 'conversas');
-  });
-
-  /** Conversa mais antiga esperando o dono, mostrada como prévia no card. */
-  protected readonly conversaMaisUrgente = computed(() => {
-    const conversa = this.conversaService.aguardandoDono()[0];
-    if (!conversa) {
-      return null;
-    }
-    return {
-      nome: conversa.nomeCliente || conversa.whatsapp,
-      motivo: conversa.motivoEspera ? MOTIVOS_ESPERA[conversa.motivoEspera].rotulo.toLowerCase() : '',
-      mensagem: conversa.ultimaMensagem,
-    };
-  });
 
   protected readonly resumoProdutos = computed(() => {
     const total = this.produtoService.produtos().length;

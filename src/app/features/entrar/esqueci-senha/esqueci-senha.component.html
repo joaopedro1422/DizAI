@@ -1,0 +1,57 @@
+@if (enviado()) {
+  <div class="enviado" role="status">
+    <span class="enviado__icone" aria-hidden="true">
+      <app-icone nome="check" [tamanho]="26" [espessura]="2.4" />
+    </span>
+    <p class="enviado__titulo">Pedido recebido!</p>
+    <p class="enviado__texto">
+      Vamos conferir os seus dados e mandar uma senha temporária no WhatsApp do negócio. Com ela, você entra e cria
+      uma senha nova no painel.
+    </p>
+    <button type="button" class="btn btn--primario btn--grande btn--bloco" (click)="fechar.emit()">Entendi</button>
+  </div>
+} @else {
+  <form class="formulario" [formGroup]="formulario" (ngSubmit)="enviar()" novalidate>
+    <p class="explicacao">
+      Informe o WhatsApp do negócio e o seu nome. A nossa equipe confere e te manda uma senha temporária pelo WhatsApp.
+    </p>
+
+    <div class="campo">
+      <label for="esqueci-whatsapp" class="campo__rotulo">WhatsApp do negócio</label>
+      <input
+        id="esqueci-whatsapp"
+        class="campo__entrada"
+        type="tel"
+        inputmode="tel"
+        autocomplete="tel"
+        formControlName="whatsapp"
+        placeholder="(00) 00000-0000"
+        (input)="formatarWhatsapp($event)"
+      >
+      @if (temErro('whatsapp')) {
+        <span class="campo__erro" role="alert">Informe um WhatsApp válido, com DDD.</span>
+      }
+    </div>
+
+    <div class="campo">
+      <label for="esqueci-nome" class="campo__rotulo">Seu nome</label>
+      <input id="esqueci-nome" class="campo__entrada" type="text" autocomplete="name" maxlength="100" formControlName="nome">
+      @if (temErro('nome')) {
+        <span class="campo__erro" role="alert">Informe o seu nome.</span>
+      }
+    </div>
+
+    @if (erro(); as mensagem) {
+      <p class="erro" role="alert">{{ mensagem }}</p>
+    }
+
+    <button type="submit" class="btn btn--primario btn--grande btn--bloco" [disabled]="enviando()" [attr.aria-busy]="enviando()">
+      @if (enviando()) {
+        <app-carregando modo="inline" variante="claro" [tamanho]="22" />
+        Enviando…
+      } @else {
+        Pedir nova senha
+      }
+    </button>
+  </form>
+}

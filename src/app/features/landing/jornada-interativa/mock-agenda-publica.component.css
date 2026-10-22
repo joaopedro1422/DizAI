@@ -1,0 +1,422 @@
+/*
+ * Página de agendamento da Sálvia no tamanho real: as cores e a fonte da loja (--vitrine-*) e as mesmas medidas da
+ * vitrine-publica-page e da agenda-publica.
+ */
+.vitrine {
+  --vitrine-destaque: #1d5a36;
+  --vitrine-texto: #1c1a19;
+  --vitrine-suave: #6b6461;
+  --vitrine-borda: #e2dcd9;
+  --vitrine-fundo-cabecalho: rgba(247, 255, 246, 0.925);
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  color: var(--vitrine-texto);
+  font-family: 'Playfair Display', serif;
+}
+
+.barra-navegador {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: none;
+  gap: 6px;
+  margin: 8px 12px 6px;
+  padding: 10px 13px;
+  border-radius: 20px;
+  background: #f0f1f3;
+  color: #66717e;
+  font-family: var(--fonte-base, 'Manrope', sans-serif);
+  font-size: 12px;
+}
+
+.pagina {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* o conteúdo sobe com transform (a rolagem da demonstração) */
+.pagina__conteudo {
+  position: relative;
+  transition: transform 0.8s cubic-bezier(0.45, 0, 0.2, 1);
+}
+
+/* Topo: capa, logo, nome e "Trabalhos | Agendar horário" */
+.topo {
+  border-radius: 0 0 18px 18px;
+  background: var(--vitrine-fundo-cabecalho);
+}
+
+.capa {
+  height: 105px;
+  overflow: hidden;
+}
+
+.capa img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.loja {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: -44px;
+  padding: 0 24px 24px;
+  text-align: center;
+}
+
+.loja__foto {
+  width: 91px;
+  height: 91px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ffffff;
+  box-shadow: 0 0 0 2px var(--vitrine-destaque), 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.loja__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.loja__nome {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.loja__descricao {
+  margin: 0;
+  font-size: 14px;
+  color: var(--vitrine-suave);
+}
+
+.alternar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin: 0 24px 18px;
+  padding: 4px;
+  border: 1px solid var(--vitrine-borda);
+  border-radius: 999px;
+}
+
+.alternar__opcao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.alternar__opcao--ativa {
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+}
+
+/* Passos da agenda */
+.agenda {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 28px 24px 0;
+}
+
+.passo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.passo--entrada {
+  animation: tela-real-sobe 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.passo__titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.passo__numero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--vitrine-destaque);
+  border-radius: 50%;
+  color: var(--vitrine-destaque);
+  font-size: 13px;
+  font-weight: 800;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.passo__numero--feito {
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+}
+
+.categoria {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.categoria__nome {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--vitrine-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.servicos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.servico {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 12px 14px;
+  border: 1px solid var(--vitrine-borda);
+  border-radius: 14px;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+}
+
+.servico--escolhido {
+  border-color: var(--vitrine-destaque);
+  box-shadow: 0 0 0 1px var(--vitrine-destaque), 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.servico__marca {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--vitrine-borda);
+  border-radius: 7px;
+  color: #ffffff;
+}
+
+.servico--escolhido .servico__marca {
+  border-color: var(--vitrine-destaque);
+  background: var(--vitrine-destaque);
+}
+
+.servico__nome {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.servico__duracao {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  font-size: 13px;
+  color: var(--vitrine-suave);
+}
+
+/* app-faixa-dias com a cor da loja */
+.faixa {
+  display: flex;
+  gap: 8px;
+  overflow: hidden;
+  padding: 4px 2px 8px;
+}
+
+.dia {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 58px;
+  padding: 10px 0 8px;
+  border: 1px solid var(--vitrine-borda);
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.dia__semana {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--vitrine-suave);
+}
+
+.dia__numero {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.dia__detalhe {
+  min-height: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--vitrine-suave);
+  white-space: nowrap;
+}
+
+.dia--escolhido {
+  border-color: var(--vitrine-destaque);
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+}
+
+.dia--escolhido .dia__semana,
+.dia--escolhido .dia__detalhe {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dia--desativado {
+  opacity: 0.45;
+}
+
+.turno {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.turno__nome {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--vitrine-suave);
+}
+
+.horarios {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: 8px;
+}
+
+.hora {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1px solid var(--vitrine-borda);
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.hora--escolhida {
+  border-color: var(--vitrine-destaque);
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.campo-nome {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--vitrine-borda);
+  border-radius: 14px;
+  background: #ffffff;
+  font-size: 16px;
+}
+
+.campo-nome i {
+  color: #757575;
+  font-style: normal;
+}
+
+.campo-nome--ativo {
+  border-color: var(--vitrine-destaque);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--vitrine-destaque) 18%, transparent);
+}
+
+.resumo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--vitrine-destaque) 20%, transparent);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--vitrine-destaque) 7%, #ffffff);
+}
+
+.resumo__linha {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.resumo__nota {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--vitrine-suave);
+}
+
+/* espaço para o botão fixo não cobrir o resumo */
+.espaco-botao {
+  height: 60px;
+}
+
+/* Botão fixo do rodapé */
+.enviar {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  border-radius: var(--raio-medio);
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+  font-family: var(--fonte-base, 'Manrope', sans-serif);
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.12s ease;
+}
+
+.enviar--inativo {
+  background: #d9d4d1;
+  color: #6b6461;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .passo--entrada {
+    animation: none;
+  }
+}

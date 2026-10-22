@@ -73,10 +73,16 @@
   <section class="campo">
     <div>
       <h3 class="campo__titulo">Imagem de capa</h3>
-      <p class="descricao">Escolha uma imagem de até 5 MB para o topo da sua vitrine.</p>
+      <p class="descricao">Escolha uma imagem de até 5 MB para o topo da sua vitrine, ou crie uma pronta com a sua cor. A capa também aparece quando você manda o link da vitrine.</p>
     </div>
-    @if (arquivoCapa(); as arquivo) {
-      <p class="arquivo-capa">Nova capa selecionada: <strong>{{ arquivo.name }}</strong></p>
+    @if (previaCapaPronta(); as previa) {
+      <div class="capa-atual">
+        <img [src]="previa" alt="Capa pronta com a cor de destaque">
+        <p class="descricao">Feita com a sua cor de destaque. Troque a cor acima e a capa acompanha.</p>
+        <button type="button" class="btn btn--secundario btn--pequeno" (click)="capaPronta.set(false)">Desfazer</button>
+      </div>
+    } @else if (arquivoCapa()) {
+      <p class="arquivo-capa">Nova capa selecionada: <strong>{{ arquivoCapa()?.name }}</strong></p>
     } @else {
       @if (removerCapa()) {
         <p class="descricao">A capa será removida ao salvar.</p>
@@ -87,6 +93,12 @@
           <button type="button" class="btn btn--secundario btn--pequeno" (click)="limparCapa()">Remover capa</button>
         </div>
       }
+    }
+    @if (!capaPronta()) {
+      <button type="button" class="btn btn--secundario btn--bloco" (click)="criarCapaPronta()">
+        <app-icone nome="brilho" [tamanho]="16" [espessura]="2" />
+        Criar capa com a minha cor
+      </button>
     }
     <label class="btn btn--secundario btn--bloco seletor-capa">
       {{ arquivoCapa() ? 'Escolher outra imagem' : 'Selecionar imagem de capa' }}

@@ -10,7 +10,7 @@ const linkObrigatorioNoModoExterno: ValidatorFn = (grupo: AbstractControl): Vali
   return modoFotos === 'LINK_EXTERNO' && !link ? { linkPortfolioObrigatorio: true } : null;
 };
 
-/** Formulário das configurações de atendimento editadas na tela inicial do painel. */
+/** Formulário das configurações de atendimento editadas na tela "Como o assistente atende". */
 export function criarFormularioConfiguracoes(fb: FormBuilder, valores: ConfiguracoesAtendimento) {
   return fb.nonNullable.group(
     {
@@ -23,8 +23,10 @@ export function criarFormularioConfiguracoes(fb: FormBuilder, valores: Configura
       modoCatalogo: fb.nonNullable.control<ModoCatalogo>(valores.modoCatalogo ?? 'NAO'),
       /** Arquivos já salvos; os escolhidos agora ficam no painel e sobem ao salvar. */
       catalogoArquivos: fb.nonNullable.control<string[]>(valores.catalogoArquivos ?? []),
+      /** false = só no horário de funcionamento cadastrado em Dados da loja. */
+      confirmaQualquerHora: fb.nonNullable.control<boolean>(valores.confirmaQualquerHora ?? true),
     },
-    { validators: linkObrigatorioNoModoExterno },
+    { validators: [linkObrigatorioNoModoExterno] },
   );
 }
 

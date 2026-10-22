@@ -4,7 +4,7 @@ import { IconeComponent } from '../../../shared/components/icone/icone.component
 import { RoteiroDemo } from './roteiro-demo';
 import { TelefoneDemoComponent } from './telefone-demo.component';
 
-type TelaPainel = 'produto' | 'fechamento' | 'instrucoes';
+type TelaPainel = 'produto' | 'servico' | 'fechamento' | 'instrucoes';
 
 /** Etapas do cadastro de produto: lista → modal preenchido aos poucos → produto salvo na lista. */
 type EtapaProduto = 'lista' | 'tocando' | 'formulario' | 'salvando' | 'salvo';
@@ -16,6 +16,14 @@ const PRODUTO = {
   opcao: 'Sabores',
   valores: 'Brigadeiro, Ninho, Limão',
 };
+/** Serviço da manicure: os campos do cadastro de serviço (com a duração, que a agenda usa). */
+const SERVICO = {
+  nome: 'Esmaltação em gel',
+  descricao: 'Brilho e duração de até 21 dias. Inclui cutilagem e preparo das unhas.',
+  preco: '70,00',
+};
+/** As durações comuns do formulário (DURACOES_COMUNS do produto-formulario). */
+const DURACOES = ['30 min', '45 min', '1h', '1h30', '2h'];
 const INSTRUCAO = 'Não fazemos entregas aos domingos.\nFuncionamos de segunda a sábado, das 8h às 18h.';
 const CAMPOS_PEDIDO = 'Nome, retirada ou entrega, data';
 
@@ -46,7 +54,10 @@ export class MockPainelJornadaComponent implements OnInit {
   protected readonly valores = signal('');
   /** O formulário rola sozinho para mostrar o campo que está sendo preenchido. */
   protected readonly rolagem = signal(0);
-  protected readonly campoAtivo = signal<'nome' | 'descricao' | 'preco' | 'opcao' | 'valores' | null>(null);
+  protected readonly campoAtivo = signal<'nome' | 'descricao' | 'preco' | 'opcao' | 'valores' | 'duracao' | null>(null);
+  protected readonly duracoes = DURACOES;
+  /** Serviço: a duração escolhida no chip ("1h" = 60 min no campo). */
+  protected readonly duracaoEscolhida = signal(false);
 
   // instruções e "quando o cliente quiser fechar"
   protected readonly instrucao = signal('');
@@ -59,6 +70,8 @@ export class MockPainelJornadaComponent implements OnInit {
   ngOnInit(): void {
     if (this.tela === 'produto') {
       this.roteiroProduto();
+    } else if (this.tela === 'servico') {
+      this.roteiroServico();
     } else if (this.tela === 'instrucoes') {
       this.roteiroInstrucoes();
     } else {
@@ -102,6 +115,39 @@ export class MockPainelJornadaComponent implements OnInit {
       this.etapaProduto.set('salvando');
     });
     r.em(fim + 900, () => this.etapaProduto.set('salvo'));
+  }
+
+  /** O mesmo cadastro do produto, com a duração no lugar das opções (como no app para os serviços). */
+  private roteiroServico(): void {
+    if (this.roteiro.movimentoReduzido) {
+      this.etapaProduto.set('salvo');
+      return;
+    }
+    const r = this.roteiro;
+    r.em(500, () => this.etapaProduto.set('tocando'));
+    r.em(800, () => this.etapaProduto.set('formulario'));
+
+    r.em(1150, () => this.campoAtivo.set('nome'));
+    let fim = r.digitar(this.nome, SERVICO.nome, 1150, 45);
+    r.em(fim + 200, () => this.categoriaEscolhida.set(true));
+
+    r.em(fim + 400, () => this.campoAtivo.set('descricao'));
+    fim = r.digitar(this.descricao, SERVICO.descricao, fim + 400, 22);
+
+    r.em(fim + 150, () => {
+      this.rolagem.set(130);
+      this.campoAtivo.set('preco');
+    });
+    fim = r.digitar(this.preco, SERVICO.preco, fim + 350, 70);
+
+    r.em(fim + 350, () => {
+      this.rolagem.set(215);
+      this.campoAtivo.set(null);
+    });
+    r.em(fim + 900, () => this.duracaoEscolhida.set(true));
+
+    r.em(fim + 1700, () => this.etapaProduto.set('salvando'));
+    r.em(fim + 2300, () => this.etapaProduto.set('salvo'));
   }
 
   private roteiroInstrucoes(): void {

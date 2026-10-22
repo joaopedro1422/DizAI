@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Signal, computed, inject, input, signal, viewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { mensagemDoErro } from '../../../core/api/erro-api';
@@ -12,9 +12,23 @@ import { SUGESTOES_MENSAGEM, VARIAVEIS_MENSAGEM } from './variaveis-mensagem';
 
 const MAXIMO_MENSAGENS = 10;
 
+/** De onde vêm as mensagens e como a tela fala delas: a agenda é o padrão; os pedidos passam a sua. */
+export interface ConfigMensagensProntas {
+  mensagens: Signal<MensagemPronta[]>;
+  criar(mensagem: NovaMensagemPronta): Promise<void>;
+  atualizar(id: string, mensagem: NovaMensagemPronta): Promise<void>;
+  remover(id: string): Promise<void>;
+  variaveis: { chave: string; rotulo: string; exemplo: string }[];
+  sugestoes: NovaMensagemPronta[];
+  explicacao: string;
+  exemploTitulo: string;
+  exemploTexto: string;
+  dicaVariaveis: string;
+}
+
 /**
- * Conteúdo do modal "Mensagens prontas": lista, cria, edita e apaga os modelos que o lojista
- * manda ao tocar no número do cliente na agenda. As variáveis entram com um toque no ponto do cursor.
+ * Conteúdo do modal "Mensagens prontas": lista, cria, edita e apaga os modelos que o lojista manda pelo WhatsApp
+ * (da agenda, por padrão, ou dos pedidos, com `config`). As variáveis entram com um toque no ponto do cursor.
  */
 @Component({
   selector: 'app-mensagens-prontas',
@@ -24,13 +38,28 @@ const MAXIMO_MENSAGENS = 10;
   styleUrl: './mensagens-prontas.component.css',
 })
 export class MensagensProntasComponent {
+  /** Sem config, são as mensagens da agenda. */
+  readonly config = input<ConfigMensagensProntas | null>(null);
+
   private readonly agendaService = inject(AgendaService);
   private readonly toastService = inject(ToastService);
   private readonly fb = inject(FormBuilder);
 
-  protected readonly mensagens = this.agendaService.mensagensProntas;
-  protected readonly variaveis = VARIAVEIS_MENSAGEM;
-  protected readonly sugestoes = SUGESTOES_MENSAGEM;
+  private readonly configAgenda: ConfigMensagensProntas = {
+    mensagens: this.agendaService.mensagensProntas,
+    criar: (mensagem) => this.agendaService.criarMensagemPronta(mensagem),
+    atualizar: (id, mensagem) => this.agendaService.atualizarMensagemPronta(id, mensagem),
+    remover: (id) => this.agendaService.removerMensagemPronta(id),
+    variaveis: VARIAVEIS_MENSAGEM,
+    sugestoes: SUGESTOES_MENSAGEM,
+    explicacao:
+      'Ao tocar no WhatsApp de um cliente na agenda, você escolhe uma destas mensagens e ela já abre escrita na conversa.',
+    exemploTitulo: 'Ex.: Lembrete do horário',
+    exemploTexto: 'Ex.: Olá, {nome}! Passando para lembrar do seu horário {data} às {horario}.',
+    dicaVariaveis: 'Nome, data, horário e serviço são trocados pelos dados de cada cliente.',
+  };
+  protected readonly atual = computed(() => this.config() ?? this.configAgenda);
+  protected readonly mensagens = computed(() => this.atual().mensagens());
   protected readonly maximo = MAXIMO_MENSAGENS;
 
   /** null: mostrando a lista. 'nova' ou o id: formulário aberto. */
@@ -91,9 +120,9 @@ export class MensagensProntasComponent {
     this.salvando.set(true);
     try {
       if (editando === 'nova') {
-        await this.agendaService.criarMensagemPronta(mensagem);
+        await this.atual().criar(mensagem);
       } else if (editando) {
-        await this.agendaService.atualizarMensagemPronta(editando, mensagem);
+        await this.atual().atualizar(editando, mensagem);
       }
       this.editando.set(null);
       this.toastService.mostrar('Mensagem salva');
@@ -110,7 +139,7 @@ export class MensagensProntasComponent {
     }
     this.removendo.set(mensagem.id);
     try {
-      await this.agendaService.removerMensagemPronta(mensagem.id);
+      await this.atual().remover(mensagem.id);
       this.toastService.mostrar(`"${mensagem.titulo}" apagada`);
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível apagar. Tente de novo.'));

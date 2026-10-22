@@ -1,58 +1,113 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  afterNextRender,
+  computed,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
-import { EXEMPLOS_CONVERSA } from './exemplos-conversa';
+import { BalaoConversaComponent } from '../../demonstracao/balao-conversa/balao-conversa.component';
+import { DEMONSTRACOES, TIPOS_NEGOCIO, TipoNegocio, destaquesDe } from '../../demonstracao/conversas-demonstracao';
+import { ItemConversa, ReprodutorConversa } from '../../demonstracao/reprodutor-conversa';
 
-const INTERVALO_TROCA_MS = 9000;
+/** Quanto tempo o aviso no celular e a legenda ficam à vista, e a pausa antes da próxima conversa. */
+const AVISO_MS = 3800;
+const LEGENDA_MS = 3200;
+const PAUSA_ENTRE_CONVERSAS_MS = 4500;
 
 /**
- * Celular com conversas de exemplo no estilo do WhatsApp.
- * Troca sozinho entre os tipos de negócio; pausa quando o visitante passa o mouse ou foca,
- * e não troca sozinho para quem pediu menos movimento no sistema.
+ * Conversa ao vivo do hero: o visitante escolhe serviços ou produtos e o segmento, e assiste o assistente atendendo.
+ * Ao terminar, segue para o próximo segmento do mesmo tipo. Pausa sozinha quando sai da tela.
+ * A versão detalhada (checks e velocidade) fica em /demonstracao.
  */
 @Component({
   selector: 'app-demonstracao-conversa',
-  imports: [IconeComponent],
+  imports: [RouterLink, IconeComponent, BalaoConversaComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './demonstracao-conversa.component.html',
   styleUrl: './demonstracao-conversa.component.css',
-  host: {
-    '(mouseenter)': 'pausado.set(true)',
-    '(mouseleave)': 'pausado.set(false)',
-    '(focusin)': 'pausado.set(true)',
-    '(focusout)': 'pausado.set(false)',
-  },
 })
-export class DemonstracaoConversaComponent implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
+export class DemonstracaoConversaComponent {
+  private readonly elemento = inject(ElementRef<HTMLElement>);
+  private readonly rolagem = viewChild<ElementRef<HTMLElement>>('rolagem');
 
-  protected readonly exemplos = EXEMPLOS_CONVERSA;
-  protected readonly indiceAtual = signal(0);
-  protected readonly pausado = signal(false);
+  protected readonly tipos = TIPOS_NEGOCIO;
+  protected readonly demonstracoes = DEMONSTRACOES;
 
-  protected readonly exemploAtual = computed(() => this.exemplos[this.indiceAtual()]);
-  protected readonly inicialLoja = computed(() => this.exemploAtual().nomeLoja.charAt(0));
+  protected readonly reprodutor = new ReprodutorConversa({
+    aoMostrar: (item) => this.aoMostrar(item),
+    aoTerminar: () => this.seguirParaOProximo(),
+  });
+  protected readonly segmento = this.reprodutor.segmento;
 
-  ngOnInit(): void {
-    if (this.prefereMenosMovimento()) {
-      return;
+  /** Notificação que desce no topo do celular, como um push. */
+  protected readonly aviso = signal<ItemConversa | null>(null);
+  /** O que o assistente acabou de fazer, ao lado do celular. */
+  protected readonly legenda = signal<string | null>(null);
+
+  protected readonly etapas = computed(() => destaquesDe(this.segmento()));
+  protected readonly conversa = computed(() => this.reprodutor.visiveis().filter((item) => item.de !== 'notificacao'));
+
+  private temporizadores: ReturnType<typeof setTimeout>[] = [];
+  private desligarObservador: () => void = () => undefined;
+
+  constructor() {
+    afterNextRender(() => {
+      this.reprodutor.escolher('servicos');
+      // fora da tela, a conversa espera o visitante voltar
+      const observador = new IntersectionObserver(([entrada]) => this.reprodutor.pausar(!entrada.isIntersecting));
+      observador.observe(this.elemento.nativeElement);
+      this.desligarObservador = () => observador.disconnect();
+    });
+
+    inject(DestroyRef).onDestroy(() => {
+      this.reprodutor.parar();
+      this.limparTemporizadores();
+      this.desligarObservador();
+    });
+  }
+
+  protected escolher(tipo: TipoNegocio, segmento?: string): void {
+    this.limparTemporizadores();
+    this.aviso.set(null);
+    this.legenda.set(null);
+    this.reprodutor.escolher(tipo, segmento);
+  }
+
+  private aoMostrar(item: ItemConversa): void {
+    if (item.de === 'notificacao') {
+      this.aviso.set(item);
+      this.depois(AVISO_MS, () => this.aviso.set(null));
     }
-    const temporizador = setInterval(() => this.avancarAutomaticamente(), INTERVALO_TROCA_MS);
-    this.destroyRef.onDestroy(() => clearInterval(temporizador));
-  }
-
-  protected mostrarExemplo(indice: number): void {
-    this.indiceAtual.set(indice);
-  }
-
-  private avancarAutomaticamente(): void {
-    if (this.pausado() || document.hidden) {
-      return;
+    if (item.destaque) {
+      this.legenda.set(item.destaque);
+      this.depois(LEGENDA_MS, () => this.legenda.set(null));
     }
-    this.indiceAtual.update((indice) => (indice + 1) % this.exemplos.length);
+    requestAnimationFrame(() => {
+      const caixa = this.rolagem()?.nativeElement;
+      caixa?.scrollTo({ top: caixa.scrollHeight, behavior: 'smooth' });
+    });
   }
 
-  private prefereMenosMovimento(): boolean {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  private seguirParaOProximo(): void {
+    const tipo = this.reprodutor.tipo();
+    const segmentos = DEMONSTRACOES[tipo].segmentos;
+    const proximo = segmentos[(segmentos.indexOf(this.segmento()) + 1) % segmentos.length];
+    this.depois(PAUSA_ENTRE_CONVERSAS_MS, () => this.escolher(tipo, proximo.id));
+  }
+
+  private depois(ms: number, acao: () => void): void {
+    this.temporizadores.push(setTimeout(acao, ms));
+  }
+
+  private limparTemporizadores(): void {
+    this.temporizadores.forEach(clearTimeout);
+    this.temporizadores = [];
   }
 }

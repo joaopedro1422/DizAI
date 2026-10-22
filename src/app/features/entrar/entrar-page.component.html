@@ -41,6 +41,7 @@
         @if (temErro('senha')) {
           <span class="campo__erro" role="alert">Informe sua senha.</span>
         }
+        <button type="button" class="esqueci" (click)="esqueciSenha.set(true)">Esqueci minha senha</button>
       </div>
 
       @if (erroLogin(); as erro) {
@@ -63,3 +64,9 @@
     </p>
   </main>
 </div>
+
+@if (esqueciSenha()) {
+  <app-bottom-sheet titulo="Esqueci minha senha" (fechar)="esqueciSenha.set(false)">
+    <app-esqueci-senha [whatsappInicial]="formulario.controls.whatsapp.value" (fechar)="esqueciSenha.set(false)" />
+  </app-bottom-sheet>
+}

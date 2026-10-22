@@ -1,0 +1,206 @@
+<app-video-tutorial
+  titulo="Como usar a sua galeria"
+  [cenas]="cenas"
+  [rotuloBotao]="rotuloBotao()"
+  (confirmar)="confirmar.emit()"
+  (fechar)="fechar.emit()"
+>
+  <ng-template #legenda let-cena>
+    @switch (cena) {
+      @case (0) {
+        <span class="legenda__selo surge">Galeria</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Uma vitrine do seu negócio, num link só</p>
+        <p class="legenda__texto surge" style="--atraso: 1.4s">Fotos organizadas em tópicos, numa página com a cara da sua loja.</p>
+      }
+      @case (1) {
+        <span class="legenda__selo surge">Use como quiser</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Portfólio dos seus trabalhos</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Os modelos mais pedidos, o antes e depois, os trabalhos recentes.</p>
+      }
+      @case (2) {
+        <span class="legenda__selo surge">Use como quiser</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Catálogo e cardápio em imagem</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Cardápio, tabela de preços ou o catálogo da coleção, tudo em fotos.</p>
+      }
+      @case (3) {
+        <span class="legenda__selo surge">Use como quiser</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">A apresentação do seu negócio</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Seu espaço, sua equipe e os bastidores: quem conhece, confia.</p>
+      }
+      @case (4) {
+        <span class="legenda__selo surge">Na conversa</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">O assistente manda o link para o cliente</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Pediu para ver fotos? Ele envia a sua página na hora.</p>
+      }
+      @case (5) {
+        <span class="legenda__selo legenda__selo--dica surge">Personalize</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Com a cara da sua loja</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Em “Personalizar vitrine” você escolhe a cor, a fonte e a foto de capa.</p>
+      }
+      @case (6) {
+        <span class="legenda__selo legenda__selo--dica surge">Dica</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Coloque o link na bio do Instagram</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Quem chega pelo Instagram vê tudo e já chama no WhatsApp.</p>
+      }
+      @case (7) {
+        <p class="legenda__titulo surge">Monte do seu jeito ✨</p>
+        <p class="legenda__texto surge" style="--atraso: 0.8s">Crie tópicos, adicione fotos e compartilhe o link onde quiser.</p>
+      }
+    }
+  </ng-template>
+
+  <ng-template #tela let-cena>
+    @switch (cena) {
+      @case (0) {
+        <div class="vitrine">
+          <div class="vitrine__barra">🔒 dizai.com/l/pedacinho-do-ceu</div>
+          <div class="vitrine__capa" [style.background-image]="'url(' + pasta + '/bolos/02.webp)'"></div>
+          <div class="vitrine__identidade">
+            <span class="vitrine__logo" [style.background-image]="'url(' + pasta + '/logos/pedacinho-do-ceu.jpg)'"></span>
+            <span class="vitrine__nome">Pedacinho do Céu</span>
+            <span class="vitrine__descricao">Bolos e doces feitos para celebrar</span>
+          </div>
+          <div class="vitrine__conteudo">
+            <span class="album-mini surge" style="--atraso: 0.8s">Bolos e tortas <small>12 fotos</small></span>
+            <div class="fotos">
+              @for (foto of bolos; track foto; let i = $index) {
+                <img class="surge" [src]="foto" alt="" [style.--atraso]="1.1 + i * 0.25 + 's'">
+              }
+            </div>
+          </div>
+        </div>
+      }
+      @case (1) {
+        <div class="vitrine">
+          <div class="vitrine__barra">🔒 dizai.com/l/bella-studio</div>
+          <div class="vitrine__capa" [style.background-image]="'url(' + pasta + '/unhas/01.webp)'"></div>
+          <div class="vitrine__identidade">
+            <span class="vitrine__logo vitrine__logo--claro" [style.background-image]="'url(' + pasta + '/logos/bella-studio.svg)'"></span>
+            <span class="vitrine__nome">Bella Studio</span>
+            <span class="vitrine__descricao">Unhas em gel e nail art</span>
+          </div>
+          <div class="vitrine__conteudo">
+            <span class="album-mini surge" style="--atraso: 0.8s">Unhas em gel <small>18 fotos</small></span>
+            <div class="fotos">
+              @for (foto of unhas; track foto; let i = $index) {
+                <img class="surge" [src]="foto" alt="" [style.--atraso]="1.1 + i * 0.3 + 's'">
+              }
+            </div>
+          </div>
+        </div>
+      }
+      @case (2) {
+        <div class="vitrine">
+          <div class="vitrine__barra">🔒 dizai.com/l/pedacinho-do-ceu</div>
+          <div class="vitrine__conteudo vitrine__conteudo--topo">
+            <span class="album-mini surge" style="--atraso: 0.6s">Cardápio <small>2 fotos</small></span>
+            <div class="fotos fotos--duas">
+              <img class="surge" [src]="pasta + '/cardapio1.png'" alt="" style="--atraso: 1s">
+              <img class="surge" [src]="pasta + '/cardapio2.png'" alt="" style="--atraso: 1.5s">
+            </div>
+            <span class="album-mini surge" style="--atraso: 2.4s">Tabela de preços <small>1 foto</small></span>
+          </div>
+        </div>
+      }
+      @case (3) {
+        <div class="vitrine vitrine--madeira">
+          <div class="vitrine__barra">🔒 dizai.com/l/arte-em-madeira</div>
+          <div class="vitrine__capa" [style.background-image]="'url(' + pasta + '/moveis/01.webp)'"></div>
+          <div class="vitrine__identidade">
+            <span class="vitrine__logo vitrine__logo--claro" [style.background-image]="'url(' + pasta + '/logos/arte-em-madeira.svg)'"></span>
+            <span class="vitrine__nome">Arte em Madeira</span>
+            <span class="vitrine__descricao">Móveis planejados sob medida</span>
+          </div>
+          <div class="vitrine__conteudo">
+            <span class="album-mini surge" style="--atraso: 0.8s">Nosso ateliê <small>9 fotos</small></span>
+            <div class="fotos">
+              @for (foto of moveis; track foto; let i = $index) {
+                <img class="surge" [src]="foto" alt="" [style.--atraso]="1.1 + i * 0.3 + 's'">
+              }
+            </div>
+          </div>
+        </div>
+      }
+      @case (4) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar">P</span>
+            <span class="zap__nome"><b>Pedacinho do Céu</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            <span class="balao balao--cliente surge" style="--atraso: 0.6s">Tem fotos de bolos de aniversário? 🎂</span>
+            <span class="digitando digitando--1"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 3s">Tenho sim! Olha só 👇</span>
+            <span class="balao link-previa surge" style="--atraso: 3.6s">
+              <span class="link-previa__capa" [style.background-image]="'url(' + pasta + '/bolos/02.webp)'"></span>
+              <b>Pedacinho do Céu</b>
+              <small>Bolos e doces feitos para celebrar</small>
+              <span class="link-previa__url">dizai.com/l/pedacinho-do-ceu</span>
+            </span>
+            <span class="balao balao--cliente surge" style="--atraso: 6.8s">Que lindos! Quero o de morango 😍</span>
+          </div>
+        </div>
+      }
+      @case (5) {
+        <div class="vitrine troca-fundo" style="--atraso: 1s">
+          <div class="vitrine__barra">🔒 dizai.com/l/pedacinho-do-ceu</div>
+          <div class="vitrine__capa troca-cor" style="--atraso: 1s"></div>
+          <div class="vitrine__identidade">
+            <span class="vitrine__logo" [style.background-image]="'url(' + pasta + '/logos/pedacinho-do-ceu.jpg)'"></span>
+            <span class="vitrine__nome">Pedacinho do Céu</span>
+            <span class="vitrine__descricao">Bolos e doces feitos para celebrar</span>
+          </div>
+          <div class="vitrine__conteudo">
+            <div class="paleta surge" style="--atraso: 0.6s"><i></i><i></i><i></i><i></i></div>
+            <span class="album-mini">Bolos e tortas <small>12 fotos</small></span>
+            <div class="fotos">
+              @for (foto of bolos.slice(0, 3); track foto) {
+                <img [src]="foto" alt="">
+              }
+            </div>
+            <span class="vitrine__botao troca-cor" style="--atraso: 1s">Falar pelo WhatsApp</span>
+          </div>
+        </div>
+      }
+      @case (6) {
+        <div class="insta">
+          <div class="insta__usuario">pedacinhodoceu</div>
+          <div class="insta__topo">
+            <span class="insta__avatar"><img [src]="pasta + '/logos/pedacinho-do-ceu.jpg'" alt=""></span>
+            <span class="insta__numeros">
+              <span><b>128</b><small>posts</small></span>
+              <span><b>2.340</b><small>seguidores</small></span>
+              <span><b>310</b><small>seguindo</small></span>
+            </span>
+          </div>
+          <div class="insta__bio">
+            <b>Pedacinho do Céu</b>
+            <span>🎂 Bolos e doces para festas</span>
+            <span>📍 Entregamos em toda a cidade</span>
+            <span class="surge" style="--atraso: 1.4s">
+              <span class="tocado" style="--atraso: 4.8s">
+                <span class="insta__link destaca" style="--atraso: 2.4s">🔗 dizai.com/l/pedacinho-do-ceu</span>
+              </span>
+            </span>
+          </div>
+          <div class="botoes-mini">
+            <span class="botao-mini botao-mini--primario">Seguir</span>
+            <span class="botao-mini">Mensagem</span>
+          </div>
+          <div class="fotos insta__fotos">
+            @for (foto of bolos; track foto) {
+              <img [src]="foto" alt="">
+            }
+          </div>
+        </div>
+      }
+      @case (7) {
+        <div class="final">
+          <span class="final__check surge" style="--atraso: 0.4s">✓</span>
+          <b class="surge" style="--atraso: 1s">Pronto para montar?</b>
+          <small class="surge" style="--atraso: 1.6s">Tópicos + fotos = a sua vitrine.</small>
+        </div>
+      }
+    }
+  </ng-template>
+</app-video-tutorial>

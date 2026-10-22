@@ -110,6 +110,127 @@
     </app-telefone-demo>
   }
 
+  @case ('servico') {
+    <app-telefone-demo>
+      <div class="app-tela">
+        <!-- Tela "Serviços" do painel (ramo de serviço): o mesmo cadastro, com a duração do atendimento -->
+        <header class="cabecalho">
+          <span class="cabecalho__voltar"><app-icone nome="voltar" [tamanho]="17" /></span>
+          <h1 class="titulo-pagina">Serviços</h1>
+          <p class="cabecalho__subtitulo">{{ etapaProduto() === 'salvo' ? '3 cadastrados' : '2 cadastrados' }}</p>
+          <span class="botao botao--primario botao--largo" [class.botao--tocado]="etapaProduto() === 'tocando'">
+            <app-icone nome="mais" [tamanho]="14" [espessura]="2" /> Adicionar serviço
+          </span>
+        </header>
+        <div class="filtros"><span class="chip chip--ativo">Todos</span><span class="chip">Mãos</span><span class="chip">Pés</span></div>
+
+        <main class="lista">
+          @if (etapaProduto() === 'salvo') {
+            <article class="produto produto--novo">
+              <img class="produto__foto" src="/landing/galeria/unhas/01.webp" alt="" />
+              <div class="produto__textos">
+                <span class="produto__categoria">Mãos</span>
+                <strong class="produto__nome">Esmaltação em gel</strong>
+                <span class="produto__descricao">Brilho e duração de até 21 dias. Inclui cutilagem…</span>
+                <span class="produto__rodape"><b>R$ 70,00</b><small>Sem opções</small></span>
+                <span class="produto__duracao"><app-icone nome="relogio" [tamanho]="10" /> 1h</span>
+              </div>
+            </article>
+          }
+          <article class="produto">
+            <img class="produto__foto" src="/landing/galeria/unhas/03.webp" alt="" />
+            <div class="produto__textos">
+              <span class="produto__categoria">Mãos</span>
+              <strong class="produto__nome">Manicure Tradicional</strong>
+              <span class="produto__descricao">Cutilagem, lixamento e esmaltação comum…</span>
+              <span class="produto__rodape"><b>R$ 35,00</b><small>Sem opções</small></span>
+              <span class="produto__duracao"><app-icone nome="relogio" [tamanho]="10" /> 45 min</span>
+            </div>
+          </article>
+          <article class="produto">
+            <img class="produto__foto" src="/landing/galeria/unhas/05.webp" alt="" />
+            <div class="produto__textos">
+              <span class="produto__categoria">Pés</span>
+              <strong class="produto__nome">Pedicure tradicional</strong>
+              <span class="produto__descricao">Cutilagem, hidratação e esmaltação…</span>
+              <span class="produto__rodape"><b>R$ 40,00</b><small>Sem opções</small></span>
+              <span class="produto__duracao"><app-icone nome="relogio" [tamanho]="10" /> 50 min</span>
+            </div>
+          </article>
+        </main>
+
+        @if (etapaProduto() === 'salvo') {
+          <span class="toast">Serviço adicionado</span>
+        }
+
+        @if (etapaProduto() === 'formulario' || etapaProduto() === 'salvando') {
+          <div class="escurecer"></div>
+          <!-- bottom sheet "Novo serviço", com os campos do formulário real para serviços -->
+          <section class="folha">
+            <span class="folha__alca"></span>
+            <header class="folha__cabecalho"><h2>Novo serviço</h2><span><app-icone nome="fechar" [tamanho]="15" /></span></header>
+            <div class="folha__corpo">
+              <div class="formulario" [style.transform]="'translateY(-' + rolagem() + 'px)'">
+                <div class="campo">
+                  <span class="campo__rotulo">Nome do serviço</span>
+                  <span class="entrada" [class.entrada--ativa]="campoAtivo() === 'nome'">
+                    @if (nome()) { {{ nome() }} } @else { <i>Ex.: Esmaltação em gel</i> }
+                  </span>
+                </div>
+                <div class="campo">
+                  <span class="campo__rotulo">Categoria</span>
+                  <div class="chips">
+                    <span class="chip" [class.chip--ativo]="categoriaEscolhida()">Mãos</span>
+                    <span class="chip">Pés</span>
+                    <span class="chip chip--tracejado">+ Nova categoria</span>
+                  </div>
+                </div>
+                <div class="campo">
+                  <span class="campo__rotulo">Descrição</span>
+                  <span class="entrada entrada--texto" [class.entrada--ativa]="campoAtivo() === 'descricao'">{{ descricao() }}</span>
+                  <span class="campo__dica">Quanto mais detalhe, melhor o assistente responde.</span>
+                </div>
+                <div class="campo">
+                  <span class="campo__rotulo">Preço <small>(deixe vazio se depender de avaliação)</small></span>
+                  <div class="preco">
+                    <span class="entrada preco__valor" [class.entrada--ativa]="campoAtivo() === 'preco'"><small>R$</small> {{ preco() }}</span>
+                    <span class="chip chip--alto">A partir de</span>
+                  </div>
+                </div>
+                <div class="campo">
+                  <span class="campo__rotulo">Duração do atendimento</span>
+                  <div class="chips">
+                    @for (duracao of duracoes; track duracao) {
+                      <span class="chip" [class.chip--ativo]="duracaoEscolhida() && duracao === '1h'">{{ duracao }}</span>
+                    }
+                  </div>
+                  <div class="duracao">
+                    <span class="entrada duracao__valor">
+                      @if (duracaoEscolhida()) { 60 } @else { <i>Outra duração</i> }
+                      <small>min</small>
+                    </span>
+                    @if (duracaoEscolhida()) {
+                      <span class="duracao__legivel">= 1h</span>
+                    }
+                  </div>
+                  <span class="campo__dica">A agenda usa a duração para saber quais horários cabem este serviço.</span>
+                </div>
+                <div class="campo">
+                  <span class="campo__rotulo">Opções que o cliente escolhe</span>
+                  <span class="campo__dica">Ex.: Formato → amendoado, quadrado, bailarina. Deixe vazio se não tiver.</span>
+                  <span class="botao botao--secundario botao--pequeno"><app-icone nome="mais" [tamanho]="12" [espessura]="2" /> Adicionar opção</span>
+                </div>
+              </div>
+            </div>
+            <span class="botao botao--primario botao--grande" [class.botao--tocado]="etapaProduto() === 'salvando'">
+              {{ etapaProduto() === 'salvando' ? 'Salvando…' : 'Salvar serviço' }}
+            </span>
+          </section>
+        }
+      </div>
+    </app-telefone-demo>
+  }
+
   @case ('instrucoes') {
     <app-telefone-demo>
       <div class="app-tela app-tela--painel">

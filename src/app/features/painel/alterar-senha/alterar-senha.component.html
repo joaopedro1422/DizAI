@@ -1,0 +1,46 @@
+<form class="formulario" [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
+  @if (temporaria) {
+    <p class="explicacao">Use a senha temporária que você recebeu como senha atual e crie a sua.</p>
+  }
+
+  <div class="campo">
+    <label for="senha-atual" class="campo__rotulo">{{ temporaria ? 'Senha temporária' : 'Senha atual' }}</label>
+    <input id="senha-atual" class="campo__entrada" type="password" autocomplete="current-password" formControlName="senhaAtual">
+    @if (temErro('senhaAtual')) {
+      <span class="campo__erro" role="alert">Informe a senha {{ temporaria ? 'temporária' : 'atual' }}.</span>
+    }
+  </div>
+
+  <div class="campo">
+    <label for="senha-nova" class="campo__rotulo">Nova senha</label>
+    <input id="senha-nova" class="campo__entrada" type="password" autocomplete="new-password" maxlength="72" formControlName="novaSenha">
+    @if (temErro('novaSenha')) {
+      <span class="campo__erro" role="alert">A senha precisa ter pelo menos 8 caracteres.</span>
+    } @else {
+      <span class="campo__dica">Pelo menos 8 caracteres.</span>
+    }
+  </div>
+
+  <div class="campo">
+    <label for="senha-confirmacao" class="campo__rotulo">Repita a nova senha</label>
+    <input id="senha-confirmacao" class="campo__entrada" type="password" autocomplete="new-password" maxlength="72" formControlName="confirmacao">
+    @if (temErro('confirmacao')) {
+      <span class="campo__erro" role="alert">Repita a nova senha.</span>
+    } @else if (confirmacaoDiferente()) {
+      <span class="campo__erro" role="alert">As senhas não são iguais.</span>
+    }
+  </div>
+
+  @if (erro(); as mensagem) {
+    <p class="erro" role="alert">{{ mensagem }}</p>
+  }
+
+  <button type="submit" class="btn btn--primario btn--grande btn--bloco" [disabled]="salvando()" [attr.aria-busy]="salvando()">
+    @if (salvando()) {
+      <app-carregando modo="inline" variante="claro" [tamanho]="22" />
+      Salvando…
+    } @else {
+      Salvar nova senha
+    }
+  </button>
+</form>

@@ -1,76 +1,94 @@
-<div class="seletor">
-  <span class="seletor__rotulo" aria-live="polite">
-    Exemplo: <strong>{{ exemploAtual().ramo }}</strong>
-  </span>
-  <div class="seletor__pontos" role="tablist" aria-label="Exemplos de negócio">
-    @for (exemplo of exemplos; track exemplo.id; let indice = $index) {
+<!-- serviços ou produtos, e o segmento -->
+<div class="escolha">
+  <div class="escolha__tipos" role="radiogroup" aria-label="Tipo de negócio">
+    @for (tipo of tipos; track tipo) {
       <button
         type="button"
-        role="tab"
-        class="seletor__ponto"
-        [class.seletor__ponto--ativo]="indice === indiceAtual()"
-        [attr.aria-selected]="indice === indiceAtual()"
-        [attr.aria-label]="exemplo.ramo"
-        (click)="mostrarExemplo(indice)"
-      ></button>
+        role="radio"
+        class="escolha__tipo"
+        [attr.aria-checked]="reprodutor.tipo() === tipo"
+        (click)="reprodutor.tipo() !== tipo && escolher(tipo)"
+      >
+        <app-icone [nome]="demonstracoes[tipo].icone" [tamanho]="16" [espessura]="2" />
+        {{ demonstracoes[tipo].rotulo }}
+      </button>
+    }
+  </div>
+  <div class="escolha__segmentos" role="radiogroup" aria-label="Segmento">
+    @for (opcao of demonstracoes[reprodutor.tipo()].segmentos; track opcao.id) {
+      <button
+        type="button"
+        role="radio"
+        class="escolha__segmento"
+        [attr.aria-checked]="segmento().id === opcao.id"
+        (click)="escolher(reprodutor.tipo(), opcao.id)"
+      >
+        {{ opcao.rotulo }}
+      </button>
     }
   </div>
 </div>
 
-<figure class="celular" [attr.aria-label]="'Exemplo de conversa no WhatsApp com ' + exemploAtual().nomeLoja">
-  <div class="celular__tela">
-    <div class="whatsapp__topo">
-      <app-icone nome="voltar" [tamanho]="20" [espessura]="2.2" />
-      <span class="whatsapp__avatar" [style.background]="exemploAtual().corAvatar" aria-hidden="true">{{ inicialLoja() }}</span>
-      <span class="whatsapp__contato">
-        <span class="whatsapp__nome">{{ exemploAtual().nomeLoja }}</span>
-        <span class="whatsapp__status">online</span>
-      </span>
-    </div>
+<div class="palco">
+  <figure class="celular" [attr.aria-label]="'Conversa de exemplo no WhatsApp com ' + segmento().loja">
+    <div class="celular__tela">
+      <div class="whatsapp__topo">
+        <app-icone nome="voltar" [tamanho]="20" [espessura]="2.2" />
+        <span class="whatsapp__avatar" [style.background]="segmento().cor" aria-hidden="true">{{ segmento().inicial }}</span>
+        <span class="whatsapp__contato">
+          <span class="whatsapp__nome">{{ segmento().loja }}</span>
+          <span class="whatsapp__status">{{ reprodutor.digitando() ? 'digitando…' : 'online' }}</span>
+        </span>
+      </div>
 
-    <div class="whatsapp__conversa">
-      @for (exemplo of [exemploAtual()]; track exemplo.id) {
-        <div class="whatsapp__mensagens">
-          @for (mensagem of exemplo.mensagens; track $index; let ordem = $index) {
-            <div
-              class="balao"
-              [class.balao--cliente]="mensagem.autor === 'cliente'"
-              [class.balao--album]="!!mensagem.album"
-              [style.animation-delay.ms]="ordem * 140"
-            >
-              @if (mensagem.album; as album) {
-                <span class="album__fotos" aria-hidden="true">
-                  @for (cor of album.cores; track $index) {
-                    <span class="album__foto" [style.background]="cor"></span>
-                  }
-                </span>
-                <span class="album__legenda">
-                  <span class="album__titulo">{{ album.titulo }}</span>
-                  <span class="album__link">{{ album.link }}</span>
-                </span>
-              } @else {
-                <span class="balao__texto">{{ mensagem.texto }}</span>
-              }
-              <span class="balao__info">
-                {{ mensagem.horario }}
-                @if (mensagem.autor === 'cliente') {
-                  <app-icone nome="checkDuplo" [tamanho]="15" [espessura]="2" class="balao__lido" />
-                }
-              </span>
-            </div>
-          }
-        </div>
-      }
-    </div>
+      <!-- notificação no celular do dono, descendo como um push -->
+      <div class="aviso" [class.aviso--visivel]="aviso()" aria-live="polite">
+        @if (aviso(); as notificacao) {
+          <span class="aviso__icone"><app-icone nome="sino" [tamanho]="16" [espessura]="2" /></span>
+          <span class="aviso__textos">
+            <span class="aviso__origem">DizAI · no celular {{ segmento().artigo }} {{ segmento().dono }}</span>
+            <strong>{{ notificacao.titulo }}</strong>
+            <span>{{ notificacao.texto }}</span>
+          </span>
+        }
+      </div>
 
-    <div class="whatsapp__rodape" aria-hidden="true">
-      <span class="whatsapp__campo">
-        <app-icone nome="emoji" [tamanho]="20" />
-        Mensagem
-      </span>
-      <span class="whatsapp__microfone">
-        <app-icone nome="microfone" [tamanho]="18" [espessura]="2" />
-      </span>
+      <div #rolagem class="whatsapp__conversa" aria-live="polite">
+        @for (item of conversa(); track $index) {
+          <app-balao-conversa [item]="item" [segmento]="segmento()" />
+        }
+        @if (reprodutor.digitando()) {
+          <div class="digitando" aria-label="O assistente está escrevendo"><i></i><i></i><i></i></div>
+        }
+      </div>
+
+      <div class="whatsapp__rodape" aria-hidden="true">
+        <span class="whatsapp__campo">
+          <app-icone nome="emoji" [tamanho]="20" />
+          Mensagem
+        </span>
+        <span class="whatsapp__microfone">
+          <app-icone nome="microfone" [tamanho]="18" [espessura]="2" />
+        </span>
+      </div>
     </div>
-  </div>
-</figure>
+  </figure>
+
+  <!-- o que o assistente acabou de fazer -->
+  <span class="legenda" [class.legenda--visivel]="legenda()" aria-live="polite">
+    <app-icone nome="brilho" [tamanho]="16" [espessura]="2" />
+    {{ legenda() }}
+  </span>
+</div>
+
+<div class="rodape">
+  <span class="rodape__etapas" aria-hidden="true">
+    @for (etapa of etapas(); track etapa) {
+      <i [class.feita]="reprodutor.alcancados().has(etapa)"></i>
+    }
+  </span>
+  <a routerLink="/demonstracao" [queryParams]="{ tipo: reprodutor.tipo(), segmento: segmento().id }" class="rodape__link">
+    Ver demonstração completa
+    <app-icone nome="seta" [tamanho]="15" [espessura]="2.2" />
+  </a>
+</div>

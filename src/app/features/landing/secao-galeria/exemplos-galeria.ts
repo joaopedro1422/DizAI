@@ -1,8 +1,8 @@
+import type { CorMarca } from '../../../core/models/perfil.model';
 import type { AreaCorFundoVitrine, FonteVitrine } from '../../../core/models/vitrine.model';
 
 /**
- * Foto da galeria de exemplo. O degradê nos tons do trabalho aparece enquanto a imagem carrega
- * (ou sozinho, nos temas que ainda não têm fotos reais).
+ * Foto da galeria de exemplo. O degradê nos tons do trabalho aparece enquanto a imagem carrega.
  */
 export interface FotoExemplo {
   claro: string;
@@ -19,27 +19,36 @@ function comFotosDaPasta(pasta: string, tons: FotoExemplo[]): FotoExemplo[] {
   }));
 }
 
-/** Uma loja de exemplo: a conversa que leva ao link e a página pública que abre. */
+/** A aba "Agendar horário" da página (lojas de serviço com a agenda online ligada). */
+export interface AgendaExemplo {
+  servicos: { nome: string; duracao: string }[];
+  /** Horários livres no dia escolhido (todos à tarde). */
+  horarios: string[];
+  horaEscolhida: string;
+  nomeCliente: string;
+}
+
+/** Uma loja de exemplo: a conversa que leva ao link e a página pública que abre (igual a /l/{slug}). */
 export interface ExemploGaleria {
   id: string;
   nomeLoja: string;
   descricao: string;
-  /** Uma das cores de marca que o lojista pode escolher (CORES_MARCA). */
-  corMarca: string;
-  /** Cor coordenada à marca; quando omitida, a miniatura deriva um tom claro da cor de destaque. */
-  corFundoGaleria?: string;
+  /** Uma das cores de marca que o lojista escolhe no painel (CORES_MARCA). */
+  corMarca: CorMarca;
   areaCorFundoGaleria: AreaCorFundoVitrine;
   fonteGaleria: FonteVitrine;
-  /** Caminho opcional do logo em public/, para trocar a inicial por uma imagem real. */
-  logoUrl?: string;
+  /** Logo da loja em public/landing/galeria/logos/ (no lugar da inicial). */
+  logo?: string;
+  /** "degrade" = a "capa pronta" com a cor da loja; ou o caminho de uma foto em public/. Sem capa: omitido. */
+  capa?: 'degrade' | string;
   link: string;
   pergunta: string;
   resposta: string;
-  /** A primeira é a categoria aberta pelo link. */
+  /** Os tópicos da galeria: os dois primeiros aparecem como álbuns na página. */
   categorias: string[];
-  nomeAlbum: string;
   quantidadeFotos: number;
   fotos: FotoExemplo[];
+  agenda?: AgendaExemplo;
 }
 
 export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
@@ -47,14 +56,15 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
     id: 'unhas',
     nomeLoja: 'Bella Studio',
     descricao: 'Unhas em gel e nail art',
-    corMarca: '#7a2e46',
+    corMarca: 'VINHO',
     areaCorFundoGaleria: 'CABECALHO',
     fonteGaleria: 'Cormorant Garamond',
+    logo: '/landing/galeria/logos/bella-studio.svg',
+    capa: 'degrade',
     link: 'dizai.com/l/bella-studio',
-    pergunta: 'Tem fotos de unhas em gel que você já fez? 💅',
-    resposta: 'Tenho sim! Olha alguns trabalhos:',
+    pergunta: 'Tem horário essa semana? Queria ver uns trabalhos antes 💅',
+    resposta: 'Tem sim! Aqui você vê os trabalhos e já escolhe o horário:',
     categorias: ['Unhas em gel', 'Francesinha', 'Nail art', 'Pés'],
-    nomeAlbum: 'Unhas em gel',
     quantidadeFotos: 12,
     fotos: comFotosDaPasta('unhas', [
       { claro: '#f3dcd6', escuro: '#c98f84' },
@@ -67,19 +77,30 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
       { claro: '#f5e1e4', escuro: '#d394a1' },
       { claro: '#efe0d6', escuro: '#c4987c' },
     ]),
+    agenda: {
+      servicos: [
+        { nome: 'Esmaltação em gel', duracao: '1h15' },
+        { nome: 'Manicure tradicional', duracao: '45 min' },
+        { nome: 'Pé e mão', duracao: '1h30' },
+      ],
+      horarios: ['13:00', '14:30', '16:00', '16:30'],
+      horaEscolhida: '16:00',
+      nomeCliente: 'Fernanda',
+    },
   },
   {
     id: 'bolos',
-    nomeLoja: 'Doce Encanto',
+    nomeLoja: 'Pedacinho do Céu',
     descricao: 'Bolos e doces para festas',
-    corMarca: '#A12A63',
+    corMarca: 'ROSA_ESCURO',
     areaCorFundoGaleria: 'PAGINA',
     fonteGaleria: 'Playfair Display',
-    link: 'dizai.com/l/doce-encanto',
+    logo: '/landing/galeria/logos/pedacinho-do-ceu.jpg',
+    capa: '/landing/galeria/bolos/02.webp',
+    link: 'dizai.com/l/pedacinho-do-ceu',
     pergunta: 'Tem fotos de bolos infantis que você já fez? 🎂',
     resposta: 'Tenho sim! Olha só:',
     categorias: ['Bolos infantis', 'Casamento', 'Tortas', 'Docinhos'],
-    nomeAlbum: 'Bolos infantis',
     quantidadeFotos: 18,
     fotos: comFotosDaPasta('bolos', [
       { claro: '#fbe3ec', escuro: '#e58fb0' },
@@ -97,14 +118,14 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
     id: 'moveis',
     nomeLoja: 'Arte em Madeira',
     descricao: 'Móveis planejados sob medida',
-    corMarca: '#5C3A21',
+    corMarca: 'MARROM',
     areaCorFundoGaleria: 'CABECALHO',
     fonteGaleria: 'Lora',
+    logo: '/landing/galeria/logos/arte-em-madeira.svg',
     link: 'dizai.com/l/arte-em-madeira',
     pergunta: 'Tem fotos de cozinhas planejadas que vocês já fizeram?',
     resposta: 'Temos sim! Veja algumas das nossas cozinhas:',
     categorias: ['Cozinhas planejadas', 'Quartos', 'Closets', 'Banheiros'],
-    nomeAlbum: 'Cozinhas planejadas',
     quantidadeFotos: 14,
     fotos: comFotosDaPasta('moveis', [
       { claro: '#efe4d6', escuro: '#b08860' },
@@ -122,14 +143,15 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
     id: 'eletricista',
     nomeLoja: 'Zé Eletricista',
     descricao: 'Iluminação personalizada e instalações',
-    corMarca: '#8A6100',
+    corMarca: 'MOSTARDA',
     areaCorFundoGaleria: 'PAGINA',
     fonteGaleria: 'Montserrat',
+    logo: '/landing/galeria/logos/ze-eletricista.svg',
+    capa: 'degrade',
     link: 'dizai.com/l/ze-eletricista',
-    pergunta: 'Tem fotos de projetos de iluminação personalizada que você já fez? 💡',
-    resposta: 'Tenho sim! Olha alguns projetos:',
+    pergunta: 'Tem fotos de iluminação que você já fez? Queria marcar uma visita 💡',
+    resposta: 'Tenho sim! Veja os projetos e escolha o melhor horário:',
     categorias: ['Iluminação personalizada', 'Fitas de LED', 'Quadros de energia', 'Tomadas'],
-    nomeAlbum: 'Iluminação personalizada',
     quantidadeFotos: 16,
     fotos: comFotosDaPasta('eletricista', [
       { claro: '#e9ecef', escuro: '#8b939c' },
@@ -142,19 +164,29 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
       { claro: '#fff8e1', escuro: '#f0cf6b' },
       { claro: '#e6e9ec', escuro: '#7d8792' },
     ]),
+    agenda: {
+      servicos: [
+        { nome: 'Visita para orçamento', duracao: '1h' },
+        { nome: 'Instalação de luminária', duracao: '1h' },
+        { nome: 'Troca de tomadas', duracao: '30 min' },
+      ],
+      horarios: ['13:00', '14:00', '15:00', '17:00'],
+      horaEscolhida: '14:00',
+      nomeCliente: 'Ricardo',
+    },
   },
   {
     id: 'cortinas',
     nomeLoja: 'Casa & Cortina',
     descricao: 'Cortinas e persianas sob medida',
-    corMarca: '#0F4C5C',
+    corMarca: 'AZUL_PETROLEO',
     areaCorFundoGaleria: 'CABECALHO',
     fonteGaleria: 'Poppins',
+    logo: '/landing/galeria/logos/casa-e-cortina.svg',
     link: 'dizai.com/l/casa-e-cortina',
     pergunta: 'Tem foto de cortina blackout instalada?',
     resposta: 'Tenho sim! Veja como ficam:',
     categorias: ['Blackout', 'Rolô', 'Persianas', 'Varão'],
-    nomeAlbum: 'Blackout',
     quantidadeFotos: 15,
     fotos: comFotosDaPasta('cortinas', [
       { claro: '#e7eef0', escuro: '#7f9ea8' },

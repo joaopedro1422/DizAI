@@ -1,0 +1,62 @@
+<div class="topo">
+  <div class="topo__textos">
+    <span class="topo__nome">{{ nome() }}</span>
+    <span class="topo__detalhe">
+      @if (pedido().whatsapp) {
+        {{ pedido().whatsapp }} ·
+      }
+      confirmado há {{ pedido().confirmadoEm | tempoDecorrido }}
+    </span>
+  </div>
+  <app-menu-acoes rotuloBotao="Opções do pedido" [itens]="itensMenu" (escolher)="acao.emit($event)" />
+</div>
+
+<div class="selos">
+  <span class="selo" [class.selo--pronto]="pronto()">
+    <span class="selo__ponto" aria-hidden="true"></span>
+    {{ pronto() ? 'Pronto' : 'Em preparo' }}
+  </span>
+  @if (pedido().teste) {
+    <span class="selo selo--teste">Teste</span>
+  }
+  <!-- foto anexada ao confirmar (ex.: o modelo do bolo): abre a imagem em outra aba -->
+  @if (pedido().anexo; as anexo) {
+    <a class="anexo" [href]="anexo | urlImagem" target="_blank" rel="noopener">
+      <app-icone nome="clipe" [tamanho]="14" [espessura]="2" />
+      Anexo
+    </a>
+  }
+</div>
+
+@if (itens().length > 0) {
+  <dl class="resumo caixa-suave">
+    @for (item of itens(); track $index) {
+      <div class="resumo__item">
+        <dt class="resumo__campo">{{ item.campo }}</dt>
+        <dd class="resumo__valor">{{ item.valor }}</dd>
+      </div>
+    }
+  </dl>
+}
+
+<div class="rodape">
+  <span class="rodape__valor">{{ valor() }}</span>
+  @if (linkWhatsapp(); as link) {
+    <a class="btn-icone rodape__whatsapp" [href]="link" target="_blank" rel="noopener" [attr.aria-label]="'Conversar com ' + nome() + ' no WhatsApp'">
+      <app-icone nome="conversa" [tamanho]="18" />
+    </a>
+  }
+</div>
+
+<div class="acoes" [class.acoes--uma]="pronto()">
+  @if (!pronto()) {
+    <button type="button" class="btn btn--secundario" (click)="acao.emit('pronto')">
+      <app-icone nome="sino" [tamanho]="16" />
+      Pedido pronto
+    </button>
+  }
+  <button type="button" class="btn btn--sucesso" (click)="acao.emit('entregue')">
+    <app-icone nome="check" [tamanho]="16" [espessura]="2.4" />
+    Entregue
+  </button>
+</div>

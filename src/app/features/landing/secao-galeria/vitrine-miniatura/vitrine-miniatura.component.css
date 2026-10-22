@@ -1,0 +1,506 @@
+/* A página é desenhada com 375 px de largura (um celular de verdade) e reduzida por --escala para caber na tela do
+   aparelho. As medidas abaixo são as da vitrine pública (vitrine-publica-page e agenda-publica): mudou lá, muda aqui. */
+:host {
+  --escala: 0.8;
+  --vitrine-texto: #1c1a19;
+  --vitrine-suave: #6b6461;
+  --vitrine-borda: #e2dcd9;
+  --vitrine-destaque: #1c1a19;
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.tela {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 375px;
+  /* com zoom, a porcentagem já vale na altura da tela do aparelho */
+  height: 100%;
+  zoom: var(--escala);
+  background: #ffffff;
+  color: var(--vitrine-texto);
+  font-family: var(--vitrine-fonte, 'Poppins', sans-serif);
+}
+
+/* Barra de endereço do navegador, abaixo da câmera */
+.navegador {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 34px 16px 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #f1efee;
+  color: #6b6461;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.rolagem {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.vitrine {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  background-color: #ffffff;
+  animation: aparecer 0.45s ease-out both;
+}
+
+.vitrine--fundo-pagina {
+  background-color: var(--vitrine-fundo-selecionado);
+}
+
+.container-topo {
+  border-radius: 0 0 18px 18px;
+}
+
+.container-topo--fundo-cabecalho {
+  background-color: var(--vitrine-fundo-selecionado);
+}
+
+.vitrine__capa {
+  width: 100%;
+  height: 105px;
+  overflow: hidden;
+}
+
+.vitrine__capa img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.loja {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 24px 24px;
+  text-align: center;
+}
+
+.loja--com-capa {
+  position: relative;
+  margin-top: -44px;
+  padding-top: 0;
+}
+
+.loja__inicial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 83px;
+  height: 83px;
+  border-radius: 50%;
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+  font-family: var(--fonte-titulo);
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.loja__foto {
+  width: 91px;
+  height: 91px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ffffff;
+  box-shadow: 0 0 0 2px var(--vitrine-destaque), 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.loja__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.loja__nome {
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.loja__descricao {
+  font-size: 14px;
+  color: var(--vitrine-suave);
+}
+
+/* Trabalhos | Agendar horário */
+.alternar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin: 0 24px 18px;
+  padding: 4px;
+  border: 1px solid var(--vitrine-borda);
+  border-radius: 999px;
+}
+
+.alternar__opcao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  border-radius: 999px;
+  color: var(--vitrine-texto);
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.alternar__opcao--ativa {
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+}
+
+.categorias {
+  display: flex;
+  gap: 8px;
+  overflow: hidden;
+  padding: 4px 24px 20px;
+  border-bottom: 1px solid #eeeae8;
+  border-radius: 0 0 15px 15px;
+}
+
+.categoria {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--vitrine-borda);
+  border-radius: 999px;
+  background: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.categoria--ativa {
+  border-color: var(--vitrine-destaque);
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* ---------- galeria ---------- */
+.albuns {
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+  padding: 32px 24px 0;
+}
+
+.album {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.album__cabecalho {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.album__nome {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.album__contagem {
+  font-size: 13px;
+  color: var(--vitrine-suave);
+}
+
+.album__grade {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.album__botao-foto {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  animation: aparecer 0.4s ease-out both;
+}
+
+.album__foto {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.album__ver-mais {
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ---------- agenda (aba "Agendar horário") ---------- */
+.agenda {
+  --faixa-destaque: var(--vitrine-destaque);
+  --faixa-borda: var(--vitrine-borda);
+  --faixa-suave: var(--vitrine-suave);
+  --faixa-texto: var(--vitrine-texto);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 28px 24px 0;
+  animation: aparecer 0.35s ease-out both;
+}
+
+.passo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.passo__titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.passo__numero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--vitrine-destaque);
+  border-radius: 50%;
+  color: var(--vitrine-destaque);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.passo__numero--feito {
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+}
+
+.servicos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.servico {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 12px 14px;
+  border: 1px solid var(--vitrine-borda);
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.servico--escolhido {
+  border-color: var(--vitrine-destaque);
+  box-shadow: 0 0 0 1px var(--vitrine-destaque), 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.servico__marca {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--vitrine-borda);
+  border-radius: 7px;
+  color: #ffffff;
+}
+
+.servico--escolhido .servico__marca {
+  border-color: var(--vitrine-destaque);
+  background: var(--vitrine-destaque);
+}
+
+.servico__nome {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.servico__duracao {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  font-size: 13px;
+  color: var(--vitrine-suave);
+}
+
+.turno {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.turno__nome {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--vitrine-suave);
+}
+
+.horarios {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  gap: 8px;
+}
+
+.hora {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1px solid var(--vitrine-borda);
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.hora--escolhida {
+  border-color: var(--vitrine-destaque);
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+}
+
+.campo-nome {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--vitrine-destaque);
+  border-radius: 14px;
+  background: #ffffff;
+  font-size: 16px;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--vitrine-destaque) 18%, transparent);
+}
+
+.campo-nome--vazio {
+  border-color: var(--vitrine-borda);
+  color: #a19995;
+  box-shadow: none;
+}
+
+.resumo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--vitrine-destaque) 20%, transparent);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--vitrine-destaque) 7%, #ffffff);
+  animation: aparecer 0.35s ease-out both;
+}
+
+.resumo__linha {
+  display: block;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.resumo__linha:nth-child(2)::first-letter {
+  text-transform: uppercase;
+}
+
+.resumo__nota {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--vitrine-suave);
+}
+
+/* ---------- rodapé e botão fixo ---------- */
+.rodape {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 40px 24px 100px;
+  font-family: 'Manrope', system-ui, sans-serif;
+}
+
+.rodape__credito {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #8a8380;
+}
+
+.botao-fixo {
+  position: absolute;
+  z-index: 2;
+  right: 16px;
+  bottom: 22px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  border-radius: 14px;
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.botao-fixo--sombra {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.botao-fixo--inativo {
+  background: #d9d4d1;
+  color: #6b6461;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vitrine,
+  .album__botao-foto,
+  .agenda,
+  .resumo {
+    animation: none;
+  }
+}

@@ -10,15 +10,31 @@ export interface PeriodoAtendimento {
 
 /** Tela "Horários de atendimento": GET/PUT /api/perfis/{id}/agenda/configuracao */
 export interface ConfiguracaoAgenda {
-  /** A IA consulta a agenda e marca os horários sozinha. */
+  /** Só leitura: ativa quando "Agendamento automático" está escolhido em "Quando o cliente quiser fechar". */
   agendaAtiva: boolean;
   /** De quantos em quantos minutos os horários começam (15, 30 ou 60). */
   intervaloMinutos: number;
   /** Antecedência mínima para o cliente marcar (0 = sem). */
   antecedenciaMinutos: number;
+  /** Quanto tempo antes do horário o cliente recebe o lembrete pedindo a confirmação (0 = não envia). */
+  lembreteMinutos: number;
   periodos: PeriodoAtendimento[];
   /** Folgas ("não vou atender neste dia") de hoje em diante, em "AAAA-MM-DD". */
   diasBloqueados: string[];
+  /** Confirmação que o cliente recebe ao marcar, com {servico}, {data}, {horario} e {nome} (vazia = a padrão). */
+  mensagemConfirmacao?: string;
+  /** Só leitura: a mensagem padrão. */
+  mensagemConfirmacaoPadrao?: string;
+  /** Agradecimento 30 min depois do fim do horário, só para quem confirmou a presença pelo lembrete. */
+  agradecimentoAtivo?: boolean;
+  /** Texto do agradecimento, com {nome} e {servico} (vazio = o padrão). */
+  mensagemAgradecimento?: string;
+  /** Só leitura: o agradecimento padrão. */
+  mensagemAgradecimentoPadrao?: string;
+  /** Texto do lembrete: {nome}, {data} ("hoje", "amanhã", "sexta, 24/10"), {horario} (só o início) e {servico}. */
+  mensagemLembrete?: string;
+  /** Só leitura: o lembrete padrão. */
+  mensagemLembretePadrao?: string;
 }
 
 export type StatusAgendamento = 'CONFIRMADO' | 'CANCELADO';
@@ -40,6 +56,10 @@ export interface Agendamento {
   whatsapp: string;
   status: StatusAgendamento;
   origem: OrigemAgendamento;
+  /** O cliente já recebeu o lembrete do horário. */
+  lembreteEnviado: boolean;
+  /** O cliente respondeu ao lembrete confirmando que vem. */
+  presencaConfirmada: boolean;
 }
 
 export interface NovoAgendamento {

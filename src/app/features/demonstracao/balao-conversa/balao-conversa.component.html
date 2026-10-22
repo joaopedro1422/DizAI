@@ -1,0 +1,67 @@
+@let mensagem = item();
+@switch (mensagem.de) {
+  @case ('dia') {
+    <p class="marcador marcador--dia">{{ mensagem.texto }}</p>
+  }
+  @case ('nota') {
+    <p class="marcador marcador--dizai">{{ mensagem.texto }}</p>
+  }
+  @case ('documento') {
+    <div class="balao balao--midia">
+      <span class="documento">
+        <span class="documento__tipo" aria-hidden="true">PDF</span>
+        <span class="documento__textos">
+          <span class="documento__nome">{{ mensagem.nome }}</span>
+          <span class="documento__detalhe">{{ mensagem.detalhe }}</span>
+        </span>
+      </span>
+      <span class="balao__hora">{{ mensagem.hora }}</span>
+    </div>
+  }
+  @case ('imagem') {
+    <div class="balao balao--midia">
+      <span class="cardapio" [style.--cor-cardapio]="segmento().cor">
+        <strong>{{ mensagem.titulo }}</strong>
+        <span>{{ mensagem.detalhe }}</span>
+      </span>
+      <span class="balao__hora balao__hora--sobre">{{ mensagem.hora }}</span>
+    </div>
+  }
+  @case ('link') {
+    <div class="balao balao--midia">
+      <span class="previa">
+        <span class="previa__fotos" [style.--cor-previa]="segmento().cor" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="previa__titulo">{{ mensagem.titulo }}</span>
+        <span class="previa__url">{{ mensagem.url }}</span>
+      </span>
+      <span class="balao__link">{{ mensagem.url }}</span>
+      <span class="balao__hora">{{ mensagem.hora }}</span>
+    </div>
+  }
+  @default {
+    <div class="balao" [class.balao--cliente]="mensagem.de === 'cliente'">
+      @if (mensagem.de === 'dono') {
+        <span class="balao__autor">{{ segmento().dono }} respondeu pelo celular</span>
+      }
+      <!-- a mesma formatação do WhatsApp: listas com "-", *negrito*, _itálico_ e ~riscado~ -->
+      @for (linha of mensagem.linhas; track $index) {
+        <span class="linha" [class.linha--item]="linha.marcador !== null">
+          @if (linha.marcador) {
+            <span aria-hidden="true">{{ linha.marcador }}</span>
+          }
+          <span>
+            @for (trecho of linha.trechos; track $index) {
+              <span [class.negrito]="trecho.negrito" [class.italico]="trecho.italico" [class.riscado]="trecho.riscado">{{ trecho.texto }}</span>
+            }
+          </span>
+        </span>
+      }
+      <span class="balao__hora">
+        {{ mensagem.hora }}
+        @if (mensagem.de === 'cliente') {
+          <app-icone class="balao__lido" nome="checkDuplo" [tamanho]="15" [espessura]="2" />
+        }
+      </span>
+    </div>
+  }
+}

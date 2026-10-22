@@ -1,4 +1,72 @@
 <nav class="atalhos" aria-label="Seções da loja">
+  @if (usaAgenda()) {
+    <a [routerLink]="rotas().agenda" class="atalho-agenda" [class.atalho-agenda--desligada]="!agendaAtiva()">
+      <span class="atalho-agenda__topo">
+        <span class="icone-atalho icone-atalho--verde">
+          <app-icone nome="calendario" [tamanho]="22" />
+        </span>
+        <span class="atalho__textos">
+          <span class="atalho__titulo">Agenda</span>
+          <span class="atalho__resumo">{{ resumoAgenda() }}</span>
+        </span>
+        <span class="atalho-agenda__estado" [class.atalho-agenda__estado--ligada]="agendaAtiva()">
+          {{ estadoAgenda() }}
+        </span>
+      </span>
+
+      @if (proximoHorario(); as proximo) {
+        <span class="atalho-agenda__proximo">
+          <span class="atalho-agenda__hora">{{ proximo.inicio }}</span>
+          <span class="atalho-agenda__proximo-textos">
+            <span class="atalho-agenda__proximo-nome">{{ proximo.nomeCliente }}</span>
+            <span class="atalho-agenda__proximo-servico">{{ proximo.servicos }}</span>
+          </span>
+          <app-icone nome="avancar" [tamanho]="18" [espessura]="2" />
+        </span>
+      } @else if (!agendaAtiva()) {
+        <span class="atalho-agenda__convite">
+          Cadastre seus horários e o assistente marca os clientes sozinho, direto no WhatsApp.
+          <app-icone nome="avancar" [tamanho]="16" [espessura]="2" />
+        </span>
+      }
+    </a>
+  }
+
+  @if (usaPedidos()) {
+    <a [routerLink]="rotas().pedidos" class="atalho-agenda">
+      <span class="atalho-agenda__topo">
+        <span class="icone-atalho icone-atalho--azul">
+          <app-icone nome="caixa" [tamanho]="22" />
+        </span>
+        <span class="atalho__textos">
+          <span class="atalho__titulo">Pedidos</span>
+          <span class="atalho__resumo">{{ resumoPedidos() }}</span>
+        </span>
+        @if (prontos() > 0) {
+          <span class="atalho-agenda__estado atalho-agenda__estado--ligada">
+            {{ prontos() }} {{ prontos() === 1 ? 'pronto' : 'prontos' }}
+          </span>
+        }
+      </span>
+
+      @if (proximoPedido(); as pedido) {
+        <span class="atalho-agenda__proximo">
+          <span class="atalho-agenda__hora">{{ pedido.status === 'PRONTO' ? 'Pronto' : 'Preparo' }}</span>
+          <span class="atalho-agenda__proximo-textos">
+            <span class="atalho-agenda__proximo-nome">{{ pedido.nomeCliente || pedido.whatsapp || 'Cliente' }}</span>
+            <span class="atalho-agenda__proximo-servico">{{ descricaoPedido(pedido.resumo) }}</span>
+          </span>
+          <app-icone nome="avancar" [tamanho]="18" [espessura]="2" />
+        </span>
+      } @else {
+        <span class="atalho-agenda__convite">
+          Confirme os pedidos no Chats e acompanhe cada um até a entrega.
+          <app-icone nome="avancar" [tamanho]="16" [espessura]="2" />
+        </span>
+      }
+    </a>
+  }
+
   <div class="atalhos__grade">
     <a [routerLink]="rotas().produtos" class="atalho" appAlvoTour="produtos">
       <span class="atalho__topo">
@@ -22,10 +90,17 @@
       </span>
       <span class="atalho__textos">
         <span class="atalho__titulo">Perguntas frequentes</span>
-        <span class="atalho__resumo">{{ resumoPerguntas() }}</span>
-        @if (perguntasParaResponder() > 0) {
-          <span class="atalho__pendente">{{ perguntasParaResponder() }} sem resposta</span>
-        }
+        <span class="atalho__resumo atalho__resumo--com-alerta">
+          {{ resumoPerguntas() }}
+          @if (perguntasParaResponder() > 0) {
+            <span
+              class="atalho__alerta"
+              role="img"
+              [attr.aria-label]="perguntasParaResponder() + ' sem resposta'"
+              [attr.title]="perguntasParaResponder() + ' sem resposta'"
+            >!</span>
+          }
+        </span>
       </span>
     </a>
 
@@ -66,65 +141,6 @@
       </span>
     </a>
   </div>
-
-  @if (usaAgenda()) {
-    <a [routerLink]="rotas().agenda" class="atalho-agenda" [class.atalho-agenda--desligada]="!agendaAtiva()">
-      <span class="atalho-agenda__topo">
-        <span class="icone-atalho icone-atalho--verde">
-          <app-icone nome="calendario" [tamanho]="22" />
-        </span>
-        <span class="atalho__textos">
-          <span class="atalho__titulo">Agenda</span>
-          <span class="atalho__resumo">{{ resumoAgenda() }}</span>
-        </span>
-        <span class="atalho-agenda__estado" [class.atalho-agenda__estado--ligada]="agendaAtiva()">
-          {{ estadoAgenda() }}
-        </span>
-      </span>
-
-      @if (proximoHorario(); as proximo) {
-        <span class="atalho-agenda__proximo">
-          <span class="atalho-agenda__hora">{{ proximo.inicio }}</span>
-          <span class="atalho-agenda__proximo-textos">
-            <span class="atalho-agenda__proximo-nome">{{ proximo.nomeCliente }}</span>
-            <span class="atalho-agenda__proximo-servico">{{ proximo.servicos }}</span>
-          </span>
-          <app-icone nome="avancar" [tamanho]="18" [espessura]="2" />
-        </span>
-      } @else if (!agendaAtiva()) {
-        <span class="atalho-agenda__convite">
-          Cadastre seus horários e o assistente marca os clientes sozinho, direto no WhatsApp.
-          <app-icone nome="avancar" [tamanho]="16" [espessura]="2" />
-        </span>
-      }
-    </a>
-  }
-
-  <a [routerLink]="rotas().chats" class="atalho-chats">
-    <span class="atalho-chats__topo">
-      <span class="icone-atalho icone-atalho--sobre-escuro">
-        <app-icone nome="conversa" [tamanho]="22" />
-      </span>
-      <span class="atalho__textos">
-        <span class="atalho-chats__titulo">Chats</span>
-        <span class="atalho-chats__resumo">{{ resumoChats() }}</span>
-      </span>
-      @if (quantidadeAguardando() > 0) {
-        <span class="atalho-chats__selo">{{ quantidadeAguardando() }} aguardando</span>
-      }
-    </span>
-
-    @if (conversaMaisUrgente(); as conversa) {
-      <span class="atalho-chats__previa">
-        <app-avatar [nome]="conversa.nome" [tamanho]="34" />
-        <span class="atalho-chats__previa-textos">
-          <span class="atalho-chats__previa-nome">{{ conversa.nome }} · {{ conversa.motivo }}</span>
-          <span class="atalho-chats__previa-mensagem">{{ conversa.mensagem }}</span>
-        </span>
-        <app-icone nome="avancar" [tamanho]="18" [espessura]="2" />
-      </span>
-    }
-  </a>
 
   @if (ehAdmin()) {
     <a [routerLink]="rotas().admin" class="atalho-admin">

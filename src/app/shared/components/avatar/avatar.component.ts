@@ -1,14 +1,25 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 import { obterIniciais } from '../../../core/utils/texto.utils';
+import { IconeComponent } from '../icone/icone.component';
 
 const CORES_AVATAR = ['#E9D7D1', '#DCE6F7', '#F3E6CC', '#E3E7EE', '#F1E4E0', '#DDEBDF'];
 
-/** Círculo com as iniciais do nome. A cor é sempre a mesma para o mesmo nome. */
+/**
+ * Círculo com as iniciais do nome (a cor é sempre a mesma para o mesmo nome) ou, com modo="icone",
+ * o ícone de pessoa em azul claro (chats: muitos clientes só têm o número, e as "iniciais" viravam "(9").
+ */
 @Component({
   selector: 'app-avatar',
+  imports: [IconeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `{{ iniciais() }}`,
+  template: `
+    @if (modo() === 'icone') {
+      <app-icone nome="pessoa" [tamanho]="tamanho() * 0.48" [espessura]="2" />
+    } @else {
+      {{ iniciais() }}
+    }
+  `,
   styles: `
     :host {
       display: inline-flex;
@@ -26,15 +37,20 @@ const CORES_AVATAR = ['#E9D7D1', '#DCE6F7', '#F3E6CC', '#E3E7EE', '#F1E4E0', '#D
     '[style.height.px]': 'tamanho()',
     '[style.font-size.px]': 'tamanho() * 0.33',
     '[style.background]': 'cor()',
+    '[style.color]': "modo() === 'icone' ? 'var(--cor-primaria)' : null",
   },
 })
 export class AvatarComponent {
   readonly nome = input.required<string>();
   readonly tamanho = input(42);
+  readonly modo = input<'iniciais' | 'icone'>('iniciais');
 
   protected readonly iniciais = computed(() => obterIniciais(this.nome()));
 
   protected readonly cor = computed(() => {
+    if (this.modo() === 'icone') {
+      return 'var(--cor-primaria-clara)';
+    }
     const soma = [...this.nome()].reduce((total, letra) => total + letra.charCodeAt(0), 0);
     return CORES_AVATAR[soma % CORES_AVATAR.length];
   });

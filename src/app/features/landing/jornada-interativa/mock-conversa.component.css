@@ -73,6 +73,27 @@
   animation-delay: 5.1s, 5.55s;
 }
 
+/* Conversas de serviço: as mensagens uma embaixo da outra, centralizadas no palco (as quebras de linha são do texto) */
+.conversa--fluxo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+}
+
+.conversa--fluxo .conversa__balao {
+  position: static;
+  white-space: pre-line;
+}
+
+.conversa--fluxo .conversa__balao--cliente {
+  align-self: flex-end;
+}
+
+.conversa--fluxo .conversa__balao--resposta {
+  align-self: flex-start;
+}
+
 .conversa__link {
   color: #027eb5;
   font-weight: 700;

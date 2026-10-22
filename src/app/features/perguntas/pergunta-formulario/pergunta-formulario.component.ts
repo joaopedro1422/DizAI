@@ -30,7 +30,7 @@ import { CarregandoComponent } from '../../../shared/components/carregando/carre
         }
       </div>
 
-      @if (modelo()) {
+      @if (modelo() && !emEdicao()) {
         <p class="aviso-informativo">Troque o que estiver entre [colchetes] pelas informações do seu negócio.</p>
       }
 
@@ -56,6 +56,8 @@ export class PerguntaFormularioComponent implements OnInit {
   /** Pergunta sugerida para o ramo: o formulário abre já preenchido com ela. */
   readonly modelo = input<NovaPerguntaFrequente | null>(null);
   readonly salvando = input(false);
+  /** Editando uma pergunta já cadastrada (o modelo é ela mesma, não uma sugestão). */
+  readonly emEdicao = input(false);
   readonly salvo = output<NovaPerguntaFrequente>();
 
   protected readonly conteudo = inject(ConteudoRamoService).conteudo;

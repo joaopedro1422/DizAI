@@ -29,7 +29,7 @@
     <p class="identidade__descricao">{{ perfil().descricao }}</p>
   </div>
 
-  <app-menu-acoes rotuloBotao="Opções da conta" [itens]="itensMenu()" (escolher)="aoEscolherNoMenu($event)" />
+  <app-menu-acoes appAlvoTour="perfil" rotuloBotao="Opções da conta" [itens]="itensMenu()" (escolher)="aoEscolherNoMenu($event)" />
 </div>
 
 @if (etiquetas().length > 0) {
@@ -40,10 +40,6 @@
   </ul>
 }
 
-<button type="button" class="editar-dados" appAlvoTour="perfil" (click)="editarDados.emit()">
-  <app-icone nome="editar" [tamanho]="16" [espessura]="2" />
-  Editar dados da loja
-</button>
 <div class="cartao-status">
   <div class="status">
     <span class="status__indicador">

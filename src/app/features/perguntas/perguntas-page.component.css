@@ -32,9 +32,8 @@
   color: var(--cor-texto-suave);
 }
 
-.pergunta__editar {
-  width: 36px;
-  height: 36px;
+.pergunta__menu {
+  flex: none;
   margin-top: -6px;
 }
 

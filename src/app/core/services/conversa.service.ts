@@ -21,11 +21,11 @@ export class ConversaService {
 
   readonly carregando = this.carregamento.carregando;
 
-  /** Conversas que precisam do dono, as mais antigas primeiro. */
+  /** Conversas que precisam do dono, as mais recentes primeiro. */
   readonly aguardandoDono = computed(() =>
     this.listaConversas()
       .filter((conversa) => conversa.status === 'AGUARDANDO_DONO')
-      .sort((a, b) => a.atualizadaEm.getTime() - b.atualizadaEm.getTime()),
+      .sort((a, b) => b.atualizadaEm.getTime() - a.atualizadaEm.getTime()),
   );
 
   /** Conversas em andamento (com o assistente ou com o dono no celular), as mais recentes primeiro. */
@@ -39,9 +39,24 @@ export class ConversaService {
 
   carregar(): Promise<void> {
     return this.carregamento.executar(async () => {
-      const conversas = await firstValueFrom(this.http.get<ConversaApi[]>(this.url()));
-      this.listaConversas.set(conversas.map(paraConversa));
+      await this.buscar();
+      this.carregouUmaVez = true;
     });
+  }
+
+  /**
+   * Tela de chats: na primeira vez carrega com o "carregando"; nas outras busca de novo em silêncio, porque
+   * conversas novas (um pedido que acabou de chegar) não apareciam até recarregar a página.
+   */
+  abrir(): Promise<void> {
+    return this.carregouUmaVez ? this.buscar() : this.carregar();
+  }
+
+  private carregouUmaVez = false;
+
+  private async buscar(): Promise<void> {
+    const conversas = await firstValueFrom(this.http.get<ConversaApi[]>(this.url()));
+    this.listaConversas.set(conversas.map(paraConversa));
   }
 
   /** O dono resolveu: a conversa sai da fila e volta para o assistente. */
@@ -54,8 +69,15 @@ export class ConversaService {
     );
   }
 
+  /** Uma ação de pedido mudou a conversa (ex.: saiu de "Aguardando você"): troca na lista sem recarregar. */
+  substituir(conversa: Conversa): void {
+    const normalizada = { ...conversa, motivoEspera: conversa.motivoEspera ?? undefined, resumoPedido: conversa.resumoPedido ?? [] };
+    this.listaConversas.update((conversas) => conversas.map((c) => (c.id === normalizada.id ? normalizada : c)));
+  }
+
   reiniciar(): void {
     this.carregamento.reiniciar();
+    this.carregouUmaVez = false;
     this.listaConversas.set([]);
   }
 

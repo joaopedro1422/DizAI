@@ -1,0 +1,43 @@
+<section id="solucao" class="container secao" aria-labelledby="solucao-titulo">
+  <div class="secao__cabecalho">
+    <span class="secao__sobretitulo">A solução</span>
+    <h2 id="solucao-titulo" class="secao__titulo">
+      <span class="solucao__marca">DizAI</span>: atendimento de empresa grande, sem contratar ninguém.
+    </h2>
+  </div>
+
+  <div class="ganhos">
+    <!-- o ganho principal: tempo de volta, com a tela de Estatísticas do painel -->
+    <article class="ganho ganho--tempo">
+      <div class="ganho__textos">
+        <span class="ganho__icone ganho__icone--claro"><app-icone nome="relogio" [tamanho]="22" [espessura]="2" /></span>
+        <h3 class="ganho__titulo">Mais tempo para produzir e para descansar.</h3>
+        <p class="ganho__texto">
+          Cada pergunta que o assistente responde é tempo que você não passa no celular. O painel mostra quanto você ganhou.
+        </p>
+      </div>
+      <div class="estatisticas" aria-label="Exemplo da tela de Estatísticas do painel">
+        <span class="estatisticas__topo"><span>Estatísticas · últimos 30 dias</span><span>Exemplo</span></span>
+        <span class="estatisticas__tempo"><strong>14h 30min</strong> de tempo economizado</span>
+        <span class="estatisticas__numeros">
+          <span><strong>186</strong>atendimentos</span>
+          <span><strong>512</strong>respostas</span>
+          <span><strong>34</strong>agendamentos</span>
+        </span>
+      </div>
+    </article>
+
+    @for (ganho of ganhos; track ganho.titulo) {
+      <article class="ganho">
+        <span class="ganho__icone" [class]="'ganho__icone--' + ganho.cor">
+          <app-icone [nome]="ganho.icone" [tamanho]="20" [espessura]="2" />
+        </span>
+        @if (ganho.para) {
+          <span class="ganho__para">{{ ganho.para }}</span>
+        }
+        <h3 class="ganho__titulo">{{ ganho.titulo }}</h3>
+        <p class="ganho__texto">{{ ganho.texto }}</p>
+      </article>
+    }
+  </div>
+</section>

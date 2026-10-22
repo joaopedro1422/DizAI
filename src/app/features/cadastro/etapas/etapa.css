@@ -88,3 +88,29 @@
   font-weight: 700;
   transform: translateY(-50%);
 }
+
+/* Antecedência dos pedidos: número de horas digitado */
+.antecedencia {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.antecedencia__numero {
+  width: 110px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.antecedencia__unidade {
+  width: auto;
+  min-width: 120px;
+  font-weight: 600;
+}
+
+.antecedencia__exemplo,
+.antecedencia__dica {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}

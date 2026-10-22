@@ -1,0 +1,584 @@
+/*
+ * Peças das cenas dos vídeos explicativos (telas do painel, WhatsApp, vitrine) e as animações delas.
+ * Cada componente de vídeo inclui este arquivo; o palco, o celular e o player ficam no app-video-tutorial.
+ */
+
+/* Pausado: o player troca esta variável e tudo congela onde estiver */
+*,
+*::before,
+*::after {
+  animation-play-state: var(--estado-animacao, running) !important;
+}
+
+.legenda__selo {
+  padding: 0.9cqw 2.6cqw;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  font-size: 3.1cqw;
+  font-weight: 700;
+}
+
+.legenda__selo--dica {
+  background: #ffc861;
+  color: #4a2f00;
+}
+
+.legenda__titulo {
+  font-family: var(--fonte-titulo);
+  font-size: 5.8cqw;
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+}
+
+.legenda__texto {
+  font-size: 3.7cqw;
+  line-height: 1.42;
+  color: #dbe4f5;
+}
+
+/* Telas do painel desenhadas */
+/* Fica por cima quando o formulário rola */
+.app__barra {
+  position: relative;
+  z-index: 1;
+  background: #ffffff;
+  padding: 5.5cqw 4cqw 2.4cqw;
+  border-bottom: 0.25cqw solid var(--cor-borda-suave);
+  font-family: var(--fonte-titulo);
+  font-size: 3.8cqw;
+  font-weight: 600;
+}
+
+.app__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 2.2cqw;
+  padding: 3cqw;
+}
+
+.app__botao {
+  padding: 2.4cqw;
+  border-radius: 2.4cqw;
+  background: var(--cor-primaria);
+  color: #ffffff;
+  font-weight: 700;
+  text-align: center;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 2cqw;
+  padding: 2cqw;
+  border: 0.25cqw solid var(--cor-borda-suave);
+  border-radius: 2.6cqw;
+}
+
+.item__foto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 8.4cqw;
+  height: 8.4cqw;
+  border-radius: 2cqw;
+  background: var(--cor-azul-fundo);
+  font-size: 4.4cqw;
+}
+
+.item__foto--rosa {
+  background: var(--cor-rosa-fundo);
+}
+
+.item__foto--ambar {
+  background: var(--cor-ambar-fundo);
+}
+
+.item__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.item__textos small {
+  font-size: 2.4cqw;
+  color: var(--cor-texto-suave);
+}
+
+.item__preco {
+  font-weight: 700;
+  color: var(--cor-primaria);
+}
+
+.item__preco--suave {
+  font-size: 2.4cqw;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 1cqw;
+  margin: -0.8cqw;
+  padding: 0.8cqw;
+  border-radius: 2.4cqw;
+}
+
+.campo__rotulo {
+  font-size: 2.5cqw;
+  font-weight: 700;
+}
+
+.campo__caixa {
+  display: flex;
+  align-items: center;
+  min-height: 6.6cqw;
+  padding: 1.2cqw 2.2cqw;
+  border: 0.25cqw solid var(--cor-borda);
+  border-radius: 2cqw;
+  background: #ffffff;
+}
+
+.campo__caixa--vazia {
+  color: #9aa3b4;
+}
+
+.campo__caixa--alta {
+  align-items: flex-start;
+  min-height: 13cqw;
+}
+
+.campo__caixa--linhas {
+  flex-direction: column;
+  gap: 0.6cqw;
+}
+
+.campo__caixa--tracejada {
+  justify-content: center;
+  border-style: dashed;
+  color: var(--cor-primaria);
+  font-weight: 700;
+}
+
+.campo__caixa--com-selo {
+  justify-content: space-between;
+}
+
+.selo-ok {
+  padding: 0.5cqw 1.8cqw;
+  border-radius: 999px;
+  background: #e5f3df;
+  color: var(--cor-sucesso);
+  font-size: 2.3cqw;
+  font-weight: 700;
+}
+
+.opcao {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4cqw;
+  padding: 1.6cqw;
+  border-radius: 2.4cqw;
+  background: var(--cor-fundo-suave);
+}
+
+.opcao__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1cqw;
+}
+
+.chip-mini {
+  padding: 0.7cqw 2cqw;
+  border: 0.25cqw solid var(--cor-borda);
+  border-radius: 999px;
+  background: #ffffff;
+  font-size: 2.4cqw;
+  font-weight: 600;
+}
+
+/* Chip que fica selecionado no meio da cena */
+.ativa {
+  animation: ativar 0.3s var(--atraso, 0s) ease both;
+}
+
+/* Horários da agenda (serviços) */
+.horario {
+  display: flex;
+  gap: 1.6cqw;
+  padding: 1.6cqw 2cqw;
+  border-left: 0.8cqw solid var(--cor-borda);
+  border-radius: 1.2cqw;
+  background: var(--cor-fundo-suave);
+  font-size: 2.5cqw;
+  color: var(--cor-texto-suave);
+}
+
+.horario--ocupado {
+  border-left-color: var(--cor-primaria);
+  background: var(--cor-azul-fundo);
+  color: var(--cor-texto);
+}
+
+/* Conversa no WhatsApp: as mensagens novas empurram as antigas para cima */
+.zap {
+  display: flex;
+  flex-direction: column;
+  height: 72cqw; /* parte visível da tela, já descontado o zoom */
+  background: #efeae2;
+}
+
+.zap__barra {
+  display: flex;
+  align-items: center;
+  gap: 2cqw;
+  flex: none;
+  padding: 5cqw 3cqw 2cqw;
+  background: #075e54;
+  color: #ffffff;
+}
+
+.zap__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 6.4cqw;
+  height: 6.4cqw;
+  border-radius: 50%;
+  background: #ffc861;
+  color: #4a2f00;
+  font-weight: 800;
+}
+
+.zap__nome {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.zap__nome small {
+  font-size: 2.2cqw;
+  opacity: 0.8;
+}
+
+.zap__corpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 1.6cqw;
+  min-height: 0;
+  overflow: hidden;
+  padding: 2.4cqw;
+}
+
+.balao {
+  align-self: flex-start;
+  max-width: 82%;
+  padding: 1.6cqw 2.2cqw;
+  border-radius: 0 2.4cqw 2.4cqw 2.4cqw;
+  background: #ffffff;
+  line-height: 1.38;
+  box-shadow: 0 0.2cqw 0.4cqw rgba(0, 0, 0, 0.08);
+}
+
+.balao--cliente,
+.balao--meu {
+  align-self: flex-end;
+  border-radius: 2.4cqw 0 2.4cqw 2.4cqw;
+  background: #d9fdd3;
+}
+
+.zap .surge {
+  animation-name: surgir-balao;
+}
+
+.marca {
+  border-radius: 0.8cqw;
+  background: transparent;
+  color: inherit;
+  font-weight: 700;
+  animation: marcar 0.5s var(--atraso, 0s) ease both;
+}
+
+.digitando {
+  display: flex;
+  align-self: flex-start;
+  gap: 0.8cqw;
+  overflow: hidden;
+  padding: 0 2.4cqw;
+  border-radius: 2.4cqw;
+  background: #ffffff;
+  animation: digitando 1.3s ease both;
+}
+
+.digitando--1 {
+  animation-delay: 1.6s;
+}
+
+.digitando--2 {
+  animation-delay: 6.8s;
+}
+
+.digitando i {
+  width: 1.3cqw;
+  height: 1.3cqw;
+  border-radius: 50%;
+  background: #9aa3b4;
+  animation: pulo 0.9s ease-in-out infinite;
+}
+
+.digitando i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.digitando i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* Tela final */
+.final {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2cqw;
+  padding: 14cqw 4cqw 0;
+  text-align: center;
+}
+
+.final b {
+  font-family: var(--fonte-titulo);
+  font-size: 4.2cqw;
+  font-weight: 600;
+}
+
+.final small {
+  font-size: 2.7cqw;
+  color: var(--cor-texto-suave);
+}
+
+.final__check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14cqw;
+  height: 14cqw;
+  border-radius: 50%;
+  background: #e5f3df;
+  color: var(--cor-sucesso);
+  font-size: 7cqw;
+  font-weight: 800;
+}
+
+/* --------------------------------------------------------------------------
+   Peças comuns: botões, toque, notificação, cards que somem
+   -------------------------------------------------------------------------- */
+
+.botoes-mini {
+  display: flex;
+  gap: 1.4cqw;
+}
+
+.botao-mini {
+  flex: 1;
+  padding: 1.6cqw 2cqw;
+  border: 0.25cqw solid var(--cor-borda);
+  border-radius: 1.8cqw;
+  background: #ffffff;
+  font-size: 2.5cqw;
+  font-weight: 700;
+  text-align: center;
+}
+
+.botao-mini--primario {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria);
+  color: #ffffff;
+}
+
+.botao-mini--whats {
+  border-color: #1f9d55;
+  background: #1f9d55;
+  color: #ffffff;
+}
+
+/* Toque do dedo: um anel que pulsa sobre o elemento */
+.tocado {
+  position: relative;
+  animation: apertar 0.5s var(--atraso, 0s) ease both;
+}
+
+.tocado::after {
+  content: '';
+  position: absolute;
+  inset: -1.2cqw;
+  border: 0.7cqw solid rgba(30, 58, 114, 0.55);
+  border-radius: 3cqw;
+  opacity: 0;
+  pointer-events: none;
+  animation: anel-toque 0.8s var(--atraso, 0s) ease-out both;
+}
+
+/* Some depois do atraso, fechando o espaço */
+.some {
+  overflow: hidden;
+  animation: sumir 0.6s var(--atraso, 0s) ease-in forwards;
+}
+
+.notificacao {
+  position: absolute;
+  top: 4.5cqw;
+  left: 2.4cqw;
+  right: 2.4cqw;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 2cqw;
+  padding: 2cqw;
+  border-radius: 3cqw;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 1.6cqw 4cqw rgba(15, 23, 42, 0.22);
+  animation: cair 0.5s var(--atraso, 0s) ease-out both;
+}
+
+.notificacao__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 7cqw;
+  height: 7cqw;
+  border-radius: 1.8cqw;
+  background: var(--cor-primaria);
+  color: #ffffff;
+  font-size: 3.4cqw;
+  font-weight: 800;
+}
+
+.notificacao__textos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.notificacao__textos small {
+  font-size: 2.3cqw;
+  color: var(--cor-texto-suave);
+}
+
+.aviso-mini {
+  align-self: center;
+  padding: 1.4cqw 3cqw;
+  border-radius: 999px;
+  background: #1d2433;
+  color: #ffffff;
+  font-size: 2.4cqw;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Animações: cada elemento usa --atraso, contado a partir do início da cena
+   -------------------------------------------------------------------------- */
+
+.surge {
+  animation: surgir 0.5s var(--atraso, 0s) ease-out both;
+}
+
+.digita {
+  display: inline-block;
+  animation: digitar 0.9s var(--atraso, 0s) steps(14, end) both;
+}
+
+/* Cursor no fim do texto enquanto digita; some logo depois */
+.digita::after {
+  content: '';
+  display: inline-block;
+  width: 0.3cqw;
+  height: 3cqw;
+  margin-left: 0.4cqw;
+  vertical-align: middle;
+  background: var(--cor-primaria);
+  animation: cursor 1.6s var(--atraso, 0s) steps(1) both;
+}
+
+.destaca {
+  animation: destacar 1.6s var(--atraso, 0s) ease both;
+}
+
+/* Rola a tela do celular para mostrar os campos de baixo */
+.rola {
+  animation: rolar 0.8s var(--atraso, 0s) ease-in-out both;
+}
+
+@keyframes surgir {
+  from { opacity: 0; transform: translateY(2.4cqw); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes surgir-balao {
+  from { max-height: 0; padding-top: 0; padding-bottom: 0; opacity: 0; transform: scale(0.9); }
+  to { max-height: 50cqw; opacity: 1; transform: none; }
+}
+
+@keyframes digitando {
+  0%, 100% { max-height: 0; padding-top: 0; padding-bottom: 0; opacity: 0; }
+  12%, 88% { max-height: 6cqw; padding-top: 1.8cqw; padding-bottom: 1.8cqw; opacity: 1; }
+}
+
+@keyframes pulo {
+  0%, 100% { transform: none; }
+  50% { transform: translateY(-0.7cqw); }
+}
+
+@keyframes digitar {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes ativar {
+  to { border-color: var(--cor-primaria); background: var(--cor-primaria); color: #ffffff; }
+}
+
+@keyframes rolar {
+  from { transform: none; }
+  to { transform: translateY(-24cqw); }
+}
+
+@keyframes cursor {
+  0%, 40%, 80%, 100% { opacity: 0; }
+  20%, 60% { opacity: 1; }
+}
+
+@keyframes destacar {
+  0%, 100% { background: transparent; box-shadow: none; }
+  20%, 70% { background: #eaf0fa; box-shadow: 0 0 0 0.5cqw #2c4f9e; }
+}
+
+@keyframes marcar {
+  to { background: #ffe8a8; }
+}
+
+@keyframes apertar {
+  0%, 100% { transform: none; }
+  40% { transform: scale(0.94); }
+}
+
+@keyframes anel-toque {
+  0% { opacity: 1; transform: scale(0.85); }
+  100% { opacity: 0; transform: scale(1.15); }
+}
+
+@keyframes sumir {
+  from { max-height: 60cqw; opacity: 1; }
+  to { max-height: 0; margin: 0; padding-top: 0; padding-bottom: 0; border-width: 0; opacity: 0; }
+}
+
+@keyframes cair {
+  from { opacity: 0; transform: translateY(-120%); }
+  to { opacity: 1; transform: none; }
+}
+

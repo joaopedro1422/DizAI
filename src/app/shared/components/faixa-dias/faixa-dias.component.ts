@@ -9,7 +9,7 @@ import {
   output,
 } from '@angular/core';
 
-import { hojeIso, partesDoDia, somarDias } from '../../../core/utils/datas-agenda';
+import { deIso, hojeIso, partesDoDia, somarDias } from '../../../core/utils/datas-agenda';
 
 /** Um dia na faixa. detalhe: texto pequeno embaixo ("3", "Folga", "Lotado"). */
 export interface ItemFaixaDia {
@@ -29,6 +29,14 @@ export interface ItemFaixaDia {
   selector: 'app-faixa-dias',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+    @if (gradeEmTelaGrande()) {
+      <!-- só aparece na grade (tela grande): os dias da semana em cima das colunas -->
+      <div class="semana" aria-hidden="true">
+        @for (letra of letrasSemana; track $index) {
+          <span>{{ letra }}</span>
+        }
+      </div>
+    }
     <div class="faixa" role="listbox" [attr.aria-label]="rotulo()">
       @for (item of itensComRotulo(); track item.data) {
         <button
@@ -37,6 +45,8 @@ export interface ItemFaixaDia {
           class="dia"
           [class.dia--escolhido]="item.data === selecionado()"
           [class.dia--desativado]="item.desativado"
+          [class.dia--fechado]="item.detalhe === 'Fechado'"
+          [class.dia--hoje]="item.hoje"
           [attr.aria-selected]="item.data === selecionado()"
           [attr.aria-disabled]="item.desativado || null"
           [attr.data-data]="item.data"
@@ -147,12 +157,107 @@ export interface ItemFaixaDia {
       opacity: 0.45;
       cursor: default;
     }
+
+    /* Variante limpa (agenda do painel): sem borda nem fundo; só o dia escolhido fica preenchido */
+    :host(.faixa-dias--limpa) .faixa {
+      gap: 4px;
+    }
+
+    :host(.faixa-dias--limpa) .dia {
+      width: 56px;
+      padding: 9px 0 7px;
+      border-color: transparent;
+      background: transparent;
+    }
+
+    /* hoje, quando não é o escolhido: o número em azul */
+    :host(.faixa-dias--limpa) .dia--hoje:not(.dia--escolhido) .dia__numero,
+    :host(.faixa-dias--limpa) .dia--hoje:not(.dia--escolhido) .dia__semana {
+      color: var(--faixa-destaque, var(--cor-primaria));
+    }
+
+    :host(.faixa-dias--limpa) .dia:hover:not(.dia--desativado):not(.dia--escolhido) {
+      border-color: transparent;
+      background: var(--cor-fundo-suave);
+    }
+
+    /* Grade de mês em tela grande (tablet e computador): 7 colunas, segunda primeiro */
+    .semana {
+      display: none;
+    }
+
+    @media (min-width: 760px) {
+      :host(.faixa-dias--grade) .semana {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        padding: 0 2px 4px;
+        font-size: 11px;
+        font-weight: 700;
+        text-align: center;
+        color: var(--cor-texto-suave);
+      }
+
+      :host(.faixa-dias--grade) .faixa {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        gap: 4px;
+        overflow: visible;
+      }
+
+      :host(.faixa-dias--grade) .dia {
+        width: auto;
+        padding: 7px 0 6px;
+        border-radius: 12px;
+      }
+
+      :host(.faixa-dias--grade) .dia:first-child {
+        grid-column-start: var(--coluna-inicial, 1);
+      }
+
+      :host(.faixa-dias--grade) .dia__semana {
+        font-size: 10px;
+      }
+
+      :host(.faixa-dias--grade) .dia__numero {
+        font-size: 17px;
+      }
+
+      /* dia fechado na grade: sem a palavra (não cabe), só o número apagado */
+      :host(.faixa-dias--grade) .dia--fechado:not(.dia--escolhido) .dia__detalhe {
+        visibility: hidden;
+      }
+
+      :host(.faixa-dias--grade) .dia--fechado:not(.dia--escolhido) .dia__numero {
+        color: var(--cor-borda-forte);
+      }
+    }
+
+    :host(.faixa-dias--limpa) .dia--escolhido {
+      border-color: var(--faixa-destaque, var(--cor-primaria));
+      background: var(--faixa-destaque, var(--cor-primaria));
+    }
   `,
+  host: {
+    '[class.faixa-dias--limpa]': "variante() === 'limpa'",
+    '[class.faixa-dias--grade]': 'gradeEmTelaGrande()',
+    '[style.--coluna-inicial]': 'colunaInicial()',
+  },
 })
 export class FaixaDiasComponent {
   readonly itens = input.required<ItemFaixaDia[]>();
   readonly selecionado = input<string | null>(null);
   readonly rotulo = input('Escolha o dia');
+  /** 'cartoes': cada dia num cartão com borda (página pública); 'limpa': sem borda nem fundo (agenda do painel). */
+  readonly variante = input<'cartoes' | 'limpa'>('cartoes');
+  /** Em tablet e computador a faixa vira uma grade de mês (7 colunas com os dias da semana em cima). */
+  readonly gradeEmTelaGrande = input(false);
+
+  protected readonly letrasSemana = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'];
+  /** O primeiro dia cai na coluna do seu dia da semana (segunda = 1). */
+  protected readonly colunaInicial = computed(() => {
+    const primeiro = this.itens()[0]?.data;
+    return primeiro ? String(((deIso(primeiro).getDay() + 6) % 7) + 1) : '1';
+  });
   readonly escolher = output<string>();
 
   private readonly elemento = inject<ElementRef<HTMLElement>>(ElementRef);
@@ -160,12 +265,15 @@ export class FaixaDiasComponent {
   protected readonly itensComRotulo = computed(() => {
     const hoje = hojeIso();
     const amanha = somarDias(hoje, 1);
+    const limpa = this.variante() === 'limpa';
     return this.itens().map((item) => {
       const partes = partesDoDia(item.data);
       const semana = item.data === hoje ? 'Hoje' : item.data === amanha ? 'Amanhã' : partes.semana;
       return {
         ...item,
-        semana,
+        // na variante limpa "Amanhã" não cabe bem: fica o dia da semana (só "Hoje" muda)
+        semana: limpa && item.data === amanha ? partes.semana : semana,
+        hoje: item.data === hoje,
         numero: partes.numero,
         rotuloLeitor: `${semana} ${partes.numero} de ${partes.mes}${item.detalhe ? ', ' + item.detalhe : ''}`,
       };

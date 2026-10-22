@@ -14,10 +14,10 @@ import { DemonstracaoConversaComponent } from '../demonstracao-conversa/demonstr
 })
 export class SecaoHeroComponent {
   protected readonly garantias = [
-    'Pensado para microempreendedores',
     'Pronto em poucos minutos',
-    'Funciona no seu número de sempre',
-    'Controle total sobre vendas e agendamentos.'
+    'No seu número de sempre',
+    'Pensado para microempreendedores',
+    'Você no controle de tudo',
 
   ];
 }

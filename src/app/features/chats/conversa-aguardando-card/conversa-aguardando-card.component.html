@@ -1,5 +1,5 @@
 <div class="cliente">
-  <app-avatar [nome]="nomeExibicao()" />
+  <app-avatar modo="icone" [nome]="nomeExibicao()" />
   <span class="cliente__textos">
     <span class="cliente__nome">{{ nomeExibicao() }}</span>
     <span class="cliente__detalhe">
@@ -36,11 +36,27 @@
     <app-icone nome="conversa" [tamanho]="16" [espessura]="2" />
     Ir ao WhatsApp
   </a>
-  <button type="button" class="btn btn--secundario acoes__resolvido" [disabled]="resolvendo()" [attr.aria-busy]="resolvendo()" (click)="resolvida.emit()">
-    @if (resolvendo()) {
-      <app-carregando modo="inline" [tamanho]="20" />
-    } @else {
-      Resolvido
-    }
-  </button>
+  @if (!ehPedido()) {
+    <button type="button" class="btn btn--secundario acoes__resolvido" [disabled]="resolvendo()" [attr.aria-busy]="resolvendo()" (click)="resolvida.emit()">
+      @if (resolvendo()) {
+        <app-carregando modo="inline" [tamanho]="20" />
+      } @else {
+        Resolvido
+      }
+    </button>
+  }
 </div>
+
+@if (ehPedido()) {
+  <!-- depois de confirmar com o cliente no WhatsApp, o lojista diz o que aconteceu com o pedido -->
+  <div class="acoes-pedido">
+    <button type="button" class="btn btn--sucesso acoes-pedido__confirmar" (click)="acaoPedido.emit('confirmar')">
+      <app-icone nome="check" [tamanho]="16" [espessura]="2.4" />
+      Pedido confirmado
+    </button>
+    <div class="acoes-pedido__outras">
+      <button type="button" class="btn btn--secundario btn--pequeno" (click)="acaoPedido.emit('entregar')">Já entregue</button>
+      <button type="button" class="btn btn--texto btn--pequeno" (click)="acaoPedido.emit('recusar')">Não aceito</button>
+    </div>
+  </div>
+}

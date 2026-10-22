@@ -6,14 +6,24 @@ import { mensagemDoErro } from '../../core/api/erro-api';
 import { AutenticacaoService } from '../../core/auth/autenticacao.service';
 import { formatarTelefone } from '../../core/utils/texto.utils';
 import { campoComErro, telefoneValido } from '../../core/utils/validadores';
+import { BottomSheetComponent } from '../../shared/components/bottom-sheet/bottom-sheet.component';
 import { CarregandoComponent } from '../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { LogoComponent } from '../../shared/components/logo/logo.component';
+import { EsqueciSenhaComponent } from './esqueci-senha/esqueci-senha.component';
 
 /** Login de quem já tem conta. */
 @Component({
   selector: 'app-entrar-page',
-  imports: [ReactiveFormsModule, RouterLink, IconeComponent, LogoComponent, CarregandoComponent],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    IconeComponent,
+    LogoComponent,
+    CarregandoComponent,
+    BottomSheetComponent,
+    EsqueciSenhaComponent,
+  ],
   templateUrl: './entrar-page.component.html',
   styleUrl: './entrar-page.component.css',
 })
@@ -27,6 +37,8 @@ export class EntrarPageComponent {
   protected readonly entrando = signal(false);
   /** Erro do login (senha errada, sem conexão...), mostrado acima do botão. */
   protected readonly erroLogin = signal<string | null>(null);
+  /** Janela do "Esqueci minha senha". */
+  protected readonly esqueciSenha = signal(false);
 
   protected readonly formulario = inject(FormBuilder).nonNullable.group({
     whatsapp: ['', [Validators.required, telefoneValido]],

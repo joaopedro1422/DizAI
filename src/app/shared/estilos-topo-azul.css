@@ -1,0 +1,113 @@
+/*
+ * Topo azul das telas de gestão (o mesmo desenho da tela do assistente): voltar, título e as abas num azul mais
+ * escuro, com a ativa em branco. Usado pela Agenda e pelos Pedidos (styleUrls de cada tela).
+ */
+.topo-azul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 18px 16px;
+  padding-top: calc(12px + env(safe-area-inset-top));
+  background: linear-gradient(160deg, var(--cor-primaria) 0%, #2C4F9E 100%);
+  color: #ffffff;
+}
+
+.topo-azul__linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topo-azul__voltar {
+  display: inline-flex;
+  margin-left: -6px;
+  padding: 6px;
+  border-radius: 10px;
+  color: #ffffff;
+}
+
+.topo-azul__voltar:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.topo-azul__identidade {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topo-azul__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.topo-azul__titulo {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.topo-azul .abas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border: none;
+  border-radius: var(--raio-medio);
+  background: rgba(10, 22, 52, 0.32);
+}
+
+.topo-azul .aba {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border: none;
+  border-radius: 11px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.topo-azul .aba:not(.aba--ativa):hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.topo-azul .aba--ativa {
+  background: #ffffff;
+  color: var(--cor-primaria);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(10, 20, 45, 0.25);
+}
+
+/* Tablet e computador: as abas viram um seletor compacto na linha do título, à direita */
+@media (min-width: 760px) {
+  .topo-azul .abas-titulo {
+    display: inline-flex;
+    flex: none;
+  }
+
+  .topo-azul .abas {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 12px;
+  }
+
+  .topo-azul .aba {
+    min-height: 36px;
+    padding: 0 16px;
+    border-radius: 9px;
+  }
+}

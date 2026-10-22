@@ -1,0 +1,444 @@
+:host {
+  display: block;
+  min-height: 100dvh;
+  background:
+    radial-gradient(900px 480px at 85% -10%, rgba(37, 211, 102, 0.12), transparent 70%),
+    radial-gradient(800px 520px at 0% 10%, var(--cor-primaria-clara), transparent 70%),
+    var(--cor-fundo);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.nav__marca {
+  display: inline-flex;
+  text-decoration: none;
+}
+
+/* Celular: título, escolha, conversa, controles, destaques e o convite, um embaixo do outro */
+.demo {
+  display: grid;
+  grid-template-areas:
+    'cabecalho'
+    'escolha'
+    'celular'
+    'controles'
+    'destaques'
+    'cta';
+  gap: 20px;
+  padding-bottom: 56px;
+}
+
+.demo__cabecalho { grid-area: cabecalho; display: flex; flex-direction: column; gap: 12px; }
+.escolha { grid-area: escolha; }
+.celular { grid-area: celular; }
+.controles { grid-area: controles; }
+.destaques { grid-area: destaques; }
+.demo__cta { grid-area: cta; }
+
+.demo__etiqueta {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--raio-pilula);
+  background: #E7F8EE;
+  color: #137A3C;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.demo__pulso {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #25D366;
+  box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6);
+  animation: pulso 1.8s ease-out infinite;
+}
+
+.demo__titulo {
+  font-family: var(--fonte-titulo);
+  font-size: clamp(30px, 4.4vw, 52px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+.demo__descricao {
+  max-width: 560px;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
+}
+
+/* ---------- escolha: serviços ou produtos, e o segmento ---------- */
+.escolha { display: flex; flex-direction: column; gap: 12px; }
+
+.escolha__tipos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.escolha__tipo {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.escolha__tipo:hover { border-color: var(--cor-borda-forte); }
+
+.escolha__tipo--ativo {
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 3px var(--cor-primaria-clara);
+}
+
+.escolha__segmentos { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.escolha__segmento {
+  padding: 7px 14px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo);
+  color: var(--cor-texto-secundario);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.escolha__segmento[aria-checked='true'] {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria);
+  color: #ffffff;
+}
+
+.escolha__icone {
+  display: inline-flex;
+  flex: none;
+  padding: 8px;
+  border-radius: 10px;
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto-suave);
+}
+
+.escolha__tipo--ativo .escolha__icone {
+  background: var(--cor-primaria);
+  color: #ffffff;
+}
+
+.escolha__textos { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.escolha__rotulo { font-size: 16px; font-weight: 800; }
+.escolha__exemplos { font-size: 12.5px; line-height: 1.4; color: var(--cor-texto-suave); }
+
+/* ---------- o que acontece na conversa ---------- */
+.destaques__titulo {
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cor-texto-suave);
+}
+
+.destaques__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.destaque {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+  opacity: 0.55;
+  transition: opacity 0.3s, color 0.3s;
+}
+
+.destaque__marca {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--cor-borda-forte);
+  border-radius: 50%;
+  color: transparent;
+  transition: background 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.destaque--feito {
+  color: var(--cor-texto);
+  opacity: 1;
+}
+
+.destaque--feito .destaque__marca {
+  border-color: #25D366;
+  background: #25D366;
+  color: #ffffff;
+  animation: acende 0.35s ease-out;
+}
+
+.demo__cta { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.demo__cta-nota { font-size: 13px; color: var(--cor-texto-suave); }
+
+/* ---------- o celular com o WhatsApp ---------- */
+.celular {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: min(640px, 72dvh);
+  border: 1px solid var(--cor-borda);
+  border-radius: 26px;
+  background: #EFEAE2;
+  box-shadow: 0 30px 60px -20px rgba(15, 23, 42, 0.35);
+}
+
+.whats-topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: #075E54;
+  color: #ffffff;
+}
+
+.whats-topo__foto {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-weight: 800;
+}
+
+.whats-topo__textos { display: flex; flex-direction: column; min-width: 0; }
+.whats-topo__nome { font-size: 16px; font-weight: 700; }
+.whats-topo__status { font-size: 12px; color: rgba(255, 255, 255, 0.82); }
+
+.conversa {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  padding: 12px 12px 18px;
+  scrollbar-width: thin;
+  --tamanho-texto-balao: 14.5px;
+}
+
+.nota-cripto {
+  align-self: center;
+  max-width: 92%;
+  margin: 4px 0;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #FFF3C4;
+  color: #54656F;
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.notificacao {
+  display: flex;
+  align-self: stretch;
+  gap: 10px;
+  margin: 6px 0;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 8px 24px -8px rgba(15, 23, 42, 0.35);
+  font-size: 13px;
+  line-height: 1.4;
+  animation: desce 0.35s ease-out both;
+}
+
+.notificacao__icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--cor-primaria);
+  color: #ffffff;
+}
+
+.notificacao__textos { display: flex; flex-direction: column; min-width: 0; }
+.notificacao__origem { font-size: 11px; color: var(--cor-texto-suave); }
+.notificacao__texto { color: var(--cor-texto-secundario); }
+
+.digitando {
+  display: flex;
+  align-self: flex-start;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 8px;
+  background: #ffffff;
+  box-shadow: 0 1px 0.5px rgba(11, 20, 26, 0.13);
+}
+
+.digitando i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #8696A0;
+  animation: pontinho 1.2s ease-in-out infinite;
+}
+
+.digitando i:nth-child(2) { animation-delay: 0.15s; }
+.digitando i:nth-child(3) { animation-delay: 0.3s; }
+
+.final {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 18px;
+  border-radius: 16px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.35);
+  animation: entra 0.3s ease-out both;
+}
+
+.final__titulo { font-size: 17px; }
+.final__texto { margin-bottom: 4px; font-size: 13.5px; line-height: 1.45; color: var(--cor-texto-secundario); }
+
+.final__outra {
+  border: none;
+  background: transparent;
+  color: var(--cor-primaria);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.whats-rodape {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #F0F2F5;
+}
+
+.whats-rodape__campo {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 22px;
+  background: #ffffff;
+  color: #8696A0;
+  font-size: 15px;
+}
+
+.whats-rodape__botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #00A884;
+  color: #ffffff;
+}
+
+/* ---------- controles ---------- */
+.controles { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+
+.controles__botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo);
+  color: var(--cor-texto-secundario);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.controles__botao:hover { border-color: var(--cor-borda-forte); color: var(--cor-texto); }
+.controles__botao--ativo { border-color: var(--cor-primaria); color: var(--cor-primaria); }
+
+/* Computador: textos à esquerda, o celular à direita */
+@media (min-width: 900px) {
+  .demo {
+    grid-template-columns: minmax(0, 1fr) 400px;
+    grid-template-rows: auto auto auto 1fr auto;
+    grid-template-areas:
+      'cabecalho celular'
+      'escolha celular'
+      'destaques celular'
+      'cta celular'
+      '. controles';
+    column-gap: 72px;
+    row-gap: 28px;
+    padding-top: 24px;
+  }
+
+  .escolha { max-width: 520px; }
+  .celular { height: 680px; }
+}
+
+@keyframes pulso {
+  70% { box-shadow: 0 0 0 8px rgba(37, 211, 102, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+@keyframes entra {
+  from { transform: translateY(6px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes desce {
+  from { transform: translateY(-10px) scale(0.97); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes acende {
+  50% { transform: scale(1.2); }
+}
+
+@keyframes pontinho {
+  0%, 80%, 100% { opacity: 0.35; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo__pulso,
+  .notificacao,
+  .final,
+  .destaque--feito .destaque__marca,
+  .digitando i {
+    animation: none;
+  }
+}

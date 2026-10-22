@@ -1,0 +1,398 @@
+/* Peças das cenas deste vídeo; a base comum está em shared/components/video-tutorial/cenas-video.css */
+
+/* --------------------------------------------------------------------------
+   Agenda (painel e página pública)
+   -------------------------------------------------------------------------- */
+
+.dias-mini {
+  display: flex;
+  gap: 1.2cqw;
+}
+
+.dia-mini {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.2cqw 0;
+  border: 0.25cqw solid var(--cor-borda-suave);
+  border-radius: 2cqw;
+  font-size: 2.2cqw;
+  color: var(--cor-texto-suave);
+}
+
+.dia-mini b {
+  font-size: 3cqw;
+  color: var(--cor-texto);
+}
+
+.dia-mini--hoje {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria);
+  color: #dbe4f5;
+}
+
+.dia-mini--hoje b {
+  color: #ffffff;
+}
+
+.agendamento-mini {
+  display: flex;
+  align-items: center;
+  gap: 2cqw;
+  padding: 1.8cqw 2cqw;
+  border-left: 0.8cqw solid var(--cor-primaria);
+  border-radius: 1.6cqw;
+  background: var(--cor-azul-fundo);
+  line-height: 1.3;
+}
+
+.agendamento-mini > b {
+  flex: none;
+  width: 8cqw;
+}
+
+.agendamento-mini span {
+  display: flex;
+  flex-direction: column;
+}
+
+.agendamento-mini small {
+  font-size: 2.3cqw;
+  color: var(--cor-texto-suave);
+}
+
+.agendamento-mini--rosa {
+  border-left-color: var(--cor-rosa);
+  background: var(--cor-rosa-fundo);
+}
+
+.agendamento-mini--ambar {
+  border-left-color: var(--cor-alerta);
+  background: var(--cor-ambar-fundo);
+}
+
+.selo-presenca {
+  align-self: flex-start;
+  margin-top: 0.4cqw;
+  padding: 0.3cqw 1.4cqw;
+  border-radius: 999px;
+  background: #e5f3df;
+  color: var(--cor-sucesso);
+  font-size: 2.1cqw;
+  font-weight: 700;
+}
+
+.linha-ajuste {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2cqw;
+  padding: 2.2cqw;
+  border: 0.25cqw solid var(--cor-borda-suave);
+  border-radius: 2.6cqw;
+  line-height: 1.3;
+}
+
+.linha-ajuste small {
+  display: block;
+  font-size: 2.3cqw;
+  color: var(--cor-texto-suave);
+}
+
+/* Interruptor que liga sozinho no meio da cena */
+.chave {
+  position: relative;
+  flex: none;
+  width: 8.4cqw;
+  height: 4.8cqw;
+  border-radius: 999px;
+  background: var(--cor-borda-forte);
+  animation: chave-fundo 0.3s var(--atraso, 0s) ease both;
+}
+
+.chave::after {
+  content: '';
+  position: absolute;
+  top: 0.6cqw;
+  left: 0.6cqw;
+  width: 3.6cqw;
+  height: 3.6cqw;
+  border-radius: 50%;
+  background: #ffffff;
+  animation: chave-bolinha 0.3s var(--atraso, 0s) ease both;
+}
+
+.escolha {
+  display: flex;
+  align-items: flex-start;
+  gap: 2cqw;
+  padding: 2.2cqw;
+  border: 0.25cqw solid var(--cor-borda);
+  border-radius: 2.6cqw;
+  line-height: 1.3;
+}
+
+.escolha small {
+  display: block;
+  font-size: 2.3cqw;
+  color: var(--cor-texto-suave);
+}
+
+.escolha i {
+  flex: none;
+  width: 3.6cqw;
+  height: 3.6cqw;
+  margin-top: 0.3cqw;
+  border: 0.5cqw solid var(--cor-borda-forte);
+  border-radius: 50%;
+}
+
+.escolha--sai {
+  animation: escolha-sai 0.3s var(--atraso, 0s) ease both;
+}
+
+.escolha--sai i {
+  border-color: var(--cor-primaria);
+  box-shadow: inset 0 0 0 0.6cqw #ffffff;
+  background: var(--cor-primaria);
+  animation: bolinha-sai 0.3s var(--atraso, 0s) ease both;
+}
+
+.escolha--entra {
+  animation: escolha-entra 0.3s var(--atraso, 0s) ease both;
+}
+
+.escolha--entra i {
+  animation: bolinha-entra 0.3s var(--atraso, 0s) ease both;
+}
+
+/* Página pública de agendamento (Sálvia Unhas, cor sálvia) */
+.ap {
+  min-height: 100%;
+  background: #f5f7f3;
+  --salvia: #6b8f71;
+}
+
+.ap__topo {
+  display: flex;
+  align-items: center;
+  gap: 2cqw;
+  padding: 5cqw 3cqw 2.4cqw;
+  background: var(--salvia);
+  color: #ffffff;
+}
+
+.ap__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 8cqw;
+  height: 8cqw;
+  border: 0.5cqw solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  background: #557a5c;
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+}
+
+.ap__topo small {
+  display: block;
+  font-size: 2.2cqw;
+  opacity: 0.85;
+}
+
+.ap__abas {
+  display: flex;
+  gap: 1cqw;
+  padding: 2cqw 3cqw 0;
+  font-size: 2.4cqw;
+  font-weight: 700;
+  color: var(--cor-texto-suave);
+}
+
+.ap__abas span {
+  padding: 1cqw 2.2cqw;
+  border-radius: 999px;
+}
+
+.ap__abas .ap__aba-ativa {
+  background: var(--salvia);
+  color: #ffffff;
+}
+
+.ap__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6cqw;
+  padding: 2.4cqw 3cqw;
+}
+
+.ap__passo {
+  display: flex;
+  align-items: center;
+  gap: 1.4cqw;
+  margin-top: 0.6cqw;
+  font-size: 2.8cqw;
+  font-weight: 800;
+}
+
+.ap__passo i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.2cqw;
+  height: 4.2cqw;
+  border: 0.4cqw solid var(--salvia);
+  border-radius: 50%;
+  color: var(--salvia);
+  font-size: 2.3cqw;
+  font-style: normal;
+}
+
+.ap__servico {
+  display: flex;
+  align-items: center;
+  gap: 1.8cqw;
+  padding: 1.8cqw 2cqw;
+  border: 0.3cqw solid var(--cor-borda);
+  border-radius: 2.4cqw;
+  background: #ffffff;
+}
+
+.ap__servico i {
+  width: 3.4cqw;
+  height: 3.4cqw;
+  border: 0.4cqw solid var(--cor-borda-forte);
+  border-radius: 0.8cqw;
+}
+
+.ap__servico span {
+  flex: 1;
+  font-weight: 700;
+}
+
+.ap__servico small {
+  font-size: 2.3cqw;
+  color: var(--cor-texto-suave);
+}
+
+.ap__servico.escolhe {
+  animation: ap-servico 0.3s var(--atraso, 0s) ease both;
+}
+
+.ap__servico.escolhe i {
+  animation: ap-marca 0.3s var(--atraso, 0s) ease both;
+}
+
+.ap__opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2cqw;
+}
+
+.ap__opcao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 9cqw;
+  padding: 1.2cqw 1.8cqw;
+  border: 0.3cqw solid var(--cor-borda);
+  border-radius: 2cqw;
+  background: #ffffff;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.ap__opcao small {
+  font-size: 2cqw;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+}
+
+.ap__opcao.escolhe {
+  animation: ap-opcao 0.3s var(--atraso, 0s) ease both;
+}
+
+.ap__opcao.escolhe small {
+  animation: ap-opcao-texto 0.3s var(--atraso, 0s) ease both;
+}
+
+.ap__resumo {
+  padding: 2cqw;
+  border-radius: 2.4cqw;
+  background: #e9efe7;
+  line-height: 1.4;
+}
+
+.ap__enviar {
+  padding: 2.4cqw;
+  border-radius: 2.4cqw;
+  background: var(--salvia);
+  color: #ffffff;
+  font-weight: 800;
+  text-align: center;
+}
+
+
+@keyframes chave-fundo {
+  to { background: var(--cor-sucesso); }
+}
+
+@keyframes chave-bolinha {
+  to { transform: translateX(3.6cqw); }
+}
+
+@keyframes escolha-sai {
+  from { border-color: var(--cor-primaria); background: var(--cor-azul-fundo); }
+  to { border-color: var(--cor-borda); background: #ffffff; }
+}
+
+@keyframes bolinha-sai {
+  to { border-color: var(--cor-borda-forte); background: transparent; box-shadow: none; }
+}
+
+@keyframes escolha-entra {
+  to { border-color: var(--cor-primaria); background: var(--cor-azul-fundo); }
+}
+
+@keyframes bolinha-entra {
+  to { border-color: var(--cor-primaria); background: var(--cor-primaria); box-shadow: inset 0 0 0 0.6cqw #ffffff; }
+}
+
+@keyframes ap-servico {
+  to { border-color: var(--salvia); background: #eef3ec; }
+}
+
+@keyframes ap-marca {
+  to { border-color: var(--salvia); background: var(--salvia); }
+}
+
+@keyframes ap-opcao {
+  to { border-color: var(--salvia); background: var(--salvia); color: #ffffff; }
+}
+
+@keyframes ap-opcao-texto {
+  to { color: rgba(255, 255, 255, 0.85); }
+}
+
+.selo-presenca {
+  font-style: normal;
+}
+
+.zap__avatar--salvia {
+  background: #6b8f71;
+  color: #ffffff;
+}
+
+.notificacao__icone--ok {
+  background: var(--cor-sucesso);
+}
+
+/* O topo da página pública fica por cima quando o conteúdo rola */
+.ap__cabeca {
+  position: relative;
+  z-index: 1;
+  padding-bottom: 1cqw;
+  background: #f5f7f3;
+}

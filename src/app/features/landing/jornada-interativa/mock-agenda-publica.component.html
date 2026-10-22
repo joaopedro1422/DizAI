@@ -1,0 +1,121 @@
+<app-telefone-demo>
+  <div class="tela-real vitrine">
+    <!-- barra do navegador, como na galeria pública da demonstração -->
+    <div class="barra-navegador"><app-icone nome="escudo" [tamanho]="13" /> dizai.com/l/camila-rocha/agenda <span>•••</span></div>
+
+    <div #pagina class="pagina">
+      <div #conteudo class="pagina__conteudo" [style.transform]="'translateY(-' + rolagem() + 'px)'">
+      <!-- topo da vitrine (container-topo com o fundo do cabeçalho da loja) -->
+      <div class="topo">
+        <div class="capa"><img [src]="capa" alt="" /></div>
+        <header class="loja">
+          <img class="loja__foto" [src]="logo" alt="Logo da Sálvia Nail Studio" />
+          <div class="loja__textos">
+            <h1 class="loja__nome">Sálvia Nail Studio</h1>
+            <p class="loja__descricao">Studio de manicure</p>
+          </div>
+        </header>
+        <div class="alternar">
+          <span class="alternar__opcao"><app-icone nome="imagem" [tamanho]="17" /> Trabalhos</span>
+          <span class="alternar__opcao alternar__opcao--ativa"><app-icone nome="calendario" [tamanho]="17" /> Agendar horário</span>
+        </div>
+      </div>
+
+      <!-- app-agenda-publica -->
+      <div class="agenda">
+        <section class="passo">
+          <h2 class="passo__titulo">
+            <span class="passo__numero" [class.passo__numero--feito]="comServico()">1</span>
+            Escolha o serviço
+          </h2>
+          @for (categoria of categorias; track categoria.nome) {
+            <div class="categoria">
+              <span class="categoria__nome">{{ categoria.nome }}</span>
+              <div class="servicos">
+                @for (servico of categoria.servicos; track servico.nome) {
+                  @let escolhido = comServico() && servico.nome === servicoEscolhido;
+                  <span
+                    class="servico"
+                    [class.servico--escolhido]="escolhido"
+                    [class.tocado]="tocandoServico() && servico.nome === servicoEscolhido"
+                  >
+                    <span class="servico__marca">
+                      @if (escolhido) {
+                        <app-icone nome="check" [tamanho]="14" [espessura]="3" />
+                      }
+                    </span>
+                    <span class="servico__nome">{{ servico.nome }}</span>
+                    <span class="servico__duracao"><app-icone nome="relogio" [tamanho]="14" /> {{ servico.duracao }}</span>
+                  </span>
+                }
+              </div>
+            </div>
+          }
+        </section>
+
+        @if (comServico()) {
+          <section #passoDia class="passo passo--entrada">
+            <h2 class="passo__titulo">
+              <span class="passo__numero passo__numero--feito">2</span>
+              Escolha o dia
+            </h2>
+            <div class="faixa">
+              @for (dia of dias; track dia.numero) {
+                <span class="dia" [class.dia--escolhido]="dia.numero === '23'" [class.dia--desativado]="dia.desativado">
+                  <span class="dia__semana">{{ dia.semana }}</span>
+                  <span class="dia__numero">{{ dia.numero }}</span>
+                  <span class="dia__detalhe">{{ dia.detalhe }}</span>
+                </span>
+              }
+            </div>
+          </section>
+
+          <section class="passo passo--entrada">
+            <h2 class="passo__titulo">
+              <span class="passo__numero" [class.passo__numero--feito]="comHora()">3</span>
+              Escolha o horário
+            </h2>
+            @for (turno of turnos; track turno.nome) {
+              <div class="turno">
+                <span class="turno__nome">{{ turno.nome }}</span>
+                <div class="horarios">
+                  @for (hora of turno.horarios; track hora) {
+                    <span class="hora" [class.hora--escolhida]="comHora() && hora === horaEscolhida">{{ hora }}</span>
+                  }
+                </div>
+              </div>
+            }
+          </section>
+        }
+
+        @if (comHora()) {
+          <section #passoNome class="passo passo--entrada">
+            <h2 class="passo__titulo">
+              <span class="passo__numero" [class.passo__numero--feito]="nome().length > 0">4</span>
+              Seu nome
+            </h2>
+            <span class="campo-nome" [class.campo-nome--ativo]="nome().length > 0 && !podeEnviar()">
+              @if (nome()) { {{ nome() }} } @else { <i>Como podemos te chamar?</i> }
+            </span>
+          </section>
+
+          <div class="resumo passo--entrada">
+            <span class="resumo__linha"><strong>Esmaltação em gel</strong> · 1h</span>
+            <span class="resumo__linha">Sexta, 23/10 às 14:00</span>
+            <span class="resumo__nota">Ao enviar, o horário é conferido e confirmado na hora pelo WhatsApp.</span>
+          </div>
+        }
+        <div class="espaco-botao"></div>
+      </div>
+      </div>
+    </div>
+
+    <!-- botão fixo no rodapé, com o texto do que falta -->
+    <span class="enviar" [class.enviar--inativo]="!podeEnviar()" [class.tocado]="enviando()">
+      @if (podeEnviar()) {
+        <app-icone nome="conversa" [tamanho]="20" />
+      }
+      {{ textoBotao() }}
+    </span>
+  </div>
+</app-telefone-demo>

@@ -97,11 +97,14 @@ export class AgendaPublicaComponent implements OnInit {
     return { servicos: this.textoServicos(), quando: `${diaPorExtenso(dia)} às ${hora}`, duracao: formatarDuracao(this.duracaoTotal()) };
   });
 
+  /** O nome é obrigatório: é como o horário aparece na agenda do lojista. */
+  protected readonly faltaNome = computed(() => this.nome().trim().length === 0);
+
   /** A mesma mensagem que o assistente sabe ler (ver a seção AGENDAMENTO do prompt). */
   protected readonly linkEnviar = computed(() => {
     const dia = this.diaSelecionado();
     const hora = this.horaSelecionada();
-    if (!this.pronto() || !dia || !hora) {
+    if (!this.pronto() || !dia || !hora || this.faltaNome()) {
       return null;
     }
     const linhas = [
@@ -109,11 +112,8 @@ export class AgendaPublicaComponent implements OnInit {
       `Serviço: ${this.textoServicos()}`,
       `Data: ${diaPorExtenso(dia)}`,
       `Horário: ${hora}`,
+      `Nome: ${this.nome().trim()}`,
     ];
-    const nome = this.nome().trim();
-    if (nome) {
-      linhas.push(`Nome: ${nome}`);
-    }
     return `${gerarLinkWhatsapp(this.numeroWhatsapp())}?text=${encodeURIComponent(linhas.join('\n'))}`;
   });
 

@@ -1,0 +1,94 @@
+<div class="fundo" (click)="fechar.emit()" aria-hidden="true"></div>
+
+<section class="teste" role="dialog" aria-modal="true" aria-labelledby="teste-titulo">
+  <!-- cabeçalho como o do WhatsApp: a loja do lado do cliente -->
+  <header class="topo">
+    <button type="button" class="topo__fechar" aria-label="Fechar o teste" (click)="fechar.emit()">
+      <app-icone nome="voltar" [tamanho]="22" [espessura]="2.2" />
+    </button>
+    @if (perfil().fotoPerfilUrl; as foto) {
+      <img class="topo__foto" [src]="foto | urlImagem" alt="">
+    } @else {
+      <span class="topo__foto topo__foto--inicial" aria-hidden="true">{{ inicial() }}</span>
+    }
+    <div class="topo__textos">
+      <h2 id="teste-titulo" class="topo__nome">{{ perfil().nomeLoja }}</h2>
+      <span class="topo__status">{{ pendente() ? 'digitando…' : 'Teste do seu assistente' }}</span>
+    </div>
+    <button type="button" class="topo__recomecar" [disabled]="pendente() !== null || mensagens().length === 0" (click)="recomecar()">
+      Recomeçar
+    </button>
+  </header>
+
+  <div #rolagem class="conversa" aria-live="polite">
+    <p class="nota">
+      Escreva como se fosse um cliente, o assistente irá responder exatamente como fará no WhatsApp.
+      Use para fazer testes e ajustar comportamentos.
+    </p>
+
+    @if (carregando()) {
+      <p class="nota nota--simples">Abrindo a conversa…</p>
+    }
+
+    @for (item of itens(); track $index) {
+      @if (item.tipo === 'aviso') {
+        <p class="nota nota--aviso">{{ item.texto }}</p>
+      } @else {
+        <div class="balao" [class.balao--cliente]="item.deCliente">
+          <!-- a mesma formatação do WhatsApp: listas com "-", *negrito*, _itálico_ e ~riscado~ -->
+          <span class="balao__texto">
+            @for (linha of item.linhas; track $index) {
+              <span class="linha" [class.linha--item]="linha.marcador !== null">
+                @if (linha.marcador) {
+                  <span class="linha__marcador" aria-hidden="true">{{ linha.marcador }}</span>
+                }
+                <span class="linha__conteudo">
+                  @for (trecho of linha.trechos; track $index) {
+                    <span [class.negrito]="trecho.negrito" [class.italico]="trecho.italico" [class.riscado]="trecho.riscado">{{ trecho.texto }}</span>
+                  }
+                </span>
+              </span>
+            }
+          </span>
+          <span class="balao__hora">{{ item.hora }}</span>
+        </div>
+      }
+    }
+
+    @if (pendente(); as pendente) {
+      <div class="balao balao--cliente">
+        <span class="balao__texto">{{ pendente }}</span>
+        <span class="balao__hora"><app-icone nome="relogio" [tamanho]="11" [espessura]="2" /></span>
+      </div>
+      <div class="balao balao--digitando" aria-label="O assistente está escrevendo">
+        <i></i><i></i><i></i>
+      </div>
+    }
+
+    @if (aviso(); as aviso) {
+      <p class="nota nota--aviso">🔔 {{ aviso }}</p>
+    }
+    @if (erro(); as erro) {
+      <p class="nota nota--erro" role="alert">{{ erro }}</p>
+    }
+  </div>
+
+  <form class="entrada" (ngSubmit)="enviar()">
+    <label class="somente-leitor-tela" for="teste-campo">Mensagem como cliente</label>
+    <textarea
+      #campo
+      id="teste-campo"
+      name="texto"
+      class="entrada__campo"
+      rows="1"
+      maxlength="1000"
+      placeholder="Escreva como se fosse um cliente…"
+      [ngModel]="texto()"
+      (ngModelChange)="texto.set($event)"
+      (keydown)="aoTeclar($event)"
+    ></textarea>
+    <button type="submit" class="entrada__enviar" [disabled]="!texto().trim() || pendente() !== null" aria-label="Enviar">
+      <app-icone nome="seta" [tamanho]="20" [espessura]="2.4" />
+    </button>
+  </form>
+</section>

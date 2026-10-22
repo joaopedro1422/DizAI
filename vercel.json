@@ -1,0 +1,41 @@
+{
+  "rewrites": [
+    {
+      "source": "/l/:slug",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(whatsapp|facebookexternalhit|facebot|twitterbot|telegrambot|linkedinbot|slackbot|discordbot|skypeuripreview|pinterest|applebot|googlebot|bingbot).*"
+        }
+      ],
+      "destination": "https://TROQUE-PELO-BACKEND.run.app/public/previa/l/:slug"
+    },
+    {
+      "source": "/l/:slug/agenda",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(whatsapp|facebookexternalhit|facebot|twitterbot|telegrambot|linkedinbot|slackbot|discordbot|skypeuripreview|pinterest|applebot|googlebot|bingbot).*"
+        }
+      ],
+      "destination": "https://TROQUE-PELO-BACKEND.run.app/public/previa/l/:slug/agenda"
+    },
+    {
+      "source": "/l/:slug/foto/:fotoId",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(whatsapp|facebookexternalhit|facebot|twitterbot|telegrambot|linkedinbot|slackbot|discordbot|skypeuripreview|pinterest|applebot|googlebot|bingbot).*"
+        }
+      ],
+      "destination": "https://TROQUE-PELO-BACKEND.run.app/public/previa/l/:slug/foto/:fotoId"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

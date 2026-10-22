@@ -86,11 +86,7 @@
 
 /* Demonstração ------------------------------------------------------------- */
 
-/* A cor de marca muda junto com a loja de exemplo (vem do template) */
 .galeria__demonstracao {
-  --galeria-marca: #7a2e46;
-  --galeria-fundo: color-mix(in srgb, var(--galeria-marca) 8%, #ffffff);
-
   position: relative;
   flex: 0 1 380px;
   display: flex;
@@ -159,14 +155,12 @@
 
 .celular__tela {
   position: relative;
-  position: relative;
   display: flex;
   flex-direction: column;
   height: 600px;
   overflow: hidden;
   border-radius: 31px;
-  background: var(--galeria-fundo);
-  color: #1c1a19;
+  background: #ffffff;
 }
 
 .celular__tela::before,
@@ -195,178 +189,6 @@
   background: #141a26;
 }
 
-.navegador {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin: 12px 14px 0;
-  padding: 7px 10px;
-  border-radius: var(--raio-pilula);
-  background: var(--galeria-fundo);
-  color: #6b6461;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-/* Página pública da loja, em miniatura */
-.navegador,
-.vitrine {
-  animation: aparecer 0.45s ease-out both;
-}
-
-.vitrine {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: #ffffff;
-  font-family: var(--galeria-fonte, var(--fonte-corpo, sans-serif));
-}
-
-.vitrine--fundo-pagina {
-  background: var(--galeria-fundo);
-}
-
-.vitrine__cabecalho {
-  border-radius: 0 0 15px 15px;
-}
-
-.vitrine__cabecalho--fundo {
-  background: var(--galeria-fundo);
-}
-
-.vitrine__loja {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 20px 16px 14px;
-  text-align: center;
-}
-
-.vitrine__logo,
-.vitrine__categoria--ativa,
-.vitrine__whatsapp {
-  transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-}
-
-.vitrine__logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  overflow: hidden;
-  margin-bottom: 6px;
-  border-radius: 50%;
-  background: var(--galeria-marca);
-  box-shadow: 0 0 0 3px #ffffff, 0 0 0 5px var(--galeria-marca);
-  color: #ffffff;
-  font-family: var(--fonte-titulo);
-  font-size: 22px;
-}
-
-.vitrine__imagem-logo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.vitrine__nome {
-  font-family: var(--galeria-fonte, var(--fonte-titulo));
-  font-size: 21px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-}
-
-.vitrine__descricao {
-  font-size: 12px;
-  color: #6b6461;
-}
-
-.vitrine__categorias {
-  display: flex;
-  gap: 6px;
-  overflow: hidden;
-  padding: 0 14px 12px;
-  border-bottom: 1px solid #eeeae8;
-}
-
-.vitrine__categoria {
-  flex: none;
-  padding: 7px 12px;
-  border: 1px solid #e2dcd9;
-  border-radius: var(--raio-pilula);
-  font-size: 12px;
-  font-weight: 600;
-  color: #1c1a19;
-}
-
-.vitrine__categoria--ativa {
-  border-color: var(--galeria-marca);
-  background: var(--galeria-marca);
-  color: #ffffff;
-}
-
-.vitrine__album {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 14px 14px 10px;
-}
-
-.vitrine__album-nome {
-  font-family: var(--galeria-fonte, var(--fonte-titulo));
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.vitrine__album-contagem {
-  font-size: 11px;
-  color: #6b6461;
-}
-
-.vitrine__fotos {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 4px;
-  padding: 0 14px;
-}
-
-.vitrine__foto {
-  overflow: hidden;
-  aspect-ratio: 1;
-  border-radius: 8px;
-  animation: aparecer 0.4s ease-out both;
-}
-
-.vitrine__imagem {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.vitrine__whatsapp {
-  position: absolute;
-  right: 14px;
-  bottom: 16px;
-  left: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px;
-  border-radius: var(--raio-pilula);
-  background: var(--galeria-marca);
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--galeria-marca) 35%, transparent);
-  color: #ffffff;
-  font-size: 14px;
-  font-weight: 700;
-}
-
 @keyframes surgir {
   from {
     opacity: 0;
@@ -375,15 +197,6 @@
   to {
     opacity: 1;
     transform: none;
-  }
-}
-
-@keyframes aparecer {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }
 
@@ -398,10 +211,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .conversa__balao,
-  .navegador,
-  .vitrine,
-  .vitrine__foto {
+  .conversa__balao {
     animation: none;
   }
 }

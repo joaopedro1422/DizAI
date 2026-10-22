@@ -1,0 +1,380 @@
+/* "Minha Agenda" no tamanho real: os valores de estilos-topo-azul.css, agenda-page e faixa-dias (variante limpa) */
+.topo-azul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 18px 16px;
+  background: linear-gradient(160deg, var(--cor-primaria) 0%, #2c4f9e 100%);
+  color: #ffffff;
+}
+
+.topo-azul__linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topo-azul__voltar {
+  display: inline-flex;
+  margin-left: -6px;
+  padding: 6px;
+}
+
+.link-topo {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 70%;
+  border-radius: var(--raio-pilula);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.link-topo__url {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 7px 4px 7px 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.link-topo__texto {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link-topo__copiar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 34px;
+  height: 32px;
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.topo-azul__identidade {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topo-azul__titulo {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.abas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--raio-medio);
+  background: rgba(10, 22, 52, 0.32);
+}
+
+.aba {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border-radius: 11px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.aba--ativa {
+  background: #ffffff;
+  color: var(--cor-primaria);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(10, 20, 45, 0.25);
+}
+
+/* Conteúdo (conteudo-tela agendamentos) */
+.agendamentos {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 4px 24px 40px;
+}
+
+.calendario {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.calendario__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.calendario__mes {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.calendario__setas {
+  display: flex;
+  gap: 2px;
+  margin-right: -8px;
+  color: var(--cor-texto-secundario);
+}
+
+.seta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+}
+
+.seta--desativada {
+  opacity: 0.35;
+}
+
+/* app-faixa-dias variante="limpa" */
+.faixa {
+  display: flex;
+  gap: 4px;
+  overflow: hidden;
+  padding: 4px 2px 8px;
+}
+
+.dia {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 56px;
+  padding: 9px 0 7px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+}
+
+.dia__semana {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+}
+
+.dia__numero {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.dia__detalhe {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-height: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--cor-texto-suave);
+  white-space: nowrap;
+}
+
+.dia__ponto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cor-primaria);
+}
+
+.dia--hoje:not(.dia--escolhido) .dia__numero,
+.dia--hoje:not(.dia--escolhido) .dia__semana {
+  color: var(--cor-primaria);
+}
+
+.dia--escolhido {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.18);
+}
+
+.dia--escolhido .dia__semana,
+.dia--escolhido .dia__detalhe {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dia--escolhido .dia__ponto {
+  background: #ffffff;
+}
+
+/* Cabeçalho do dia escolhido */
+.dia-aberto {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dia-aberto__titulo {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.dia-aberto__resumo {
+  flex: none;
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.visualizacao {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin: -4px 0 -6px;
+  font-size: 13px;
+}
+
+.visualizacao__rotulo {
+  color: var(--cor-texto-suave);
+}
+
+.visualizacao__campo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 2px;
+  font-weight: 800;
+}
+
+/* Cards dos horários (visualização resumida) */
+.lista-horarios {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.horario {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 16px;
+  background: var(--cor-fundo);
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.09), 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+/* o horário que o assistente acabou de marcar entra na lista */
+.horario--novo {
+  animation: tela-real-entra-de-cima 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.horario__tempo {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 64px;
+  padding: 8px 0;
+  border-radius: 12px;
+  background: var(--cor-primaria);
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+}
+
+.horario__inicio {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.horario__fim {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.horario__corpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.horario__nome {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.horario__servicos {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--cor-texto-secundario);
+}
+
+.horario__duracao {
+  white-space: nowrap;
+}
+
+.horario__rodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.horario__whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cor-ativo);
+}
+
+.horario__lateral {
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  flex: none;
+  margin: -6px -8px 0 -8px;
+}
+
+.horario__assistente {
+  display: inline-flex;
+  color: var(--cor-ativo);
+}
+
+.horario__cancelar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  color: var(--cor-texto-suave);
+}
+
+.acoes-dia {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .horario--novo {
+    animation: none;
+  }
+}

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 
 import { ERRO_AO_CARREGAR, mensagemDoErro } from '../../core/api/erro-api';
-import { LojaAdmin } from '../../core/models/admin.model';
+import { LojaAdmin, SenhaTemporaria, SolicitacaoSenha } from '../../core/models/admin.model';
 import { AdminService } from '../../core/services/admin.service';
 import { ToastService } from '../../core/services/toast.service';
 import { pluralizar } from '../../core/utils/colecao.utils';
@@ -14,6 +14,11 @@ import { IconeComponent } from '../../shared/components/icone/icone.component';
 
 type FiltroLoja = 'todas' | 'conectadas' | 'sem-whatsapp' | 'ia-ligada' | 'sem-atividade';
 type OrdemLojas = 'recentes' | 'ativas' | 'custo';
+
+/** A senha temporária que acabou de ser gerada (só existe nesta tela, até fechar). */
+interface SenhaGerada extends SenhaTemporaria {
+  nome: string;
+}
 
 interface Metrica {
   rotulo: string;
@@ -51,6 +56,12 @@ export class AdminPageComponent implements OnInit {
   protected readonly filtroAtual = signal<FiltroLoja>('todas');
   protected readonly busca = signal('');
   protected readonly ordem = signal<OrdemLojas>('recentes');
+
+  /** "Esqueci minha senha" ainda abertos. */
+  protected readonly solicitacoesSenha = this.adminService.solicitacoesSenha;
+  protected readonly senhaGerada = signal<SenhaGerada | null>(null);
+  /** O pedido com uma ação em andamento (gerar ou descartar). */
+  protected readonly atendendo = signal<string | null>(null);
 
   protected readonly subtitulo = computed(() => {
     const painel = this.painel();
@@ -142,6 +153,56 @@ export class AdminPageComponent implements OnInit {
     }
   }
 
+  protected async gerarSenha(solicitacao: SolicitacaoSenha): Promise<void> {
+    if (this.atendendo()) {
+      return;
+    }
+    this.atendendo.set(solicitacao.id);
+    try {
+      const senha = await this.adminService.gerarSenhaTemporaria(solicitacao.id);
+      this.senhaGerada.set({ ...senha, nome: primeiroNome(solicitacao.nomeDono || solicitacao.nomeInformado) });
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível gerar a senha. Tente de novo.'));
+    } finally {
+      this.atendendo.set(null);
+    }
+  }
+
+  protected async descartarSolicitacao(solicitacao: SolicitacaoSenha): Promise<void> {
+    if (this.atendendo()) {
+      return;
+    }
+    this.atendendo.set(solicitacao.id);
+    try {
+      await this.adminService.descartarSolicitacao(solicitacao.id);
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível descartar o pedido.'));
+    } finally {
+      this.atendendo.set(null);
+    }
+  }
+
+  protected async copiarSenha(senha: string): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(senha);
+      this.toastService.mostrar('Senha copiada');
+    } catch {
+      this.toastService.mostrar('Não foi possível copiar. Selecione a senha e copie.');
+    }
+  }
+
+  /** Abre o WhatsApp com a mensagem pronta para o lojista (sai do seu WhatsApp, você confere antes de enviar). */
+  protected linkEnvioSenha(gerada: SenhaGerada): string {
+    const texto =
+      `Oi${gerada.nome ? ', ' + gerada.nome : ''}! Sua senha temporária do DizAI é: ${gerada.senha}\n\n` +
+      'Entre com ela no painel e crie a sua senha nova no menu da conta (⋮) → "Alterar senha".';
+    return `${gerarLinkWhatsapp(gerada.numeroWhatsapp)}?text=${encodeURIComponent(texto)}`;
+  }
+
+  protected quandoPediu(solicitacao: SolicitacaoSenha): string {
+    return `há ${this.tempoDecorrido.transform(new Date(solicitacao.criadoEm))}`;
+  }
+
   protected filtrar(filtro: FiltroLoja): void {
     this.filtroAtual.set(filtro);
   }
@@ -212,6 +273,10 @@ function ordenar(lojas: LojaAdmin[], ordem: OrdemLojas): LojaAdmin[] {
     return [...lojas].sort((a, b) => b.custoIaMesUsd - a.custoIaMesUsd);
   }
   return lojas;
+}
+
+function primeiroNome(nome: string): string {
+  return nome.trim().split(/\s+/)[0] ?? '';
 }
 
 function porcentagem(parte: number, total: number): string {

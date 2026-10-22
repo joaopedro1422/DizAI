@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" fill="#8E1B2B"/>
+  <circle cx="100" cy="100" r="84" fill="none" stroke="#F3D9CF" stroke-opacity="0.35" stroke-width="1.5"/>
+  <!-- vidro de esmalte -->
+  <g transform="translate(100 74)">
+    <rect x="-7" y="-34" width="14" height="22" rx="3" fill="#F3D9CF"/>
+    <rect x="-11" y="-14" width="22" height="6" rx="2" fill="#F3D9CF"/>
+    <path d="M-17 -6h34a6 6 0 0 1 6 6v20a10 10 0 0 1-10 10h-26a10 10 0 0 1-10-10v-20a6 6 0 0 1 6-6z" fill="#F3D9CF"/>
+    <path d="M-10 2h6v20h-6z" fill="#8E1B2B" opacity="0.25"/>
+  </g>
+  <text x="100" y="140" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="34" fill="#FBEDE7">Bella</text>
+  <text x="100" y="160" text-anchor="middle" font-family="Georgia, serif" font-size="11" letter-spacing="5" fill="#F3D9CF">STUDIO</text>
+</svg>

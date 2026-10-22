@@ -1,5 +1,6 @@
 <div class="tela-app">
   <app-cabecalho-pagina [titulo]="conteudo().tituloItens" [subtitulo]="subtitulo()">
+    <app-botao-video acoesTopo (abrir)="mostrarVideo.set(true)" />
     <button type="button" class="btn btn--primario btn--bloco btn--acao-principal" (click)="abrirModal()">
       <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
       Adicionar {{ conteudo().termoItem }}
@@ -72,12 +73,12 @@
   </app-bottom-sheet>
 }
 
-@if (mostrarDica()) {
-  <app-dica-sobreposta
-    [titulo]="'Antes de cadastrar seus ' + conteudo().tituloItens.toLowerCase()"
-    descricao="O assistente responde seus clientes usando só o que estiver aqui. Quanto mais completo o cadastro, melhor ele atende."
-    [itens]="dicasCadastro()"
-    [rotuloBotao]="rotuloBotaoDica()"
-    (confirmar)="fecharDica()"
+@if (mostrarVideo()) {
+  <app-video-cadastro
+    [tipo]="tipoVideo()"
+    [termoItens]="conteudo().tituloItens.toLowerCase()"
+    [rotuloBotao]="rotuloBotaoVideo()"
+    (confirmar)="fecharVideo(true)"
+    (fechar)="fecharVideo(false)"
   />
 }

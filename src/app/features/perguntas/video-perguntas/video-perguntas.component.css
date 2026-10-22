@@ -1,0 +1,47 @@
+/* Peças das cenas deste vídeo; a base comum está em shared/components/video-tutorial/cenas-video.css */
+
+/* --------------------------------------------------------------------------
+   Perguntas frequentes
+   -------------------------------------------------------------------------- */
+
+.pergunta-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6cqw;
+  padding: 2.2cqw;
+  border: 0.25cqw solid var(--cor-borda-suave);
+  border-radius: 2.6cqw;
+  line-height: 1.35;
+}
+
+.pergunta-card small {
+  font-size: 2.4cqw;
+  color: var(--cor-texto-suave);
+}
+
+.pergunta-card--nova {
+  border-color: #b9dcae;
+  background: #f1f9ee;
+}
+
+.sugestao {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4cqw;
+  padding: 2.4cqw;
+  border-radius: 2.6cqw;
+  background: var(--cor-ambar-fundo);
+}
+
+.sugestao__titulo {
+  font-size: 2.6cqw;
+  font-weight: 800;
+  color: var(--cor-ambar);
+}
+
+.sugestao__pergunta {
+  padding: 1.6cqw 2cqw;
+  border-radius: 1.8cqw;
+  background: #ffffff;
+  font-style: italic;
+}

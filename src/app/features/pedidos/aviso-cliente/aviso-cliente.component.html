@@ -1,0 +1,26 @@
+<label class="aviso__ligar">
+  <input type="checkbox" [checked]="enviar()" (change)="alternar($event)">
+  <span>{{ rotulo() }}</span>
+</label>
+
+@if (enviar()) {
+  <div class="aviso__corpo">
+    @if (mensagens().length > 0) {
+      <div class="aviso__modelos" role="group" aria-label="Mensagens prontas">
+        <button type="button" class="chip chip--pequeno" (click)="usar(null)">Padrão</button>
+        @for (mensagem of mensagens(); track mensagem.id) {
+          <button type="button" class="chip chip--pequeno" (click)="usar(mensagem)">{{ mensagem.titulo }}</button>
+        }
+      </div>
+    }
+    <textarea
+      class="campo__entrada aviso__texto"
+      rows="4"
+      maxlength="1000"
+      aria-label="Mensagem para o cliente"
+      [value]="texto()"
+      (input)="digitar($event)"
+    ></textarea>
+    <span class="campo__dica">Vai pelo WhatsApp da loja, como uma mensagem sua.</span>
+  </div>
+}

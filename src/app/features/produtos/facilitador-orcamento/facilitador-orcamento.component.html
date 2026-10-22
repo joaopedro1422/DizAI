@@ -1,0 +1,39 @@
+<section class="facilitador" [class.facilitador--ligado]="ativo()">
+  <span class="facilitador__icone" aria-hidden="true">
+    <app-icone nome="caixa" [tamanho]="20" />
+  </span>
+  <div class="facilitador__textos">
+    <h2 class="facilitador__titulo">Facilitador de orçamentos</h2>
+    <p class="facilitador__descricao">
+      @if (ativo()) {
+        Seus clientes montam o pedido na sua página e enviam pelo WhatsApp.
+        <a [href]="linkPagina()" target="_blank" rel="noopener">Ver página</a>
+      } @else {
+        Deixe o cliente montar o pedido na sua página, com os valores, e enviar pronto pelo WhatsApp.
+      }
+    </p>
+  </div>
+  <app-interruptor rotulo="Facilitador de orçamentos" [ligado]="ativo()" [ocupado]="salvando()" (alternar)="alternar($event)" />
+</section>
+
+@if (explicando()) {
+  <app-bottom-sheet titulo="Facilitador de orçamentos" (fechar)="explicando.set(false)">
+    <div class="explicacao">
+      <p>
+        Na sua página aparece a aba <strong>Orçamento</strong>. O cliente escolhe os produtos, a quantidade, os tamanhos
+        e os sabores, vê o total e envia o pedido pronto pelo WhatsApp. Lá o atendimento segue normalmente.
+      </p>
+      <div class="explicacao__aviso">
+        <app-icone nome="lampada" [tamanho]="18" />
+        <p>
+          A página mostra os seus produtos exatamente como estão cadastrados. Para manter ligado, deixe tudo
+          apresentável: nomes e descrições bem escritos, preços e variações certos e uma foto, se tiver.
+        </p>
+      </div>
+      <button type="button" class="btn btn--primario btn--grande btn--bloco" [disabled]="salvando()" (click)="confirmar()">
+        Ligar o facilitador
+      </button>
+      <button type="button" class="btn btn--texto btn--bloco" (click)="explicando.set(false)">Agora não</button>
+    </div>
+  </app-bottom-sheet>
+}

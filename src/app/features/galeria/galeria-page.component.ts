@@ -6,6 +6,7 @@ import { Album, NovoAlbum } from '../../core/models/galeria.model';
 import { VisitasGaleria } from '../../core/models/visitas.model';
 import { buscarCorMarca } from '../../core/constants/cores-marca';
 import { ArmazenamentoFotosService } from '../../core/services/armazenamento-fotos.service';
+import { VIDEOS_SEMPRE_ABERTOS } from '../../core/services/dicas-vistas.service';
 import { ConteudoRamoService } from '../../core/services/conteudo-ramo.service';
 import { GaleriaService } from '../../core/services/galeria.service';
 import { PerfilService } from '../../core/services/perfil.service';
@@ -14,34 +15,15 @@ import { pluralizar } from '../../core/utils/colecao.utils';
 import { BottomSheetComponent } from '../../shared/components/bottom-sheet/bottom-sheet.component';
 import { CarregandoComponent } from '../../shared/components/carregando/carregando.component';
 import { CabecalhoPaginaComponent } from '../../shared/components/cabecalho-pagina/cabecalho-pagina.component';
-import { DicaSobrepostaComponent, ItemDica } from '../../shared/components/dica-sobreposta/dica-sobreposta.component';
 import { EstadoVazioComponent } from '../../shared/components/estado-vazio/estado-vazio.component';
 import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { AlbumCardComponent } from './album-card/album-card.component';
 import { FotosEscolhidas, FotosFormularioComponent } from './fotos-formulario/fotos-formulario.component';
 import { SeletorCorMarcaComponent } from './seletor-cor-marca/seletor-cor-marca.component';
 import { TopicoFormularioComponent } from './topico-formulario/topico-formulario.component';
+import { VideoGaleriaComponent } from './video-galeria/video-galeria.component';
 
 type ModalGaleria = 'topico' | 'fotos' | 'vitrine' | 'excluir' | null;
-
-/** Apresentação da galeria, na primeira vez que o lojista abre a tela (introGaleriaVista no perfil). */
-const ITENS_INTRO_GALERIA: ItemDica[] = [
-  {
-    icone: 'imagem',
-    titulo: 'Mostre seus trabalhos',
-    texto: 'Separe as fotos em tópicos, como "Unhas em gel" ou "Bolos de aniversário". Quando o cliente pedir para ver, o assistente envia o link da sua página.',
-  },
-  {
-    icone: 'prancheta',
-    titulo: 'Cardápios e catálogos também',
-    texto: 'Crie um tópico para o cardápio, a tabela de preços ou o catálogo em fotos. Fica tudo num lugar só, fácil de mandar.',
-  },
-  {
-    icone: 'ajustes',
-    titulo: 'Com a cara da sua loja',
-    texto: 'Em "Personalizar vitrine" você escolhe as cores, a fonte e a foto de capa da página.',
-  }
-];
 
 @Component({
   selector: 'app-galeria-page',
@@ -56,7 +38,7 @@ const ITENS_INTRO_GALERIA: ItemDica[] = [
     FotosFormularioComponent,
     CarregandoComponent,
     SeletorCorMarcaComponent,
-    DicaSobrepostaComponent,
+    VideoGaleriaComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './galeria-page.component.html',
@@ -88,7 +70,6 @@ export class GaleriaPageComponent implements OnInit {
   protected readonly salvandoOrdem = signal(false);
   /** Apresentação da galeria: abre uma vez por loja (introGaleriaVista no perfil). */
   protected readonly mostrarIntro = signal(false);
-  protected readonly itensIntro = ITENS_INTRO_GALERIA;
   /** Visitas à página pública; null enquanto carrega ou se a busca falhar (o card some). */
   protected readonly visitas = signal<VisitasGaleria | null>(null);
   protected readonly textoVisitas = computed(() =>
@@ -113,8 +94,8 @@ export class GaleriaPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    // só quando o backend diz que ainda não viu (=== false): backend antigo, sem o campo, não abre a janela
-    this.mostrarIntro.set(this.perfil().introGaleriaVista === false);
+    // vídeo de apresentação: só quando o backend diz que ainda não viu (=== false; backend antigo, sem o campo, não abre)
+    this.mostrarIntro.set(VIDEOS_SEMPRE_ABERTOS || this.perfil().introGaleriaVista === false);
     this.galeriaService
       .buscarVisitas()
       .then((visitas) => this.visitas.set(visitas))

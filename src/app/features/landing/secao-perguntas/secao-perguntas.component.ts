@@ -26,7 +26,7 @@ const PERGUNTAS: Pergunta[] = [
   {
     pergunta: 'Ele fecha vendas sozinho?',
     resposta:
-      'Você decide o que ele faz quando o cliente quer fechar: te chamar na hora, ou coletar os dados do pedido que você definir e te entregar o resumo (ele não confirma o pedido, quem confirma é você). Para negócios de serviço, há também o agendamento automático, em que ele marca o horário sozinho na sua agenda.',
+      'Para produtos, você escolhe: ele te chama na hora ou anota os dados do pedido e te entrega o resumo para você confirmar. Para serviços, há o agendamento automático: ele marca o horário sozinho na sua agenda.',
   },
   {
     pergunta: 'Posso responder eu mesmo uma conversa?',

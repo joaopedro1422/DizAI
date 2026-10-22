@@ -187,6 +187,109 @@
   gap: 6px;
 }
 
+/* "Esqueci minha senha": pedidos abertos e a senha que acabou de ser gerada */
+.pedidos-senha {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pedidos-senha__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pedido-senha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #F1D9A6;
+  border-radius: var(--raio-medio);
+  background: color-mix(in srgb, var(--cor-ambar-fundo) 45%, #ffffff);
+}
+
+.pedido-senha__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.pedido-senha__nome {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.pedido-senha__conta {
+  font-size: 13px;
+  color: var(--cor-texto-secundario);
+}
+
+.pedido-senha__conta--sem {
+  color: var(--cor-erro);
+  font-weight: 600;
+}
+
+.pedido-senha__quando {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+.pedido-senha__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.senha-gerada {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid #BFE0CC;
+  border-radius: var(--raio-medio);
+  background: #F2FAF5;
+}
+
+.senha-gerada__titulo {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.senha-gerada__texto {
+  margin: 0;
+  font-size: 13px;
+  color: var(--cor-texto-secundario);
+}
+
+.senha-gerada__linha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.senha-gerada__senha {
+  padding: 8px 14px;
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-fundo);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  user-select: all;
+}
+
+.senha-gerada__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
 @media (max-width: 560px) {
   .lojas__controles {
     grid-template-columns: minmax(0, 1fr);

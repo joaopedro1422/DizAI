@@ -1,0 +1,147 @@
+@let ex = exemplo();
+<app-video-tutorial
+  titulo="Como configurar o seu assistente"
+  [cenas]="cenas"
+  [rotuloBotao]="rotuloBotao()"
+  (confirmar)="confirmar.emit()"
+  (fechar)="fechar.emit()"
+>
+  <ng-template #legenda let-cena>
+    @switch (cena) {
+      @case (0) {
+        <span class="legenda__selo surge">Seu assistente</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Aqui ele ganha a cara do seu negócio</p>
+        <p class="legenda__texto surge" style="--atraso: 1.4s">Saudação, instruções e catálogo: veja como cada um ajuda no atendimento.</p>
+      }
+      @case (1) {
+        <span class="legenda__selo surge">Saudação inicial</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">A primeira mensagem que o cliente recebe</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Aproveite para já informar o horário de funcionamento, links e o que mais quiser.</p>
+      }
+      @case (2) {
+        <span class="legenda__selo surge">Na conversa</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Ela chega antes da primeira resposta</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Assim o cliente já sabe o principal sem precisar perguntar.</p>
+      }
+      @case (3) {
+        <span class="legenda__selo legenda__selo--dica surge">Instruções</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Regras extras que ele sempre segue</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Podem ser sobre qualquer coisa: jeito de falar, emojis que pode usar, regras do seu negócio.</p>
+      }
+      @case (4) {
+        <span class="legenda__selo surge">Na conversa</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">E ele aplica no atendimento</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Você escreve uma vez e não precisa repetir para cada cliente.</p>
+      }
+      @case (5) {
+        <span class="legenda__selo surge">Catálogo</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Seu catálogo em PDF ou imagem</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Ele envia na saudação ou quando o cliente perguntar, no máximo uma vez por conversa.</p>
+      }
+      @case (6) {
+        <p class="legenda__titulo surge">Teste antes de ligar ✨</p>
+        <p class="legenda__texto surge" style="--atraso: 0.8s">Toque em “Testar atendimento” e converse com ele como se fosse um cliente.</p>
+      }
+    }
+  </ng-template>
+
+  <ng-template #tela let-cena>
+    @switch (cena) {
+      @case (0) {
+        <div class="app">
+          <div class="topo-assistente">
+            <span class="topo-assistente__icone">🎧</span>
+            <span><b>Seu assistente</b><small>Defina como ele atende</small></span>
+          </div>
+          <div class="app__corpo">
+            <div class="config-item surge" style="--atraso: 0.8s"><b>Saudação inicial</b><small>A primeira mensagem</small></div>
+            <div class="config-item surge" style="--atraso: 1.2s"><b>Quando o cliente quiser fechar</b><small>Até onde ele vai</small></div>
+            <div class="config-item surge" style="--atraso: 1.6s"><b>Catálogo</b><small>PDF ou imagem</small></div>
+            <div class="config-item surge" style="--atraso: 2s"><b>Instruções</b><small>Regras que ele sempre segue</small></div>
+          </div>
+        </div>
+      }
+      @case (1) {
+        <div class="app">
+          <div class="app__barra">Saudação inicial</div>
+          <div class="app__corpo">
+            <div class="campo destaca" style="--atraso: 0.6s">
+              <span class="campo__rotulo">Primeira mensagem do cliente</span>
+              <span class="campo__caixa campo__caixa--alta campo__caixa--linhas">
+                @for (linha of ex.saudacao; track linha; let i = $index) {
+                  <span class="surge" [style.--atraso]="1.2 + i * 1.4 + 's'">{{ linha }}</span>
+                }
+              </span>
+            </div>
+            <span class="aviso-mini surge" style="--atraso: 5.6s">✓ Saudação salva</span>
+          </div>
+        </div>
+      }
+      @case (2) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar">{{ ex.inicial }}</span>
+            <span class="zap__nome"><b>{{ ex.loja }}</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            <span class="balao balao--cliente surge" style="--atraso: 0.6s">Oi, boa tarde!</span>
+            <span class="balao surge" style="--atraso: 2s">
+              @for (linha of ex.saudacao; track linha) {
+                <span class="balao__linha">{{ linha }}</span>
+              }
+            </span>
+            <span class="balao surge" style="--atraso: 4.2s">Boa tarde! Como posso ajudar?</span>
+          </div>
+        </div>
+      }
+      @case (3) {
+        <div class="app">
+          <div class="app__barra">Instruções</div>
+          <div class="app__corpo">
+            @for (regra of ex.regras; track regra; let i = $index) {
+              <div class="regra surge" [style.--atraso]="0.8 + i * 1.2 + 's'">{{ regra }}</div>
+            }
+            <div class="campo__caixa campo__caixa--tracejada surge" style="--atraso: 6s">+ Adicionar regra</div>
+          </div>
+        </div>
+      }
+      @case (4) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar">{{ ex.inicial }}</span>
+            <span class="zap__nome"><b>{{ ex.loja }}</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            <span class="balao balao--cliente surge" style="--atraso: 0.6s">{{ ex.conversaRegra.cliente }}</span>
+            <span class="digitando digitando--1"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 3s">{{ ex.conversaRegra.assistente }}</span>
+          </div>
+        </div>
+      }
+      @case (5) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar">{{ ex.inicial }}</span>
+            <span class="zap__nome"><b>{{ ex.loja }}</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            <span class="balao balao--cliente surge" style="--atraso: 0.6s">Vocês têm um catálogo?</span>
+            <span class="digitando digitando--1"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 3s">Temos sim! Te mando aqui embaixo.</span>
+            <span class="balao documento surge" style="--atraso: 4.2s">
+              <span class="documento__icone">PDF</span>
+              <span class="documento__nome">{{ ex.catalogo }}</span>
+            </span>
+          </div>
+        </div>
+      }
+      @case (6) {
+        <div class="final">
+          <span class="final__check surge" style="--atraso: 0.4s">✓</span>
+          <b class="surge" style="--atraso: 1s">Pronto para configurar?</b>
+          <small class="surge" style="--atraso: 1.6s">Teste quantas vezes quiser antes de ligar.</small>
+        </div>
+      }
+    }
+  </ng-template>
+</app-video-tutorial>

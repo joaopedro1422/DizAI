@@ -1,0 +1,126 @@
+/* O balão se alinha direto na coluna da conversa de quem usa (cliente à direita) */
+:host {
+  display: contents;
+}
+
+.balao {
+  align-self: flex-start;
+  max-width: 84%;
+  padding: 6px 8px 6px 9px;
+  border-radius: 0 8px 8px 8px;
+  background: #ffffff;
+  color: #111B21;
+  box-shadow: 0 1px 0.5px rgba(11, 20, 26, 0.13);
+  font-size: var(--tamanho-texto-balao, 14px);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  animation: entra 0.22s ease-out both;
+}
+
+.balao--cliente {
+  align-self: flex-end;
+  border-radius: 8px 0 8px 8px;
+  background: #D9FDD3;
+}
+
+.balao__autor {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #C2185B;
+}
+
+.linha { display: block; min-height: 1.4em; white-space: pre-wrap; }
+.linha--item { display: flex; gap: 6px; padding-left: 2px; }
+.negrito { font-weight: 700; }
+.italico { font-style: italic; }
+.riscado { text-decoration: line-through; }
+
+.balao__hora {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  float: right;
+  margin: 6px 0 -4px 10px;
+  color: #667781;
+  font-size: 11px;
+}
+
+.balao__lido { color: #53BDEB; }
+
+/* PDF, cardápio em foto e link com prévia */
+.balao--midia { width: 236px; max-width: 84%; padding: 4px 4px 6px; }
+
+.documento { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 6px; background: #F5F6F6; }
+
+.documento__tipo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 38px;
+  border-radius: 4px;
+  background: #E5484D;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.documento__textos { display: flex; flex-direction: column; min-width: 0; }
+.documento__nome { overflow: hidden; font-size: 13.5px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.documento__detalhe { font-size: 12px; color: #667781; }
+
+.cardapio {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 3px;
+  height: 150px;
+  padding: 12px;
+  border-radius: 6px;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--cor-cardapio) 70%, #ffffff), var(--cor-cardapio));
+  color: #ffffff;
+  font-size: 11.5px;
+}
+
+.cardapio strong { font-size: 16px; }
+.balao__hora--sobre { position: relative; margin-top: 4px; }
+
+.previa { display: flex; flex-direction: column; overflow: hidden; margin-bottom: 4px; border-radius: 6px; background: #F5F6F6; }
+.previa__fotos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; height: 86px; }
+.previa__fotos i { background: var(--cor-previa); }
+.previa__fotos i:nth-child(2) { opacity: 0.75; }
+.previa__fotos i:nth-child(3) { opacity: 0.5; }
+.previa__titulo { padding: 7px 9px 0; font-size: 13px; font-weight: 700; }
+.previa__url { padding: 1px 9px 7px; font-size: 11.5px; color: #667781; }
+.balao__link { padding: 0 5px; color: #027EB5; font-size: 13.5px; }
+
+/* aviso do DizAI e separador de dia, no meio da conversa */
+.marcador {
+  align-self: center;
+  max-width: 92%;
+  margin: 4px 0;
+  padding: 5px 11px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #54656F;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 1px 0.5px rgba(11, 20, 26, 0.13);
+  animation: entra 0.25s ease-out both;
+}
+
+.marcador--dia { text-transform: uppercase; letter-spacing: 0.04em; }
+.marcador--dizai { background: var(--cor-primaria); color: #ffffff; }
+
+@keyframes entra {
+  from { transform: translateY(6px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .balao, .marcador { animation: none; }
+}

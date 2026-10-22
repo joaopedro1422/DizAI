@@ -1,0 +1,60 @@
+<div class="grupo-chips" role="radiogroup" aria-label="Período">
+  @for (periodo of periodos; track periodo.dias) {
+    <button
+      type="button"
+      role="radio"
+      class="chip"
+      [class.chip--ativo]="dias() === periodo.dias"
+      [attr.aria-checked]="dias() === periodo.dias"
+      (click)="escolherPeriodo(periodo.dias)"
+    >
+      {{ periodo.rotulo }}
+    </button>
+  }
+</div>
+
+@if (numeros(); as n) {
+  <div class="metricas" [class.metricas--atualizando]="carregando()">
+    <div class="metrica metrica--destaque">
+      <span class="metrica__rotulo">Faturamento</span>
+      <span class="metrica__valor">{{ real(n.faturamento) }}</span>
+      <span class="metrica__nota">pedidos entregues nos últimos {{ n.dias }} dias</span>
+    </div>
+    <div class="metrica">
+      <span class="metrica__rotulo">Pedidos entregues</span>
+      <span class="metrica__valor">{{ n.entregues }}</span>
+    </div>
+    <div class="metrica">
+      <span class="metrica__rotulo">Valor médio</span>
+      <span class="metrica__valor">{{ real(n.valorMedio) }}</span>
+    </div>
+  </div>
+
+  @if (n.emAndamento > 0) {
+    <p class="andamento">
+      Em andamento agora: <strong>{{ n.emAndamento }} {{ n.emAndamento === 1 ? 'pedido' : 'pedidos' }}</strong>
+      · {{ real(n.valorEmAndamento) }}
+    </p>
+  }
+
+  <section class="historico" aria-labelledby="titulo-historico">
+    <h2 class="rotulo-maiusculo" id="titulo-historico">Entregues no período</h2>
+    @for (pedido of n.entreguesRecentes; track pedido.id) {
+      <div class="historico__linha">
+        <span class="historico__textos">
+          <span class="historico__nome">{{ pedido.nomeCliente || pedido.whatsapp || 'Cliente' }}</span>
+          <span class="historico__descricao">{{ data(pedido.entregueEm) }} · {{ descricao(pedido.resumo) }}</span>
+        </span>
+        <span class="historico__valor">{{ real(pedido.valor) }}</span>
+      </div>
+    } @empty {
+      <app-estado-vazio
+        icone="grafico"
+        titulo="Nenhum pedido entregue no período"
+        descricao="Quando você marcar um pedido como entregue, ele entra aqui e no faturamento."
+      />
+    }
+  </section>
+} @else if (carregando()) {
+  <app-carregando texto="Somando seus pedidos…" />
+}

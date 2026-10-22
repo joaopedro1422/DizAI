@@ -3,9 +3,9 @@
     <app-logo />
   </a>
   <div class="nav__links">
+    <a routerLink="/" fragment="solucao" class="nav__link">Solução</a>
     <a routerLink="/" fragment="como" class="nav__link">Como funciona</a>
     <a routerLink="/" fragment="para-quem" class="nav__link">Para quem é</a>
-    <a routerLink="/" fragment="recursos" class="nav__link">Recursos</a>
     <a routerLink="/" fragment="perguntas" class="nav__link">Perguntas</a>
     <span class="nav__acoes">
       <a routerLink="/entrar" class="btn btn--secundario nav__entrar">Entrar</a>
@@ -30,28 +30,43 @@
             <app-icone [nome]="dor.icone" [tamanho]="26" [espessura]="1.7" />
             <h3 class="cartao__titulo">{{ dor.titulo }}</h3>
             <p class="cartao__texto">{{ dor.texto }}</p>
+            <span class="cartao__citacao">{{ dor.citacao }}</span>
           </article>
         }
       </div>
     </div>
   </section>
 
-  <app-secao-proposta />
+  <app-secao-pesquisa />
 
-  <section id="como" class="container secao secao--espacosa" aria-labelledby="como-titulo">
-    <div class="secao__cabecalho">
-      <span class="secao__sobretitulo">Como funciona</span>
-      <h2 id="como-titulo" class="secao__titulo">Você conta sobre o seu negócio. O DizAI atende por você.</h2>
+  <app-secao-solucao />
+
+  <section id="como" class="faixa--suave" aria-labelledby="como-titulo">
+    <div class="container secao secao--espacosa">
+      <div class="secao__cabecalho">
+        <span class="secao__sobretitulo">Como funciona</span>
+        <h2 id="como-titulo" class="secao__titulo">Você conta sobre o seu negócio. O DizAI atende por você.</h2>
+      </div>
+      <ol class="grade grade--passos">
+        @for (passo of passos; track passo.titulo; let indice = $index) {
+          <li class="passo">
+            <span class="passo__numero">{{ numeroDoPasso(indice) }}</span>
+            <h3 class="passo__titulo">{{ passo.titulo }}</h3>
+            <p class="cartao__texto">{{ passo.texto }}</p>
+            @if (passo.modos; as modos) {
+              <div class="passo__modos">
+                @for (modo of modos; track modo.ramo) {
+                  <div class="passo__modo">
+                    <app-icone [nome]="modo.icone" [tamanho]="16" [espessura]="2" />
+                    <span><strong>{{ modo.ramo }}</strong>{{ modo.texto }}</span>
+                  </div>
+                }
+              </div>
+            }
+          </li>
+        }
+      </ol>
     </div>
-    <ol class="grade grade--passos">
-      @for (passo of passos; track passo.titulo; let indice = $index) {
-        <li class="passo">
-          <span class="passo__numero">{{ numeroDoPasso(indice) }}</span>
-          <h3 class="passo__titulo">{{ passo.titulo }}</h3>
-          <p class="cartao__texto">{{ passo.texto }}</p>
-        </li>
-      }
-    </ol>
   </section>
   <app-jornada-interativa />
   
@@ -68,13 +83,19 @@
       <span class="chamada-final__etiqueta">Feito para pequenos negócios</span>
       <h2 id="cta-titulo" class="chamada-final__titulo">Deixe o DizAI responder enquanto você trabalha.</h2>
       <p class="chamada-final__texto">
-        Atendimento de empresa grande, sem precisar contratar ninguém. Cadastre seu negócio em poucos minutos
-        e veja o assistente conversando com os seus produtos de verdade.
+        Cadastre o seu negócio em poucos minutos e veja o assistente conversando com os seus produtos e serviços
+        de verdade.
       </p>
-      <a routerLink="/cadastro" class="btn btn--hero btn--claro">
-        Testar grátis
-        <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
-      </a>
+      <div class="chamada-final__acoes">
+        <a routerLink="/cadastro" class="btn btn--hero btn--claro">
+          Testar grátis
+          <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
+        </a>
+        <a routerLink="/demonstracao" class="btn btn--hero chamada-final__ao-vivo">
+          <app-icone nome="reproduzir" [tamanho]="16" />
+          Ver demonstração completa
+        </a>
+      </div>
     </div>
   </section>
 </main>

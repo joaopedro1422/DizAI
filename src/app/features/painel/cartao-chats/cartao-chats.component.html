@@ -1,0 +1,25 @@
+<a [routerLink]="rotas().chats" class="atalho-chats">
+  <span class="atalho-chats__topo">
+    <span class="icone-atalho icone-atalho--sobre-escuro">
+      <app-icone nome="conversa" [tamanho]="22" />
+    </span>
+    <span class="atalho__textos">
+      <span class="atalho-chats__titulo">Chats</span>
+      <span class="atalho-chats__resumo">{{ resumoChats() }}</span>
+    </span>
+    @if (quantidadeAguardando() > 0) {
+      <span class="atalho-chats__selo">{{ quantidadeAguardando() }} aguardando</span>
+    }
+  </span>
+
+  @if (conversaMaisUrgente(); as conversa) {
+    <span class="atalho-chats__previa">
+      <app-avatar modo="icone" [nome]="conversa.nome" [tamanho]="34" />
+      <span class="atalho-chats__previa-textos">
+        <span class="atalho-chats__previa-nome">{{ conversa.nome }} · {{ conversa.motivo }}</span>
+        <span class="atalho-chats__previa-mensagem">{{ conversa.mensagem }}</span>
+      </span>
+      <app-icone nome="avancar" [tamanho]="18" [espessura]="2" />
+    </span>
+  }
+</a>

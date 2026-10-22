@@ -34,6 +34,7 @@ const PERFIL_VAZIO: Perfil = {
   distanciaMaximaKm: '',
   taxaEntrega: '',
   prazoMinimo: 'SEM_ANTECEDENCIA',
+  antecedenciaMinutos: 0,
   modoPedido: 'ENCAMINHAR_AO_DONO',
   camposPedido: '',
   modoFotos: 'GALERIA',
@@ -48,6 +49,9 @@ const PERFIL_VAZIO: Perfil = {
   introGaleriaVista: true,
   agendaAtiva: false,
   admin: false,
+  confirmaQualquerHora: true,
+  horariosFuncionamento: [],
+  horarioLivre: false,
 };
 
 /**
@@ -88,8 +92,21 @@ export class PerfilService {
    * Dados do modal "Dados da loja".
    * O slug não muda, para o link público já compartilhado continuar funcionando.
    */
-  atualizarDadosLoja({ dadosNegocio, ramo, pagamentoEntrega }: DadosLoja): Promise<void> {
-    return this.enviar(this.http.put<Perfil>(this.url('/dados-loja'), { ...dadosNegocio, ramo, ...pagamentoEntrega }));
+  atualizarDadosLoja({ dadosNegocio, ramo, pagamentoEntrega, horariosFuncionamento, horarioLivre }: DadosLoja): Promise<void> {
+    return this.enviar(
+      this.http.put<Perfil>(this.url('/dados-loja'), {
+        ...dadosNegocio,
+        ramo,
+        ...pagamentoEntrega,
+        horariosFuncionamento,
+        horarioLivre,
+      }),
+    );
+  }
+
+  /** "Facilitador de orçamentos" da tela de produtos: a aba Orçamento da página pública. */
+  definirOrcamentoAtivo(ativo: boolean): Promise<void> {
+    return this.enviar(this.http.patch<Perfil>(this.url('/orcamento-ativo'), { ativo }));
   }
 
   /** Liga ou desliga as respostas automáticas do assistente. */
@@ -141,6 +158,12 @@ export class PerfilService {
   marcarIntroGaleriaVista(): void {
     this.perfilAtual.update((perfil) => ({ ...perfil, introGaleriaVista: true }));
     this.http.patch<void>(this.url('/intro-galeria-vista'), null).subscribe({ error: () => undefined });
+  }
+
+  /** Troca a senha (inclusive a temporária do "Esqueci minha senha", que deixa de valer). */
+  async alterarSenha(senhaAtual: string, novaSenha: string): Promise<void> {
+    await firstValueFrom(this.http.patch<void>(this.url('/senha'), { senhaAtual, novaSenha }));
+    this.perfilAtual.update((perfil) => ({ ...perfil, senhaTemporaria: false }));
   }
 
   reiniciar(): void {

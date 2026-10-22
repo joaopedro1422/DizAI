@@ -1,12 +1,39 @@
 <section #secaoJornada class="jornada" aria-labelledby="jornada-titulo">
   <div class="container jornada__layout">
     <header class="jornada__texto">
-      <span class="jornada__sobretitulo">Do seu painel ao atendimento</span>
+      <span class="jornada__sobretitulo" id="jornada-titulo">Do seu painel ao atendimento</span>
 
+      <!-- o mesmo painel para quem vende produtos e para quem atende com horário -->
+      <div class="jornada__tipos" role="tablist" aria-label="Tipo de negócio">
+        <button
+          type="button"
+          role="tab"
+          class="jornada__tipo"
+          [class.jornada__tipo--ativo]="tipo() === 'produtos'"
+          [attr.aria-selected]="tipo() === 'produtos'"
+          (click)="escolherTipo('produtos')"
+        >
+          <app-icone nome="caixa" [tamanho]="16" />
+          Produtos
+        </button>
+        <button
+          type="button"
+          role="tab"
+          class="jornada__tipo"
+          [class.jornada__tipo--ativo]="tipo() === 'servicos'"
+          [attr.aria-selected]="tipo() === 'servicos'"
+          (click)="escolherTipo('servicos')"
+        >
+          <app-icone nome="calendario" [tamanho]="16" />
+          Serviços
+        </button>
+      </div>
+
+      @let cena = cenaAtual();
       <div class="jornada__etapa" aria-live="polite">
-        <span class="jornada__numero">{{ cenaAtual().rotulo }}</span>
-        <h3 class="jornada__titulo-cena">{{ cenaAtual().titulo }}</h3>
-        <p class="jornada__descricao-cena">{{ cenaAtual().descricao }}</p>
+        <span class="jornada__numero">{{ cena.rotulo }}</span>
+        <h3 class="jornada__titulo-cena">{{ cena.titulo }}</h3>
+        <p class="jornada__descricao-cena">{{ cena.descricao }}</p>
       </div>
       <button type="button" class="jornada__pausar" [attr.aria-label]="pausada() ? 'Reproduzir demonstração' : 'Pausar demonstração'" [attr.aria-pressed]="!pausada()" (click)="alternarReproducao()">
         @if (pausada()) {
@@ -20,27 +47,37 @@
     <div class="jornada__visual">
       <div class="jornada__palco">
         @if (iniciada()) {
-          @switch (indiceCena()) {
-            @case (0) { <app-mock-painel-jornada tela="produto" aria-label="Cadastro de produto no painel mobile" /> }
-            @case (1) { <app-mock-conversa-jornada tipo="produto" aria-label="Pergunta sobre sabores e resposta do assistente" /> }
-            @case (2) { <app-mock-painel-jornada tela="instrucoes" aria-label="Instrução obrigatória sendo cadastrada no painel mobile" /> }
-            @case (3) { <app-mock-conversa-jornada tipo="domingo" aria-label="Pergunta sobre entrega no domingo e resposta do assistente" /> }
-            @case (4) { <app-mock-galeria-jornada aria-label="Adicionando uma foto e personalizando a vitrine no painel mobile" /> }
-            @case (5) { <app-mock-conversa-jornada tipo="galeria" aria-label="Pedido de fotos e resposta com o link da galeria" /> }
-            @case (6) { <app-mock-vitrine-jornada aria-label="Galeria pública da loja aberta no celular" /> }
-            @case (7) { <app-mock-painel-jornada tela="fechamento" aria-label="Configuração de coleta de dados do pedido no painel mobile" /> }
-            @case (8) { <app-mock-conversa-jornada tipo="fechamento" aria-label="Assistente solicitando os dados necessários para fechar o pedido" /> }
+          @switch (cena.tela) {
+            @case ('produto') { <app-mock-painel-jornada tela="produto" [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('conversa-produto') { <app-mock-conversa-jornada tipo="produto" [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('instrucoes') { <app-mock-painel-jornada tela="instrucoes" [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('conversa-domingo') { <app-mock-conversa-jornada tipo="domingo" [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('galeria') { <app-mock-galeria-jornada [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('conversa-galeria') { <app-mock-conversa-jornada tipo="galeria" [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('vitrine') { <app-mock-vitrine-jornada [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('fechamento') { <app-mock-painel-jornada tela="fechamento" [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('conversa-fechamento') { <app-mock-conversa-jornada tipo="fechamento" [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('chats') { <app-mock-chats-jornada [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('servico') { <app-mock-painel-jornada tela="servico" [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('conversa-servico') { <app-mock-conversa-jornada tipo="servico" [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('conversa-horarios') { <app-mock-conversa-jornada tipo="horarios" [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('agenda-publica') { <app-mock-agenda-publica-jornada [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('conversa-agendamento') { <app-mock-conversa-jornada tipo="agendamento" [attr.aria-label]="cena.rotuloTela" /> }
+            @case ('minha-agenda') { <app-mock-minha-agenda-jornada [attr.aria-label]="cena.rotuloTela" /> }
           }
         }
       </div>
 
       <div class="jornada__controles">
-
         <div class="jornada__navegacao">
-          <span class="jornada__contador">0{{ indiceCena() + 1 }} <span>/ 0{{ cenas.length }}</span></span>
+          <span class="jornada__contador">{{ numero(indiceCena() + 1) }} <span>/ {{ numero(cenas().length) }}</span></span>
           <button type="button" class="jornada__seta" aria-label="Etapa anterior" (click)="anterior()"><app-icone nome="voltar" [tamanho]="18" /></button>
           <button type="button" class="jornada__seta jornada__seta--proxima" aria-label="Próxima etapa" (click)="avancar()"><app-icone nome="avancar" [tamanho]="18" /></button>
         </div>
+        <a routerLink="/cadastro" class="btn btn--primario btn--grande jornada__cta">
+          Teste agora com seu negócio
+          <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
+        </a>
       </div>
     </div>
   </div>

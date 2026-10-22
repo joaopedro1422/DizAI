@@ -1,0 +1,102 @@
+<div class="acao">
+  @if (conversa().resumoPedido.length > 0) {
+    <dl class="resumo caixa-suave">
+      @for (item of conversa().resumoPedido; track $index) {
+        <div class="resumo__item">
+          <dt class="resumo__campo">{{ item.campo }}</dt>
+          <dd class="resumo__valor">{{ item.valor }}</dd>
+        </div>
+      }
+    </dl>
+  }
+
+  @switch (acao()) {
+    @case ('confirmar') {
+      <p class="acao__texto">
+        O pedido vai para a tela <strong>Pedidos</strong>. O assistente fica fora desta conversa até você marcar o
+        pedido como entregue.
+      </p>
+    }
+    @case ('entregar') {
+      <p class="acao__texto">O pedido entra no seu faturamento e o assistente volta a atender {{ primeiroNome() }}.</p>
+    }
+    @case ('recusar') {
+      <p class="acao__texto">
+        A conversa sai de "Aguardando você" e o assistente volta a atender {{ primeiroNome() }}. Nada entra nos seus pedidos.
+      </p>
+    }
+  }
+
+  @if (acao() !== 'recusar') {
+    <div class="campo">
+      <label for="valor-pedido" class="campo__rotulo">Valor do pedido</label>
+      <span class="campo-prefixado" [class.campo-prefixado--erro]="erroValor()">
+        <span class="campo-prefixado__prefixo">R$</span>
+        <input id="valor-pedido" type="text" inputmode="decimal" placeholder="0,00" [value]="valorTexto()" (input)="digitarValor($event)">
+      </span>
+      @if (erroValor()) {
+        <span class="campo__erro" role="alert">Informe o valor, por exemplo 127,50.</span>
+      } @else {
+        <span class="campo__dica">Já vem com o total da conversa. Ajuste se combinou outro valor: é ele que conta no faturamento.</span>
+      }
+    </div>
+  }
+
+  @if (acao() === 'confirmar') {
+    <div class="campo">
+      <span class="campo__rotulo">Foto do modelo <span class="campo__rotulo-opcional">(opcional)</span></span>
+      @if (anexo(); as referencia) {
+        <div class="anexo">
+          <img class="anexo__foto" [src]="referencia | urlImagem" alt="Foto anexada ao pedido" />
+          <span class="anexo__texto">Imagem anexada</span>
+          <button type="button" class="btn-icone btn-icone--sem-borda" aria-label="Remover a imagem" (click)="anexo.set(null)">
+            <app-icone nome="fechar" [tamanho]="18" />
+          </button>
+        </div>
+      } @else {
+        <label class="anexar" [class.anexar--enviando]="enviandoAnexo()">
+          @if (enviandoAnexo()) {
+            <app-carregando modo="inline" [tamanho]="18" />
+            Enviando a imagem…
+          } @else {
+            <app-icone nome="clipe" [tamanho]="18" [espessura]="2" />
+            Anexar imagem
+          }
+          <input class="somente-leitor-tela" type="file" accept="image/*" [disabled]="enviandoAnexo()" (change)="aoEscolherAnexo($event)">
+        </label>
+        <span class="campo__dica">Ex.: a foto do bolo que o cliente mandou. Ela fica no pedido, na tela Pedidos.</span>
+      }
+    </div>
+  }
+
+  @if (acao() === 'entregar') {
+    <app-aviso-cliente
+      rotulo="Mandar um agradecimento pelo WhatsApp"
+      [textoPadrao]="agradecimentoPadrao"
+      [nomeCliente]="nome()"
+      [valor]="valor()"
+      [(enviar)]="avisar"
+      [(texto)]="textoAviso"
+    />
+  }
+
+  <button
+    type="button"
+    class="btn btn--grande btn--bloco"
+    [class.btn--primario]="acao() !== 'recusar'"
+    [class.btn--secundario]="acao() === 'recusar'"
+    [disabled]="salvando() || enviandoAnexo()"
+    [attr.aria-busy]="salvando()"
+    (click)="confirmar()"
+  >
+    @if (salvando()) {
+      <app-carregando modo="inline" [variante]="acao() === 'recusar' ? 'escuro' : 'claro'" [tamanho]="20" />
+    } @else {
+      @switch (acao()) {
+        @case ('confirmar') { Confirmar pedido }
+        @case ('entregar') { Marcar como entregue }
+        @case ('recusar') { Pedido não aceito }
+      }
+    }
+  </button>
+</div>

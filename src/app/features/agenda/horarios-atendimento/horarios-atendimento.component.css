@@ -8,6 +8,11 @@
   gap: 16px;
 }
 
+/* No celular as colunas não existem para o layout (os cartões ficam um embaixo do outro, como sempre) */
+.horarios__coluna {
+  display: contents;
+}
+
 /* Espaço para a barra fixa não cobrir o último cartão */
 .horarios--com-barra {
   padding-bottom: 96px;
@@ -34,6 +39,75 @@
   font-size: 13px;
   line-height: 1.5;
   color: var(--cor-texto-suave);
+}
+
+/* Mensagens (agendamento, confirmação, agradecimento): card curto que abre ao tocar */
+.expansivel {
+  gap: 0;
+  padding: 0;
+}
+
+.expansivel__cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 14px 16px;
+  border: none;
+  border-radius: var(--raio-grande);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.expansivel__seta {
+  flex: none;
+  color: var(--cor-texto-suave);
+  transition: transform 0.2s ease;
+}
+
+.expansivel--aberto .expansivel__seta {
+  transform: rotate(180deg);
+}
+
+.expansivel__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0 16px 16px;
+}
+
+.expansivel__corpo > .cartao__descricao {
+  margin-top: 0;
+}
+
+/* Agradecimento depois do atendimento: descrição e chave na mesma linha */
+.agradecimento__linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.agradecimento__aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-ambar-fundo);
+  color: #7a4c00;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.agradecimento__aviso app-icone {
+  flex: none;
+  margin-top: 1px;
 }
 
 /* Chave da agenda automática */
@@ -390,4 +464,25 @@
   display: block;
   margin-top: 2px;
   color: var(--cor-primaria);
+}
+
+/* Tablet e computador: duas colunas, os dias e horários com mais espaço. Nada muda abaixo de 760px. */
+@media (min-width: 760px) {
+  .horarios {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 20px;
+  }
+
+  .horarios__coluna {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .cartao {
+    padding: 20px;
+  }
 }

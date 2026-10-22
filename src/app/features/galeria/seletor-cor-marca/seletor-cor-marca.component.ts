@@ -15,6 +15,7 @@ import { PerfilService } from '../../../core/services/perfil.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
+import { arquivoDaCapa, desenharCapaDegrade } from './capa-degrade';
 
 const TAMANHO_MAXIMO_CAPA_BYTES = 5 * 1024 * 1024;
 
@@ -53,6 +54,11 @@ export class SeletorCorMarcaComponent {
   protected readonly capaAtual = computed(() => this.perfilService.perfil().capaUrl ?? null);
   protected readonly arquivoCapa = signal<File | null>(null);
   protected readonly removerCapa = signal(false);
+  /** "Criar capa com a minha cor": degradê com a cor de destaque escolhida (acompanha a troca de cor). */
+  protected readonly capaPronta = signal(false);
+  protected readonly previaCapaPronta = computed(() =>
+    this.capaPronta() ? desenharCapaDegrade(buscarCorMarca(this.corAtual()).hex) : null,
+  );
   protected readonly salvando = signal(false);
   protected readonly nomeCorAtual = computed(() => buscarCorMarca(this.corAtual()).nome);
   protected readonly fonteCss = computed(() => {
@@ -107,10 +113,18 @@ export class SeletorCorMarcaComponent {
     }
     this.arquivoCapa.set(arquivo);
     this.removerCapa.set(false);
+    this.capaPronta.set(false);
+  }
+
+  protected criarCapaPronta(): void {
+    this.capaPronta.set(true);
+    this.arquivoCapa.set(null);
+    this.removerCapa.set(false);
   }
 
   protected limparCapa(): void {
     this.arquivoCapa.set(null);
+    this.capaPronta.set(false);
     this.removerCapa.set(true);
   }
 
@@ -125,7 +139,8 @@ export class SeletorCorMarcaComponent {
     this.salvando.set(true);
     try {
       let capaUrl = this.removerCapa() ? null : this.capaAtual();
-      const arquivo = this.arquivoCapa();
+      const previaPronta = this.previaCapaPronta();
+      const arquivo = previaPronta ? await arquivoDaCapa(previaPronta) : this.arquivoCapa();
       if (arquivo) {
         const [referencia] = await this.armazenamentoFotos.enviar([arquivo], { tipo: 'CAPA' });
         if (!referencia) {

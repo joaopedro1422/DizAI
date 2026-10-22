@@ -13,6 +13,69 @@
   </app-cabecalho-pagina>
 
   <main class="conteudo-tela admin">
+    @if (senhaGerada(); as gerada) {
+      <section class="senha-gerada" aria-labelledby="titulo-senha-gerada">
+        <h2 id="titulo-senha-gerada" class="senha-gerada__titulo">Senha temporária de {{ gerada.whatsapp }}</h2>
+        <p class="senha-gerada__texto">Mande para o lojista. Ela aparece só agora: se fechar, gere outra num novo pedido.</p>
+        <div class="senha-gerada__linha">
+          <code class="senha-gerada__senha">{{ gerada.senha }}</code>
+          <button type="button" class="btn btn--secundario btn--pequeno" (click)="copiarSenha(gerada.senha)">Copiar</button>
+        </div>
+        <div class="senha-gerada__acoes">
+          <a class="btn btn--primario btn--pequeno" [href]="linkEnvioSenha(gerada)" target="_blank" rel="noopener">
+            <app-icone nome="conversa" [tamanho]="16" />
+            Enviar pelo WhatsApp
+          </a>
+          <button type="button" class="btn btn--texto btn--pequeno" (click)="senhaGerada.set(null)">Fechar</button>
+        </div>
+      </section>
+    }
+
+    @if (solicitacoesSenha().length > 0) {
+      <section class="pedidos-senha" aria-labelledby="titulo-pedidos-senha">
+        <div class="lojas__topo">
+          <h2 id="titulo-pedidos-senha" class="titulo-secao">Pedidos de nova senha</h2>
+          <span class="texto-pequeno texto-suave">{{ solicitacoesSenha().length }}</span>
+        </div>
+        <ul class="lista pedidos-senha__lista">
+          @for (pedido of solicitacoesSenha(); track pedido.id) {
+            <li class="pedido-senha">
+              <div class="pedido-senha__textos">
+                <span class="pedido-senha__nome">{{ pedido.nomeInformado }} · {{ pedido.whatsapp }}</span>
+                @if (pedido.contaEncontrada) {
+                  <span class="pedido-senha__conta">Conta: {{ pedido.nomeLoja }} · dono {{ pedido.nomeDono }}</span>
+                } @else {
+                  <span class="pedido-senha__conta pedido-senha__conta--sem">Nenhuma conta usa este número</span>
+                }
+                <span class="pedido-senha__quando">Pediu {{ quandoPediu(pedido) }}</span>
+              </div>
+              <div class="pedido-senha__acoes">
+                @if (pedido.contaEncontrada) {
+                  <button
+                    type="button"
+                    class="btn btn--primario btn--pequeno"
+                    [disabled]="atendendo() !== null"
+                    [attr.aria-busy]="atendendo() === pedido.id"
+                    (click)="gerarSenha(pedido)"
+                  >
+                    Gerar senha temporária
+                  </button>
+                }
+                <button
+                  type="button"
+                  class="btn btn--texto btn--pequeno"
+                  [disabled]="atendendo() !== null"
+                  (click)="descartarSolicitacao(pedido)"
+                >
+                  Descartar
+                </button>
+              </div>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
     @if (painel(); as dados) {
       <section class="metricas" aria-label="Resumo da plataforma">
         @for (metrica of metricas(); track metrica.rotulo) {

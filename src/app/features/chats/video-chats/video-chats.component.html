@@ -1,0 +1,180 @@
+<!-- Card da cliente na aba "Aguardando você", usado em duas cenas -->
+<ng-template #cardPedido let-animado>
+  <div class="card-conversa">
+    <div class="card-conversa__cliente">
+      <span class="avatar-mini">M</span>
+      <span><b>Mariana Costa</b><small>(83) 98888-1234 · esperando há 2 min</small></span>
+    </div>
+    <!-- na cena do "Resolvido" o card fica mais curto, para os botões aparecerem -->
+    @if (animado) {
+      <span class="motivo-mini">Pedido para confirmar</span>
+      <span class="mensagem-mini">“Entrega no Centro”</span>
+    }
+    <div class="resumo-mini" [class.destaca]="animado" style="--atraso: 1s">
+      <span class="resumo-mini__titulo">Resumo do pedido</span>
+      @for (item of resumo; track item.campo; let i = $index) {
+        <span class="resumo-mini__linha" [class.surge]="animado" [style.--atraso]="1.4 + i * 0.5 + 's'">
+          <span>{{ item.campo }}</span><span>{{ item.valor }}</span>
+        </span>
+      }
+    </div>
+    <span class="botoes-mini">
+      <span class="botao-mini botao-mini--primario">Ir ao WhatsApp</span>
+      <span class="botao-mini" [class.tocado]="!animado" style="--atraso: 1.6s">Resolvido</span>
+    </span>
+  </div>
+</ng-template>
+
+<app-video-tutorial
+  titulo="Como usar os chats"
+  [cenas]="cenas"
+  [rotuloBotao]="rotuloBotao()"
+  (confirmar)="confirmar.emit()"
+  (fechar)="fechar.emit()"
+>
+  <ng-template #legenda let-cena>
+    @switch (cena) {
+      @case (0) {
+        <span class="legenda__selo surge">Chats</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Aqui ficam as conversas que precisam de você</p>
+        <p class="legenda__texto surge" style="--atraso: 1.4s">O assistente atende sozinho e só te chama quando é a sua vez.</p>
+      }
+      @case (1) {
+        <span class="legenda__selo surge">Pedido</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">A IA conduz o pedido do começo ao fim</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Pergunta o que falta (sabor, quantidade, data, entrega) e passa para você.</p>
+      }
+      @case (2) {
+        <span class="legenda__selo surge">Resumo</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">O pedido chega resumido nesta aba</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Você não precisa ler a conversa inteira para saber o que o cliente quer.</p>
+      }
+      @case (3) {
+        <span class="legenda__selo legenda__selo--dica surge">Dica · 1</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Confirme o pedido com o cliente</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Toque em “Ir ao WhatsApp” e combine valor, pagamento e entrega.</p>
+      }
+      @case (4) {
+        <span class="legenda__selo legenda__selo--dica surge">Dica · 2</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Até a entrega, a conversa é sua</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Perguntas como “já saiu?” quem responde é você. Por isso, ainda não marque como resolvido.</p>
+      }
+      @case (5) {
+        <span class="legenda__selo legenda__selo--dica surge">Dica · 3</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Entregou? Toque em “Resolvido”</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">A IA volta para a conversa e atende esse cliente nas próximas mensagens.</p>
+      }
+      @case (6) {
+        <p class="legenda__titulo surge">Cada um faz a sua parte ✨</p>
+        <p class="legenda__texto surge" style="--atraso: 0.8s">A IA atende e organiza o pedido; você confirma e entrega.</p>
+      }
+    }
+  </ng-template>
+
+  <ng-template #tela let-cena>
+    @switch (cena) {
+      @case (0) {
+        <div class="app">
+          <div class="app__barra">Chats</div>
+          <div class="abas-mini">
+            <span class="aba-mini--ativa">Aguardando você <em class="contador-mini">2</em></span>
+            <span>Em andamento</span>
+          </div>
+          <div class="app__corpo">
+            <div class="card-conversa surge" style="--atraso: 0.8s">
+              <div class="card-conversa__cliente">
+                <span class="avatar-mini">M</span>
+                <span><b>Mariana Costa</b><small>esperando há 2 min</small></span>
+              </div>
+              <span class="motivo-mini">Pedido para confirmar</span>
+            </div>
+            <div class="card-conversa surge" style="--atraso: 1.4s">
+              <div class="card-conversa__cliente">
+                <span class="avatar-mini avatar-mini--azul">R</span>
+                <span><b>Rafael Lima</b><small>esperando há 8 min</small></span>
+              </div>
+              <span class="motivo-mini motivo-mini--ambar">Pergunta sem resposta</span>
+            </div>
+          </div>
+        </div>
+      }
+      @case (1) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar">P</span>
+            <span class="zap__nome"><b>Pedacinho do Céu</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            <span class="balao balao--cliente surge" style="--atraso: 0.6s">Quero encomendar um bolo pra sábado 🎂</span>
+            <span class="digitando digitando--1"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 3s">Que delícia! Qual sabor e para quantas pessoas?</span>
+            <span class="balao balao--cliente surge" style="--atraso: 4.8s">Chocolate com morango, 20 pessoas</span>
+            <span class="balao surge" style="--atraso: 6.4s">Perfeito! Vai ser retirada ou entrega?</span>
+            <span class="balao balao--cliente surge" style="--atraso: 8s">Entrega no Centro</span>
+            <span class="balao surge" style="--atraso: 9.4s">1 minuto! Já te confirmo.</span>
+          </div>
+        </div>
+      }
+      @case (2) {
+        <div class="app">
+          <div class="app__barra">Chats</div>
+          <div class="app__corpo">
+            <ng-container [ngTemplateOutlet]="cardPedido" [ngTemplateOutletContext]="{ $implicit: true }" />
+          </div>
+        </div>
+      }
+      @case (3) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar zap__avatar--rosa">M</span>
+            <span class="zap__nome"><b>Mariana Costa</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            <span class="balao balao--meu surge" style="--atraso: 0.8s">Oi, Mariana! Confirmando: bolo de chocolate com morango, 20 pessoas, sábado 🎂</span>
+            <span class="balao balao--meu surge" style="--atraso: 2.4s">Fica R$ 180 + R$ 10 da entrega. Pode ser no Pix?</span>
+            <span class="balao surge" style="--atraso: 4.4s">Fechado! Mando agora 😊</span>
+            <span class="balao surge" style="--atraso: 5.6s">📎 comprovante-pix.pdf</span>
+            <span class="balao balao--meu surge" style="--atraso: 7s">Recebido! Obrigada 💖</span>
+          </div>
+        </div>
+      }
+      @case (4) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar zap__avatar--rosa">M</span>
+            <span class="zap__nome"><b>Mariana Costa</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            <span class="aviso-zap surge" style="--atraso: 0.4s">Sábado</span>
+            <span class="balao surge" style="--atraso: 0.8s">Oi! O bolo já saiu? 😊</span>
+            <span class="balao balao--meu surge" style="--atraso: 2.6s">Saiu agora! Chega em uns 20 min 🛵</span>
+            <span class="balao surge" style="--atraso: 5s">Chegou! Ficou lindo demais 😍</span>
+            <span class="balao balao--meu surge" style="--atraso: 6.8s">Que bom! Aproveitem a festa 🎉</span>
+          </div>
+        </div>
+      }
+      @case (5) {
+        <div class="app">
+          <div class="app__barra">Chats</div>
+          <div class="app__corpo">
+            <div class="some" style="--atraso: 2.6s">
+              <ng-container [ngTemplateOutlet]="cardPedido" [ngTemplateOutletContext]="{ $implicit: false }" />
+            </div>
+            <span class="aviso-mini surge" style="--atraso: 3.2s">✓ Resolvida: o assistente voltou para a conversa</span>
+            <span class="estado-mini surge" style="--atraso: 4.2s">
+              <b>Nenhum cliente esperando</b>
+              O assistente está cuidando das conversas.
+            </span>
+          </div>
+        </div>
+      }
+      @case (6) {
+        <div class="final">
+          <span class="final__check surge" style="--atraso: 0.4s">✓</span>
+          <b class="surge" style="--atraso: 1s">Tudo certo!</b>
+          <small class="surge" style="--atraso: 1.6s">Os pedidos chegam com o resumo pronto.</small>
+        </div>
+      }
+    }
+  </ng-template>
+</app-video-tutorial>

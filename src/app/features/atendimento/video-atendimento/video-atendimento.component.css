@@ -1,0 +1,81 @@
+/* Peças das cenas deste vídeo; a base comum está em shared/components/video-tutorial/cenas-video.css */
+
+/* Topo azul da tela "Seu assistente" */
+.topo-assistente {
+  display: flex;
+  align-items: center;
+  gap: 2cqw;
+  padding: 5.5cqw 3cqw 3cqw;
+  background: var(--cor-primaria);
+  color: #ffffff;
+  line-height: 1.25;
+}
+
+.topo-assistente small {
+  display: block;
+  font-size: 2.3cqw;
+  opacity: 0.85;
+}
+
+.topo-assistente__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 8cqw;
+  height: 8cqw;
+  border-radius: 50%;
+  background: #ffffff;
+  font-size: 4cqw;
+}
+
+.config-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4cqw;
+  padding: 2.2cqw;
+  border: 0.25cqw solid var(--cor-borda-suave);
+  border-radius: 2.6cqw;
+  line-height: 1.3;
+}
+
+.config-item small {
+  font-size: 2.3cqw;
+  color: var(--cor-texto-suave);
+}
+
+.regra {
+  padding: 2cqw 2.4cqw;
+  border-radius: 2.4cqw;
+  background: var(--cor-fundo-suave);
+  line-height: 1.35;
+}
+
+.balao__linha {
+  display: block;
+}
+
+/* Arquivo do catálogo na conversa */
+.documento {
+  display: flex;
+  align-items: center;
+  gap: 2cqw;
+}
+
+.documento__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 8cqw;
+  height: 9.5cqw;
+  border-radius: 1.2cqw;
+  background: #e5484d;
+  color: #ffffff;
+  font-size: 2.2cqw;
+  font-weight: 800;
+}
+
+.documento__nome {
+  font-weight: 600;
+  word-break: break-all;
+}

@@ -58,6 +58,37 @@ export class EstatisticasPageComponent implements OnInit {
     return { valor: resto === 0 ? `${horas}h` : `${horas}h ${resto}`, unidade: resto === 0 ? '' : 'min' };
   });
 
+  /** Média por dia: "12 min" ou "1h 5min". */
+  protected readonly mediaPorDia = computed(() => {
+    const minutos = this.numeros()?.minutosPorDia ?? 0;
+    if (minutos < 60) {
+      return `${minutos} min`;
+    }
+    const resto = minutos % 60;
+    return resto === 0 ? `${Math.floor(minutos / 60)}h` : `${Math.floor(minutos / 60)}h ${resto}min`;
+  });
+
+  /** Há quanto tempo a conta existe: "12 dias" / "de utilização" (no dia em que foi criada, "1º dia"). */
+  protected readonly idadeDaConta = computed(() => {
+    const dias = this.numeros()?.diasDeConta;
+    if (dias === null || dias === undefined) {
+      return null;
+    }
+    if (dias === 0) {
+      return { valor: '1º dia', texto: 'de utilização' };
+    }
+    let valor: string;
+    if (dias < 60) {
+      valor = `${dias} ${dias === 1 ? 'dia' : 'dias'}`;
+    } else if (dias < 365) {
+      valor = `${Math.floor(dias / 30)} meses`;
+    } else {
+      const anos = Math.floor(dias / 365);
+      valor = `${anos} ${anos === 1 ? 'ano' : 'anos'}`;
+    }
+    return { valor, texto: 'de utilização' };
+  });
+
   protected readonly indicadores = computed<Indicador[]>(() => {
     const n = this.numeros();
     if (!n) {

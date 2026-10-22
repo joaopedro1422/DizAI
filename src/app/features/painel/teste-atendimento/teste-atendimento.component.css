@@ -1,0 +1,304 @@
+/* Conversa no estilo do WhatsApp, por cima do painel (no celular ocupa a tela; no computador, uma coluna de celular) */
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+}
+
+.fundo {
+  position: absolute;
+  inset: 0;
+  background: var(--cor-sobreposicao);
+  animation: aparece 0.2s ease both;
+}
+
+.teste {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--largura-tela-app);
+  height: 100dvh;
+  background: #EFEAE2;
+  animation: sobe 0.25s ease-out both;
+}
+
+/* ---------- cabeçalho ---------- */
+.topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  padding-top: calc(10px + env(safe-area-inset-top));
+  background: #075E54;
+  color: #ffffff;
+}
+
+.topo__fechar {
+  display: inline-flex;
+  flex: none;
+  padding: 4px;
+  border: none;
+  background: transparent;
+  color: inherit;
+}
+
+.topo__foto {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ffffff;
+}
+
+.topo__foto--inicial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #DFE5E7;
+  color: #075E54;
+  font-weight: 800;
+}
+
+.topo__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topo__nome {
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topo__status {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.topo__recomecar {
+  flex: none;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  background: transparent;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.topo__recomecar:disabled {
+  opacity: 0.45;
+}
+
+/* ---------- conversa ---------- */
+.conversa {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  padding: 12px 12px 16px;
+}
+
+.nota {
+  align-self: center;
+  max-width: 92%;
+  margin: 4px 0;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: #FFF3C4;
+  color: #54656F;
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: center;
+  box-shadow: 0 1px 0.5px rgba(11, 20, 26, 0.13);
+}
+
+.nota--simples {
+  background: transparent;
+  box-shadow: none;
+}
+
+.nota--aviso {
+  background: #E1F2FB;
+  color: #33484F;
+}
+
+.nota--erro {
+  background: #FDE2E1;
+  color: var(--cor-erro);
+}
+
+.balao {
+  position: relative;
+  align-self: flex-start;
+  max-width: 82%;
+  padding: 6px 8px 6px 9px;
+  border-radius: 8px;
+  border-top-left-radius: 0;
+  background: #ffffff;
+  color: #111B21;
+  box-shadow: 0 1px 0.5px rgba(11, 20, 26, 0.13);
+  animation: entra 0.18s ease-out both;
+}
+
+.balao--cliente {
+  align-self: flex-end;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 0;
+  background: #D9FDD3;
+}
+
+.balao__texto {
+  font-size: 14.5px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* cada linha do texto; linha vazia mantém o espaço (como a quebra dupla no WhatsApp) */
+.linha {
+  display: block;
+  min-height: 1.4em;
+  white-space: pre-wrap;
+}
+
+/* item de lista: marcador pendurado, o texto quebra alinhado */
+.linha--item {
+  display: flex;
+  gap: 6px;
+  padding-left: 2px;
+}
+
+.linha__marcador {
+  flex: none;
+  min-width: 10px;
+}
+
+.negrito {
+  font-weight: 700;
+}
+
+.italico {
+  font-style: italic;
+}
+
+.riscado {
+  text-decoration: line-through;
+}
+
+.balao__hora {
+  display: inline-flex;
+  align-items: center;
+  float: right;
+  margin: 6px 0 -4px 10px;
+  color: #667781;
+  font-size: 11px;
+}
+
+/* "digitando…" do assistente */
+.balao--digitando {
+  display: flex;
+  gap: 4px;
+  padding: 12px 14px;
+}
+
+.balao--digitando i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #8696A0;
+  animation: pontinho 1.2s ease-in-out infinite;
+}
+
+.balao--digitando i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.balao--digitando i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* ---------- campo de mensagem ---------- */
+.entrada {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px 10px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
+  background: #F0F2F5;
+}
+
+.entrada__campo {
+  flex: 1;
+  min-width: 0;
+  max-height: 120px;
+  padding: 11px 16px;
+  border: none;
+  border-radius: 22px;
+  background: #ffffff;
+  color: #111B21;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.35;
+  resize: none;
+  field-sizing: content;
+}
+
+.entrada__campo:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 168, 132, 0.35);
+}
+
+.entrada__enviar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: #00A884;
+  color: #ffffff;
+}
+
+.entrada__enviar:disabled {
+  background: #B3C7C2;
+}
+
+@keyframes aparece {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sobe {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes entra {
+  from { transform: translateY(4px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pontinho {
+  0%, 80%, 100% { opacity: 0.35; transform: translateY(0); }
+  40% { opacity: 1; transform: translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fundo,
+  .teste,
+  .balao,
+  .balao--digitando i {
+    animation: none;
+  }
+}

@@ -68,6 +68,10 @@ export const FORMAS_RECEBIMENTO: OpcaoSelecao<FormaRecebimento>[] = [
 
 export const PRAZOS_MINIMOS: OpcaoSelecao<PrazoMinimo>[] = [
   { valor: 'SEM_ANTECEDENCIA', rotulo: 'Sem antecedência' },
+  { valor: 'HORAS_1', rotulo: '1 hora' },
+  { valor: 'HORAS_2', rotulo: '2 horas' },
+  { valor: 'HORAS_4', rotulo: '4 horas' },
+  { valor: 'HORAS_12', rotulo: '12 horas' },
   { valor: 'HORAS_24', rotulo: '24 horas' },
   { valor: 'HORAS_48', rotulo: '48 horas' },
   { valor: 'DIAS_3', rotulo: '3 dias ou mais' },

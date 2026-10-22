@@ -40,6 +40,7 @@
           [conversa]="conversa"
           [resolvendo]="resolvendoId() === conversa.id"
           (resolvida)="marcarComoResolvida(conversa)"
+          (acaoPedido)="acaoPedido.set({ conversa, acao: $event })"
         />
       } @empty {
         <app-estado-vazio
@@ -52,14 +53,14 @@
     <main id="painel-andamento" role="tabpanel" aria-labelledby="aba-andamento" class="conteudo-tela conversas">
       @for (conversa of emAndamento(); track conversa.id) {
         <article class="conversa">
-          <app-avatar [nome]="nomeExibicao(conversa)" />
+          <app-avatar modo="icone" [nome]="nomeExibicao(conversa)" />
           <span class="conversa__textos">
             <span class="conversa__linha">
               <span class="conversa__nome">{{ nomeExibicao(conversa) }}</span>
               <span class="conversa__tempo">{{ conversa.atualizadaEm | tempoDecorrido }}</span>
             </span>
             <span class="conversa__mensagem">{{ conversa.ultimaMensagem }}</span>
-            <span class="conversa__status" [class.conversa__status--dono]="conversa.status === 'HUMANO_ATIVO'"><span class="conversa__ponto"></span>{{ textoStatus(conversa) }}</span>
+            <span class="conversa__status" [class.conversa__status--dono]="conversa.status === 'HUMANO_ATIVO' || conversa.status === 'EM_PEDIDO'"><span class="conversa__ponto"></span>{{ textoStatus(conversa) }}</span>
           </span>
         </article>
       } @empty {
@@ -72,3 +73,13 @@
     </main>
   }
 </div>
+
+@if (acaoPedido(); as aberta) {
+  <app-bottom-sheet [titulo]="titulosAcaoPedido[aberta.acao]" (fechar)="acaoPedido.set(null)">
+    <app-acao-pedido-conversa [conversa]="aberta.conversa" [acao]="aberta.acao" (concluido)="acaoPedido.set(null)" />
+  </app-bottom-sheet>
+}
+
+@if (temVideo() && mostrarVideo()) {
+  <app-video-chats (confirmar)="fecharVideo()" (fechar)="fecharVideo()" />
+}

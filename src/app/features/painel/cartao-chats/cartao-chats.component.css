@@ -1,0 +1,98 @@
+:host {
+  display: block;
+}
+
+/* Card de Chats (destaque) */
+.atalho-chats {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px;
+  border-radius: var(--raio-grande);
+  background: var(--cor-primaria);
+  color: #ffffff;
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(30, 58, 114, 0.25);
+  transition: transform 0.15s ease;
+}
+
+.atalho-chats:hover {
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.atalho-chats__topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.atalho-chats__titulo {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.atalho-chats__resumo {
+  font-size: 13px;
+  color: var(--cor-texto-sobre-escuro);
+}
+
+.atalho-chats__selo {
+  flex: none;
+  margin-left: auto;
+  padding: 6px 10px;
+  border-radius: var(--raio-pilula);
+  background: #ffffff;
+  color: var(--cor-primaria);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.atalho-chats__previa {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--raio-medio);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.atalho-chats__previa-textos {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.atalho-chats__previa-nome {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.atalho-chats__previa-mensagem {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--cor-texto-sobre-escuro);
+}
+
+.icone-atalho {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.atalho__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}

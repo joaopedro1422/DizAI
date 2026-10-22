@@ -1,0 +1,67 @@
+<div class="acao">
+  @switch (acao()) {
+    @case ('pronto') {
+      <p class="acao__texto">O pedido continua na lista até ser entregue, e o assistente segue fora da conversa.</p>
+      <app-aviso-cliente
+        rotulo="Avisar o cliente pelo WhatsApp"
+        [textoPadrao]="avisoPronto"
+        [nomeCliente]="pedido().nomeCliente"
+        [valor]="pedido().valor"
+        [(enviar)]="avisar"
+        [(texto)]="textoAviso"
+      />
+    }
+    @case ('entregue') {
+      <p class="acao__texto">
+        {{ valorAtual() }} entram no seu faturamento, o pedido sai da lista e o assistente volta a atender {{ nome() }}.
+      </p>
+      <app-aviso-cliente
+        rotulo="Mandar um agradecimento pelo WhatsApp"
+        [textoPadrao]="agradecimento"
+        [nomeCliente]="pedido().nomeCliente"
+        [valor]="pedido().valor"
+        [(enviar)]="avisar"
+        [(texto)]="textoAviso"
+      />
+    }
+    @case ('cancelar') {
+      <p class="acao__texto">
+        O pedido sai da lista, não entra no faturamento e o assistente volta a atender {{ nome() }}. Avise o cliente
+        pelo WhatsApp se ainda não avisou.
+      </p>
+    }
+    @case ('valor') {
+      <div class="campo">
+        <label for="novo-valor" class="campo__rotulo">Valor do pedido</label>
+        <span class="campo-prefixado" [class.campo-prefixado--erro]="erroValor()">
+          <span class="campo-prefixado__prefixo">R$</span>
+          <input id="novo-valor" type="text" inputmode="decimal" placeholder="0,00" [value]="valorTexto()" (input)="digitarValor($event)">
+        </span>
+        @if (erroValor()) {
+          <span class="campo__erro" role="alert">Informe o valor, por exemplo 127,50.</span>
+        }
+      </div>
+    }
+  }
+
+  <button
+    type="button"
+    class="btn btn--grande btn--bloco"
+    [class.btn--primario]="acao() !== 'cancelar'"
+    [class.btn--excluir]="acao() === 'cancelar'"
+    [disabled]="salvando()"
+    [attr.aria-busy]="salvando()"
+    (click)="confirmar()"
+  >
+    @if (salvando()) {
+      <app-carregando modo="inline" variante="claro" [tamanho]="20" />
+    } @else {
+      @switch (acao()) {
+        @case ('pronto') { Marcar como pronto }
+        @case ('entregue') { Marcar como entregue }
+        @case ('cancelar') { Cancelar pedido }
+        @case ('valor') { Salvar valor }
+      }
+    }
+  </button>
+</div>

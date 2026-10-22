@@ -20,6 +20,12 @@
     @if (foto.legenda) {
       <p class="visualizador__texto">{{ foto.legenda }}</p>
     }
+    @if (linkEnviar(); as link) {
+      <a class="visualizador__enviar" [href]="link" target="_blank" rel="noopener">
+        <app-icone nome="conversa" [tamanho]="18" [espessura]="2" />
+        Enviar pelo WhatsApp
+      </a>
+    }
   }
 
   @if (temVarias()) {

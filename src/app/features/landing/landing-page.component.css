@@ -189,6 +189,46 @@
   letter-spacing: -0.02em;
 }
 
+/* Frase real de cliente no fim de cada dor */
+.cartao__citacao {
+  margin-top: auto;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #D9FDD3;
+  color: #1F3A2A;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* 3º passo: como o atendimento termina em cada ramo */
+.passo__modos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.passo__modo {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo-suave);
+  font-size: 14.5px;
+  line-height: 1.45;
+  color: var(--cor-texto-secundario);
+}
+
+.passo__modo app-icone {
+  margin-top: 2px;
+  color: var(--cor-primaria);
+}
+
+.passo__modo strong {
+  display: block;
+  color: var(--cor-texto);
+  font-size: 13.5px;
+}
+
 
 
 
@@ -230,6 +270,24 @@
   font-size: 18px;
   line-height: 1.55;
   color: var(--cor-texto-sobre-escuro);
+}
+
+.chamada-final__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.chamada-final__ao-vivo {
+  gap: 8px;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  background: transparent;
+  color: #ffffff;
+}
+
+.chamada-final__ao-vivo:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 /* Rodapé ------------------------------------------------------------------- */

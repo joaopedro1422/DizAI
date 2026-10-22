@@ -50,6 +50,41 @@
   font-size: 14px;
 }
 
+/* "Quantas o cliente escolhe": número e modo lado a lado */
+.atributo__quantidade {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 10px;
+}
+
+.atributo__quantidade-rotulo {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cor-texto-secundario);
+}
+
+.atributo__quantidade-campos {
+  display: flex;
+  gap: 8px;
+}
+
+.atributo__quantidade-numero {
+  width: 64px;
+  text-align: center;
+}
+
+/* em "Quantas quiser" o número não conta */
+.atributo__quantidade-numero--inativo {
+  opacity: 0.45;
+}
+
+.atributo__quantidade-modo {
+  width: auto;
+  min-width: 140px;
+}
+
 .atributos__adicionar {
   align-self: flex-start;
   border-radius: 12px;
@@ -71,4 +106,22 @@
   font-size: 14px;
   font-weight: 700;
   color: var(--cor-texto-secundario);
+}
+
+/* Antecedência própria do produto: número + minutos/horas */
+.linha-antecedencia__unidade {
+  width: auto;
+  min-width: 120px;
+}
+
+/* Variações de preço: nome + valor numa linha */
+.variacao {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 128px auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.variacao__adicionar {
+  align-self: flex-start;
 }

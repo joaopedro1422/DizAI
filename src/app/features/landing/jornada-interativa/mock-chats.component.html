@@ -1,0 +1,82 @@
+<app-telefone-demo>
+  <div class="tela-real">
+    <!-- tela "Chats" do painel (app-cabecalho-pagina + abas + conversa-aguardando-card) -->
+    <header class="cabecalho">
+      <span class="btn-icone btn-icone--sem-borda cabecalho__voltar"><app-icone nome="voltar" [tamanho]="22" /></span>
+      <div class="cabecalho__textos">
+        <h1 class="titulo-pagina">Chats</h1>
+        <p class="cabecalho__subtitulo">Conversas que precisam de você aparecem aqui.</p>
+      </div>
+      <div class="abas">
+        <span class="aba aba--ativa">
+          Aguardando você
+          @if (etapa() !== 'aviso') {
+            <span class="aba__contador">1</span>
+          }
+        </span>
+        <span class="aba">Em andamento</span>
+      </div>
+    </header>
+
+    <main class="lista">
+      @if (etapa() === 'card' || etapa() === 'confirmando') {
+        <article class="card">
+          <div class="cliente">
+            <app-avatar modo="icone" nome="João" />
+            <span class="cliente__textos">
+              <span class="cliente__nome">João</span>
+              <span class="cliente__detalhe">(83) 99876-5432 · esperando há 1 min</span>
+            </span>
+          </div>
+
+          <span class="motivo">Pronto para fechar</span>
+
+          <p class="mensagem">"1 minuto! Já te confirmo."</p>
+
+          <div class="resumo caixa-suave">
+            <span class="rotulo-maiusculo">Resumo do pedido</span>
+            <dl class="resumo__lista">
+              @for (item of resumo; track item.campo) {
+                <div class="resumo__item">
+                  <dt class="resumo__campo">{{ item.campo }}</dt>
+                  <dd class="resumo__valor">{{ item.valor }}</dd>
+                </div>
+              }
+            </dl>
+          </div>
+
+          <div class="acoes">
+            <span class="btn btn--primario acoes__responder">
+              <app-icone nome="conversa" [tamanho]="16" [espessura]="2" />
+              Ir ao WhatsApp
+            </span>
+          </div>
+
+          <div class="acoes-pedido">
+            <span class="btn btn--sucesso acoes-pedido__confirmar" [class.tocado]="etapa() === 'confirmando'">
+              <app-icone nome="check" [tamanho]="16" [espessura]="2.4" />
+              Pedido confirmado
+            </span>
+            <div class="acoes-pedido__outras">
+              <span class="btn btn--secundario btn--pequeno">Já entregue</span>
+              <span class="btn btn--texto btn--pequeno">Não aceito</span>
+            </div>
+          </div>
+        </article>
+      }
+    </main>
+
+    <!-- aviso no celular (Web Push), o mesmo título e texto que o DizAI manda -->
+    @if (etapa() === 'aviso' || etapa() === 'abrindo') {
+      <div class="escurecer" [class.escurecer--saindo]="etapa() === 'abrindo'"></div>
+      <div class="notificacao" [class.notificacao--tocada]="etapa() === 'abrindo'">
+        <img class="notificacao__icone" src="/icones/icone-192.png" alt="" />
+        <span class="notificacao__textos">
+          <span class="notificacao__topo"><b>DizAI</b><small>agora</small></span>
+          <b class="notificacao__titulo">Pedido para fechar</b>
+          <span class="notificacao__corpo">Há uma conversa aguardando o fechamento de pedido. Torta artesanal G: brigadeiro, massa mista</span>
+        </span>
+      </div>
+    }
+  </div>
+</app-telefone-demo>

@@ -1,10 +1,11 @@
 import { Component, input } from '@angular/core';
 import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { FORMAS_PAGAMENTO, FORMAS_RECEBIMENTO, PRAZOS_MINIMOS } from '../../../core/constants/opcoes-perfil';
-import { PrazoMinimo } from '../../../core/models/perfil.model';
+import { FORMAS_PAGAMENTO, FORMAS_RECEBIMENTO } from '../../../core/constants/opcoes-perfil';
 import { alternarItem } from '../../../core/utils/colecao.utils';
+import { antecedenciaEmMinutos, exemploAntecedencia } from '../../../core/utils/antecedencia';
 import { campoComErro } from '../../../core/utils/validadores';
+import { UnidadeAntecedencia } from '../../../core/models/perfil.model';
 import { GrupoPagamentoEntrega } from '../cadastro-formulario';
 
 /**
@@ -24,7 +25,6 @@ export class EtapaPagamentoEntregaComponent {
 
   protected readonly formasPagamento = FORMAS_PAGAMENTO;
   protected readonly formasRecebimento = FORMAS_RECEBIMENTO;
-  protected readonly prazos = PRAZOS_MINIMOS;
 
   protected temErro(controle: AbstractControl): boolean {
     return campoComErro(controle);
@@ -40,7 +40,8 @@ export class EtapaPagamentoEntregaComponent {
     controle.markAsTouched();
   }
 
-  protected escolherPrazo(prazo: PrazoMinimo): void {
-    this.grupo().controls.prazoMinimo.setValue(prazo);
+  /** O que o assistente vai dizer com esta antecedência (a mesma conta do backend, com a folga dos prazos longos). */
+  protected exemplo(valor: number | null, unidade: UnidadeAntecedencia): string {
+    return exemploAntecedencia(antecedenciaEmMinutos(valor ?? 0, unidade));
   }
 }

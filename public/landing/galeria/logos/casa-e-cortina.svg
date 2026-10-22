@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" fill="#0F4C5C"/>
+  <!-- varão e cortina aberta -->
+  <g fill="#E6F0EF">
+    <rect x="58" y="40" width="84" height="5" rx="2.5"/>
+    <circle cx="57" cy="42.5" r="5"/>
+    <circle cx="143" cy="42.5" r="5"/>
+    <path d="M64 47h22c-2 14-2 30 6 54H64z"/>
+    <path d="M136 47h-22c2 14 2 30-6 54h28z"/>
+  </g>
+  <g stroke="#0F4C5C" stroke-width="2" opacity="0.35">
+    <path d="M72 50v48M79 50v48"/>
+    <path d="M128 50v48M121 50v48"/>
+  </g>
+  <text x="100" y="136" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="22" fill="#FFFFFF">Casa &amp;</text>
+  <text x="100" y="160" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-weight="bold" font-size="22" fill="#9FD1C8">Cortina</text>
+</svg>

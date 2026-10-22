@@ -16,13 +16,6 @@
   gap: 12px;
 }
 
-.grupo__cabecalho {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 12px;
-}
-
 .grupo__titulo {
   padding: 0 4px;
   font-size: 12px;
@@ -32,148 +25,23 @@
   letter-spacing: 0.06em;
 }
 
-.grupo__descricao {
-  padding: 0 4px;
-  font-size: 13px;
-  color: var(--cor-texto-suave);
-}
-
-/* Cada configuração do assistente vira um cartão, com uma sombra leve para destacar do fundo */
-.conteudo > app-secao-configuracao {
-  padding: 20px;
-  border: 1px solid var(--cor-borda-suave);
+/* Entrou com a senha temporária do "Esqueci minha senha" */
+.aviso-senha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  padding: 14px 16px;
   border-radius: var(--raio-grande);
-  background: var(--cor-fundo);
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.082), 0 1px 2px rgba(15, 23, 42, 0.04);
+  background: var(--cor-ambar-fundo);
+  color: #7a4c00;
 }
 
-/* Espaço para a barra fixa não cobrir o último campo */
-.conteudo--com-barra {
-  padding-bottom: 112px;
-}
-
-.lista-opcoes {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.previa {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.previa__texto {
+.aviso-senha__texto {
+  flex: 1 1 200px;
   font-size: 14px;
-  line-height: 1.5;
-}
-
-.campo__entrada--instrucoes {
-  line-height: 1.6;
-}
-
-/* Campos de escrita do painel: fundo levemente acinzentado e borda mais visível, para não sumirem no cartão branco */
-.conteudo textarea.campo__entrada {
-  border-color: #C3CBDA;
-  background: var(--cor-fundo-tracejado);
-  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05);
-  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.conteudo textarea.campo__entrada:hover {
-  border-color: var(--cor-borda-forte);
-}
-
-/* Ao escrever, volta ao branco com o contorno azul da marca */
-.conteudo textarea.campo__entrada:focus {
-  border-color: var(--cor-primaria);
-  background: var(--cor-fundo);
-  box-shadow: 0 0 0 3px rgba(30, 58, 114, 0.15);
-}
-
-.conteudo textarea.campo__entrada.ng-invalid.ng-touched {
-  border-color: var(--cor-erro);
-}
-
-.aviso-informativo {
-  align-items: flex-start;
-  padding: 0;
-  background: transparent;
-  font-size: 12px;
-  color: var(--cor-texto-suave);
-}
-
-/* Barra que aparece fixa no rodapé quando há alterações não salvas */
-.barra-salvar {
-  position: fixed;
-  left: 50%;
-  bottom: 0;
-  z-index: 50;
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  max-width: var(--largura-tela-app);
-  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-  border-top: 1px solid var(--cor-borda-suave);
-  background: var(--cor-fundo);
-  box-shadow: 0 -8px 24px rgba(20, 26, 38, 0.08);
-  transform: translateX(-50%);
-  animation: subir-barra 0.28s ease-out both;
-}
-
-.barra-salvar__descartar {
-  flex: none;
-}
-
-.barra-salvar__salvar {
-  flex: 1;
-  min-height: 48px;
-}
-
-@keyframes subir-barra {
-  from { transform: translate(-50%, 100%); }
-  to { transform: translate(-50%, 0); }
-}
-
-/* Regras sugeridas para o ramo, adicionadas às instruções com um toque */
-.sugestoes-instrucoes {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.sugestoes-instrucoes__lista {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.sugestao-instrucao {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px dashed var(--cor-borda-forte);
-  border-radius: var(--raio-pequeno);
-  background: var(--cor-fundo);
-  color: var(--cor-texto-secundario);
-  font-size: 13px;
+  font-weight: 600;
   line-height: 1.45;
-  text-align: left;
-  transition: border-color 0.15s ease, color 0.15s ease;
-}
-
-.sugestao-instrucao:hover {
-  border-color: var(--cor-primaria);
-  color: var(--cor-primaria);
-}
-
-.sugestao-instrucao app-icone {
-  flex: none;
-  margin-top: 2px;
-  color: var(--cor-primaria);
 }
 
 /* Convite do fim do onboarding: instalar o app e ativar os avisos */
@@ -190,34 +58,120 @@
   color: var(--cor-texto-secundario);
 }
 
-/* Modo "Agendamento automático": mostra se a agenda já está pronta para ele funcionar */
-.aviso-agenda {
+/* Card que abre "Como o assistente atende" */
+.cartao-atendimento {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border: 1px solid #F1D9A6;
-  border-radius: var(--raio-medio);
-  background: var(--cor-ambar-fundo);
-  color: var(--cor-ambar);
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
   text-decoration: none;
+  box-shadow: var(--sombra-card);
+  transition: border-color 0.15s ease, transform 0.15s ease;
 }
 
-.aviso-agenda--pronta {
-  border-color: #BFE0CC;
-  background: #F2FAF5;
-  color: var(--cor-ativo);
+.cartao-atendimento:hover {
+  border-color: var(--cor-borda-forte);
+  transform: translateY(-1px);
 }
 
-.aviso-agenda__texto {
-  flex: 1;
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--cor-texto-secundario);
-}
-
-.aviso-agenda__texto strong {
-  display: block;
-  margin-top: 2px;
+.cartao-atendimento__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--cor-primaria-clara) 55%, #ffffff);
   color: var(--cor-primaria);
+}
+
+.cartao-atendimento__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.cartao-atendimento__titulo {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cartao-atendimento__descricao {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--cor-texto-suave);
+}
+
+.cartao-atendimento__seta {
+  flex: none;
+  color: var(--cor-borda-forte);
+}
+
+/* Computador: a tela usa a largura toda; "Seu Negócio" à esquerda e "Seu assistente" à direita.
+   No celular nada muda (tudo aqui fica dentro do @media). */
+@media (min-width: 1024px) {
+  .tela-painel {
+    --largura-tela-app: none;
+    border-left: none;
+    border-right: none;
+  }
+
+  .conteudo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 28px 32px;
+    padding: 32px max(40px, calc((100% - 1200px) / 2)) 48px;
+  }
+
+  .grupo--negocio {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  .grupo--assistente {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  /* o aviso do WhatsApp desconectado fica na coluna da direita, logo abaixo do card dos chats */
+  .conteudo > app-alerta-conexao-whatsapp {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  /* o aviso da senha temporária fica em cima, nas duas colunas */
+  .conteudo > .aviso-senha {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .conteudo:has(> .aviso-senha) > .grupo--negocio {
+    grid-row: 2 / span 2;
+  }
+
+  .conteudo:has(> .aviso-senha) > .grupo--assistente {
+    grid-row: 2;
+  }
+
+  .conteudo:has(> .aviso-senha) > app-alerta-conexao-whatsapp {
+    grid-row: 3;
+  }
+
+  .conteudo:has(> .aviso-senha) > app-no-celular {
+    grid-row: 4;
+  }
+
+  /* o convite do app ocupa as duas colunas, no fim */
+  .conteudo > app-no-celular {
+    grid-column: 1 / -1;
+    grid-row: 3;
+  }
 }

@@ -61,34 +61,48 @@
         </div>
       </header>
 
-      @if (temAgenda()) {
+      @if (temAgenda() || temOrcamento()) {
         <div class="alternar animacao-entrada animacao-entrada--2" role="tablist" aria-label="O que ver">
           <button
             type="button"
             role="tab"
             class="alternar__opcao"
-            [class.alternar__opcao--ativa]="!mostrandoAgenda()"
-            [attr.aria-selected]="!mostrandoAgenda()"
+            [class.alternar__opcao--ativa]="!mostrandoAgenda() && !mostrandoOrcamento()"
+            [attr.aria-selected]="!mostrandoAgenda() && !mostrandoOrcamento()"
             (click)="mudarAba('galeria')"
           >
             <app-icone nome="imagem" [tamanho]="17" />
             Trabalhos
           </button>
-          <button
-            type="button"
-            role="tab"
-            class="alternar__opcao"
-            [class.alternar__opcao--ativa]="mostrandoAgenda()"
-            [attr.aria-selected]="mostrandoAgenda()"
-            (click)="mudarAba('agenda')"
-          >
-            <app-icone nome="calendario" [tamanho]="17" />
-            Agendar horário
-          </button>
+          @if (temAgenda()) {
+            <button
+              type="button"
+              role="tab"
+              class="alternar__opcao"
+              [class.alternar__opcao--ativa]="mostrandoAgenda()"
+              [attr.aria-selected]="mostrandoAgenda()"
+              (click)="mudarAba('agenda')"
+            >
+              <app-icone nome="calendario" [tamanho]="17" />
+              Agendar horário
+            </button>
+          } @else {
+            <button
+              type="button"
+              role="tab"
+              class="alternar__opcao"
+              [class.alternar__opcao--ativa]="mostrandoOrcamento()"
+              [attr.aria-selected]="mostrandoOrcamento()"
+              (click)="mudarAba('orcamento')"
+            >
+              <app-icone nome="caixa" [tamanho]="17" />
+              Orçamento
+            </button>
+          }
         </div>
       }
 
-      @if (albuns().length > 0 && !mostrandoAgenda()) {
+      @if (albuns().length > 0 && !mostrandoAgenda() && !mostrandoOrcamento()) {
         <nav class="categorias animacao-entrada animacao-entrada--2" aria-label="Categorias">
           @for (album of albuns(); track album.slug; let primeiro = $first) {
             <button type="button" class="categoria" [class.categoria--ativa]="primeiro" (click)="irParaAlbum(album)">
@@ -104,6 +118,11 @@
       <!-- sem a classe de animação: o transform dela prenderia o botão fixo de enviar dentro do bloco -->
       <main>
         <app-agenda-publica [slug]="slug()" [numeroWhatsapp]="numeroWhatsapp()" />
+      </main>
+    } @else if (mostrandoOrcamento()) {
+      <!-- sem a classe de animação: o transform dela prenderia o botão fixo de enviar dentro do bloco -->
+      <main>
+        <app-orcamento-publico [slug]="slug()" [numeroWhatsapp]="numeroWhatsapp()" />
       </main>
     } @else {
     <main class="albuns animacao-entrada animacao-entrada--3">
@@ -148,7 +167,7 @@
     </main>
     }
     <footer class="rodape ">
-      @if (!mostrandoAgenda()) {
+      @if (!mostrandoAgenda() && !mostrandoOrcamento()) {
         <a class="rodape__whatsapp" [href]="linkWhatsapp()" target="_blank" rel="noopener">
           <app-icone nome="conversa" [tamanho]="20" />
           Falar pelo WhatsApp
@@ -179,6 +198,8 @@
     [fotos]="aberta.fotos"
     [indiceInicial]="aberta.indice"
     [titulo]="aberta.titulo"
+    [whatsappLoja]="numeroWhatsapp()"
+    [slugLoja]="slug()"
     (fechar)="fecharFoto()"
   />
 }

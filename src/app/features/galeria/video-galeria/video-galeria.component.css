@@ -1,0 +1,280 @@
+/* Peças das cenas deste vídeo; a base comum está em shared/components/video-tutorial/cenas-video.css */
+
+/* --------------------------------------------------------------------------
+   Vitrine pública e Instagram
+   -------------------------------------------------------------------------- */
+
+.vitrine {
+  min-height: 100%;
+  background: #fff8fa;
+}
+
+.vitrine__barra {
+  margin: 4.6cqw 3cqw 0;
+  padding: 1cqw 2.4cqw;
+  border-radius: 999px;
+  background: #eef0f4;
+  font-size: 2.2cqw;
+  color: var(--cor-texto-suave);
+  text-align: center;
+}
+
+.vitrine__capa {
+  height: 15cqw;
+  margin-top: 2cqw;
+  background: center / cover no-repeat;
+}
+
+.vitrine__identidade {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6cqw;
+  margin-top: -6cqw;
+  padding: 0 3cqw 2cqw;
+  text-align: center;
+}
+
+.vitrine__logo {
+  width: 12cqw;
+  height: 12cqw;
+  border: 0.8cqw solid #ffffff;
+  border-radius: 50%;
+  background: #b8577c center / cover no-repeat;
+  box-shadow: 0 0.6cqw 1.6cqw rgba(0, 0, 0, 0.12);
+}
+
+.vitrine__nome {
+  font-family: var(--fonte-titulo);
+  font-size: 3.8cqw;
+  font-weight: 600;
+}
+
+.vitrine__descricao {
+  font-size: 2.4cqw;
+  color: var(--cor-texto-suave);
+}
+
+.vitrine__conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4cqw;
+  padding: 0 3cqw 3cqw;
+}
+
+.album-mini {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 1cqw;
+  font-weight: 800;
+}
+
+.album-mini small {
+  font-size: 2.2cqw;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+}
+
+.fotos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1cqw;
+}
+
+.fotos--duas {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.fotos img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 1.4cqw;
+  object-fit: cover;
+}
+
+.fotos--duas img {
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  object-position: top;
+}
+
+/* A cor da vitrine trocando sozinha (Personalizar vitrine) */
+.troca-cor {
+  animation: trocar-cor 7.5s var(--atraso, 0s) both;
+}
+
+.troca-fundo {
+  animation: trocar-fundo 7.5s var(--atraso, 0s) both;
+}
+
+.paleta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2cqw;
+  padding: 2cqw;
+  border-radius: 2.6cqw;
+  background: #ffffff;
+  box-shadow: 0 0.6cqw 2cqw rgba(15, 23, 42, 0.12);
+}
+
+.paleta i {
+  width: 5cqw;
+  height: 5cqw;
+  border-radius: 50%;
+}
+
+.paleta i:nth-child(1) { background: #b8577c; animation: marcar-cor-1 7.5s var(--atraso, 0s) both; }
+.paleta i:nth-child(2) { background: #2c4f9e; animation: marcar-cor-2 7.5s var(--atraso, 0s) both; }
+.paleta i:nth-child(3) { background: #3f7d5a; animation: marcar-cor-3 7.5s var(--atraso, 0s) both; }
+.paleta i:nth-child(4) { background: #8a5a3c; }
+
+.insta {
+  padding: 5cqw 3cqw 3cqw;
+}
+
+.insta__usuario {
+  margin-bottom: 2.4cqw;
+  font-size: 3.4cqw;
+  font-weight: 800;
+}
+
+.insta__topo {
+  display: flex;
+  align-items: center;
+  gap: 3cqw;
+}
+
+.insta__avatar {
+  flex: none;
+  width: 14cqw;
+  height: 14cqw;
+  padding: 0.6cqw;
+  border-radius: 50%;
+  background: conic-gradient(#f9ce34, #ee2a7b, #6228d7, #f9ce34);
+}
+
+.insta__avatar img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0.6cqw solid #ffffff;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.insta__numeros {
+  display: flex;
+  flex: 1;
+  justify-content: space-around;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.insta__numeros small {
+  display: block;
+  font-size: 2.2cqw;
+}
+
+.insta__bio {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4cqw;
+  margin: 2.4cqw 0;
+  line-height: 1.35;
+}
+
+.insta__link {
+  align-self: flex-start;
+  margin: -0.4cqw -0.8cqw;
+  padding: 0.4cqw 0.8cqw;
+  border-radius: 1.2cqw;
+  color: #00376b;
+  font-weight: 700;
+}
+
+
+@keyframes trocar-cor {
+  0%, 30% { background-color: #b8577c; }
+  36%, 63% { background-color: #2c4f9e; }
+  69%, 100% { background-color: #3f7d5a; }
+}
+
+@keyframes trocar-fundo {
+  0%, 30% { background-color: #fff8fa; }
+  36%, 63% { background-color: #f4f7fd; }
+  69%, 100% { background-color: #f3f8f4; }
+}
+
+@keyframes marcar-cor-1 {
+  0%, 30% { box-shadow: 0 0 0 0.6cqw #ffffff, 0 0 0 1.2cqw #b8577c; }
+  36%, 100% { box-shadow: none; }
+}
+
+@keyframes marcar-cor-2 {
+  0%, 30%, 69%, 100% { box-shadow: none; }
+  36%, 63% { box-shadow: 0 0 0 0.6cqw #ffffff, 0 0 0 1.2cqw #2c4f9e; }
+}
+
+@keyframes marcar-cor-3 {
+  0%, 63% { box-shadow: none; }
+  69%, 100% { box-shadow: 0 0 0 0.6cqw #ffffff, 0 0 0 1.2cqw #3f7d5a; }
+}
+
+.vitrine__logo--claro {
+  background-color: #ffffff;
+  background-size: 70%;
+}
+
+.vitrine--madeira {
+  background: #faf6f1;
+}
+
+.vitrine__conteudo--topo {
+  padding-top: 3cqw;
+}
+
+.vitrine__botao {
+  padding: 2cqw;
+  border-radius: 2.4cqw;
+  background: #b8577c;
+  color: #ffffff;
+  font-weight: 800;
+  text-align: center;
+}
+
+.insta__fotos {
+  margin-top: 2.4cqw;
+}
+
+/* Prévia do link no WhatsApp */
+.link-previa {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4cqw;
+  overflow: hidden;
+  padding: 0 0 1.6cqw;
+  line-height: 1.3;
+}
+
+.link-previa > *:not(.link-previa__capa) {
+  padding: 0 2cqw;
+}
+
+.link-previa small {
+  font-size: 2.3cqw;
+  color: var(--cor-texto-suave);
+}
+
+.link-previa__capa {
+  height: 14cqw;
+  margin-bottom: 0.8cqw;
+  background: center / cover no-repeat;
+}
+
+.link-previa__url {
+  font-size: 2.2cqw;
+  color: #027eb5;
+}
