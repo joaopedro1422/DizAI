@@ -1,7 +1,30 @@
 <form class="formulario" [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
+  @if (ehProdutoAVenda()) {
+    <div class="campo">
+      <span class="campo__rotulo">Foto do produto</span>
+      <label class="foto-produto" [class.foto-produto--erro]="!!erroFoto()" [attr.aria-busy]="enviandoFoto()">
+        <input class="somente-leitor-tela" type="file" accept="image/jpeg,image/png,image/webp" [disabled]="enviandoFoto()" (change)="escolherFoto($event)">
+        @if (enviandoFoto()) {
+          <app-carregando modo="inline" [tamanho]="22" />
+        } @else if (foto()) {
+          <img class="foto-produto__imagem" [src]="foto()! | urlImagem" alt="Foto do produto">
+          <span class="foto-produto__trocar">Trocar foto</span>
+        } @else {
+          <app-icone nome="camera" [tamanho]="24" />
+          <span class="foto-produto__texto">Adicionar foto</span>
+        }
+      </label>
+      @if (erroFoto()) {
+        <span class="campo__erro" role="alert">{{ erroFoto() }}</span>
+      } @else {
+        <span class="campo__dica">Aparece para o cliente na página de agendamento ("Também temos").</span>
+      }
+    </div>
+  }
+
   <div class="campo">
-    <label for="produto-nome" class="campo__rotulo">Nome do {{ conteudo().termoItem }}</label>
-    <input id="produto-nome" class="campo__entrada" type="text" formControlName="nome" [placeholder]="conteudo().produto.nome">
+    <label for="produto-nome" class="campo__rotulo">Nome do {{ ehProdutoAVenda() ? 'produto' : conteudo().termoItem }}</label>
+    <input id="produto-nome" class="campo__entrada" type="text" formControlName="nome" [placeholder]="ehProdutoAVenda() ? 'Ex.: Minoxidil 5%' : conteudo().produto.nome">
     @if (temErro('nome')) {
       <span class="campo__erro" role="alert">Dê um nome para o produto.</span>
     }
@@ -38,12 +61,23 @@
 
   <div class="campo">
     <label for="produto-descricao" class="campo__rotulo">Descrição</label>
-    <textarea id="produto-descricao" class="campo__entrada" rows="4" formControlName="descricao" [placeholder]="conteudo().produto.descricao"></textarea>
-    <span class="campo__dica">Quanto mais detalhe, melhor o assistente responde.</span>
+    <textarea id="produto-descricao" class="campo__entrada" rows="4" formControlName="descricao" [placeholder]="ehProdutoAVenda() ? 'Ex.: Frasco de 60 ml, uso diário.' : conteudo().produto.descricao"></textarea>
+    @if (ehProdutoAVenda()) {
+      <span class="campo__dica">
+        O assistente só fala deste produto quando o cliente perguntar e nunca agenda: ele não atrapalha os agendamentos.
+      </span>
+    } @else {
+      <span class="campo__dica">Quanto mais detalhe, melhor o assistente responde.</span>
+    }
   </div>
 
   <div class="campo">
-    <label for="produto-preco" class="campo__rotulo">Preço <span class="campo__rotulo-opcional">(deixe vazio se depender de avaliação)</span></label>
+    <label for="produto-preco" class="campo__rotulo">
+      Preço
+      @if (!ehProdutoAVenda()) {
+        <span class="campo__rotulo-opcional">(deixe vazio se depender de avaliação)</span>
+      }
+    </label>
     <div class="linha-preco">
       <span class="campo-prefixado linha-preco__valor" [class.campo-prefixado--erro]="temErro('preco')">
         <span class="campo-prefixado__prefixo">R$</span>
@@ -60,14 +94,16 @@
       </button>
     </div>
     @if (temErro('preco')) {
-      <span class="campo__erro" role="alert">Use apenas números, por exemplo 70 ou 70,50.</span>
+      <span class="campo__erro" role="alert">
+        {{ formulario.controls.preco.hasError('required') ? 'Informe o preço do produto.' : 'Use apenas números, por exemplo 70 ou 70,50.' }}
+      </span>
     }
     @if (variacoes.length > 0) {
       <span class="campo__dica">Com variações, o cliente escolhe uma e o valor dela vale no lugar deste preço.</span>
     }
   </div>
 
-  @if (!pedeDuracao()) {
+  @if (!ramoServico()) {
     <div class="campo">
       <div class="atributos__cabecalho">
         <span class="campo__rotulo">Variações de preço <span class="campo__rotulo-opcional">(opcional)</span></span>
@@ -142,7 +178,7 @@
     </div>
   }
 
-  @if (!pedeDuracao()) {
+  @if (!ramoServico()) {
     <div class="campo">
       <label for="produto-antecedencia" class="campo__rotulo">
         Antecedência mínima <span class="campo__rotulo-opcional">(opcional)</span>
@@ -177,7 +213,12 @@
 
   <div class="campo">
     <div class="atributos__cabecalho">
-      <span class="campo__rotulo">Opções que o cliente escolhe</span>
+      <span class="campo__rotulo">
+        Opções que o cliente escolhe
+        @if (ehProdutoAVenda()) {
+          <span class="campo__rotulo-opcional">(opcional)</span>
+        }
+      </span>
       <span class="campo__dica">Ex.: {{ conteudo().produto.exemploOpcoes }}. Deixe vazio se não tiver.</span>
     </div>
 

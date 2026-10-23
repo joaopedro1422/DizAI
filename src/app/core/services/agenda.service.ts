@@ -7,9 +7,14 @@ import { SessaoService } from '../auth/sessao.service';
 import {
   Agendamento,
   ConfiguracaoAgenda,
+  DisponibilidadeProfissional,
   MensagemPronta,
   NovaMensagemPronta,
   NovoAgendamento,
+  ItemNovaVenda,
+  NumerosAgenda,
+  Profissional,
+  VendaProduto,
 } from '../models/agenda.model';
 import { CarregamentoUnico } from '../utils/carregamento-unico';
 import { hojeIso, somarDias } from '../utils/datas-agenda';
@@ -32,6 +37,9 @@ export class AgendaService {
   readonly agendamentos = signal<Agendamento[]>([]);
   /** Mensagens prontas para mandar ao cliente pelo WhatsApp (lembrete, endereço...). */
   readonly mensagensProntas = signal<MensagemPronta[]>([]);
+  /** Quem atende, na ordem de cadastro (o primeiro é o dono). Com 2+, a agenda mostra com quem é cada horário. */
+  readonly profissionais = signal<Profissional[]>([]);
+  readonly variosProfissionais = computed(() => this.profissionais().length > 1);
   readonly carregando = computed(
     () => this.carregamentoConfiguracao.carregando() || this.carregamentoAgendamentos.carregando(),
   );
@@ -78,6 +86,54 @@ export class AgendaService {
     return criado;
   }
 
+  async carregarProfissionais(): Promise<void> {
+    this.profissionais.set(await firstValueFrom(this.http.get<Profissional[]>(this.url('/profissionais'))));
+  }
+
+  async adicionarProfissional(nome: string): Promise<void> {
+    this.profissionais.set(await firstValueFrom(this.http.post<Profissional[]>(this.url('/profissionais'), { nome })));
+  }
+
+  async renomearProfissional(id: string, nome: string): Promise<void> {
+    this.profissionais.set(await firstValueFrom(this.http.put<Profissional[]>(this.url(`/profissionais/${id}`), { nome })));
+  }
+
+  /** "Quem está livre?": cada profissional no horário [hora, hora + duração) do dia. */
+  disponibilidade(data: string, hora: string, duracaoMinutos: number): Promise<DisponibilidadeProfissional[]> {
+    const params = new HttpParams().set('data', data).set('hora', hora).set('duracao', duracaoMinutos);
+    return firstValueFrom(this.http.get<DisponibilidadeProfissional[]>(this.url('/disponibilidade'), { params }));
+  }
+
+  /** Foto de quem atende (referência do upload com destino PROFISSIONAIS); null tira a foto. */
+  async trocarFotoProfissional(id: string, fotoUrl: string | null): Promise<void> {
+    this.profissionais.set(
+      await firstValueFrom(this.http.patch<Profissional[]>(this.url(`/profissionais/${id}/foto`), { fotoUrl })),
+    );
+  }
+
+  async removerProfissional(id: string): Promise<void> {
+    this.profissionais.set(await firstValueFrom(this.http.delete<Profissional[]>(this.url(`/profissionais/${id}`))));
+  }
+
+  /** O lojista ajusta o valor do atendimento (null = sem valor). */
+  async atualizarValor(agendamentoId: string, valor: number | null): Promise<void> {
+    const atualizado = await firstValueFrom(
+      this.http.patch<Agendamento>(this.url(`/agendamentos/${agendamentoId}/valor`), { valor }),
+    );
+    this.agendamentos.update((lista) => lista.map((a) => (a.id === agendamentoId ? atualizado : a)));
+  }
+
+  /** "Registrar venda": produtos vendidos no balcão (entram só na parte Produtos dos Números). */
+  registrarVenda(itens: ItemNovaVenda[]): Promise<VendaProduto> {
+    return firstValueFrom(this.http.post<VendaProduto>(this.url('/vendas'), { itens }));
+  }
+
+  /** Últimos 7/30/90 dias, ou um mês do calendário ("2026-10"). */
+  numeros(filtro: { dias: number } | { mes: string }): Promise<NumerosAgenda> {
+    const params = 'mes' in filtro ? new HttpParams().set('mes', filtro.mes) : new HttpParams().set('dias', filtro.dias);
+    return firstValueFrom(this.http.get<NumerosAgenda>(this.url('/numeros'), { params }));
+  }
+
   async cancelar(agendamentoId: string): Promise<void> {
     const cancelado = await firstValueFrom(
       this.http.post<Agendamento>(this.url(`/agendamentos/${agendamentoId}/cancelamento`), null),
@@ -113,6 +169,7 @@ export class AgendaService {
     this.carregamentoAgendamentos.reiniciar();
     this.configuracao.set(null);
     this.agendamentos.set([]);
+    this.profissionais.set([]);
   }
 
   private async buscarAgendamentos(): Promise<void> {

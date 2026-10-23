@@ -1,5 +1,20 @@
 <div class="tela-app">
-  <app-cabecalho-pagina titulo="Chats" subtitulo="Conversas que precisam de você aparecem aqui.">
+  <!-- topo azul (o mesmo da Agenda e dos Pedidos): abas num azul mais escuro, a ativa em branco -->
+  <header class="topo-azul">
+    <div class="topo-azul__linha">
+      <a class="topo-azul__voltar" [routerLink]="rotaInicio()" aria-label="Voltar para o painel">
+        <app-icone nome="voltar" [tamanho]="22" />
+      </a>
+      <!-- todos os clientes (quem conversou, agendou ou pediu), com busca e o histórico de cada um -->
+      <a class="botao-clientes" [routerLink]="rotaClientes()">
+        <app-icone nome="pessoas" [tamanho]="17" [espessura]="2" />
+        Clientes
+      </a>
+    </div>
+    <div class="topo-azul__textos">
+      <h1 class="topo-azul__titulo">Chats</h1>
+      <p class="topo-azul__sub">Conversas que precisam de você aparecem aqui.</p>
+    </div>
     <div class="abas" role="tablist" aria-label="Tipo de conversa">
       <button
         type="button"
@@ -29,7 +44,7 @@
         Em andamento
       </button>
     </div>
-  </app-cabecalho-pagina>
+  </header>
 
   @if (carregando()) {
     <app-carregando texto="Carregando conversas…" />

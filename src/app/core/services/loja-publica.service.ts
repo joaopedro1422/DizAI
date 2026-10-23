@@ -31,8 +31,11 @@ export class LojaPublicaService {
   }
 
   /** Horários livres de cada dia para os serviços escolhidos (a soma das durações). */
-  buscarHorarios(slug: string, servicoIds: number[]): Promise<DiaHorarios[]> {
-    const caminho = `/public/lojas/${encodeURIComponent(slug)}/agenda/horarios?servicos=${servicoIds.join(',')}`;
+  /** profissionalId: com 2+ profissionais, só os horários de quem foi escolhido (sem ele, os de todos juntos). */
+  buscarHorarios(slug: string, servicoIds: number[], profissionalId?: string | null): Promise<DiaHorarios[]> {
+    const caminho =
+      `/public/lojas/${encodeURIComponent(slug)}/agenda/horarios?servicos=${servicoIds.join(',')}` +
+      (profissionalId ? `&profissional=${encodeURIComponent(profissionalId)}` : '');
     return firstValueFrom(this.http.get<DiaHorarios[]>(urlApi(caminho)));
   }
 

@@ -44,6 +44,8 @@ export interface Produto {
   antecedenciaMinutos?: number | null;
   /** Variações de preço (ex.: Tamanho P / M): o cliente escolhe uma e o valor dela vale no lugar do preço. */
   variacoes?: VariacaoProduto[];
+  /** Negócios de serviço: item à venda (minoxidil, esmalte), não um serviço. Sem duração e nunca agendado. */
+  produtoAVenda?: boolean;
 }
 
 /** Uma variação de preço: nome e valor (obrigatório). */

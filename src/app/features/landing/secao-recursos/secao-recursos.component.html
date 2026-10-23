@@ -26,6 +26,11 @@
       </div>
       <h3 class="destaque__titulo">{{ venda().titulo }}</h3>
       <p class="destaque__texto">{{ venda().texto }}</p>
+      <ul class="extras" aria-label="Também tem">
+        @for (extra of extrasVendas; track extra) {
+          <li class="extras__item"><app-icone nome="check" [tamanho]="15" [espessura]="2.6" />{{ extra }}</li>
+        }
+      </ul>
       <div class="conversa destaque__conversa destaque__conversa--fixa" aria-live="polite">
         <!-- @for com track na cena: trocar de cena ou de modo recria os balões e a animação de entrada roda de novo -->
         @for (cena of [cenaVenda()]; track cena.id) {
@@ -50,6 +55,11 @@
         Você diz em quais dias e horários atende. O assistente oferece só os horários em que o serviço cabe, marca e confirma
         na hora. O cliente remarca ou cancela pelo próprio WhatsApp.
       </p>
+      <ul class="extras extras--verde" aria-label="Também tem">
+        @for (extra of extrasServicos; track extra) {
+          <li class="extras__item"><app-icone nome="check" [tamanho]="15" [espessura]="2.6" />{{ extra }}</li>
+        }
+      </ul>
       <div class="conversa destaque__conversa destaque__conversa--fixa" aria-live="polite">
         @if (cena() === 'primeira') {
           <span class="balao balao--cliente balao--entra">Quais serviços vocês fazem?</span>

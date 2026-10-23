@@ -17,7 +17,9 @@ export type DestinoImagem =
   /** Catálogo enviado na conversa: aceita também PDF (lojas/{slug}/catalogo). */
   | { tipo: 'CATALOGO' }
   /** Foto anexada ao confirmar um pedido (lojas/{slug}/pedidos). */
-  | { tipo: 'PEDIDOS' };
+  | { tipo: 'PEDIDOS' }
+  /** Foto de quem atende na agenda (lojas/{slug}/profissionais). */
+  | { tipo: 'PROFISSIONAIS' };
 
 /**
  * Envia as imagens ao backend (POST /api/perfis/{perfilId}/arquivos, multipart), que grava no Firebase Storage

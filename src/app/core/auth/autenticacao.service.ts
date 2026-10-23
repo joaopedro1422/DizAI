@@ -12,6 +12,7 @@ import { ConversaService } from '../services/conversa.service';
 import { GaleriaService } from '../services/galeria.service';
 import { PerfilService } from '../services/perfil.service';
 import { PerguntaFrequenteService } from '../services/pergunta-frequente.service';
+import { ClienteService } from '../services/cliente.service';
 import { PedidoService } from '../services/pedido.service';
 import { ProdutoService } from '../services/produto.service';
 import { RespostaAutenticacao, SessaoService } from './sessao.service';
@@ -34,6 +35,7 @@ export class AutenticacaoService {
     inject(AgendaService),
     inject(EstatisticasService),
     inject(PedidoService),
+    inject(ClienteService),
   ];
 
   /** Login com o WhatsApp do negócio e a senha. Devolve o caminho do painel: /painel/{uuid} */

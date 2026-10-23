@@ -13,7 +13,8 @@ export type RamoNegocio =
  * O que o assistente faz quando o cliente quer fechar um pedido.
  * AGENDAMENTO_AUTOMATICO: só serviços presenciais; o único modo em que o assistente marca horários sozinho.
  */
-export type ModoPedido = 'ENCAMINHAR_AO_DONO' | 'COLETAR_DADOS' | 'AGENDAMENTO_AUTOMATICO';
+/** LINK_EXTERNO: só serviços; o negócio agenda em outro app e o assistente manda o link de lá. */
+export type ModoPedido = 'ENCAMINHAR_AO_DONO' | 'COLETAR_DADOS' | 'AGENDAMENTO_AUTOMATICO' | 'LINK_EXTERNO';
 
 /** Qual link o assistente envia quando o cliente pede fotos. */
 export type ModoFotos = 'GALERIA' | 'LINK_EXTERNO';
@@ -92,6 +93,8 @@ export interface Perfil {
   camposPedido: string;
   modoFotos: ModoFotos;
   linkPortfolioExterno: string;
+  /** Serviços no modo "Agendo por outro app": o link de agendamento de lá (AppBarber, Trinks, Booksy...). */
+  linkAgendamentoExterno: string;
   saudacaoPersonalizada: string;
   instrucoesObrigatorias: string;
   modoCatalogo: ModoCatalogo;
@@ -132,6 +135,7 @@ export type ConfiguracoesAtendimento = Pick<
   | 'modoCatalogo'
   | 'catalogoArquivos'
   | 'confirmaQualquerHora'
+  | 'linkAgendamentoExterno'
 >;
 
 /** Dados editados no modal "Dados da loja" do painel. */

@@ -42,6 +42,7 @@ export class SessaoService {
       perguntas: `${inicio}/perguntas`,
       galeria: `${inicio}/galeria`,
       chats: `${inicio}/chats`,
+      clientes: `${inicio}/clientes`,
       agenda: `${inicio}/agenda`,
       pedidos: `${inicio}/pedidos`,
       estatisticas: `${inicio}/estatisticas`,

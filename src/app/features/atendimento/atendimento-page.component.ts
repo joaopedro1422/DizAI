@@ -64,10 +64,20 @@ export class AtendimentoPageComponent implements OnInit {
   /** Conversa de teste com o próprio assistente (botão "Testar atendimento" do topo). */
   protected readonly testando = signal(false);
 
-  /** "Agendamento automático" só aparece para os ramos com agenda (serviços presenciais). */
-  protected readonly modosPedido = computed(() =>
-    MODOS_PEDIDO.filter((modo) => !modo.soComAgenda || ramoUsaAgenda(this.perfilService.perfil().ramo)),
-  );
+  /**
+   * "Agendamento automático" só aparece para os ramos com agenda (serviços presenciais). Nos serviços, "Agendo por
+   * outro app" fica no lugar de "Me chamar na hora" (que só continua visível para quem já está nele).
+   */
+  protected readonly modosPedido = computed(() => {
+    const perfil = this.perfilService.perfil();
+    const servico = ramoDeServico(perfil.ramo);
+    return MODOS_PEDIDO.filter(
+      (modo) =>
+        (!modo.soComAgenda || ramoUsaAgenda(perfil.ramo)) &&
+        (!modo.soServicos || servico) &&
+        (!modo.soProdutos || !servico || perfil.modoPedido === modo.valor),
+    );
+  });
   /**
    * "Só no meu horário de funcionamento" usa o horário cadastrado em Dados da loja (aqui só aparece o resumo).
    * Vazio quando ainda não foi cadastrado.
@@ -153,6 +163,13 @@ export class AtendimentoPageComponent implements OnInit {
   /** Exemplos e sugestões do ramo da loja (placeholders e regras comuns). */
   protected readonly conteudoRamo = this.conteudoRamoService.conteudo;
   protected readonly exemploSaudacao = this.conteudoRamoService.exemploSaudacao;
+
+  /** O erro do link de agendamento aparece depois que o campo foi tocado ou que o lojista tentou salvar. */
+  protected mostrarErroLinkAgenda(): boolean {
+    const controle = this.formulario.controls.linkAgendamentoExterno;
+    const tocado = controle.touched || this.tentouSalvar();
+    return tocado && (controle.invalid || this.formulario.hasError('linkAgendamentoObrigatorio'));
+  }
 
   /** O erro do link aparece depois que o campo foi tocado ou que o lojista tentou salvar. */
   protected mostrarErroLink(): boolean {

@@ -46,7 +46,8 @@ const CONVERSAS_SERVICO: Partial<Record<TipoConversa, MensagemFluxo[]>> = {
     {
       cliente: true,
       texto:
-        'Olá! Quero agendar pela agenda online:\nServiço: Esmaltação em gel\nData: sexta, 23/10\nHorário: 14:00\nNome: Mariana',
+        // a mensagem pronta da agenda online, como chega no WhatsApp (*texto* = negrito)
+        'Olá! Quero agendar pela agenda online:\n\n*Serviço:* Esmaltação em gel\n*Data:* sexta, 23/10\n*Horário:* 14:00\n*Nome:* Mariana',
       atrasoS: 0,
     },
     {
@@ -71,5 +72,17 @@ export class MockConversaJornadaComponent {
   /** Conversas de serviço: as mensagens ficam uma embaixo da outra, no centro do palco. */
   protected get fluxo(): MensagemFluxo[] | undefined {
     return CONVERSAS_SERVICO[this.tipo];
+  }
+
+  /** "*Serviço:* Esmaltação" -> trechos com e sem negrito, como o WhatsApp mostra. */
+  protected trechos(texto: string): { texto: string; negrito: boolean }[] {
+    return texto
+      .split(/(\*[^*\n]+\*)/)
+      .filter(Boolean)
+      .map((parte) =>
+        parte.length > 2 && parte.startsWith('*') && parte.endsWith('*')
+          ? { texto: parte.slice(1, -1), negrito: true }
+          : { texto: parte, negrito: false },
+      );
   }
 }

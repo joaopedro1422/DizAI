@@ -185,3 +185,31 @@
     transition: none;
   }
 }
+
+/* "Também tem": lista curta com check embaixo do texto de cada card */
+.extras {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.extras__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--cor-texto);
+}
+
+.extras__item app-icone {
+  flex: none;
+  color: var(--cor-primaria);
+}
+
+.extras--verde .extras__item app-icone {
+  color: var(--cor-ativo);
+}

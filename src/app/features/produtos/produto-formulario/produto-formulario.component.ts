@@ -1,8 +1,11 @@
-import { Component, OnInit, computed, inject, input, output } from '@angular/core';
+import { Component, OnInit, computed, inject, input, output, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { ramoDeServico, ramoUsaAgenda, UnidadeAntecedencia } from '../../../core/models/perfil.model';
 import { MODOS_ESCOLHA, ModoEscolha, NovoProduto, Produto, escolhaParaFormulario } from '../../../core/models/produto.model';
+import { mensagemDoErro } from '../../../core/api/erro-api';
+import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
+import { ArmazenamentoFotosService } from '../../../core/services/armazenamento-fotos.service';
 import { PerfilService } from '../../../core/services/perfil.service';
 import { antecedenciaEmMinutos, antecedenciaNaTela } from '../../../core/utils/antecedencia';
 import { formatarDuracao } from '../../../core/utils/datas-agenda';
@@ -14,6 +17,9 @@ import { IconeComponent } from '../../../shared/components/icone/icone.component
 
 /** Valor especial do chip "Nova categoria". */
 const NOVA_CATEGORIA = '__nova_categoria__';
+
+/** Categoria sugerida para os produtos à venda dos negócios de serviço. */
+const CATEGORIA_PRODUTOS = 'Produtos';
 
 /** Aceita "70", "70,5" ou "70.50". */
 const PADRAO_PRECO = /^\d{1,7}([.,]\d{1,2})?$/;
@@ -27,18 +33,29 @@ type GrupoAtributo = FormGroup<{ nome: FormControl<string>; opcoes: FormControl<
 /** Formulário do modal "Novo produto". */
 @Component({
   selector: 'app-produto-formulario',
-  imports: [ReactiveFormsModule, IconeComponent, CarregandoComponent],
+  imports: [ReactiveFormsModule, IconeComponent, CarregandoComponent, UrlImagemPipe],
   templateUrl: './produto-formulario.component.html',
   styleUrl: './produto-formulario.component.css',
 })
 export class ProdutoFormularioComponent implements OnInit {
   readonly categoriasExistentes = input<string[]>([]);
   readonly produto = input<Produto | null>(null);
+  /** Negócios de serviço: cadastro de um produto à venda (pelo atalho "Adicionar produto"). Na edição vale o do item. */
+  readonly produtoAVenda = input(false);
   /** A tela avisa enquanto o produto está sendo salvo. */
   readonly salvando = input(false);
   readonly salvo = output<NovoProduto>();
 
   private readonly fb = inject(FormBuilder);
+  private readonly armazenamentoFotos = inject(ArmazenamentoFotosService);
+
+  /**
+   * Foto do produto à venda (obrigatória: aparece no passo "Também temos" da agenda online e no card do agendamento).
+   * Sobe na hora para lojas/{slug}/produtos e guarda só a referência.
+   */
+  protected readonly foto = signal<string | null>(null);
+  protected readonly enviandoFoto = signal(false);
+  protected readonly erroFoto = signal('');
 
   /** Placeholders e textos do ramo da loja. */
   protected readonly conteudo = inject(ConteudoRamoService).conteudo;
@@ -47,9 +64,14 @@ export class ProdutoFormularioComponent implements OnInit {
 
   private readonly perfil = inject(PerfilService).perfil;
   private readonly ramo = computed(() => this.perfil().ramo);
+  /** Ramos de serviço: sem variações de preço nem antecedência (inclusive nos produtos à venda). */
+  protected readonly ramoServico = computed(() => ramoDeServico(this.ramo()));
+  protected readonly ehProdutoAVenda = computed(
+    () => this.ramoServico() && (this.produto()?.produtoAVenda ?? this.produtoAVenda()),
+  );
   /** Serviços mostram a duração; nos ramos com agenda ela é obrigatória (a agenda conta os horários por ela). */
-  protected readonly pedeDuracao = computed(() => ramoDeServico(this.ramo()));
-  protected readonly duracaoObrigatoria = computed(() => ramoUsaAgenda(this.ramo()));
+  protected readonly pedeDuracao = computed(() => this.ramoServico() && !this.ehProdutoAVenda());
+  protected readonly duracaoObrigatoria = computed(() => ramoUsaAgenda(this.ramo()) && !this.ehProdutoAVenda());
   /** "Quantas o cliente escolhe" em cada opção: número + modo (só produtos: os serviços não usam). */
   protected readonly modosEscolha = MODOS_ESCOLHA;
   protected readonly duracoesComuns = DURACOES_COMUNS.map((minutos) => ({ minutos, rotulo: formatarDuracao(minutos) }));
@@ -82,7 +104,12 @@ export class ProdutoFormularioComponent implements OnInit {
     if (this.duracaoObrigatoria()) {
       this.formulario.controls.duracao.addValidators(Validators.required);
     }
+    // produto à venda sempre tem preço: o assistente responde "fica R$ X" na hora
+    if (this.ehProdutoAVenda()) {
+      this.formulario.controls.preco.addValidators(Validators.required);
+    }
     const produto = this.produto();
+    this.foto.set(produto?.fotoUrl ?? null);
     if (produto) {
       this.formulario.patchValue({
         duracao: produto.duracaoMinutos ? String(produto.duracaoMinutos) : '',
@@ -109,8 +136,40 @@ export class ProdutoFormularioComponent implements OnInit {
       return;
     }
 
+    if (this.ehProdutoAVenda()) {
+      // produto à venda começa na categoria "Produtos" (criada aqui se ainda não existe)
+      const existe = this.categoriasExistentes().includes(CATEGORIA_PRODUTOS);
+      this.formulario.patchValue({
+        categoria: existe ? CATEGORIA_PRODUTOS : NOVA_CATEGORIA,
+        novaCategoria: existe ? '' : CATEGORIA_PRODUTOS,
+      });
+      return;
+    }
     const primeiraCategoria = this.categoriasExistentes()[0] ?? NOVA_CATEGORIA;
     this.formulario.controls.categoria.setValue(primeiraCategoria);
+  }
+
+  protected async escolherFoto(evento: Event): Promise<void> {
+    const entrada = evento.target as HTMLInputElement;
+    const arquivo = entrada.files?.[0];
+    entrada.value = '';   // escolher o mesmo arquivo de novo também dispara
+    if (!arquivo) {
+      return;
+    }
+    if (!/^image\/(jpeg|png|webp)$/.test(arquivo.type)) {
+      this.erroFoto.set('Use uma foto JPG, PNG ou WEBP.');
+      return;
+    }
+    this.erroFoto.set('');
+    this.enviandoFoto.set(true);
+    try {
+      const [referencia] = await this.armazenamentoFotos.enviar([arquivo], { tipo: 'PRODUTOS' });
+      this.foto.set(referencia);
+    } catch (erro) {
+      this.erroFoto.set(mensagemDoErro(erro, 'Não foi possível enviar a foto. Tente de novo.'));
+    } finally {
+      this.enviandoFoto.set(false);
+    }
   }
 
   protected escolherCategoria(categoria: string): void {
@@ -181,7 +240,11 @@ export class ProdutoFormularioComponent implements OnInit {
       return;
     }
     this.exigirNomeDaNovaCategoria();
-    if (this.formulario.invalid) {
+    const faltaFoto = this.ehProdutoAVenda() && !this.foto();
+    if (faltaFoto) {
+      this.erroFoto.set('Adicione uma foto: ela aparece para o cliente na página de agendamento.');
+    }
+    if (this.formulario.invalid || faltaFoto || this.enviandoFoto()) {
       this.formulario.markAllAsTouched();
       return;
     }
@@ -209,12 +272,15 @@ export class ProdutoFormularioComponent implements OnInit {
       precoAPartirDe: valores.precoAPartirDe,
       duracaoMinutos: this.pedeDuracao() && duracao ? Number(duracao) : null,
       antecedenciaMinutos:
-        !this.pedeDuracao() && antecedencia
+        !this.ramoServico() && antecedencia
           ? antecedenciaEmMinutos(antecedencia, valores.antecedenciaUnidade)
           : null,
-      variacoes: this.pedeDuracao()
+      variacoes: this.ramoServico()
         ? []
         : valores.variacoes.map((v) => ({ nome: v.nome.trim(), preco: Number(v.preco.trim().replace(',', '.')) })),
+      produtoAVenda: this.ehProdutoAVenda(),
+      // só o produto à venda tem foto neste formulário; nos outros a foto atual é preservada pela tela
+      ...(this.ehProdutoAVenda() ? { fotoUrl: this.foto() } : {}),
       atributos: valores.atributos
         .map((atributo) => ({
           nome: atributo.nome.trim(),

@@ -1,31 +1,27 @@
-.abas {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4px;
-  padding: 4px;
-  border-radius: var(--raio-medio);
-  background: var(--cor-primaria-clara);
-}
-
-.aba {
-  display: flex;
+/* topo azul (estilos-topo-azul.css): só o subtítulo, o botão Clientes e o contador da aba são daqui */
+.botao-clientes {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px;
-  border: none;
-  border-radius: 11px;
-  background: transparent;
-  color: var(--cor-texto-secundario);
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--raio-pilula);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.15s ease;
 }
 
-.aba--ativa {
-  background: var(--cor-fundo);
-  color: var(--cor-texto);
-  font-weight: 700;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+.botao-clientes:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.topo-azul__sub {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--cor-texto-sobre-escuro);
 }
 
 .aba__contador {
@@ -36,10 +32,15 @@
   height: 22px;
   padding: 0 6px;
   border-radius: var(--raio-pilula);
-  background: var(--cor-primaria);
-  color: #ffffff;
+  background: #ffffff;
+  color: var(--cor-primaria);
   font-size: 12px;
   font-weight: 800;
+}
+
+.aba--ativa .aba__contador {
+  background: var(--cor-primaria);
+  color: #ffffff;
 }
 
 .conversas {

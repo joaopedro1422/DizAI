@@ -14,21 +14,27 @@ import { IconeComponent } from '../../../shared/components/icone/icone.component
 import { RoteiroDemo } from './roteiro-demo';
 import { TelefoneDemoComponent } from './telefone-demo.component';
 
-/** Os serviços da página da Sálvia (camila-rocha), com as categorias e durações cadastradas. */
+/** Os serviços da página da Sálvia (camila-rocha), com as categorias, descrições, preços e durações cadastrados. */
 const CATEGORIAS = [
-  { nome: 'Combos', servicos: [{ nome: 'Pé e mão', duracao: '1h30' }, { nome: 'Pé e mão com gel nas mãos', duracao: '2h' }] },
+  {
+    nome: 'Combos',
+    servicos: [
+      { nome: 'Pé e mão', descricao: 'Manicure e pedicure tradicionais no mesmo horário.', preco: 'R$ 70,00', duracao: '1h30' },
+      { nome: 'Pé e mão com gel nas mãos', descricao: 'Pedicure tradicional e esmaltação em gel nas mãos.', preco: 'R$ 105,00', duracao: '2h' },
+    ],
+  },
   {
     nome: 'Mãos',
     servicos: [
-      { nome: 'Blindagem', duracao: '1h15' },
-      { nome: 'Esmaltação em gel', duracao: '1h' },
-      { nome: 'Manicure Tradicional', duracao: '45 min' },
-      { nome: 'Remoção de gel', duracao: '50 min' },
-      { nome: 'manutenção de alongamento', duracao: '30 min' },
+      { nome: 'Blindagem', descricao: 'Camada fina de gel que fortalece a unha natural e ajuda a crescer sem quebrar. Ideal para unhas fracas.', preco: 'R$ 90,00', duracao: '1h15' },
+      { nome: 'Esmaltação em gel', descricao: 'Cutilagem e esmalte em gel na unha natural. Brilho e duração de até 21 dias, sem descascar.', preco: 'R$ 70,00', duracao: '1h' },
+      { nome: 'Manicure Tradicional', descricao: 'Cutilagem, lixamento e esmaltação comum. Dura de 5 a 7 dias.', preco: 'R$ 35,00', duracao: '45 min' },
+      { nome: 'Remoção de gel', descricao: 'Cutilagem, lixamento e esmaltação comum dos pés.', preco: 'R$ 40,00', duracao: '50 min' },
+      { nome: 'manutenção de alongamento', descricao: 'Para quem já tem alongamento feito aqui, até 21 dias depois da aplicação.', preco: 'R$ 110,00', duracao: '30 min' },
     ],
   },
-  { nome: 'Nail art', servicos: [{ nome: 'Nail art', duracao: '15 min' }] },
-  { nome: 'Pés', servicos: [{ nome: 'Pedicure tradicional', duracao: '50 min' }] },
+  { nome: 'Nail art', servicos: [{ nome: 'Nail art', descricao: 'Desenhos, adesivos ou pedrarias. Feita junto com outro serviço.', preco: 'Sob consulta', duracao: '15 min' }] },
+  { nome: 'Pés', servicos: [{ nome: 'Pedicure tradicional', descricao: 'Cutilagem, lixamento e esmaltação comum dos pés.', preco: 'R$ 40,00', duracao: '50 min' }] },
 ];
 const SERVICO_ESCOLHIDO = 'Esmaltação em gel';
 
@@ -107,7 +113,7 @@ export class MockAgendaPublicaJornadaComponent implements OnInit {
       return;
     }
     const r = this.roteiro;
-    r.em(900, () => this.rolar(250));
+    r.em(900, () => this.rolar(560));
     r.em(1900, () => this.tocandoServico.set(true));
     r.em(2150, () => {
       this.tocandoServico.set(false);

@@ -8,7 +8,14 @@ const VARIAVEIS = [
   { chave: 'data', rotulo: 'Data', exemplo: '' },
   { chave: 'horario', rotulo: 'Horário', exemplo: '11:00 às 11:45' },
   { chave: 'nome', rotulo: 'Nome do cliente', exemplo: 'Pedro' },
+  /** Só nas agendas com 2+ profissionais (quem chama passa em `etiquetas`). */
+  { chave: 'profissional', rotulo: 'Profissional', exemplo: 'Lucas' },
+  /** Só com produtos à venda: os reservados pela agenda online ("nenhum" quando não reservou). */
+  { chave: 'produtos', rotulo: 'Produtos', exemplo: 'Minoxidil 5%' },
 ];
+
+/** As etiquetas de sempre (sem {profissional}). */
+export const ETIQUETAS_AGENDAMENTO = ['servico', 'data', 'horario', 'nome'];
 
 export const MAXIMO_CONFIRMACAO = 1000;
 
@@ -28,7 +35,7 @@ export class MensagemConfirmacaoComponent {
   /** A mensagem padrão (vale quando a loja não escreve a sua). */
   readonly padrao = input.required<string>();
   /** Quais etiquetas a mensagem aceita (o backend só troca essas). */
-  readonly etiquetas = input<string[]>(VARIAVEIS.map((v) => v.chave));
+  readonly etiquetas = input<string[]>(ETIQUETAS_AGENDAMENTO);
   readonly rotulo = input('Mensagem de confirmação do agendamento');
   /** O {horario} da prévia (no lembrete é só o início). */
   readonly exemploHorario = input('11:00 às 11:45');

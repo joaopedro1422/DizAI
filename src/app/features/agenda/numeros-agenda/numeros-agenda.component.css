@@ -1,0 +1,619 @@
+/*
+ * Números da agenda. Cores dos gráficos por papel: --serie-1..5 = fatias do "Faturamento por serviço" (ordem fixa,
+ * validada para daltonismo lado a lado; três delas ficam abaixo de 3:1 no branco, por isso a tabela com os rótulos
+ * fica sempre visível), cinza = "Outros". Uma série só (colunas e barras) usa a cor da marca.
+ */
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  --serie-1: #2a78d6;
+  --serie-2: #eb6834;
+  --serie-3: #1baf7a;
+  --serie-4: #eda100;
+  --serie-5: #e87ba4;
+  --serie-outros: #a3abb9;
+  --serie-atendimentos: var(--cor-primaria);
+  --serie-produtos: #eb6834;
+  --grade: #edf0f5;
+}
+
+/* "Mês": um chip com o seletor nativo dentro (no celular abre a lista do sistema) */
+.seletor-mes {
+  position: relative;
+  padding-right: 30px;
+}
+
+.seletor-mes select {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+.seletor-mes::after {
+  content: '';
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.seletor-mes:focus-within {
+  outline: 2px solid var(--cor-primaria);
+  outline-offset: 2px;
+}
+
+.painel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  transition: opacity 0.2s ease;
+}
+
+.painel--atualizando {
+  opacity: 0.55;
+}
+
+/* ------------------------------------------------------------------ indicadores */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.kpi {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.kpi__icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 6px;
+  border-radius: 9px;
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+}
+
+.kpi__rotulo {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+}
+
+.kpi__valor {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--cor-texto);
+}
+
+.kpi__nota {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+.kpi--destaque {
+  grid-column: 1 / -1;
+  gap: 4px;
+  padding: 20px;
+  overflow: hidden;
+  border: none;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.14) 0, transparent 55%),
+    linear-gradient(150deg, var(--cor-primaria) 0%, #2C4F9E 100%);
+  box-shadow: 0 10px 28px rgba(30, 58, 114, 0.28);
+}
+
+.kpi--destaque .kpi__rotulo,
+.kpi--destaque .kpi__nota {
+  color: var(--cor-texto-sobre-escuro);
+}
+
+.kpi--destaque .kpi__valor {
+  font-size: 32px;
+  color: #ffffff;
+}
+
+.kpi--claro {
+  border: none;
+  background: #fdf3ee;
+  box-shadow: none;
+}
+
+/* ------------------------------------------------------------------ cartões dos gráficos */
+.cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 6px 18px rgba(15, 23, 42, 0.04);
+}
+
+.cartao__topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cartao__titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.cartao__selo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: #fdf3ee;
+  color: #b64a1d;
+}
+
+.cartao__sub {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.cartao__vazio {
+  padding: 10px 0 4px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+/* ------------------------------------------------------------------ dica (tooltip) */
+.grafico {
+  position: relative;
+}
+
+.dica {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 120px;
+  max-width: 180px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #141a26;
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 1.35;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 8px));
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+}
+
+.dica span {
+  color: #c3cbda;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------ colunas (faturamento por dia/semana) */
+.grafico--colunas {
+  padding: 22px 0 0 0;
+}
+
+.eixo {
+  position: absolute;
+  inset: 22px 0 22px 0;
+  pointer-events: none;
+}
+
+.eixo__linha {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed var(--grade);
+}
+
+.eixo__linha--base {
+  border-top: 1px solid var(--cor-borda);
+}
+
+.eixo__rotulo {
+  position: absolute;
+  top: -17px;
+  left: 0;
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+  font-variant-numeric: tabular-nums;
+}
+
+.colunas {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 170px;
+}
+
+.coluna {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
+  justify-content: center;
+  height: 100%;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  border-radius: 6px 6px 0 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.coluna:hover,
+.coluna:focus-visible {
+  background: rgba(30, 58, 114, 0.05);
+  outline: none;
+}
+
+.coluna__barra {
+  display: block;
+  width: 100%;
+  max-width: 24px;
+  border-radius: 4px 4px 0 0;
+  background: var(--serie-atendimentos);
+  transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.15s ease;
+}
+
+.coluna:hover .coluna__barra,
+.coluna:focus-visible .coluna__barra {
+  background: #2C4F9E;
+}
+
+.rotulos-x {
+  display: flex;
+  gap: 2px;
+  height: 22px;
+  padding-top: 6px;
+}
+
+.rotulos-x__item {
+  flex: 1;
+  min-width: 0;
+  overflow: visible;
+  font-size: 11px;
+  color: var(--cor-texto-suave);
+  text-align: center;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.rotulos-x__item:first-child {
+  text-align: left;
+}
+
+.rotulos-x__item:last-child {
+  text-align: right;
+}
+
+/* ------------------------------------------------------------------ barra 100% (partes de um todo) */
+.pilha {
+  display: flex;
+  gap: 2px;
+  height: 22px;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.pilha--fina {
+  height: 12px;
+}
+
+.pilha__parte {
+  min-width: 4px;
+  height: 100%;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.pilha__parte:hover,
+.pilha__parte:focus-visible {
+  filter: brightness(1.08) saturate(1.1);
+  outline: none;
+}
+
+.legenda {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.legenda tr + tr td {
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+.legenda td {
+  padding: 9px 0;
+  vertical-align: middle;
+}
+
+.legenda__nome {
+  font-weight: 600;
+  color: var(--cor-texto);
+}
+
+.legenda__cor {
+  display: inline-block;
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin-right: 8px;
+  border-radius: 3px;
+  vertical-align: -1px;
+}
+
+.legenda__qtd,
+.legenda__pct {
+  padding-left: 10px !important;
+  color: var(--cor-texto-suave);
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.legenda__valor {
+  padding-left: 12px !important;
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------ barras horizontais (rankings) */
+.barras {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.barra {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.barra__topo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.barra__nome {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barra__posicao {
+  flex: none;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--cor-texto-suave);
+  font-variant-numeric: tabular-nums;
+}
+
+.barra__extra {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--cor-texto-suave);
+}
+
+.barra__valor {
+  flex: none;
+  font-size: 14px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.barra__trilho {
+  display: block;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--cor-fundo-suave);
+}
+
+.barra__preenchido {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--serie-atendimentos);
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.barra__preenchido--produtos {
+  background: var(--serie-produtos);
+}
+
+/* ------------------------------------------------------------------ produtos */
+.produtos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+}
+
+.produtos__resumo,
+.produtos__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.divisao {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.divisao__titulo {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cor-texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.divisao__legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 13px;
+  color: var(--cor-texto-secundario);
+}
+
+/* ------------------------------------------------------------------ dias da semana e clientes (agenda e pedidos) */
+/* dias da semana: 7 colunas largas, o melhor dia na cor da marca e os outros mais claros */
+.colunas--semana {
+  gap: 10px;
+  height: 150px;
+}
+
+.coluna--semana .coluna__barra {
+  max-width: 36px;
+  background: color-mix(in srgb, var(--serie-atendimentos) 35%, #ffffff);
+}
+
+.coluna--destaque .coluna__barra {
+  background: var(--serie-atendimentos);
+}
+
+.rotulos-x--semana {
+  gap: 10px;
+}
+
+.rotulos-x--semana .rotulos-x__item,
+.rotulos-x--semana .rotulos-x__item:first-child,
+.rotulos-x--semana .rotulos-x__item:last-child {
+  text-align: center;
+}
+
+.rotulos-x__item--destaque {
+  font-weight: 800;
+  color: var(--cor-texto);
+}
+
+/* clientes que voltaram a comprar: frase + barra + % */
+.recorrencia {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--cor-fundo-suave);
+}
+
+.recorrencia__textos {
+  font-size: 13.5px;
+  color: var(--cor-texto-secundario);
+}
+
+.recorrencia__textos strong {
+  color: var(--cor-texto);
+}
+
+.recorrencia .barra__trilho {
+  grid-column: 1;
+  background: #ffffff;
+}
+
+.recorrencia__pct {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  font-size: 20px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------ tablet e computador */
+@media (min-width: 760px) {
+  .kpis {
+    grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .kpi--destaque {
+    grid-column: auto;
+    justify-content: center;
+  }
+
+  .kpi--destaque .kpi__valor {
+    font-size: 36px;
+  }
+
+  .kpi__valor {
+    font-size: 26px;
+  }
+
+  .painel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .kpis,
+  .cartao--largo {
+    grid-column: 1 / -1;
+  }
+
+  .cartao {
+    padding: 22px 24px;
+  }
+
+  .colunas {
+    height: 220px;
+  }
+
+  .produtos {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 32px;
+  }
+}

@@ -5,6 +5,7 @@ import { filter, map, of, switchMap, take, timer } from 'rxjs';
 
 import { CarregandoComponent } from './shared/components/carregando/carregando.component';
 import { ToastHostComponent } from './shared/components/toast-host/toast-host.component';
+import { BolhaPedidosComponent } from './shared/components/bolha-pedidos/bolha-pedidos.component';
 import { VercelAnalyticsService } from './core/services/vercelAnalyticsService';
 import { encerrarAbertura } from './core/pwa/abertura';
 import { InstalacaoAppService } from './core/pwa/instalacao-app.service';
@@ -13,7 +14,7 @@ const ESPERA_PARA_MOSTRAR_CARREGANDO_MS = 250;
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ToastHostComponent, CarregandoComponent],
+  imports: [RouterOutlet, ToastHostComponent, CarregandoComponent, BolhaPedidosComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })

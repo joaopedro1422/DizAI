@@ -54,13 +54,13 @@
 }
 
 :host ::ng-deep .vitrine-publica__logo {
-  width: 80px;
-  height: 80px;
+  width: 92px;
+  height: 92px;
   flex: none;
-  border: 3px solid #fff;
+  border: 2px solid #fff;
   border-radius: 50%;
   background: #8a6100;
-  box-shadow: 0 0 0 2px #8a6100, 0 8px 20px #0000001f;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
   object-fit: cover;
 }
 

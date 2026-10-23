@@ -8,11 +8,14 @@ import { DicasVistasService } from '../../core/services/dicas-vistas.service';
 import { PerfilService } from '../../core/services/perfil.service';
 import { ToastService } from '../../core/services/toast.service';
 import { AvatarComponent } from '../../shared/components/avatar/avatar.component';
-import { CabecalhoPaginaComponent } from '../../shared/components/cabecalho-pagina/cabecalho-pagina.component';
+import { RouterLink } from '@angular/router';
+import { SessaoService } from '../../core/auth/sessao.service';
+import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { CarregandoComponent } from '../../shared/components/carregando/carregando.component';
 import { EstadoVazioComponent } from '../../shared/components/estado-vazio/estado-vazio.component';
 import { TempoDecorridoPipe } from '../../shared/pipes/tempo-decorrido.pipe';
 import { ConversaAguardandoCardComponent } from './conversa-aguardando-card/conversa-aguardando-card.component';
+import { limparMarcaIcone } from '../../core/utils/marca-icone';
 import { VideoChatsComponent } from './video-chats/video-chats.component';
 import { BottomSheetComponent } from '../../shared/components/bottom-sheet/bottom-sheet.component';
 import {
@@ -26,7 +29,8 @@ type AbaChats = 'aguardando' | 'andamento';
   selector: 'app-chats-page',
   imports: [
     VideoChatsComponent,
-    CabecalhoPaginaComponent,
+    RouterLink,
+    IconeComponent,
     EstadoVazioComponent,
     AvatarComponent,
     TempoDecorridoPipe,
@@ -37,13 +41,16 @@ type AbaChats = 'aguardando' | 'andamento';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './chats-page.component.html',
-  styleUrls: ['../../shared/estilos-listagem.css', './chats-page.component.css'],
+  styleUrls: ['../../shared/estilos-listagem.css', '../../shared/estilos-topo-azul.css', './chats-page.component.css'],
 })
 export class ChatsPageComponent implements OnInit {
   private readonly conversaService = inject(ConversaService);
   private readonly toastService = inject(ToastService);
   private readonly perfil = inject(PerfilService).perfil;
   private readonly dicasVistas = inject(DicasVistasService);
+  private readonly rotas = inject(SessaoService).rotasDoPainel;
+  protected readonly rotaInicio = computed(() => this.rotas().inicio);
+  protected readonly rotaClientes = computed(() => this.rotas().clientes);
 
   /** O vídeo explica pedidos conduzidos pela IA: só para os ramos de produtos. */
   protected readonly temVideo = computed(() => !ramoDeServico(this.perfil().ramo));
@@ -69,6 +76,8 @@ export class ChatsPageComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    // o aviso "Pedido para fechar" abre aqui: a bolinha dos pedidos no ícone do app some
+    void limparMarcaIcone('pedido');
     this.conversaService
       .abrir()
       .catch((erro: unknown) => this.toastService.mostrar(mensagemDoErro(erro, ERRO_AO_CARREGAR)));

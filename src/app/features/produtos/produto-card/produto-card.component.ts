@@ -24,7 +24,12 @@ type AcaoProduto = 'editar' | 'excluir';
     }
 
     <div class="produto__textos">
-      <span class="produto__categoria">{{ produto().categoria }}</span>
+      <span class="produto__categoria">
+        {{ produto().categoria }}
+        @if (produto().produtoAVenda) {
+          <span class="produto__selo">Produto à venda</span>
+        }
+      </span>
       <h2 class="produto__nome">{{ produto().nome }}</h2>
       <p class="produto__descricao">{{ produto().descricao }}</p>
       <div class="produto__rodape">
@@ -79,6 +84,16 @@ type AcaoProduto = 'editar' | 'excluir';
       color: var(--cor-texto-suave);
       text-transform: uppercase;
       letter-spacing: 0.06em;
+    }
+
+    .produto__selo {
+      margin-left: 6px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--cor-primaria-clara);
+      color: var(--cor-primaria);
+      font-size: 10px;
+      letter-spacing: 0.04em;
     }
 
     .produto__nome {

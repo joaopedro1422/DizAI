@@ -189,11 +189,12 @@ a.faixa-aviso {
 }
 
 .horario {
+  position: relative;
   display: flex;
   align-items: stretch;
   gap: 14px;
   padding: 14px;
-  border: 1px solid var(--cor-borda);
+  border: 1.5px solid var(--cor-borda);
   border-radius: 16px;
   background: var(--cor-fundo);
   /* sombra leve, a mesma dos cartões do painel */
@@ -234,6 +235,7 @@ a.faixa-aviso {
 }
 
 .horario__nome {
+  padding-right: 58px;   /* espaço da estrela e do X, que ficam no canto de cima */
   font-size: 15px;
   font-weight: 700;
 }
@@ -267,12 +269,13 @@ a.faixa-aviso {
 }
 
 /* estrelinha (marcado pelo assistente) e o X de cancelar, no canto do card */
+/* estrela e X soltos no canto de cima: não viram uma coluna e não roubam largura das linhas de baixo */
 .horario__lateral {
+  position: absolute;
+  top: 8px;
+  right: 6px;
   display: flex;
   align-items: center;
-  align-self: flex-start;
-  flex: none;
-  margin: -6px -8px 0 -8px;   /* encosta no canto e não rouba largura do texto */
 }
 
 .horario__assistente {
@@ -281,8 +284,8 @@ a.faixa-aviso {
 }
 
 .horario__cancelar {
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   color: var(--cor-texto-suave);
 }
 
@@ -471,6 +474,12 @@ a.faixa-aviso {
   color: var(--cor-texto);
 }
 
+/* presença confirmada pelo cliente: o bloco fica verde claro */
+.bloco--confirmado {
+  border-left-color: var(--cor-ativo);
+  background: #E6F4EC;
+}
+
 /* acontecendo agora: a barra da esquerda fica verde e mais grossa */
 .bloco--em-andamento {
   padding-left: 10px;
@@ -514,10 +523,31 @@ a.faixa-aviso {
 }
 
 /* os ícones e o X vão para a direita quando o nome não está na mesma linha */
+.bloco__horario + .bloco__profissional,
 .bloco__horario + .bloco__presenca,
 .bloco__horario + .bloco__assistente,
-.bloco__horario + .bloco__cancelar {
+.bloco__horario + .bloco__cancelar,
+.bloco__horario + .bloco__valor {
   margin-left: auto;
+}
+
+/* valor do atendimento (toque para ajustar), antes do X */
+.bloco__valor {
+  flex: none;
+  padding: 0 2px;
+  border: none;
+  background: transparent;
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.bloco__valor--vazio {
+  color: var(--cor-texto-suave);
+  font-weight: 600;
 }
 
 .bloco__cancelar {
@@ -650,7 +680,7 @@ a.faixa-aviso {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding-top: 4px;
+  padding-top: 14px;
 }
 
 .cancelados__titulo {
@@ -873,7 +903,7 @@ a.faixa-aviso {
     border: 1px solid var(--cor-borda-suave);
     border-radius: var(--raio-grande);
     background: var(--cor-fundo);
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.09), 0 2px 6px rgba(15, 23, 42, 0.06);
   }
 
   .dia__titulo {
@@ -901,4 +931,228 @@ a.faixa-aviso {
   .lista-horarios {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
+
+/* "Números": botão no topo azul, ao lado do título (fora das abas) */
+.botao-numeros {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: none;
+  border-radius: var(--raio-pilula);
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.botao-numeros:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.botao-numeros--ativo {
+  background: #ffffff;
+  color: var(--cor-primaria);
+}
+
+/* Filtro por profissional (só com 2+) */
+.filtro-profissional {
+  margin-bottom: -6px;
+}
+
+.horario__profissional {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* Valor do atendimento no card: toque para ajustar */
+.horario__contato {
+  display: flex;
+  flex: 1 0 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.horario__valor {
+  margin-left: auto;
+  flex: none;
+  padding: 2px 0;
+  border: none;
+  background: transparent;
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.horario__valor--vazio {
+  color: var(--cor-texto-suave);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.valor {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.valor__texto {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.numeros {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Linha do tempo com 2+ profissionais: o nome bem pequeno, antes da estrelinha e do X */
+.bloco__profissional {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 3px;
+  max-width: 40%;
+  overflow: hidden;
+  color: var(--cor-texto-suave);
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* "1 produto": reservado pela agenda online; abre os produtos com foto */
+.link-produtos {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--cor-primaria);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.link-produtos--bloco {
+  font-size: 11.5px;
+}
+
+.reservados {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.reservados__texto {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.reservados__lista {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.reservado {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reservado__foto {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--raio-grande);
+  object-fit: cover;
+  background: var(--cor-fundo-suave);
+}
+
+.reservado__foto--vazia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cor-texto-suave);
+}
+
+.reservado__nome {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.reservado__preco {
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+/* linha do nome no bloco alto: nome à esquerda, "1 produto" e o valor no fim */
+.bloco__linha-nome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.bloco__linha-nome .bloco__nome {
+  flex: 1;
+  min-width: 0;
+}
+
+.bloco__extras {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+/* resumida: "1 produto" e as etiquetas de presença/lembrete na mesma linha */
+.horario__marcas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin-top: 2px;
+}
+
+/* lupa "Quem está livre?" na linha da visualização (só com 2+ profissionais) */
+.visualizacao__lupa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-right: auto;
+  padding: 0;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 10px;
+  background: var(--cor-fundo);
+  color: var(--cor-primaria);
+  cursor: pointer;
+}
+
+.visualizacao__lupa:hover {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria-clara);
 }

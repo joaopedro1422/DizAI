@@ -35,6 +35,20 @@ export interface NumerosPedidos {
   emAndamento: number;
   valorEmAndamento: number;
   entreguesRecentes: Pedido[];
+  /** "2026-10" quando o filtro é um mês do calendário; null nos 7/30/90 dias. */
+  mes: string | null;
+  /** Faturamento por dia (por semana em 90 dias). */
+  serie: { inicio: string; valor: number; pedidos: number }[];
+  /** SEG..DOM: em que dia da semana mais se entrega. */
+  porDiaDaSemana: { dia: string; valor: number; pedidos: number }[];
+  /** Os 5 clientes que mais gastaram no período. */
+  melhoresClientes: { nome: string; pedidos: number; valor: number }[];
+  clientes: number;
+  /** Quantos compraram 2 ou mais vezes no período. */
+  clientesRecorrentes: number;
+  /** Da confirmação até "pronto"; null sem dados. */
+  tempoMedioPreparoMinutos: number | null;
+  cancelados: number;
 }
 
 /** O que o cliente recebe pelo WhatsApp numa ação do pedido (vazio = não avisa). */

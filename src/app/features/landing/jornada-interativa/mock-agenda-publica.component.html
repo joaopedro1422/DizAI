@@ -25,7 +25,7 @@
       <div class="agenda">
         <section class="passo">
           <h2 class="passo__titulo">
-            <span class="passo__numero" [class.passo__numero--feito]="comServico()">1</span>
+            <span class="passo__numero" [class.passo__numero--feito]="comServico()">@if (comServico()) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {1}</span>
             Escolha o serviço
           </h2>
           @for (categoria of categorias; track categoria.nome) {
@@ -39,13 +39,18 @@
                     [class.servico--escolhido]="escolhido"
                     [class.tocado]="tocandoServico() && servico.nome === servicoEscolhido"
                   >
-                    <span class="servico__marca">
-                      @if (escolhido) {
-                        <app-icone nome="check" [tamanho]="14" [espessura]="3" />
-                      }
+                    <span class="servico__corpo">
+                      <span class="servico__nome">{{ servico.nome }}</span>
+                      <span class="servico__descricao">{{ servico.descricao }}</span>
+                      <span class="servico__meta">
+                        <span class="servico__preco" [class.servico__preco--consulta]="servico.preco === 'Sob consulta'">{{ servico.preco }}</span>
+                        <span class="servico__ponto"></span>
+                        <span class="servico__duracao"><app-icone nome="relogio" [tamanho]="14" [espessura]="2" /> {{ servico.duracao }}</span>
+                      </span>
                     </span>
-                    <span class="servico__nome">{{ servico.nome }}</span>
-                    <span class="servico__duracao"><app-icone nome="relogio" [tamanho]="14" /> {{ servico.duracao }}</span>
+                    <span class="servico__marca">
+                      <app-icone [nome]="escolhido ? 'check' : 'mais'" [tamanho]="15" [espessura]="2.6" />
+                    </span>
                   </span>
                 }
               </div>
@@ -56,7 +61,7 @@
         @if (comServico()) {
           <section #passoDia class="passo passo--entrada">
             <h2 class="passo__titulo">
-              <span class="passo__numero passo__numero--feito">2</span>
+              <span class="passo__numero passo__numero--feito"><app-icone nome="check" [tamanho]="13" [espessura]="3.2" /></span>
               Escolha o dia
             </h2>
             <div class="faixa">
@@ -72,7 +77,7 @@
 
           <section class="passo passo--entrada">
             <h2 class="passo__titulo">
-              <span class="passo__numero" [class.passo__numero--feito]="comHora()">3</span>
+              <span class="passo__numero" [class.passo__numero--feito]="comHora()">@if (comHora()) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {3}</span>
               Escolha o horário
             </h2>
             @for (turno of turnos; track turno.nome) {
@@ -91,7 +96,7 @@
         @if (comHora()) {
           <section #passoNome class="passo passo--entrada">
             <h2 class="passo__titulo">
-              <span class="passo__numero" [class.passo__numero--feito]="nome().length > 0">4</span>
+              <span class="passo__numero" [class.passo__numero--feito]="nome().length > 0">@if (nome().length > 0) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {4}</span>
               Seu nome
             </h2>
             <span class="campo-nome" [class.campo-nome--ativo]="nome().length > 0 && !podeEnviar()">
@@ -100,8 +105,16 @@
           </section>
 
           <div class="resumo passo--entrada">
-            <span class="resumo__linha"><strong>Esmaltação em gel</strong> · 1h</span>
-            <span class="resumo__linha">Sexta, 23/10 às 14:00</span>
+            <span class="resumo__titulo">Resumo do agendamento</span>
+            <span class="resumo__linha">
+              <span class="resumo__icone"><app-icone nome="brilho" [tamanho]="15" [espessura]="2" /></span>
+              <span><strong>Esmaltação em gel</strong> · 1h</span>
+            </span>
+            <span class="resumo__linha">
+              <span class="resumo__icone"><app-icone nome="calendario" [tamanho]="15" [espessura]="2" /></span>
+              <span>Sexta, 23/10 às 14:00</span>
+            </span>
+            <span class="resumo__total"><span>Total</span><strong>R$ 70,00</strong></span>
             <span class="resumo__nota">Ao enviar, o horário é conferido e confirmado na hora pelo WhatsApp.</span>
           </div>
         }
@@ -110,12 +123,17 @@
       </div>
     </div>
 
-    <!-- botão fixo no rodapé, com o texto do que falta -->
-    <span class="enviar" [class.enviar--inativo]="!podeEnviar()" [class.tocado]="enviando()">
-      @if (podeEnviar()) {
-        <app-icone nome="conversa" [tamanho]="20" />
+    <!-- barra fixa: o que já foi escolhido + o botão (ou o que falta) -->
+    <div class="enviar">
+      @if (comServico()) {
+        <span class="enviar__resumo">Esmaltação em gel · 1h · R$ 70,00</span>
       }
-      {{ textoBotao() }}
-    </span>
+      <span class="enviar__botao" [class.enviar__botao--inativo]="!podeEnviar()" [class.tocado]="enviando()">
+        @if (podeEnviar()) {
+          <app-icone nome="conversa" [tamanho]="20" />
+        }
+        {{ textoBotao() }}
+      </span>
+    </div>
   </div>
 </app-telefone-demo>

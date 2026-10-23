@@ -77,12 +77,28 @@ export const PRAZOS_MINIMOS: OpcaoSelecao<PrazoMinimo>[] = [
   { valor: 'DIAS_3', rotulo: '3 dias ou mais' },
 ];
 
-/** destaque: estrelinha no card. soComAgenda: só aparece para os ramos com agenda (serviços presenciais). */
-export const MODOS_PEDIDO: (OpcaoDescrita<ModoPedido> & { destaque?: boolean; soComAgenda?: boolean })[] = [
+/**
+ * destaque: estrelinha no card. soComAgenda: só aparece para os ramos com agenda (serviços presenciais).
+ * soServicos / soProdutos: nos serviços, "Agendo por outro app" fica no lugar de "Me chamar na hora".
+ */
+export const MODOS_PEDIDO: (OpcaoDescrita<ModoPedido> & {
+  destaque?: boolean;
+  soComAgenda?: boolean;
+  soServicos?: boolean;
+  soProdutos?: boolean;
+})[] = [
   {
     valor: 'ENCAMINHAR_AO_DONO',
     rotulo: 'Me chamar na hora',
     descricao: 'O assistente tira dúvidas e, assim que o cliente quiser fechar, passa a conversa para você.',
+    soProdutos: true,
+  },
+  {
+    valor: 'LINK_EXTERNO',
+    rotulo: 'Agendo por outro app',
+    descricao:
+      'Já usa um app de agenda (AppBarber, Trinks, Booksy...)? O assistente envia o seu link e avisa caso esteja fora do seu horário de funcionamento.',
+    soServicos: true,
   },
   {
     valor: 'COLETAR_DADOS',

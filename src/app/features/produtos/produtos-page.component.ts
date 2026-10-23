@@ -37,7 +37,7 @@ const TODAS_AS_CATEGORIAS = 'Todos';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './produtos-page.component.html',
-  styleUrl: '../../shared/estilos-listagem.css',
+  styleUrls: ['../../shared/estilos-listagem.css', './produtos-page.component.css'],
 })
 export class ProdutosPageComponent implements OnInit {
   private readonly produtoService = inject(ProdutoService);
@@ -60,16 +60,36 @@ export class ProdutosPageComponent implements OnInit {
   protected readonly filtroAtual = signal(TODAS_AS_CATEGORIAS);
   protected readonly modalAberto = signal(false);
   protected readonly produtoEmEdicao = signal<Produto | null>(null);
+  /** Negócios de serviço: o modal aberto pelo "Adicionar produto" cadastra um produto à venda. */
+  protected readonly novoProdutoAVenda = signal(false);
+  protected readonly ramoServico = computed(() => ramoDeServico(this.perfil().ramo));
+  /** Serviços | Produtos: só aparece quando o negócio de serviço já tem algum produto à venda. */
+  protected readonly tipoAtual = signal<'servicos' | 'produtos'>('servicos');
+  protected readonly totalAVenda = computed(() => this.produtoService.produtos().filter((p) => p.produtoAVenda).length);
+  protected readonly mostrarTipos = computed(() => this.ramoServico() && this.totalAVenda() > 0);
   protected readonly salvando = signal(false);
   protected readonly produtoParaExcluir = signal<Produto | null>(null);
   protected readonly excluindo = signal(false);
   protected readonly carregando = this.produtoService.carregando;
 
-  protected readonly filtros = computed(() => [TODAS_AS_CATEGORIAS, ...this.categorias()]);
+  /** Só as categorias que têm itens na aba escolhida (Serviços ou Produtos). */
+  protected readonly filtros = computed(() => {
+    if (!this.mostrarTipos()) {
+      return [TODAS_AS_CATEGORIAS, ...this.categorias()];
+    }
+    const verProdutos = this.tipoAtual() === 'produtos';
+    const daAba = new Set(
+      this.produtoService.produtos().filter((p) => !!p.produtoAVenda === verProdutos).map((p) => p.categoria),
+    );
+    return [TODAS_AS_CATEGORIAS, ...this.categorias().filter((c) => daAba.has(c))];
+  });
 
   protected readonly produtosFiltrados = computed(() => {
     const filtro = this.filtroAtual();
-    const produtos = this.produtoService.produtos();
+    const verProdutos = this.tipoAtual() === 'produtos';
+    const produtos = this.mostrarTipos()
+      ? this.produtoService.produtos().filter((p) => !!p.produtoAVenda === verProdutos)
+      : this.produtoService.produtos();
     return filtro === TODAS_AS_CATEGORIAS ? produtos : produtos.filter((produto) => produto.categoria === filtro);
   });
 
@@ -101,8 +121,14 @@ export class ProdutosPageComponent implements OnInit {
     this.filtroAtual.set(categoria);
   }
 
-  protected abrirModal(): void {
+  protected escolherTipo(tipo: 'servicos' | 'produtos'): void {
+    this.tipoAtual.set(tipo);
+    this.filtroAtual.set(TODAS_AS_CATEGORIAS);
+  }
+
+  protected abrirModal(produtoAVenda = false): void {
     this.produtoEmEdicao.set(null);
+    this.novoProdutoAVenda.set(produtoAVenda);
     this.modalAberto.set(true);
   }
 
@@ -155,19 +181,19 @@ export class ProdutosPageComponent implements OnInit {
         const atualizacao: ProdutoAtualizacao = {
           ...novoProduto,
           disponivel: produto.disponivel,
-          fotoUrl: produto.fotoUrl ?? null,
+          // o formulário só manda a foto do produto à venda; nos outros, fica a atual
+          fotoUrl: novoProduto.fotoUrl !== undefined ? novoProduto.fotoUrl ?? null : produto.fotoUrl ?? null,
         };
         await this.produtoService.atualizar(produto.id, atualizacao);
       } else {
         await this.produtoService.adicionar(novoProduto);
       }
       this.filtroAtual.set(TODAS_AS_CATEGORIAS);
+      // mostra a aba do item salvo (Serviços ou Produtos)
+      this.tipoAtual.set(novoProduto.produtoAVenda ? 'produtos' : 'servicos');
       this.fecharModal();
-      this.toastService.mostrar(
-        produto
-          ? `${capitalizar(this.conteudo().termoItem)} atualizado`
-          : `${capitalizar(this.conteudo().termoItem)} adicionado`,
-      );
+      const termo = novoProduto.produtoAVenda ? 'Produto' : capitalizar(this.conteudo().termoItem);
+      this.toastService.mostrar(produto ? `${termo} atualizado` : `${termo} adicionado`);
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível salvar. Tente de novo.'));
     } finally {

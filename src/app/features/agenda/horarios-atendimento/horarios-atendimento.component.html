@@ -143,6 +143,8 @@
   </div>
 
   <div class="horarios__coluna">
+    <app-profissionais-agenda />
+
     <section class="cartao">
       <div>
         <h2 class="cartao__titulo">Os horários começam a cada</h2>
@@ -160,7 +162,7 @@
     <section class="cartao">
       <div>
         <h2 class="cartao__titulo">Antecedência mínima</h2>
-        <p class="cartao__descricao">Quanto tempo antes o cliente precisa marcar. Evita alguém marcar para daqui a 10 minutos.</p>
+        <p class="cartao__descricao">Quanto tempo antes o cliente precisa marcar.</p>
       </div>
       <div class="grupo-chips" role="radiogroup" aria-label="Antecedência mínima">
         @for (opcao of antecedencias; track opcao.minutos) {
@@ -201,6 +203,7 @@
       @if (abertas.includes('agendamento')) {
         <div id="mensagem-agendamento" class="expansivel__corpo">
           <app-mensagem-confirmacao
+            [etiquetas]="etiquetasAgendamento()"
             [texto]="rascunho().mensagemConfirmacao"
             [padrao]="confirmacaoPadrao()"
             (mudou)="definirConfirmacao($event)"
@@ -259,7 +262,7 @@
         <div id="mensagem-agradecimento" class="expansivel__corpo">
           <div class="agradecimento__linha">
             <p class="cartao__descricao">
-              Sai 30 minutos depois do fim do horário, só para os clientes que confirmaram a presença pelo lembrete.
+              Sai 15 minutos depois do fim do horário, só para os clientes que confirmaram a presença pelo lembrete.
             </p>
             <app-interruptor
               rotulo="Enviar agradecimento depois do atendimento"

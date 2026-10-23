@@ -66,6 +66,14 @@ const CONTROLE: RecursoControle[] = [
   { icone: 'conversa', titulo: 'Teste antes de ligar', texto: 'Converse com o assistente como se fosse um cliente.' },
 ];
 
+/** O que mais cada lado tem (lista curta embaixo do texto de cada card). */
+const EXTRAS_VENDAS = ['Gerenciador de pedidos com mensagens rápidas'];
+const EXTRAS_SERVICOS = [
+  'Adicione vários profissionais',
+  'Lembrete automático antes do horário',
+  'Mensagem de agradecimento depois do atendimento',
+];
+
 /** As conversas trocam de cena sozinhas (vendas: pedido → dados; serviços: pergunta → agendamento). */
 const TEMPO_POR_CENA_MS = 5000;
 
@@ -82,6 +90,8 @@ const TEMPO_POR_CENA_MS = 5000;
 })
 export class SecaoRecursosComponent {
   protected readonly controle = CONTROLE;
+  protected readonly extrasVendas = EXTRAS_VENDAS;
+  protected readonly extrasServicos = EXTRAS_SERVICOS;
   protected readonly modos = (Object.keys(MODOS_VENDA) as ModoVenda[]).map((id) => ({ id, rotulo: MODOS_VENDA[id].rotulo }));
   protected readonly modoVenda = signal<ModoVenda>('coletar');
   protected readonly venda = computed(() => MODOS_VENDA[this.modoVenda()]);

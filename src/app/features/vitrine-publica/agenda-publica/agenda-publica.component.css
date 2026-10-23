@@ -1,36 +1,51 @@
-/* Usa a paleta da vitrine (--vitrine-*): a cor de destaque e a fonte são as da loja. */
+/*
+ * Agenda online (página pública). Usa a paleta da vitrine (--vitrine-*): a cor de destaque é a da loja; a fonte da
+ * loja fica nos títulos e o texto corrido usa uma sans de leitura fácil. Cada passo é um cartão.
+ */
 :host {
   display: block;
   --faixa-destaque: var(--vitrine-destaque, #1c1a19);
   --faixa-borda: var(--vitrine-borda, #e2dcd9);
   --faixa-suave: var(--vitrine-suave, #6b6461);
   --faixa-texto: var(--vitrine-texto, #1c1a19);
+  --tinta: color-mix(in srgb, var(--vitrine-destaque) 8%, #ffffff);
+  --tinta-forte: color-mix(in srgb, var(--vitrine-destaque) 16%, #ffffff);
+  --sombra-cartao: 0 1px 2px rgba(20, 16, 14, 0.03), 0 4px 14px rgba(20, 16, 14, 0.04);
+  font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 .agenda {
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  padding: 28px 24px 0;
+  gap: 16px;
+  padding: 8px 16px 0;
 }
 
+/* ------------------------------------------------------------------ passos (cartões) */
 .passo {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
+  padding: 20px 18px;
+  border: 1px solid color-mix(in srgb, var(--vitrine-borda) 70%, transparent);
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: var(--sombra-cartao);
 }
 
 .passo--entrada {
-  animation: agenda-entrada 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: agenda-entrada 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .passo__titulo {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 18px;
+  font-family: var(--vitrine-fonte, inherit);
+  font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.01em;
+  color: var(--vitrine-texto);
 }
 
 .passo__numero {
@@ -40,67 +55,154 @@
   flex: none;
   width: 28px;
   height: 28px;
-  border: 2px solid var(--vitrine-destaque);
   border-radius: 50%;
+  background: var(--tinta);
   color: var(--vitrine-destaque);
+  font-family: 'Manrope', system-ui, sans-serif;
   font-size: 13px;
   font-weight: 800;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
 .passo__numero--feito {
   background: var(--vitrine-destaque);
   color: #ffffff;
+  transform: scale(1.04);
 }
 
 .passo__nota {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--tinta);
   font-size: 13px;
-  color: var(--vitrine-suave);
+  color: var(--vitrine-texto);
 }
 
+/* ------------------------------------------------------------------ serviços */
 .categoria {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+}
+
+.categoria + .categoria {
+  margin-top: 6px;
 }
 
 .categoria__nome {
-  font-size: 12px;
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11.5px;
+  font-weight: 800;
   color: var(--vitrine-suave);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
+}
+
+.categoria__nome::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--vitrine-borda);
 }
 
 .servicos {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .servico {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
-  min-height: 56px;
-  padding: 12px 14px;
-  border: 1px solid var(--vitrine-borda);
-  border-radius: 14px;
+  min-height: 76px;
+  padding: 14px 14px 14px 16px;
+  border: 1.5px solid var(--vitrine-borda);
+  border-radius: 18px;
   background: #ffffff;
   color: var(--vitrine-texto);
   font-family: inherit;
   text-align: left;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 
 .servico:hover {
-  border-color: var(--vitrine-destaque);
+  border-color: color-mix(in srgb, var(--vitrine-destaque) 45%, var(--vitrine-borda));
+  box-shadow: 0 6px 18px rgba(20, 16, 14, 0.06);
+}
+
+.servico:active {
+  transform: scale(0.99);
 }
 
 .servico--escolhido {
   border-color: var(--vitrine-destaque);
-  box-shadow: 0 0 0 1px var(--vitrine-destaque), 0 6px 16px rgba(0, 0, 0, 0.06);
+  background: var(--tinta);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--vitrine-destaque) 14%, transparent);
+}
+
+.servico__corpo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.servico__nome {
+  font-size: 15.5px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.servico__descricao {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--vitrine-suave);
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.servico__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+.servico__preco {
+  font-weight: 800;
+  color: var(--vitrine-texto);
+  font-variant-numeric: tabular-nums;
+}
+
+.servico__preco--consulta {
+  font-weight: 600;
+  color: var(--vitrine-suave);
+}
+
+.servico__ponto {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--vitrine-suave);
+  opacity: 0.6;
+}
+
+.servico__duracao {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: var(--vitrine-suave);
 }
 
 .servico__marca {
@@ -108,36 +210,109 @@
   align-items: center;
   justify-content: center;
   flex: none;
-  width: 22px;
-  height: 22px;
-  border: 2px solid var(--vitrine-borda);
-  border-radius: 7px;
-  color: #ffffff;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--tinta);
+  color: var(--vitrine-destaque);
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
 }
 
 .servico--escolhido .servico__marca {
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+/* ------------------------------------------------------------------ com quem (foto à esquerda) */
+.pessoas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pessoa {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 10px 14px 10px 10px;
+  border: 1.5px solid var(--vitrine-borda);
+  border-radius: 18px;
+  background: #ffffff;
+  color: var(--vitrine-texto);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.pessoa:hover {
+  border-color: color-mix(in srgb, var(--vitrine-destaque) 45%, var(--vitrine-borda));
+}
+
+.pessoa--escolhida {
+  border-color: var(--vitrine-destaque);
+  background: var(--tinta);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--vitrine-destaque) 14%, transparent);
+}
+
+.pessoa__foto {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--tinta);
+  box-shadow: 0 0 0 2px #ffffff, 0 2px 8px rgba(20, 16, 14, 0.12);
+}
+
+.pessoa__foto--iniciais,
+.pessoa__foto--qualquer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--tinta-forte);
+  color: var(--vitrine-destaque);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.pessoa__nome {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: 15.5px;
+  font-weight: 700;
+}
+
+.pessoa__detalhe {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--vitrine-suave);
+}
+
+.pessoa__marca {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--vitrine-borda);
+  border-radius: 50%;
+  color: #ffffff;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.pessoa--escolhida .pessoa__marca {
   border-color: var(--vitrine-destaque);
   background: var(--vitrine-destaque);
 }
 
-.servico__nome {
-  flex: 1;
-  min-width: 0;
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-.servico__duracao {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  flex: none;
-  font-size: 13px;
-  color: var(--vitrine-suave);
-}
-
+/* ------------------------------------------------------------------ dia e horário */
 /* Enquanto busca os horários do novo serviço, a faixa fica um pouco apagada */
 .faixa {
   transition: opacity 0.2s ease;
@@ -156,7 +331,7 @@
 
 .turno__nome {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--vitrine-suave);
 }
 
@@ -167,15 +342,16 @@
 }
 
 .hora {
-  min-height: 44px;
-  border: 1px solid var(--vitrine-borda);
-  border-radius: 12px;
+  min-height: 46px;
+  border: 1.5px solid var(--vitrine-borda);
+  border-radius: 14px;
   background: #ffffff;
   color: var(--vitrine-texto);
   font-family: inherit;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
+  cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
@@ -188,50 +364,92 @@
   background: var(--vitrine-destaque);
   color: #ffffff;
   transform: translateY(-1px);
+  box-shadow: 0 6px 14px color-mix(in srgb, var(--vitrine-destaque) 28%, transparent);
 }
 
+/* ------------------------------------------------------------------ nome e resumo */
 .campo-nome {
   width: 100%;
-  min-height: 52px;
+  min-height: 54px;
   padding: 0 16px;
-  border: 1px solid var(--vitrine-borda);
-  border-radius: 14px;
+  border: 1.5px solid var(--vitrine-borda);
+  border-radius: 16px;
   background: #ffffff;
   color: var(--vitrine-texto);
   font-family: inherit;
   font-size: 16px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .campo-nome:focus {
   border-color: var(--vitrine-destaque);
   outline: none;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--vitrine-destaque) 18%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--vitrine-destaque) 14%, transparent);
 }
 
 .resumo {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 16px;
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--vitrine-destaque) 7%, #ffffff);
-  border: 1px solid color-mix(in srgb, var(--vitrine-destaque) 20%, transparent);
+  gap: 10px;
+  padding: 20px 18px;
+  border: 1px solid color-mix(in srgb, var(--vitrine-destaque) 18%, transparent);
+  border-radius: 22px;
+  background: var(--tinta);
+}
+
+.resumo__titulo {
+  font-family: var(--vitrine-fonte, inherit);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--vitrine-texto);
 }
 
 .resumo__linha {
-  display: block;
-  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14.5px;
   line-height: 1.4;
+  color: var(--vitrine-texto);
+}
+
+.resumo__icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--vitrine-destaque);
 }
 
 /* "sexta, 16/10 às 14:00" → "Sexta, 16/10 às 14:00" (só a primeira letra) */
-.resumo__linha:nth-child(2)::first-letter {
+.resumo__quando::first-letter {
   text-transform: uppercase;
 }
 
-.resumo__nota {
+.resumo__total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
   margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px dashed color-mix(in srgb, var(--vitrine-destaque) 25%, transparent);
+  font-size: 14px;
+  color: var(--vitrine-suave);
+}
+
+.resumo__total strong {
+  font-size: 18px;
+  color: var(--vitrine-texto);
+  font-variant-numeric: tabular-nums;
+}
+
+.resumo__nota {
   font-size: 12px;
+  line-height: 1.5;
   color: var(--vitrine-suave);
 }
 
@@ -256,33 +474,57 @@
   font-family: inherit;
 }
 
-/* Botão fixo no rodapé, no lugar do "Falar pelo WhatsApp" da galeria */
-.enviar__botao {
+/* ------------------------------------------------------------------ barra fixa de enviar */
+.enviar {
   position: fixed;
   left: 50%;
-  bottom: 16px;
+  bottom: 12px;
   z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: calc(100% - 24px);
+  max-width: 440px;
+  padding: 10px;
+  border: 1px solid color-mix(in srgb, var(--vitrine-borda) 70%, transparent);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 12px 34px rgba(20, 16, 14, 0.16);
+  transform: translateX(-50%);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+.enviar__resumo {
+  overflow: hidden;
+  padding: 0 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--vitrine-texto);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.enviar__botao {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  width: calc(100% - 32px);
-  max-width: 420px;
-  min-height: 52px;
-  border-radius: var(--raio-medio);
+  min-height: 50px;
+  border-radius: 15px;
   background: var(--vitrine-destaque);
   color: #ffffff;
   font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
-  transform: translateX(-50%);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--vitrine-destaque) 30%, transparent);
 }
 
 .enviar__botao--inativo {
-  background: #d9d4d1;
-  color: #6b6461;
+  background: var(--tinta);
+  color: color-mix(in srgb, var(--vitrine-destaque) 70%, var(--vitrine-suave));
   box-shadow: none;
   cursor: default;
 }
@@ -290,7 +532,7 @@
 @keyframes agenda-entrada {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -302,4 +544,153 @@
   .passo--entrada {
     animation: none;
   }
+}
+
+/* "Também temos" (opcional): produtos à venda em cards retrato, 2 por vez, rolando para o lado */
+.passo__opcional {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--vitrine-destaque) 9%, #ffffff);
+  color: var(--vitrine-suave);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* flex column: sem o min-width 0 o trilho cresce até caber todos e a rolagem nunca anda */
+.passo--produtos {
+  min-width: 0;
+}
+
+.produtos__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.produtos__setas {
+  display: flex;
+  flex: none;
+  gap: 8px;
+}
+
+.produtos__seta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--vitrine-borda);
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--vitrine-destaque);
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.produtos__seta:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.produtos__seta--proxima app-icone {
+  transform: rotate(180deg);
+}
+
+.produtos {
+  min-width: 0;
+  width: 100%;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 12px) / 2);
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.produtos::-webkit-scrollbar {
+  display: none;
+}
+
+.produto {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 8px 10px;
+  border: 1.5px solid var(--vitrine-borda);
+  border-radius: 18px;
+  background: #ffffff;
+  scroll-snap-align: start;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.produto--reservado {
+  border-color: var(--vitrine-destaque);
+  box-shadow: 0 0 0 1px var(--vitrine-destaque);
+}
+
+.produto__foto {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 11px;
+  object-fit: cover;
+  background: color-mix(in srgb, var(--vitrine-destaque) 6%, #ffffff);
+}
+
+.produto__foto--vazia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--vitrine-suave);
+}
+
+.produto__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 4px;
+}
+
+.produto__nome {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--vitrine-texto);
+}
+
+.produto__preco {
+  font-size: 13px;
+  color: var(--vitrine-suave);
+}
+
+.produto__botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  border: 1.5px solid var(--vitrine-destaque);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--vitrine-destaque);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.produto--reservado .produto__botao {
+  background: var(--vitrine-destaque);
+  color: #ffffff;
+}
+
+.produtos__nota {
+  font-size: 13px;
+  color: var(--vitrine-suave);
 }

@@ -39,6 +39,7 @@ const PERFIL_VAZIO: Perfil = {
   camposPedido: '',
   modoFotos: 'GALERIA',
   linkPortfolioExterno: '',
+  linkAgendamentoExterno: '',
   saudacaoPersonalizada: '',
   instrucoesObrigatorias: '',
   modoCatalogo: 'NAO',

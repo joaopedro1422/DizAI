@@ -58,6 +58,12 @@ const rotasDoPainel: Routes = [
       import('./features/chats/chats-page.component').then((m) => m.ChatsPageComponent),
   },
   {
+    path: 'clientes',
+    title: 'Clientes | DizAI',
+    loadComponent: () =>
+      import('./features/clientes/clientes-page.component').then((m) => m.ClientesPageComponent),
+  },
+  {
     path: 'conectar-whatsapp',
     title: 'Conectar WhatsApp | DizAI',
     loadComponent: () =>

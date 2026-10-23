@@ -1,0 +1,384 @@
+<div class="filtros grupo-chips" role="radiogroup" aria-label="Período">
+  @for (periodo of periodos; track periodo.dias) {
+    <button
+      type="button"
+      role="radio"
+      class="chip"
+      [class.chip--ativo]="!mes() && dias() === periodo.dias"
+      [attr.aria-checked]="!mes() && dias() === periodo.dias"
+      (click)="escolherPeriodo(periodo.dias)"
+    >
+      {{ periodo.rotulo }}
+    </button>
+  }
+  <!-- mês do calendário: dia 1 até o fim do mês -->
+  <label class="seletor-mes chip" [class.chip--ativo]="!!mes()">
+    <span class="somente-leitor-tela">Ver um mês</span>
+    <select [value]="mes() ?? ''" (change)="escolherMes($event)">
+      <option value="" disabled>Mês</option>
+      @for (opcao of meses; track opcao.valor) {
+        <option [value]="opcao.valor">{{ opcao.rotulo }}</option>
+      }
+    </select>
+  </label>
+</div>
+
+@if (numeros(); as n) {
+  <div class="painel" [class.painel--atualizando]="carregando()">
+    <!-- indicadores: o azul é só dos atendimentos (os produtos têm a parte deles embaixo) -->
+    <section class="kpis" aria-label="Resumo do período">
+      <div class="kpi kpi--destaque">
+        <span class="kpi__rotulo">Faturamento dos atendimentos</span>
+        <span class="kpi__valor">{{ real(n.faturamento) }}</span>
+        <span class="kpi__nota">atendimentos {{ textoPeriodo() }}</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi__icone"><app-icone nome="calendario" [tamanho]="16" [espessura]="2" /></span>
+        <span class="kpi__rotulo">Atendimentos</span>
+        <span class="kpi__valor">{{ n.realizados }}</span>
+        @if (n.cancelados > 0) {
+          <span class="kpi__nota">{{ n.cancelados }} {{ n.cancelados === 1 ? 'cancelado' : 'cancelados' }}</span>
+        }
+      </div>
+      <div class="kpi">
+        <span class="kpi__icone"><app-icone nome="grafico" [tamanho]="16" [espessura]="2" /></span>
+        <span class="kpi__rotulo">Ticket médio</span>
+        <span class="kpi__valor">{{ real(n.valorMedio) }}</span>
+        <span class="kpi__nota">por atendimento</span>
+      </div>
+      @if (!n.mes || n.previstos > 0 || mesAtualOuFuturo(n.mes)) {
+        <div class="kpi">
+          <span class="kpi__icone"><app-icone nome="relogio" [tamanho]="16" [espessura]="2" /></span>
+          <span class="kpi__rotulo">{{ n.mes ? 'Ainda neste mês' : 'Próximos ' + n.dias + ' dias' }}</span>
+          <span class="kpi__valor">{{ n.previstos }}</span>
+          <span class="kpi__nota">{{ real(n.valorPrevisto) }} previstos</span>
+        </div>
+      }
+    </section>
+
+    <!-- faturamento dia a dia (ou por semana em 90 dias) -->
+    <section class="cartao cartao--largo" aria-labelledby="titulo-serie">
+      <header class="cartao__topo">
+        <div>
+          <h2 class="cartao__titulo" id="titulo-serie">Faturamento {{ porSemana() ? 'por semana' : 'por dia' }}</h2>
+          <p class="cartao__sub">Atendimentos que já aconteceram {{ textoPeriodo() }}</p>
+        </div>
+      </header>
+      @if (serieVazia()) {
+        <p class="cartao__vazio">Nenhum atendimento com valor neste período ainda.</p>
+      } @else {
+        <div class="grafico grafico--colunas" (mouseleave)="esconderDica()">
+          <div class="eixo" aria-hidden="true">
+            <span class="eixo__linha" style="bottom: 100%"><span class="eixo__rotulo">{{ real(topoSerie()) }}</span></span>
+            <span class="eixo__linha" style="bottom: 50%"><span class="eixo__rotulo">{{ real(topoSerie() / 2) }}</span></span>
+            <span class="eixo__linha eixo__linha--base" style="bottom: 0"></span>
+          </div>
+          <div class="colunas" role="list" [attr.aria-label]="'Faturamento ' + (porSemana() ? 'por semana' : 'por dia')">
+            @for (coluna of colunas(); track coluna.chave) {
+              <button
+                type="button"
+                class="coluna"
+                role="listitem"
+                [attr.aria-label]="coluna.titulo + ': ' + coluna.detalhe"
+                (mouseenter)="mostrarDica($event, 'serie', coluna.titulo, coluna.detalhe)"
+                (focus)="mostrarDica($event, 'serie', coluna.titulo, coluna.detalhe)"
+                (click)="mostrarDica($event, 'serie', coluna.titulo, coluna.detalhe)"
+                (blur)="esconderDica()"
+              >
+                <span class="coluna__barra" [style.height.%]="coluna.altura"></span>
+              </button>
+            }
+          </div>
+          <div class="rotulos-x" aria-hidden="true">
+            @for (coluna of colunas(); track coluna.chave) {
+              <span class="rotulos-x__item">{{ coluna.rotulo }}</span>
+            }
+          </div>
+          @if (dica(); as d) {
+            @if (d.grafico === 'serie') {
+              <div class="dica" [style.left.px]="d.x" [style.top.px]="d.y" role="status">
+                <strong>{{ d.titulo }}</strong>
+                <span>{{ d.detalhe }}</span>
+              </div>
+            }
+          }
+        </div>
+      }
+    </section>
+
+    <!-- quanto cada serviço faturou: barra 100% + a tabela (rótulos sempre visíveis) -->
+    <section class="cartao" aria-labelledby="titulo-fatias">
+      <header class="cartao__topo">
+        <div>
+          <h2 class="cartao__titulo" id="titulo-fatias">Faturamento por serviço</h2>
+          <p class="cartao__sub">Quanto cada serviço trouxe no período</p>
+        </div>
+      </header>
+      @if (fatias().length === 0) {
+        <p class="cartao__vazio">Os serviços aparecem aqui assim que os atendimentos com valor acontecerem.</p>
+      } @else {
+        <div class="grafico" (mouseleave)="esconderDica()">
+          <div class="pilha" role="img" [attr.aria-label]="'Divisão do faturamento entre ' + fatias().length + ' serviços'">
+            @for (fatia of fatias(); track fatia.nome) {
+              <span
+                class="pilha__parte"
+                tabindex="0"
+                [style.width.%]="fatia.percentual"
+                [style.background]="fatia.cor"
+                (mouseenter)="mostrarDica($event, 'fatias', fatia.nome, porcento(fatia.percentual) + ' · ' + real(fatia.valor))"
+                (focus)="mostrarDica($event, 'fatias', fatia.nome, porcento(fatia.percentual) + ' · ' + real(fatia.valor))"
+                (click)="mostrarDica($event, 'fatias', fatia.nome, porcento(fatia.percentual) + ' · ' + real(fatia.valor))"
+                (blur)="esconderDica()"
+              ></span>
+            }
+          </div>
+          @if (dica(); as d) {
+            @if (d.grafico === 'fatias') {
+              <div class="dica" [style.left.px]="d.x" [style.top.px]="d.y" role="status">
+                <strong>{{ d.titulo }}</strong>
+                <span>{{ d.detalhe }}</span>
+              </div>
+            }
+          }
+        </div>
+        <table class="legenda">
+          <thead class="somente-leitor-tela">
+            <tr><th>Serviço</th><th>Atendimentos</th><th>Parte</th><th>Faturamento</th></tr>
+          </thead>
+          <tbody>
+            @for (fatia of fatias(); track fatia.nome) {
+              <tr>
+                <td class="legenda__nome"><span class="legenda__cor" [style.background]="fatia.cor"></span>{{ fatia.nome }}</td>
+                <td class="legenda__qtd">{{ fatia.quantidade }}×</td>
+                <td class="legenda__pct">{{ porcento(fatia.percentual) }}</td>
+                <td class="legenda__valor">{{ real(fatia.valor) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </section>
+
+    <!-- serviços mais feitos -->
+    <section class="cartao" aria-labelledby="titulo-mais-feitos">
+      <header class="cartao__topo">
+        <div>
+          <h2 class="cartao__titulo" id="titulo-mais-feitos">Serviços mais feitos</h2>
+          <p class="cartao__sub">Quantas vezes cada um foi feito</p>
+        </div>
+      </header>
+      @if (maisFeitos().length === 0) {
+        <p class="cartao__vazio">Os horários que já aconteceram (e não foram cancelados) entram aqui.</p>
+      } @else {
+        <ol class="barras">
+          @for (item of maisFeitos(); track item.nome; let i = $index) {
+            <li class="barra">
+              <span class="barra__topo">
+                <span class="barra__nome"><span class="barra__posicao">{{ i + 1 }}</span>{{ item.nome }}</span>
+                <span class="barra__valor">{{ item.quantidade }}×</span>
+              </span>
+              <span class="barra__trilho"><span class="barra__preenchido" [style.width.%]="item.largura"></span></span>
+            </li>
+          }
+        </ol>
+      }
+    </section>
+
+    <!-- dias mais movimentados: o de mais atendimentos em destaque -->
+    <section class="cartao" aria-labelledby="titulo-semana">
+      <header class="cartao__topo">
+        <div>
+          <h2 class="cartao__titulo" id="titulo-semana">Dias mais movimentados</h2>
+          <p class="cartao__sub">
+            @if (melhorDia(); as dia) {
+              {{ dia }} é o dia mais cheio {{ textoPeriodo() }}
+            } @else {
+              Atendimentos por dia da semana
+            }
+          </p>
+        </div>
+      </header>
+      @if (!melhorDia()) {
+        <p class="cartao__vazio">Os dias aparecem assim que os atendimentos acontecerem.</p>
+      } @else {
+        <div class="grafico" (mouseleave)="esconderDica()">
+          <div class="colunas colunas--semana" role="list" aria-label="Atendimentos por dia da semana">
+            @for (dia of semana(); track dia.chave) {
+              <button
+                type="button"
+                class="coluna coluna--semana"
+                role="listitem"
+                [class.coluna--destaque]="dia.destaque"
+                [attr.aria-label]="dia.titulo + ': ' + dia.detalhe"
+                (mouseenter)="mostrarDica($event, 'semana', dia.titulo, dia.detalhe)"
+                (focus)="mostrarDica($event, 'semana', dia.titulo, dia.detalhe)"
+                (click)="mostrarDica($event, 'semana', dia.titulo, dia.detalhe)"
+                (blur)="esconderDica()"
+              >
+                <span class="coluna__barra" [style.height.%]="dia.altura"></span>
+              </button>
+            }
+          </div>
+          <div class="rotulos-x rotulos-x--semana" aria-hidden="true">
+            @for (dia of semana(); track dia.chave) {
+              <span class="rotulos-x__item" [class.rotulos-x__item--destaque]="dia.destaque">{{ dia.rotulo }}</span>
+            }
+          </div>
+          @if (dica(); as d) {
+            @if (d.grafico === 'semana') {
+              <div class="dica" [style.left.px]="d.x" [style.top.px]="d.y" role="status">
+                <strong>{{ d.titulo }}</strong>
+                <span>{{ d.detalhe }}</span>
+              </div>
+            }
+          }
+        </div>
+      }
+    </section>
+
+    <!-- melhores clientes e quantos voltaram -->
+    <section class="cartao" aria-labelledby="titulo-clientes">
+      <header class="cartao__topo">
+        <div>
+          <h2 class="cartao__titulo" id="titulo-clientes">Melhores clientes</h2>
+          <p class="cartao__sub">Quem mais gastou {{ textoPeriodo() }}</p>
+        </div>
+      </header>
+      @if (clientes().length === 0) {
+        <p class="cartao__vazio">Os clientes aparecem aqui quando os atendimentos acontecerem.</p>
+      } @else {
+        <div class="recorrencia">
+          <span class="recorrencia__textos">
+            <strong>{{ n.clientesRecorrentes }} de {{ n.clientes }}</strong>
+            {{ n.clientes === 1 ? 'cliente voltou' : 'clientes voltaram' }} mais de uma vez
+          </span>
+          <span class="barra__trilho"><span class="barra__preenchido" [style.width.%]="recorrencia()"></span></span>
+          <span class="recorrencia__pct">{{ porcento(recorrencia()) }}</span>
+        </div>
+        <ol class="barras">
+          @for (cliente of clientes(); track cliente.nome; let i = $index) {
+            <li class="barra">
+              <span class="barra__topo">
+                <span class="barra__nome"><span class="barra__posicao">{{ i + 1 }}</span>{{ cliente.nome }}<span class="barra__extra">{{ cliente.quantidade }} {{ cliente.quantidade === 1 ? 'atendimento' : 'atendimentos' }}</span></span>
+                <span class="barra__valor">{{ real(cliente.valor) }}</span>
+              </span>
+              <span class="barra__trilho"><span class="barra__preenchido" [style.width.%]="cliente.largura"></span></span>
+            </li>
+          }
+        </ol>
+      }
+    </section>
+
+    @if (profissionais().length > 0) {
+      <section class="cartao" aria-labelledby="titulo-por-profissional">
+        <header class="cartao__topo">
+          <div>
+            <h2 class="cartao__titulo" id="titulo-por-profissional">Por profissional</h2>
+            <p class="cartao__sub">Faturamento dos atendimentos de cada um</p>
+          </div>
+        </header>
+        <ol class="barras">
+          @for (p of profissionais(); track p.nome) {
+            <li class="barra">
+              <span class="barra__topo">
+                <span class="barra__nome">{{ p.nome }}<span class="barra__extra">{{ p.realizados }} {{ p.realizados === 1 ? 'atendimento' : 'atendimentos' }}</span></span>
+                <span class="barra__valor">{{ real(p.faturamento) }}</span>
+              </span>
+              <span class="barra__trilho"><span class="barra__preenchido" [style.width.%]="p.largura"></span></span>
+            </li>
+          }
+        </ol>
+      </section>
+    }
+
+    <!-- produtos vendidos no balcão ("Registrar venda"): à parte do faturamento dos atendimentos -->
+    @if (mostrarProdutos(n)) {
+      <section class="cartao cartao--largo cartao--produtos" aria-labelledby="titulo-produtos">
+        <header class="cartao__topo">
+          <div>
+            <h2 class="cartao__titulo" id="titulo-produtos">
+              <span class="cartao__selo"><app-icone nome="sacola" [tamanho]="15" [espessura]="2" /></span>
+              Produtos
+            </h2>
+            <p class="cartao__sub">Vendas registradas na agenda {{ textoPeriodo() }}</p>
+          </div>
+        </header>
+
+        <div class="produtos">
+          <div class="produtos__resumo">
+            <div class="kpi kpi--claro">
+              <span class="kpi__rotulo">Faturado com produtos</span>
+              <span class="kpi__valor">{{ real(n.faturamentoProdutos) }}</span>
+              <span class="kpi__nota">{{ n.produtosVendidos }} {{ n.produtosVendidos === 1 ? 'produto vendido' : 'produtos vendidos' }}</span>
+            </div>
+
+            @if (divisao().total > 0) {
+              <div class="divisao">
+                <span class="divisao__titulo">Do faturamento total ({{ real(divisao().total) }})</span>
+                <div class="grafico" (mouseleave)="esconderDica()">
+                  <div class="pilha pilha--fina" role="img" [attr.aria-label]="'Produtos: ' + porcento(divisao().produtos) + ' do faturamento total'">
+                    @if (divisao().atendimentos > 0) {
+                      <span
+                        class="pilha__parte"
+                        tabindex="0"
+                        [style.width.%]="divisao().atendimentos"
+                        style="background: var(--serie-atendimentos)"
+                        (mouseenter)="mostrarDica($event, 'divisao', 'Atendimentos', porcento(divisao().atendimentos) + ' · ' + real(n.faturamento))"
+                        (focus)="mostrarDica($event, 'divisao', 'Atendimentos', porcento(divisao().atendimentos) + ' · ' + real(n.faturamento))"
+                        (blur)="esconderDica()"
+                      ></span>
+                    }
+                    @if (divisao().produtos > 0) {
+                      <span
+                        class="pilha__parte"
+                        tabindex="0"
+                        [style.width.%]="divisao().produtos"
+                        style="background: var(--serie-produtos)"
+                        (mouseenter)="mostrarDica($event, 'divisao', 'Produtos', porcento(divisao().produtos) + ' · ' + real(n.faturamentoProdutos))"
+                        (focus)="mostrarDica($event, 'divisao', 'Produtos', porcento(divisao().produtos) + ' · ' + real(n.faturamentoProdutos))"
+                        (blur)="esconderDica()"
+                      ></span>
+                    }
+                  </div>
+                  @if (dica(); as d) {
+                    @if (d.grafico === 'divisao') {
+                      <div class="dica" [style.left.px]="d.x" [style.top.px]="d.y" role="status">
+                        <strong>{{ d.titulo }}</strong>
+                        <span>{{ d.detalhe }}</span>
+                      </div>
+                    }
+                  }
+                </div>
+                <div class="divisao__legenda">
+                  <span><span class="legenda__cor" style="background: var(--serie-atendimentos)"></span>Atendimentos {{ porcento(divisao().atendimentos) }}</span>
+                  <span><span class="legenda__cor" style="background: var(--serie-produtos)"></span>Produtos {{ porcento(divisao().produtos) }}</span>
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="produtos__lista">
+            <span class="divisao__titulo">Mais vendidos</span>
+            @if (maisVendidos().length === 0) {
+              <p class="cartao__vazio">Use "Registrar venda" na agenda para os produtos aparecerem aqui.</p>
+            } @else {
+              <ol class="barras">
+                @for (item of maisVendidos(); track item.nome) {
+                  <li class="barra">
+                    <span class="barra__topo">
+                      <span class="barra__nome">{{ item.nome }}<span class="barra__extra">{{ real(item.valor) }}</span></span>
+                      <span class="barra__valor">{{ item.quantidade }}×</span>
+                    </span>
+                    <span class="barra__trilho"><span class="barra__preenchido barra__preenchido--produtos" [style.width.%]="item.largura"></span></span>
+                  </li>
+                }
+              </ol>
+            }
+          </div>
+        </div>
+      </section>
+    }
+  </div>
+} @else if (carregando()) {
+  <app-carregando texto="Somando seus atendimentos…" />
+}

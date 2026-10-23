@@ -1,9 +1,21 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  OnInit,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+  viewChild,
+} from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 import { ERRO_AO_CARREGAR, mensagemDoErro } from '../../core/api/erro-api';
-import { Agendamento, NovoAgendamento } from '../../core/models/agenda.model';
+import { Agendamento, NovoAgendamento, VendaProduto } from '../../core/models/agenda.model';
 import { AgendaService, DIAS_DA_AGENDA } from '../../core/services/agenda.service';
 import { DicasVistasService } from '../../core/services/dicas-vistas.service';
 import { PerfilService } from '../../core/services/perfil.service';
@@ -11,7 +23,10 @@ import { ProdutoService } from '../../core/services/produto.service';
 import { ToastService } from '../../core/services/toast.service';
 import { pluralizar } from '../../core/utils/colecao.utils';
 import { deIso, diaPorExtenso, formatarDuracao, hojeIso, infoDia, minutosDoDia, proximosDias, somarDias } from '../../core/utils/datas-agenda';
+import { chegouAlgoNovo, prepararSinalSonoro, tocarSinalNovo } from '../../core/utils/sinal-sonoro';
+import { limparMarcaIcone } from '../../core/utils/marca-icone';
 import { gerarLinkWhatsapp } from '../../core/utils/texto.utils';
+import { UrlImagemPipe } from '../../core/imagens/url-imagem';
 import { BottomSheetComponent } from '../../shared/components/bottom-sheet/bottom-sheet.component';
 import { CarregandoComponent } from '../../shared/components/carregando/carregando.component';
 import { EstadoVazioComponent } from '../../shared/components/estado-vazio/estado-vazio.component';
@@ -22,9 +37,18 @@ import { MensagensProntasComponent } from './mensagens-prontas/mensagens-prontas
 import { preencherMensagem } from './mensagens-prontas/variaveis-mensagem';
 import { montarLinhaDoTempo } from './linha-do-tempo';
 import { NovoAgendamentoComponent } from './novo-agendamento/novo-agendamento.component';
+import { NumerosAgendaComponent } from './numeros-agenda/numeros-agenda.component';
+import { RegistrarVendaComponent } from './registrar-venda/registrar-venda.component';
+import { EscolhaQuemEstaLivre, QuemEstaLivreComponent } from './quem-esta-livre/quem-esta-livre.component';
+import { formatarReal } from '../pedidos/textos-pedido';
+import { FormsModule } from '@angular/forms';
 import { VideoAgendaComponent } from './video-agenda/video-agenda.component';
 
-type AbaAgenda = 'agendamentos' | 'horarios';
+type AbaAgenda = 'agendamentos' | 'numeros' | 'horarios';
+
+const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
+/** De quanto em quanto tempo a tela busca os agendamentos de novo (os que a IA marcou aparecem sozinhos). */
+const ATUALIZAR_A_CADA_MS = 15_000;
 
 /**
  * Agenda do painel (serviços presenciais).
@@ -34,6 +58,9 @@ type AbaAgenda = 'agendamentos' | 'horarios';
 @Component({
   selector: 'app-agenda-page',
   imports: [
+    UrlImagemPipe,
+    RegistrarVendaComponent,
+    QuemEstaLivreComponent,
     NgTemplateOutlet,
     RouterLink,
     CarregandoComponent,
@@ -45,6 +72,8 @@ type AbaAgenda = 'agendamentos' | 'horarios';
     NovoAgendamentoComponent,
     MensagensProntasComponent,
     VideoAgendaComponent,
+    NumerosAgendaComponent,
+    FormsModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './agenda-page.component.html',
@@ -65,6 +94,9 @@ export class AgendaPageComponent implements OnInit {
   protected readonly diaSelecionado = signal(hojeIso());
 
   protected readonly criando = signal(false);
+  /** "Quem está livre?" aberto, e o que ele passa para o "Agendar horário" (hora, profissional e serviço). */
+  protected readonly consultandoLivres = signal(false);
+  protected readonly presetNovo = signal<EscolhaQuemEstaLivre | null>(null);
   protected readonly salvandoNovo = signal(false);
   protected readonly paraCancelar = signal<Agendamento | null>(null);
   /** Cliente cujo WhatsApp foi tocado: abre a escolha de mensagem antes de ir para a conversa. */
@@ -82,6 +114,35 @@ export class AgendaPageComponent implements OnInit {
       return { id: mensagem.id, titulo: mensagem.titulo, texto, link: this.linkWhatsapp(agendamento, texto) };
     });
   });
+  /** Quem atende; com 2+, os cards dizem com quem é e dá para filtrar a agenda por profissional. */
+  protected readonly profissionais = this.agendaService.profissionais;
+  protected readonly variosProfissionais = this.agendaService.variosProfissionais;
+  /** null = todos (só na visualização resumida; a linha do tempo mostra um profissional por vez). */
+  protected readonly filtroProfissional = signal<string | null>(null);
+  protected readonly profissionalVisivel = computed(() => {
+    if (!this.variosProfissionais()) {
+      return null;
+    }
+    return this.filtroProfissional() ?? (this.visualizacao() === 'completa' ? this.profissionais()[0]?.id ?? null : null);
+  });
+
+  /** "Registrar venda": só aparece quando o negócio tem produto à venda disponível. */
+  protected readonly registrandoVenda = signal(false);
+  protected readonly temProdutosAVenda = computed(() =>
+    this.produtoService.produtos().some((produto) => produto.produtoAVenda && produto.disponivel),
+  );
+
+  /** Agendamento cujo "1 produto" foi tocado: abre os produtos que o cliente reservou pela agenda online. */
+  protected readonly vendoProdutos = signal<Agendamento | null>(null);
+  protected readonly editandoValor = signal<Agendamento | null>(null);
+  protected readonly valorDigitado = signal('');
+  protected readonly salvandoValor = signal(false);
+  protected readonly tentouSalvarValor = signal(false);
+  protected readonly erroValor = computed(() => {
+    const texto = this.valorDigitado().trim();
+    return this.tentouSalvarValor() && texto !== '' && !PADRAO_VALOR.test(texto);
+  });
+
   protected readonly cancelando = signal(false);
   protected readonly confirmandoFolga = signal(false);
   protected readonly mudandoFolga = signal(false);
@@ -95,13 +156,17 @@ export class AgendaPageComponent implements OnInit {
   protected readonly temHorarios = computed(() => (this.configuracao()?.periodos.length ?? 0) > 0);
 
   protected readonly servicosSemDuracao = computed(
-    () => this.produtoService.produtos().filter((p) => p.disponivel && !p.duracaoMinutos).length,
+    () => this.produtoService.produtos().filter((p) => p.disponivel && !p.produtoAVenda && !p.duracaoMinutos).length,
   );
 
-  /** Confirmados por dia ("AAAA-MM-DD" → lista), para a faixa e a lista do dia. */
+  /** Confirmados por dia ("AAAA-MM-DD" → lista), para a faixa e a lista do dia (só do profissional filtrado). */
   private readonly porDia = computed(() => {
     const mapa = new Map<string, Agendamento[]>();
+    const profissional = this.profissionalVisivel();
     for (const agendamento of this.agendaService.agendamentos()) {
+      if (profissional && agendamento.profissionalId !== profissional) {
+        continue;
+      }
       mapa.set(agendamento.data, [...(mapa.get(agendamento.data) ?? []), agendamento]);
     }
     return mapa;
@@ -168,17 +233,62 @@ export class AgendaPageComponent implements OnInit {
   private readonly consultaTelaGrande = window.matchMedia('(min-width: 760px)');
   protected readonly telaGrande = signal(this.consultaTelaGrande.matches);
 
+  /** A linha vermelha da hora atual na visão completa (só hoje). */
+  private readonly linhaAgora = viewChild<ElementRef<HTMLElement>>('linhaAgora');
+  /** Já rolou até a hora atual desde que a visão completa de hoje abriu (as atualizações de 15 s não rolam de novo). */
+  private rolouParaAgora = false;
+
   constructor() {
+    // abriu a visão completa (ou voltou para hoje nela): a tela rola até a linha da hora atual, uma vez
+    effect(() => {
+      const aberta =
+        this.aba() === 'agendamentos' && this.visualizacao() === 'completa' && this.diaSelecionado() === hojeIso();
+      const linha = this.linhaAgora();
+      if (!aberta) {
+        this.rolouParaAgora = false;
+        return;
+      }
+      if (linha && !untracked(() => this.rolouParaAgora)) {
+        this.rolouParaAgora = true;
+        setTimeout(() => linha.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+      }
+    });
     const relogio = window.setInterval(() => this.horaAgora.set(horaAtual()), 60_000);
     const aoMudarTela = (evento: MediaQueryListEvent) => this.telaGrande.set(evento.matches);
     this.consultaTelaGrande.addEventListener('change', aoMudarTela);
+    // a tela fica aberta no balcão: o que a IA (ou a página pública) marcar aparece sozinho, como nos Pedidos,
+    // com um sinal sonoro quando chega um agendamento novo. Com a aba escondida não busca; ao voltar, busca na hora.
+    prepararSinalSonoro();
+    const atualizar = async () => {
+      if (document.hidden || this.carregando()) {
+        return;
+      }
+      void limparMarcaIcone('agenda');
+      const antes = this.agendaService.agendamentos();
+      try {
+        await this.agendaService.atualizarAgendamentos();
+      } catch {
+        return;
+      }
+      if (chegouAlgoNovo(antes, this.agendaService.agendamentos())) {
+        tocarSinalNovo();
+      }
+    };
+    const atualizacao = window.setInterval(atualizar, ATUALIZAR_A_CADA_MS);
+    document.addEventListener('visibilitychange', atualizar);
+    window.addEventListener('focus', atualizar);
     inject(DestroyRef).onDestroy(() => {
       window.clearInterval(relogio);
       this.consultaTelaGrande.removeEventListener('change', aoMudarTela);
+      window.clearInterval(atualizacao);
+      document.removeEventListener('visibilitychange', atualizar);
+      window.removeEventListener('focus', atualizar);
     });
   }
 
   ngOnInit(): void {
+    // abriu a agenda: a bolinha dos agendamentos novos no ícone do app some
+    void limparMarcaIcone('agenda');
     void this.carregar();
   }
 
@@ -210,6 +320,7 @@ export class AgendaPageComponent implements OnInit {
         this.agendaService.atualizarAgendamentos(),
         this.produtoService.carregar(),
         this.agendaService.carregarMensagensProntas(),
+        this.agendaService.carregarProfissionais(),
       ]);
       // primeira vez: abre direto nos horários, que é o que falta configurar
       if (!this.temHorarios()) {
@@ -235,6 +346,32 @@ export class AgendaPageComponent implements OnInit {
     const ultimo = somarDias(hojeIso(), DIAS_DA_AGENDA - 1);
     const destino = somarDias(this.diaSelecionado(), 7 * direcao);
     this.diaSelecionado.set(destino < hojeIso() ? hojeIso() : destino > ultimo ? ultimo : destino);
+  }
+
+  /** "Agendar com…" no "Quem está livre?": abre o "Agendar horário" já preenchido. */
+  protected agendarDaConsulta(escolha: EscolhaQuemEstaLivre): void {
+    this.consultandoLivres.set(false);
+    this.presetNovo.set(escolha);
+    this.criando.set(true);
+  }
+
+  protected fecharNovo(): void {
+    this.criando.set(false);
+    this.presetNovo.set(null);
+  }
+
+  protected vendaRegistrada(venda: VendaProduto): void {
+    this.registrandoVenda.set(false);
+    this.toastService.mostrar(`Venda registrada · ${formatarReal(Number(venda.total))}`);
+  }
+
+  /** "1 produto", "2 produtos" (reservados pela agenda online). */
+  protected rotuloProdutos(agendamento: Agendamento): string {
+    return pluralizar(agendamento.produtos.length, 'produto', 'produtos');
+  }
+
+  protected precoReservado(preco: number | null, aPartirDe: boolean): string {
+    return preco === null ? '' : (aPartirDe ? 'a partir de ' : '') + formatarReal(Number(preco));
   }
 
   protected duracao(agendamento: Agendamento): string {
@@ -269,12 +406,47 @@ export class AgendaPageComponent implements OnInit {
     try {
       const criado = await this.agendaService.criar(novo);
       this.criando.set(false);
+      this.presetNovo.set(null);
       this.diaSelecionado.set(criado.data);
       this.toastService.mostrar(`Agendado: ${criado.nomeCliente} às ${criado.inicio}`);
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível agendar. Tente de novo.'));
     } finally {
       this.salvandoNovo.set(false);
+    }
+  }
+
+  // ---------------------------------------------------------------- valor
+
+  protected real(valor: number): string {
+    return formatarReal(Number(valor));
+  }
+
+  protected abrirValor(agendamento: Agendamento): void {
+    this.tentouSalvarValor.set(false);
+    this.valorDigitado.set(agendamento.valor === null ? '' : Number(agendamento.valor).toFixed(2).replace('.', ','));
+    this.editandoValor.set(agendamento);
+  }
+
+  protected async salvarValor(): Promise<void> {
+    const agendamento = this.editandoValor();
+    if (!agendamento || this.salvandoValor()) {
+      return;
+    }
+    this.tentouSalvarValor.set(true);
+    if (this.erroValor()) {
+      return;
+    }
+    const texto = this.valorDigitado().trim();
+    this.salvandoValor.set(true);
+    try {
+      await this.agendaService.atualizarValor(agendamento.id, texto === '' ? null : Number(texto.replace(',', '.')));
+      this.editandoValor.set(null);
+      this.toastService.mostrar('Valor salvo');
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível salvar o valor. Tente de novo.'));
+    } finally {
+      this.salvandoValor.set(false);
     }
   }
 

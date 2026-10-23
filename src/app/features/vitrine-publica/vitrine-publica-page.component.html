@@ -2,6 +2,7 @@
   class="tela-app vitrine vitrine--entrada"
   [class.vitrine--introducao]="introducaoAtiva()"
   [class.vitrine--fundo-pagina]="areaFundo() === 'PAGINA'"
+  [class.vitrine--agenda]="situacao() === 'pronta' && mostrandoAgenda()"
   [style.--vitrine-destaque]="corDestaque()"
   [style.--vitrine-fundo-selecionado]="fundoPagina()"
   [style.--vitrine-fonte]="fonteCss()"
@@ -174,7 +175,7 @@
         </a>
       }
       <a routerLink="/" class="rodape__credito">
-        Galeria criada com
+        Criado com
         <app-logo [tamanhoSimbolo]="14" [tamanhoTexto]="13" />
       </a>
     </footer>

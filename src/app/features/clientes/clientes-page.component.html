@@ -1,0 +1,184 @@
+<div class="tela-app tela-clientes">
+  <header class="topo-azul">
+    <div class="topo-azul__linha">
+      <a class="topo-azul__voltar" [routerLink]="rotaChats()" aria-label="Voltar para os chats">
+        <app-icone nome="voltar" [tamanho]="22" />
+      </a>
+    </div>
+    <div class="topo-azul__textos">
+      <h1 class="topo-azul__titulo">Clientes</h1>
+      <p class="topo__sub">
+        @if (carregando()) {
+          Juntando conversas e {{ servico() ? 'agendamentos' : 'pedidos' }}…
+        } @else {
+          {{ clientes().length }} {{ clientes().length === 1 ? 'cliente' : 'clientes' }} no total
+        }
+      </p>
+    </div>
+    <label class="busca">
+      <app-icone nome="busca" [tamanho]="18" [espessura]="2" />
+      <span class="somente-leitor-tela">Buscar cliente</span>
+      <input type="search" placeholder="Buscar por nome ou número" autocomplete="off" [value]="busca()" (input)="digitarBusca($event)">
+    </label>
+  </header>
+
+  <div class="filtros" role="radiogroup" aria-label="Filtrar clientes">
+    @for (opcao of filtros(); track opcao.id) {
+      <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="filtro() === opcao.id" [attr.aria-checked]="filtro() === opcao.id" (click)="filtro.set(opcao.id)">
+        {{ opcao.rotulo }} <span class="filtros__total">{{ opcao.total }}</span>
+      </button>
+    }
+  </div>
+
+  <!-- ordem da lista: pequeno seletor à direita -->
+  <div class="ordem">
+    <label class="ordem__rotulo" for="ordem-clientes">Ordenar por</label>
+    <span class="ordem__campo">
+      <select id="ordem-clientes" [value]="ordem()" (change)="escolherOrdem($event)">
+        <option value="recentes">Mais recentes</option>
+        <option value="mais">Mais {{ servico() ? 'agendamentos' : 'pedidos' }}</option>
+        <option value="gasto">Maior gasto</option>
+      </select>
+      <app-icone nome="setaBaixo" [tamanho]="14" [espessura]="2.4" />
+    </span>
+  </div>
+
+  <main class="lista conteudo-tela">
+    @if (carregando()) {
+      <app-carregando texto="Carregando clientes…" />
+    } @else {
+      @if (filtro() === 'sumidos' && visiveis().length > 0) {
+        <p class="dica-filtro">Clientes que não {{ servico() ? 'voltam' : 'pedem' }} há 45 dias ou mais. Que tal mandar uma mensagem?</p>
+      }
+      @for (cliente of visiveis(); track cliente.id) {
+        <button type="button" class="cliente" (click)="abrir(cliente)">
+          <app-avatar [nome]="cliente.nome" [tamanho]="44" />
+          <span class="cliente__textos">
+            <span class="cliente__nome">{{ cliente.nome }}</span>
+            <span class="cliente__detalhe">
+              @if (cliente.whatsapp) {
+                {{ cliente.whatsapp }}
+              } @else {
+                Sem WhatsApp
+              }
+            </span>
+          </span>
+          <span class="cliente__lado">
+            @if (cliente.total > 0) {
+              <span class="cliente__total">{{ contagem(cliente.total) }}</span>
+            } @else {
+              <span class="cliente__total cliente__total--conversa">Só conversou</span>
+            }
+            @if (cliente.proximo) {
+              <span class="cliente__quando cliente__quando--proximo">Próximo {{ dataCurta(cliente.proximo) }}</span>
+            } @else if (cliente.ultimaVez) {
+              <span class="cliente__quando">{{ haQuanto(cliente.ultimaVez) }}</span>
+            } @else if (cliente.ultimaConversa) {
+              <span class="cliente__quando">{{ haQuanto(cliente.ultimaConversa) }}</span>
+            }
+          </span>
+        </button>
+      } @empty {
+        <app-estado-vazio
+          icone="pessoa"
+          [titulo]="busca() ? 'Nenhum cliente encontrado' : 'Nenhum cliente aqui ainda'"
+          [descricao]="busca() ? 'Confira o nome ou o número digitado.' : 'Quem conversar com o assistente ou ' + (servico() ? 'agendar' : 'fizer um pedido') + ' aparece aqui sozinho.'"
+        />
+      }
+    }
+  </main>
+</div>
+
+@if (aberto(); as cliente) {
+  <app-bottom-sheet [titulo]="cliente.nome" (fechar)="fechar()">
+    <div class="ficha">
+      <div class="ficha__topo">
+        <app-avatar [nome]="cliente.nome" [tamanho]="56" />
+        <div class="ficha__identidade">
+          <span class="ficha__numero">{{ cliente.whatsapp || 'Sem número de WhatsApp' }}</span>
+          @if (cliente.clienteDesde) {
+            <span class="ficha__desde">Cliente desde {{ desde(cliente.clienteDesde) }}</span>
+          }
+        </div>
+      </div>
+
+      @if (cliente.numero) {
+        <div class="ficha__acoes">
+          <a class="btn btn--primario btn--bloco ficha__whatsapp" [href]="linkWhatsapp(cliente)" target="_blank" rel="noopener">
+            <app-icone nome="conversa" [tamanho]="18" />
+            Chamar no WhatsApp
+          </a>
+          <button type="button" class="btn-icone ficha__copiar" aria-label="Copiar o número" title="Copiar o número" (click)="copiarNumero(cliente)">
+            <app-icone nome="copiar" [tamanho]="18" />
+          </button>
+        </div>
+      } @else {
+        <p class="ficha__aviso">Este cliente foi agendado à mão, sem número de WhatsApp.</p>
+      }
+
+      @if (carregandoDetalhe()) {
+        <app-carregando modo="inline" [tamanho]="22" />
+      }
+      @if (detalhe(); as d) {
+        <div class="ficha__numeros">
+          <div class="mini">
+            <span class="mini__rotulo">{{ d.tipo === 'servicos' ? 'Agendamentos' : 'Pedidos' }}</span>
+            <span class="mini__valor">{{ d.cliente.total }}</span>
+          </div>
+          <div class="mini">
+            <span class="mini__rotulo">Gasto total</span>
+            <span class="mini__valor">{{ real(d.cliente.valor) }}</span>
+          </div>
+          <div class="mini">
+            <span class="mini__rotulo">Ticket médio</span>
+            <span class="mini__valor">{{ real(d.ticketMedio) }}</span>
+          </div>
+          <div class="mini">
+            <span class="mini__rotulo">Última vez</span>
+            <span class="mini__valor">{{ dataCurta(d.cliente.ultimaVez) }}</span>
+            @if (d.cliente.ultimaVez) {
+              <span class="mini__nota">{{ haQuanto(d.cliente.ultimaVez) }}</span>
+            }
+          </div>
+        </div>
+
+        @if (d.cliente.proximo) {
+          <div class="destaque-linha">
+            <app-icone nome="calendario" [tamanho]="17" [espessura]="2" />
+            <span>Próximo horário: <strong>{{ dataHora(d.cliente.proximo) }}</strong></span>
+          </div>
+        }
+        @if (d.favorito) {
+          <div class="destaque-linha destaque-linha--claro">
+            <app-icone nome="brilho" [tamanho]="17" [espessura]="2" />
+            <span>{{ d.tipo === 'servicos' ? 'Serviço favorito' : 'Mais pedido' }}: <strong>{{ d.favorito }}</strong></span>
+          </div>
+        }
+
+        <section class="historico" aria-labelledby="titulo-historico-cliente">
+          <h3 class="historico__titulo" id="titulo-historico-cliente">Histórico</h3>
+          @for (item of d.historico; track $index) {
+            <div class="historico__linha">
+              <span class="historico__data">{{ dataCurta(item.quando) }}</span>
+              <span class="historico__descricao">{{ item.descricao }}</span>
+              <span class="historico__fim">
+                @if (item.valor !== null) {
+                  <span class="historico__valor">{{ real(item.valor) }}</span>
+                }
+                <span class="situacao" [class]="'situacao ' + classeSituacao(item.situacao)">{{ item.situacao }}</span>
+              </span>
+            </div>
+          } @empty {
+            <p class="historico__vazio">
+              @if (d.cliente.ultimaConversa) {
+                Só conversou com o assistente ({{ haQuanto(d.cliente.ultimaConversa) }}), ainda sem {{ d.tipo === 'servicos' ? 'agendamento' : 'pedido' }}.
+              } @else {
+                Nada por aqui ainda.
+              }
+            </p>
+          }
+        </section>
+      }
+    </div>
+  </app-bottom-sheet>
+}

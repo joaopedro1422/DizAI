@@ -1,5 +1,7 @@
 <router-outlet />
 <app-toast-host />
+<!-- pedido novo esperando no Chats: bolha flutuante em todo o painel (menos no próprio Chats) -->
+<app-bolha-pedidos />
 
 @if (trocandoDeTela()) {
   <app-carregando modo="tela" />

@@ -9,7 +9,7 @@
   <div class="agenda">
     <section class="passo" aria-labelledby="passo-servico">
       <h2 class="passo__titulo" id="passo-servico">
-        <span class="passo__numero" [class.passo__numero--feito]="escolhidos().length > 0">1</span>
+        <span class="passo__numero" [class.passo__numero--feito]="escolhidos().length > 0">@if (escolhidos().length > 0) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {1}</span>
         Escolha o serviço
       </h2>
       @for (categoria of categorias(); track categoria.nome) {
@@ -27,15 +27,22 @@
                 [attr.aria-pressed]="escolhido"
                 (click)="alternarServico(servico)"
               >
-                <span class="servico__marca" aria-hidden="true">
-                  @if (escolhido) {
-                    <app-icone nome="check" [tamanho]="14" [espessura]="3" />
+                <span class="servico__corpo">
+                  <span class="servico__nome">{{ servico.nome }}</span>
+                  @if (servico.descricao) {
+                    <span class="servico__descricao">{{ servico.descricao }}</span>
                   }
+                  <span class="servico__meta">
+                    <span class="servico__preco" [class.servico__preco--consulta]="servico.preco == null">{{ precoServico(servico) }}</span>
+                    <span class="servico__ponto" aria-hidden="true"></span>
+                    <span class="servico__duracao">
+                      <app-icone nome="relogio" [tamanho]="14" [espessura]="2" />
+                      {{ duracao(servico.duracaoMinutos) }}
+                    </span>
+                  </span>
                 </span>
-                <span class="servico__nome">{{ servico.nome }}</span>
-                <span class="servico__duracao">
-                  <app-icone nome="relogio" [tamanho]="14" />
-                  {{ duracao(servico.duracaoMinutos) }}
+                <span class="servico__marca" aria-hidden="true">
+                  <app-icone [nome]="escolhido ? 'check' : 'mais'" [tamanho]="15" [espessura]="2.6" />
                 </span>
               </button>
             }
@@ -49,10 +56,50 @@
       }
     </section>
 
-    @if (escolhidos().length > 0) {
+    @if (escolhidos().length > 0 && comProfissionais()) {
+      <section class="passo passo--entrada" aria-labelledby="passo-profissional">
+        <h2 class="passo__titulo" id="passo-profissional">
+          <span class="passo__numero" [class.passo__numero--feito]="profissionalEscolhido() !== null">@if (profissionalEscolhido() !== null) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {2}</span>
+          Com quem?
+        </h2>
+        <div class="pessoas" role="radiogroup" aria-labelledby="passo-profissional">
+          @for (profissional of profissionais(); track profissional.id) {
+            @let escolhido = profissionalEscolhido() === profissional.id;
+            <button type="button" role="radio" class="pessoa" [class.pessoa--escolhida]="escolhido" [attr.aria-checked]="escolhido" (click)="escolherProfissional(profissional.id)">
+              @if (profissional.fotoUrl) {
+                <img class="pessoa__foto" [src]="profissional.fotoUrl | urlImagem" alt="" loading="lazy">
+              } @else {
+                <span class="pessoa__foto pessoa__foto--iniciais" aria-hidden="true">{{ iniciais(profissional.nome) }}</span>
+              }
+              <span class="pessoa__nome">{{ profissional.nome }}</span>
+              <span class="pessoa__marca" aria-hidden="true">
+                @if (escolhido) {
+                  <app-icone nome="check" [tamanho]="13" [espessura]="3" />
+                }
+              </span>
+            </button>
+          }
+          @let qualquer = profissionalEscolhido() === 'qualquer';
+          <button type="button" role="radio" class="pessoa" [class.pessoa--escolhida]="qualquer" [attr.aria-checked]="qualquer" (click)="escolherProfissional('qualquer')">
+            <span class="pessoa__foto pessoa__foto--qualquer" aria-hidden="true"><app-icone nome="brilho" [tamanho]="20" [espessura]="2" /></span>
+            <span class="pessoa__nome">
+              Qualquer um
+              <span class="pessoa__detalhe">o primeiro horário livre</span>
+            </span>
+            <span class="pessoa__marca" aria-hidden="true">
+              @if (qualquer) {
+                <app-icone nome="check" [tamanho]="13" [espessura]="3" />
+              }
+            </span>
+          </button>
+        </div>
+      </section>
+    }
+
+    @if (podeVerDias()) {
       <section class="passo passo--entrada" aria-labelledby="passo-dia">
         <h2 class="passo__titulo" id="passo-dia">
-          <span class="passo__numero" [class.passo__numero--feito]="!!diaSelecionado()">2</span>
+          <span class="passo__numero" [class.passo__numero--feito]="!!diaSelecionado()">@if (!!diaSelecionado()) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {{{ 2 + passoExtra() }}}</span>
           Escolha o dia
         </h2>
         @if (carregandoHorarios() && dias().length === 0) {
@@ -71,10 +118,10 @@
       </section>
     }
 
-    @if (diaSelecionado() && turnos().length > 0) {
+    @if (podeVerDias() && diaSelecionado() && turnos().length > 0) {
       <section class="passo passo--entrada" aria-labelledby="passo-hora">
         <h2 class="passo__titulo" id="passo-hora">
-          <span class="passo__numero" [class.passo__numero--feito]="!!horaSelecionada()">3</span>
+          <span class="passo__numero" [class.passo__numero--feito]="!!horaSelecionada()">@if (!!horaSelecionada()) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {{{ 3 + passoExtra() }}}</span>
           Escolha o horário
         </h2>
         @for (turno of turnos(); track turno.nome) {
@@ -102,7 +149,7 @@
     @if (horaSelecionada()) {
       <section class="passo passo--entrada" aria-labelledby="passo-nome">
         <h2 class="passo__titulo" id="passo-nome">
-          <span class="passo__numero" [class.passo__numero--feito]="nome().trim().length > 0">4</span>
+          <span class="passo__numero" [class.passo__numero--feito]="nome().trim().length > 0">@if (nome().trim().length > 0) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {{{ 4 + passoExtra() }}}</span>
           Seu nome
         </h2>
         <input
@@ -120,15 +167,95 @@
 
       @if (resumoEscolha(); as resumo) {
         <div class="resumo passo--entrada">
-          <span class="resumo__linha"><strong>{{ resumo.servicos }}</strong> · {{ resumo.duracao }}</span>
-          <span class="resumo__linha">{{ resumo.quando }}</span>
+          <span class="resumo__titulo">Resumo do agendamento</span>
+          <span class="resumo__linha">
+            <span class="resumo__icone"><app-icone nome="brilho" [tamanho]="15" [espessura]="2" /></span>
+            <span><strong>{{ resumo.servicos }}</strong> · {{ resumo.duracao }}</span>
+          </span>
+          <span class="resumo__linha">
+            <span class="resumo__icone"><app-icone nome="calendario" [tamanho]="15" [espessura]="2" /></span>
+            <span class="resumo__quando">{{ resumo.quando }}</span>
+          </span>
+          @if (comProfissionais()) {
+            <span class="resumo__linha">
+              <span class="resumo__icone"><app-icone nome="pessoa" [tamanho]="15" [espessura]="2" /></span>
+              <span>Com {{ nomeProfissional() }}</span>
+            </span>
+          }
+          @for (produto of produtosReservados(); track produto.id) {
+            <span class="resumo__linha">
+              <span class="resumo__icone"><app-icone nome="sacola" [tamanho]="15" [espessura]="2" /></span>
+              <span>{{ produto.nome }}</span>
+            </span>
+          }
+          @if (totalPreco() !== null) {
+            <span class="resumo__total">
+              <span>Total{{ aPartirDe() ? ' (a partir de)' : '' }}</span>
+              <strong>{{ real(totalPreco()!) }}</strong>
+            </span>
+          }
           <span class="resumo__nota">Ao enviar, o horário é conferido e confirmado na hora pelo WhatsApp.</span>
         </div>
+      }
+
+      <!-- opcional: produtos à venda do negócio, para levar no dia (só reserva, não é compra) -->
+      @if (produtos().length > 0) {
+        <section class="passo passo--entrada passo--produtos" aria-labelledby="passo-produtos">
+          <div class="produtos__topo">
+            <h2 class="passo__titulo" id="passo-produtos">
+              Também temos
+            </h2>
+            <!-- mais de 2: setinhas para passar (o dedo também arrasta para o lado) -->
+            @if (produtos().length > 2) {
+              <div class="produtos__setas">
+                <button type="button" class="produtos__seta" aria-label="Produtos anteriores" [disabled]="noInicioProdutos()" (click)="passarProdutos(trilho, -1)">
+                  <app-icone nome="voltar" [tamanho]="18" [espessura]="2.4" />
+                </button>
+                <button type="button" class="produtos__seta produtos__seta--proxima" aria-label="Próximos produtos" [disabled]="noFimProdutos()" (click)="passarProdutos(trilho, 1)">
+                  <app-icone nome="voltar" [tamanho]="18" [espessura]="2.4" />
+                </button>
+              </div>
+            }
+          </div>
+          <div #trilho class="produtos" role="list" (scroll)="aoRolarProdutos(trilho)">
+            @for (produto of produtos(); track produto.id) {
+              @let reservado = reservados().includes(produto.id);
+              <article class="produto" [class.produto--reservado]="reservado" role="listitem">
+                @if (produto.fotoUrl) {
+                  <img class="produto__foto" [src]="produto.fotoUrl | urlImagem" [alt]="produto.nome" loading="lazy">
+                } @else {
+                  <span class="produto__foto produto__foto--vazia" aria-hidden="true">
+                    <app-icone nome="caixa" [tamanho]="26" />
+                  </span>
+                }
+                <div class="produto__textos">
+                  <span class="produto__nome">{{ produto.nome }}</span>
+                  @if (precoDoProduto(produto); as preco) {
+                    <span class="produto__preco">{{ preco }}</span>
+                  }
+                </div>
+                <button type="button" class="produto__botao" [attr.aria-pressed]="reservado" (click)="alternarReserva(produto)">
+                  @if (reservado) {
+                    <app-icone nome="check" [tamanho]="14" [espessura]="3" />
+                    Reservado
+                  } @else {
+                    Reservar
+                  }
+                </button>
+              </article>
+            }
+          </div>
+          <span class="produtos__nota">Reserve para retirar no seu atendimento.</span>
+        </section>
       }
     }
   </div>
 
+  <!-- barra fixa: o que já foi escolhido + o botão (ou o próximo passo que falta) -->
   <div class="enviar">
+    @if (resumoBarra(); as texto) {
+      <span class="enviar__resumo">{{ texto }}</span>
+    }
     @if (linkEnviar(); as link) {
       <a class="enviar__botao" [href]="link" target="_blank" rel="noopener">
         <app-icone nome="conversa" [tamanho]="20" />
@@ -136,7 +263,7 @@
       </a>
     } @else {
       <span class="enviar__botao enviar__botao--inativo" aria-disabled="true">
-        {{ escolhidos().length === 0 ? 'Escolha um serviço' : !horaSelecionada() ? 'Escolha o dia e o horário' : faltaNome() ? 'Escreva o seu nome' : 'Enviar pelo WhatsApp' }}
+        {{ escolhidos().length === 0 ? 'Escolha um serviço' : !podeVerDias() ? 'Escolha com quem' : !horaSelecionada() ? 'Escolha o dia e o horário' : faltaNome() ? 'Escreva o seu nome' : 'Enviar pelo WhatsApp' }}
       </span>
     }
   </div>

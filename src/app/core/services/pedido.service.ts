@@ -96,8 +96,10 @@ export class PedidoService {
     this.lista.update((pedidos) => pedidos.map((p) => (p.id === pedidoId ? atualizado : p)));
   }
 
-  async numeros(dias: number): Promise<NumerosPedidos> {
-    const numeros = await firstValueFrom(this.http.get<NumerosApi>(this.url(`/numeros?dias=${dias}`)));
+  /** Últimos 7/30/90 dias, ou um mês do calendário ("2026-10"). */
+  async numeros(filtro: { dias: number } | { mes: string }): Promise<NumerosPedidos> {
+    const consulta = 'mes' in filtro ? `mes=${encodeURIComponent(filtro.mes)}` : `dias=${filtro.dias}`;
+    const numeros = await firstValueFrom(this.http.get<NumerosApi>(this.url(`/numeros?${consulta}`)));
     return { ...numeros, entreguesRecentes: numeros.entreguesRecentes.map(paraPedido) };
   }
 

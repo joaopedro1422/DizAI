@@ -7,7 +7,7 @@
         [class.conversa__balao--resposta]="!mensagem.cliente"
         [style.animation-delay]="mensagem.atrasoS + 's, ' + (mensagem.atrasoS + 0.45) + 's'"
       >
-        {{ mensagem.texto }}
+        <span>@for (trecho of trechos(mensagem.texto); track $index) {@if (trecho.negrito) {<strong>{{ trecho.texto }}</strong>} @else {{{ trecho.texto }}}}</span>
         @if (mensagem.link; as link) {
           <span class="conversa__link">{{ link }}</span>
         }

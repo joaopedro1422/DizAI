@@ -1,0 +1,36 @@
+/* Negócios de serviço: "Adicionar serviço" e o atalho "Adicionar produto" lado a lado */
+.acoes-cadastro {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* Serviços | Produtos (só quando há produto à venda) */
+.tipos {
+  display: flex;
+  gap: 4px;
+  margin: 0 24px 12px;
+  padding: 3px;
+  border-radius: 12px;
+  background: var(--cor-fundo-suave);
+  border: 1px solid var(--cor-borda-suave);
+}
+
+.tipos__aba {
+  flex: 1;
+  min-height: 38px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cor-texto-suave);
+  cursor: pointer;
+}
+
+.tipos__aba--ativa {
+  background: var(--cor-fundo);
+  color: var(--cor-primaria);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.1), 0 0 0 1px var(--cor-borda-suave);
+}

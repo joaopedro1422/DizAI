@@ -83,6 +83,30 @@
           </a>
         }
 
+        @if (valores().modoPedido === 'LINK_EXTERNO') {
+          <div class="campo caixa-destaque">
+            <label for="link-agendamento" class="campo__rotulo">Link de agendamento</label>
+            <span class="campo-prefixado" [class.campo-prefixado--erro]="mostrarErroLinkAgenda()">
+              <app-icone nome="link" [tamanho]="16" class="campo-prefixado__prefixo" />
+              <input
+                id="link-agendamento"
+                type="url"
+                inputmode="url"
+                formControlName="linkAgendamentoExterno"
+                placeholder="https://..."
+              >
+            </span>
+            @if (mostrarErroLinkAgenda()) {
+              <span class="campo__erro" role="alert">Cole o link completo onde o cliente agenda, começando com https://</span>
+            } @else {
+              <span class="campo__dica">
+                O link da sua página de agendamento no outro app. O assistente responde preços e dúvidas, manda este link
+                quando o cliente quiser marcar e, fora do seu horário de funcionamento, avisa que estão fechados no momento.
+              </span>
+            }
+          </div>
+        }
+
         @if (valores().modoPedido === 'COLETAR_DADOS') {
           <div class="campo caixa-destaque">
             <label for="campos-pedido" class="campo__rotulo">O que o assistente precisa coletar?</label>

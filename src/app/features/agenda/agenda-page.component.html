@@ -52,6 +52,17 @@
       <div class="topo-azul__textos">
         <h1 class="topo-azul__titulo">Minha Agenda</h1>
       </div>
+      <!-- Números fica fora das abas (três abas não cabiam no celular) -->
+      <button
+        type="button"
+        class="botao-numeros"
+        [class.botao-numeros--ativo]="aba() === 'numeros'"
+        [attr.aria-pressed]="aba() === 'numeros'"
+        (click)="mudarAba(aba() === 'numeros' ? 'agendamentos' : 'numeros')"
+      >
+        <app-icone nome="grafico" [tamanho]="16" [espessura]="2" />
+        Números
+      </button>
       <!-- em tablet e computador as abas ficam na mesma linha, à direita; no celular, embaixo -->
       @if (telaGrande()) {
         <span class="abas-titulo"><ng-container [ngTemplateOutlet]="abas" /></span>
@@ -111,6 +122,12 @@
             <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
             Agendar horário
           </button>
+          @if (temProdutosAVenda()) {
+            <button type="button" class="btn btn--secundario btn--bloco" (click)="registrandoVenda.set(true)">
+              <app-icone nome="sacola" [tamanho]="18" />
+              Registrar venda
+            </button>
+          }
           @if (!folgaNoDia() && temHorarios()) {
             <button type="button" class="btn btn--secundario btn--bloco" [disabled]="mudandoFolga()" (click)="pedirFolga()">
               <app-icone nome="calendarioFolga" [tamanho]="18" />
@@ -143,7 +160,25 @@
         }
 
         <!-- Resumida (cards, o padrão) ou Completa (linha do tempo do dia) -->
+        @if (variosProfissionais()) {
+          <div class="filtro-profissional grupo-chips" role="radiogroup" aria-label="Profissional">
+            @if (visualizacao() === 'resumida') {
+              <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="!profissionalVisivel()" [attr.aria-checked]="!profissionalVisivel()" (click)="filtroProfissional.set(null)">Todos</button>
+            }
+            @for (profissional of profissionais(); track profissional.id) {
+              @let ativo = profissionalVisivel() === profissional.id;
+              <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="ativo" [attr.aria-checked]="ativo" (click)="filtroProfissional.set(profissional.id)">{{ profissional.nome }}</button>
+            }
+          </div>
+        }
+
         <div class="visualizacao">
+          <!-- 2+ profissionais: "Quem está livre?" num horário -->
+          @if (variosProfissionais()) {
+            <button type="button" class="visualizacao__lupa" aria-label="Quem está livre num horário?" title="Quem está livre?" (click)="consultandoLivres.set(true)">
+              <app-icone nome="busca" [tamanho]="16" [espessura]="2.2" />
+            </button>
+          }
           <label class="visualizacao__rotulo" for="visualizacao-agenda">Visualização</label>
           <span class="visualizacao__campo">
             <select id="visualizacao-agenda" class="visualizacao__select" (change)="mudarVisualizacao($event)">
@@ -156,7 +191,8 @@
 
         @if (visualizacao() === 'resumida') {
           <div class="lista-horarios">
-            @for (agendamento of agendamentosDoDia(); track agendamento.id) {
+            <!-- só os confirmados: os cancelados ficam na lista pequena do fim (como na completa) -->
+            @for (agendamento of confirmadosDoDia(); track agendamento.id) {
               @let cancelado = agendamento.status === 'CANCELADO';
               <article class="horario" [class.horario--cancelado]="cancelado" [class.horario--passou]="!cancelado && jaPassou(agendamento)">
                 <div class="horario__tempo">
@@ -165,27 +201,48 @@
                 </div>
                 <div class="horario__corpo">
                   <span class="horario__nome">{{ agendamento.nomeCliente }}</span>
-                  <span class="horario__servicos">{{ agendamento.servicos }} <span class="horario__duracao">· {{ duracao(agendamento) }}</span></span>
+                  <span class="horario__servicos">{{ agendamento.servicos }} <span class="horario__duracao">· {{ duracao(agendamento) }}</span>@if (variosProfissionais()) {<span class="horario__profissional">&nbsp;· com {{ agendamento.profissionalNome }}</span>}</span>
+                  <!-- "1 produto" (reservado pela agenda online) e as etiquetas de presença/lembrete numa linha só -->
+                  @let mostraEtiqueta = !cancelado && !jaPassou(agendamento) && (agendamento.presencaConfirmada || agendamento.lembreteEnviado);
+                  @if (agendamento.produtos.length || mostraEtiqueta) {
+                    <span class="horario__marcas">
+                      @if (agendamento.produtos.length) {
+                        <button type="button" class="link-produtos" (click)="vendoProdutos.set(agendamento)">
+                          <app-icone nome="caixa" [tamanho]="13" />
+                          {{ rotuloProdutos(agendamento) }}
+                        </button>
+                      }
+                      <!-- depois que o horário acaba, a presença e o lembrete não importam mais -->
+                      @if (mostraEtiqueta) {
+                        @if (agendamento.presencaConfirmada) {
+                          <span class="etiqueta etiqueta--presenca">
+                            <app-icone nome="check" [tamanho]="12" [espessura]="3" />
+                            Presença confirmada
+                          </span>
+                        } @else {
+                          <span class="etiqueta etiqueta--lembrete">Lembrete enviado</span>
+                        }
+                      }
+                    </span>
+                  }
                   <span class="horario__rodape">
                     @if (cancelado) {
                       <span class="etiqueta etiqueta--cancelado">Cancelado</span>
-                    } @else if (!jaPassou(agendamento)) {
-                      <!-- depois que o horário acaba, a presença e o lembrete não importam mais -->
-                      @if (agendamento.presencaConfirmada) {
-                        <span class="etiqueta etiqueta--presenca">
-                          <app-icone nome="check" [tamanho]="12" [espessura]="3" />
-                          Presença confirmada
-                        </span>
-                      } @else if (agendamento.lembreteEnviado) {
-                        <span class="etiqueta etiqueta--lembrete">Lembrete enviado</span>
+                    }
+                    <!-- WhatsApp à esquerda e o valor à direita, sempre na mesma linha -->
+                    <span class="horario__contato">
+                      @if (agendamento.whatsapp) {
+                        <button type="button" class="horario__whatsapp" [attr.aria-label]="'Mandar mensagem para ' + agendamento.nomeCliente" (click)="paraMensagem.set(agendamento)">
+                          <app-icone nome="conversa" [tamanho]="14" />
+                          {{ agendamento.whatsapp }}
+                        </button>
                       }
-                    }
-                    @if (agendamento.whatsapp) {
-                      <button type="button" class="horario__whatsapp" [attr.aria-label]="'Mandar mensagem para ' + agendamento.nomeCliente" (click)="paraMensagem.set(agendamento)">
-                        <app-icone nome="conversa" [tamanho]="14" />
-                        {{ agendamento.whatsapp }}
-                      </button>
-                    }
+                      @if (!cancelado) {
+                        <button type="button" class="horario__valor" [class.horario__valor--vazio]="agendamento.valor === null" [attr.aria-label]="'Valor do atendimento de ' + agendamento.nomeCliente" (click)="abrirValor(agendamento)">
+                          {{ agendamento.valor === null ? 'Sem valor' : real(agendamento.valor) }}
+                        </button>
+                      }
+                    </span>
                   </span>
                 </div>
                 @if (!cancelado) {
@@ -229,6 +286,7 @@
                     <article
                       class="bloco bloco--agendamento"
                       [class.bloco--em-andamento]="bloco.emAndamento"
+                      [class.bloco--confirmado]="agendamento.presencaConfirmada"
                       [class.bloco--medio]="bloco.altura < 70"
                       [class.bloco--curto]="bloco.altura < 40"
                       [style.top.px]="bloco.topo"
@@ -240,6 +298,12 @@
                         @if (bloco.altura < 70) {
                           <span class="bloco__nome bloco__nome--junto">{{ agendamento.nomeCliente }}</span>
                         }
+                        @if (variosProfissionais()) {
+                          <span class="bloco__profissional" [attr.aria-label]="'Com ' + agendamento.profissionalNome">
+                            <app-icone nome="pessoa" [tamanho]="11" [espessura]="2" />
+                            {{ agendamento.profissionalNome }}
+                          </span>
+                        }
                         @if (agendamento.presencaConfirmada) {
                           <span class="bloco__presenca" title="Presença confirmada" aria-label="Presença confirmada">
                             <app-icone nome="check" [tamanho]="13" [espessura]="3" />
@@ -250,12 +314,20 @@
                             <app-icone nome="brilho" [tamanho]="13" [espessura]="2" />
                           </span>
                         }
+                        <!-- bloco baixo: o nome está nesta linha, então o produto e o valor também -->
+                        @if (bloco.altura < 70) {
+                          <ng-container *ngTemplateOutlet="produtoEValor; context: { $implicit: agendamento }" />
+                        }
                         <button type="button" class="bloco__cancelar" [attr.aria-label]="'Cancelar o horário de ' + agendamento.nomeCliente" (click)="paraCancelar.set(agendamento)">
                           <app-icone nome="fechar" [tamanho]="15" [espessura]="2" />
                         </button>
                       </div>
                       @if (bloco.altura >= 70) {
-                        <span class="bloco__nome">{{ agendamento.nomeCliente }}</span>
+                        <!-- nome à esquerda; "1 produto" e o valor na mesma linha, no fim -->
+                        <div class="bloco__linha-nome">
+                          <span class="bloco__nome">{{ agendamento.nomeCliente }}</span>
+                          <ng-container *ngTemplateOutlet="produtoEValor; context: { $implicit: agendamento }" />
+                        </div>
                       }
                       @if (bloco.altura >= 40) {
                         <span class="bloco__detalhe">
@@ -293,7 +365,7 @@
               }
 
               @if (linha.agora; as agora) {
-                <div class="linha__agora" [style.top.px]="agora.topo" aria-hidden="true">
+                <div #linhaAgora class="linha__agora" [style.top.px]="agora.topo" aria-hidden="true">
                   <span class="linha__agora-hora">{{ agora.texto }}</span>
                 </div>
               }
@@ -305,15 +377,16 @@
               descricao="Você não atende neste dia da semana. Mude em Configure ou agende à mão."
             />
           }
+        }
 
-          @if (canceladosDoDia().length > 0) {
-            <div class="cancelados">
-              <span class="cancelados__titulo">Cancelados</span>
-              @for (agendamento of canceladosDoDia(); track agendamento.id) {
-                <span class="cancelados__item">{{ agendamento.inicio }} · {{ agendamento.nomeCliente }} · {{ agendamento.servicos }}</span>
-              }
-            </div>
-          }
+        <!-- nas duas visualizações: os cancelados ficam no fim, numa lista pequena -->
+        @if (canceladosDoDia().length > 0) {
+          <div class="cancelados">
+            <span class="cancelados__titulo">Cancelados</span>
+            @for (agendamento of canceladosDoDia(); track agendamento.id) {
+              <span class="cancelados__item">{{ agendamento.inicio }} · {{ agendamento.nomeCliente }} · {{ agendamento.servicos }}</span>
+            }
+          </div>
         }
 
         <div class="acoes-dia">
@@ -321,6 +394,12 @@
             <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
             Agendar horário
           </button>
+          @if (temProdutosAVenda()) {
+            <button type="button" class="btn btn--secundario btn--bloco" (click)="registrandoVenda.set(true)">
+              <app-icone nome="sacola" [tamanho]="18" />
+              Registrar venda
+            </button>
+          }
           @if (!folgaNoDia() && temHorarios()) {
             <button type="button" class="btn btn--secundario btn--bloco" [disabled]="mudandoFolga()" (click)="pedirFolga()">
               <app-icone nome="calendarioFolga" [tamanho]="18" />
@@ -334,6 +413,10 @@
         </div>
       </div>
     </main>
+  } @else if (aba() === 'numeros') {
+    <main id="painel-numeros" aria-label="Números da agenda" class="conteudo-tela numeros">
+      <app-numeros-agenda />
+    </main>
   } @else {
     <main id="painel-horarios" role="tabpanel" aria-labelledby="aba-horarios" class="conteudo-tela">
       @if (configuracao(); as configuracao) {
@@ -343,9 +426,72 @@
   }
 </div>
 
+@if (consultandoLivres()) {
+  <app-bottom-sheet titulo="Quem está livre?" (fechar)="consultandoLivres.set(false)">
+    <app-quem-esta-livre [data]="diaSelecionado()" (escolhido)="agendarDaConsulta($event)" />
+  </app-bottom-sheet>
+}
+
 @if (criando()) {
-  <app-bottom-sheet titulo="Agendar horário" (fechar)="criando.set(false)">
-    <app-novo-agendamento [dataInicial]="diaSelecionado()" [salvando]="salvandoNovo()" (salvo)="criar($event)" />
+  <app-bottom-sheet titulo="Agendar horário" (fechar)="fecharNovo()">
+    <app-novo-agendamento
+      [dataInicial]="diaSelecionado()"
+      [profissionais]="profissionais()"
+      [profissionalInicial]="presetNovo()?.profissionalId ?? filtroProfissional()"
+      [horaInicial]="presetNovo()?.hora ?? null"
+      [servicoInicialId]="presetNovo()?.servicoId ?? null"
+      [salvando]="salvandoNovo()"
+      (salvo)="criar($event)"
+    />
+  </app-bottom-sheet>
+}
+
+@if (registrandoVenda()) {
+  <app-bottom-sheet titulo="Registrar venda" (fechar)="registrandoVenda.set(false)">
+    <app-registrar-venda (registrada)="vendaRegistrada($event)" />
+  </app-bottom-sheet>
+}
+
+@if (vendoProdutos(); as agendamento) {
+  <app-bottom-sheet titulo="Produtos reservados" (fechar)="vendoProdutos.set(null)">
+    <div class="reservados">
+      <p class="reservados__texto">
+        {{ agendamento.nomeCliente }} reservou pela agenda online para levar no dia do horário. Separe antes do atendimento.
+      </p>
+      <div class="reservados__lista">
+        @for (produto of agendamento.produtos; track produto.nome) {
+          <div class="reservado">
+            @if (produto.fotoUrl) {
+              <img class="reservado__foto" [src]="produto.fotoUrl | urlImagem" [alt]="produto.nome">
+            } @else {
+              <span class="reservado__foto reservado__foto--vazia" aria-hidden="true">
+                <app-icone nome="caixa" [tamanho]="22" />
+              </span>
+            }
+            <span class="reservado__nome">{{ produto.nome }}</span>
+            @if (precoReservado(produto.preco, produto.precoAPartirDe); as preco) {
+              <span class="reservado__preco">{{ preco }}</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </app-bottom-sheet>
+}
+
+@if (editandoValor(); as agendamento) {
+  <app-bottom-sheet titulo="Valor do atendimento" (fechar)="editandoValor.set(null)">
+    <form class="valor" (ngSubmit)="salvarValor()" novalidate>
+      <p class="valor__texto">{{ agendamento.nomeCliente }} · {{ agendamento.servicos }}. É este valor que entra nos números da agenda.</p>
+      <span class="campo-prefixado" [class.campo-prefixado--erro]="erroValor()">
+        <span class="campo-prefixado__prefixo">R$</span>
+        <input type="text" inputmode="decimal" placeholder="0,00" aria-label="Valor" name="valor" [value]="valorDigitado()" (input)="valorDigitado.set($any($event.target).value)">
+      </span>
+      @if (erroValor()) {
+        <span class="campo__erro" role="alert">Use só números, por exemplo 70 ou 70,50 (vazio = sem valor).</span>
+      }
+      <button type="submit" class="btn btn--primario btn--grande btn--bloco" [disabled]="salvandoValor()" [attr.aria-busy]="salvandoValor()">Salvar valor</button>
+    </form>
   </app-bottom-sheet>
 }
 
@@ -419,3 +565,17 @@
 @if (mostrarVideo()) {
   <app-video-agenda (confirmar)="fecharVideo()" (fechar)="fecharVideo()" />
 }
+
+<!-- linha do tempo: "1 produto" (reservado pela agenda online) e o valor do atendimento, alinhados à direita -->
+<ng-template #produtoEValor let-agendamento>
+  <span class="bloco__extras">
+    @if (agendamento.produtos.length) {
+      <button type="button" class="link-produtos link-produtos--bloco" (click)="vendoProdutos.set(agendamento)">
+        {{ rotuloProdutos(agendamento) }}
+      </button>
+    }
+    <button type="button" class="bloco__valor" [class.bloco__valor--vazio]="agendamento.valor === null" [attr.aria-label]="'Valor do atendimento de ' + agendamento.nomeCliente" (click)="abrirValor(agendamento)">
+      {{ agendamento.valor === null ? 'Sem valor' : real(agendamento.valor) }}
+    </button>
+  </span>
+</ng-template>

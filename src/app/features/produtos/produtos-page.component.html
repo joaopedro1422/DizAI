@@ -1,11 +1,37 @@
 <div class="tela-app">
   <app-cabecalho-pagina [titulo]="conteudo().tituloItens" [subtitulo]="subtitulo()">
     <app-botao-video acoesTopo (abrir)="mostrarVideo.set(true)" />
-    <button type="button" class="btn btn--primario btn--bloco btn--acao-principal" (click)="abrirModal()">
-      <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
-      Adicionar {{ conteudo().termoItem }}
-    </button>
+    @if (ramoServico()) {
+      <!-- negócios de serviço: o atalho "Adicionar produto" cadastra um item à venda (minoxidil, esmalte…) -->
+      <div class="acoes-cadastro">
+        <button type="button" class="btn btn--primario btn--bloco btn--acao-principal" (click)="abrirModal()">
+          <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
+          Adicionar {{ conteudo().termoItem }}
+        </button>
+        <button type="button" class="btn btn--secundario btn--bloco btn--acao-principal" (click)="abrirModal(true)">
+          <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
+          Adicionar produto
+        </button>
+      </div>
+    } @else {
+      <button type="button" class="btn btn--primario btn--bloco btn--acao-principal" (click)="abrirModal()">
+        <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
+        Adicionar {{ conteudo().termoItem }}
+      </button>
+    }
   </app-cabecalho-pagina>
+
+  @if (mostrarTipos()) {
+    <div class="tipos" role="tablist" aria-label="Serviços ou produtos à venda">
+      @let servicos = tipoAtual() === 'servicos';
+      <button type="button" role="tab" class="tipos__aba" [class.tipos__aba--ativa]="servicos" [attr.aria-selected]="servicos" (click)="escolherTipo('servicos')">
+        {{ conteudo().tituloItens }}
+      </button>
+      <button type="button" role="tab" class="tipos__aba" [class.tipos__aba--ativa]="!servicos" [attr.aria-selected]="!servicos" (click)="escolherTipo('produtos')">
+        Produtos ({{ totalAVenda() }})
+      </button>
+    </div>
+  }
 
   @if (categorias().length > 0) {
     <div class="filtros" role="tablist" aria-label="Filtrar por categoria">
@@ -36,10 +62,13 @@
 </div>
 
 @if (modalAberto()) {
-  <app-bottom-sheet [titulo]="produtoEmEdicao() ? 'Editar ' + conteudo().termoItem : conteudo().tituloNovoItem" (fechar)="fecharModal()">
+  @let editandoProduto = produtoEmEdicao()?.produtoAVenda || (!produtoEmEdicao() && novoProdutoAVenda());
+  @let termoModal = editandoProduto ? 'produto' : conteudo().termoItem;
+  <app-bottom-sheet [titulo]="produtoEmEdicao() ? 'Editar ' + termoModal : editandoProduto ? 'Novo produto' : conteudo().tituloNovoItem" (fechar)="fecharModal()">
     <app-produto-formulario
       [categoriasExistentes]="categorias()"
       [produto]="produtoEmEdicao()"
+      [produtoAVenda]="novoProdutoAVenda()"
       [salvando]="salvando()"
       (salvo)="adicionarProduto($event)"
     />

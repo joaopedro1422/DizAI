@@ -5,6 +5,8 @@ import { ERRO_AO_CARREGAR, mensagemDoErro } from '../../core/api/erro-api';
 import { SessaoService } from '../../core/auth/sessao.service';
 import { Pedido } from '../../core/models/pedido.model';
 import { PedidoService } from '../../core/services/pedido.service';
+import { chegouAlgoNovo, prepararSinalSonoro, tocarSinalNovo } from '../../core/utils/sinal-sonoro';
+import { limparMarcaIcone } from '../../core/utils/marca-icone';
 import { ToastService } from '../../core/services/toast.service';
 import { BottomSheetComponent } from '../../shared/components/bottom-sheet/bottom-sheet.component';
 import { CarregandoComponent } from '../../shared/components/carregando/carregando.component';
@@ -105,11 +107,21 @@ export class PedidosPageComponent implements OnInit {
   constructor() {
     const aoMudarTela = (evento: MediaQueryListEvent) => this.quadro.set(evento.matches);
     this.consultaQuadro.addEventListener('change', aoMudarTela);
-    // a tela pode ficar aberta o dia todo (cozinha): os pedidos confirmados no Chats aparecem sozinhos.
-    // Com a aba escondida não busca; ao voltar para ela, busca na hora.
-    const atualizar = () => {
-      if (!document.hidden) {
-        this.pedidoService.atualizar().catch(() => undefined);
+    // a tela pode ficar aberta o dia todo (cozinha): os pedidos confirmados no Chats aparecem sozinhos, com um
+    // sinal sonoro quando chega um novo. Com a aba escondida não busca; ao voltar para ela, busca na hora.
+    prepararSinalSonoro();
+    const atualizar = async () => {
+      if (document.hidden || this.pedidoService.carregando()) {
+        return;
+      }
+      const antes = this.pedidoService.emAndamento();
+      try {
+        await this.pedidoService.atualizar();
+      } catch {
+        return;
+      }
+      if (chegouAlgoNovo(antes, this.pedidoService.emAndamento())) {
+        tocarSinalNovo();
       }
     };
     const atualizacao = window.setInterval(atualizar, ATUALIZAR_A_CADA_MS);
@@ -124,6 +136,7 @@ export class PedidosPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    void limparMarcaIcone('pedido');
     this.pedidoService.abrir().catch((erro: unknown) => this.toastService.mostrar(mensagemDoErro(erro, ERRO_AO_CARREGAR)));
   }
 

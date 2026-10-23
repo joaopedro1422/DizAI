@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { mensagemDoErro } from '../../../core/api/erro-api';
 import { SessaoService } from '../../../core/auth/sessao.service';
 import { ConfiguracaoAgenda, DiaSemana, PeriodoAtendimento } from '../../../core/models/agenda.model';
+import { ProdutoService } from '../../../core/services/produto.service';
 import { AgendaService } from '../../../core/services/agenda.service';
 import { PerfilService } from '../../../core/services/perfil.service';
 import { ToastService } from '../../../core/services/toast.service';
@@ -13,7 +14,8 @@ import { BottomSheetComponent } from '../../../shared/components/bottom-sheet/bo
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { InterruptorComponent } from '../../../shared/components/interruptor/interruptor.component';
-import { MensagemConfirmacaoComponent } from '../mensagem-confirmacao/mensagem-confirmacao.component';
+import { ETIQUETAS_AGENDAMENTO, MensagemConfirmacaoComponent } from '../mensagem-confirmacao/mensagem-confirmacao.component';
+import { ProfissionaisAgendaComponent } from '../profissionais/profissionais-agenda.component';
 
 interface Trecho {
   inicio: string;
@@ -98,6 +100,7 @@ const MAXIMO_PERIODOS_POR_DIA = 4;
     BottomSheetComponent,
     CarregandoComponent,
     MensagemConfirmacaoComponent,
+    ProfissionaisAgendaComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './horarios-atendimento.component.html',
@@ -109,6 +112,7 @@ export class HorariosAtendimentoComponent {
   readonly servicosSemDuracao = input(0);
 
   private readonly agendaService = inject(AgendaService);
+  private readonly produtoService = inject(ProdutoService);
   private readonly perfilService = inject(PerfilService);
   private readonly toastService = inject(ToastService);
   private readonly rotas = inject(SessaoService).rotasDoPainel;
@@ -172,6 +176,14 @@ export class HorariosAtendimentoComponent {
   protected readonly confirmacaoPadrao = computed(
     () => this.configuracao().mensagemConfirmacaoPadrao ?? CONFIRMACAO_PADRAO,
   );
+
+  /** Com 2+ profissionais, a confirmação do agendamento pode citar com quem é ({profissional}). */
+  /** {profissional} só com 2+ profissionais; {produtos} só quando o negócio tem produto à venda. */
+  protected readonly etiquetasAgendamento = computed(() => [
+    ...ETIQUETAS_AGENDAMENTO,
+    ...(this.agendaService.variosProfissionais() ? ['profissional'] : []),
+    ...(this.produtoService.produtos().some((p) => p.produtoAVenda) ? ['produtos'] : []),
+  ]);
 
   protected readonly lembretePadrao = computed(
     () => this.configuracao().mensagemLembretePadrao ?? LEMBRETE_PADRAO,
