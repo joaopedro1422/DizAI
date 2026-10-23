@@ -1,11 +1,15 @@
 export const environment = {
   production: true,
-  /** Troque pelo domínio público da API quando publicar. */
-  apiUrl: 'https://api.dizai.com.br',
+  /**
+   * A API no Railway (o navegador chama direto; o backend libera o domínio do front em DIZAI_ORIGENS_PERMITIDAS).
+   * Se um dia a API ganhar domínio próprio (ex.: api.dizai.com.br), troque aqui.
+   */
+  apiUrl: 'https://dizai-backend-production.up.railway.app',
   firebaseStorageBucket: 'dizai-f78bd.firebasestorage.app',
   meta: {
-    appId: '',
-    configId: '',
+    /** App da Meta e configuração do "Login do Facebook para Empresas" (IDs públicos, os mesmos do desenvolvimento). */
+    appId: '28999328156373119',
+    configId: '4603845649846497',
     versaoGraphApi: 'v24.0',
   },
 };

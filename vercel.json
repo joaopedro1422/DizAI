@@ -9,7 +9,7 @@
           "value": "(?i).*(whatsapp|facebookexternalhit|facebot|twitterbot|telegrambot|linkedinbot|slackbot|discordbot|skypeuripreview|pinterest|applebot|googlebot|bingbot).*"
         }
       ],
-      "destination": "https://TROQUE-PELO-BACKEND.run.app/public/previa/l/:slug"
+      "destination": "https://dizai-backend-production.up.railway.app/public/previa/l/:slug"
     },
     {
       "source": "/l/:slug/agenda",
@@ -20,7 +20,7 @@
           "value": "(?i).*(whatsapp|facebookexternalhit|facebot|twitterbot|telegrambot|linkedinbot|slackbot|discordbot|skypeuripreview|pinterest|applebot|googlebot|bingbot).*"
         }
       ],
-      "destination": "https://TROQUE-PELO-BACKEND.run.app/public/previa/l/:slug/agenda"
+      "destination": "https://dizai-backend-production.up.railway.app/public/previa/l/:slug/agenda"
     },
     {
       "source": "/l/:slug/foto/:fotoId",
@@ -31,7 +31,7 @@
           "value": "(?i).*(whatsapp|facebookexternalhit|facebot|twitterbot|telegrambot|linkedinbot|slackbot|discordbot|skypeuripreview|pinterest|applebot|googlebot|bingbot).*"
         }
       ],
-      "destination": "https://TROQUE-PELO-BACKEND.run.app/public/previa/l/:slug/foto/:fotoId"
+      "destination": "https://dizai-backend-production.up.railway.app/public/previa/l/:slug/foto/:fotoId"
     },
     {
       "source": "/(.*)",
