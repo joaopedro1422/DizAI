@@ -46,6 +46,13 @@
 
   @if (aba() === 'andamento') {
     <main id="painel-andamento" role="tabpanel" aria-labelledby="aba-andamento" class="conteudo-tela pedidos">
+      <!-- pedido que chegou fora do assistente (balcão, ligação, Instagram) -->
+      <div class="acoes-pedidos">
+        <button type="button" class="btn btn--secundario btn--pequeno" (click)="registrando.set(true)">
+          <app-icone nome="mais" [tamanho]="16" [espessura]="2.2" />
+          Registrar pedido
+        </button>
+      </div>
       @if (carregando()) {
         <app-carregando texto="Carregando seus pedidos…" />
       } @else if (pedidos().length === 0) {
@@ -137,5 +144,11 @@
 @if (gerenciandoMensagens()) {
   <app-bottom-sheet titulo="Mensagens prontas" (fechar)="gerenciandoMensagens.set(false)">
     <app-mensagens-prontas [config]="configMensagens" />
+  </app-bottom-sheet>
+}
+
+@if (registrando()) {
+  <app-bottom-sheet titulo="Registrar pedido" (fechar)="registrando.set(false)">
+    <app-registrar-pedido (registrado)="pedidoRegistrado($event.entregue)" />
   </app-bottom-sheet>
 }

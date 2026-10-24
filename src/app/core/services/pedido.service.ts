@@ -79,6 +79,17 @@ export class PedidoService {
     return this.aplicar(resposta);
   }
 
+  /** "Registrar pedido": pedido feito fora do assistente (balcão, ligação…); itens em texto livre. */
+  async registrarManual(novo: {
+    itens: string;
+    valor: number;
+    whatsapp: string;
+    nomeCliente: string;
+    entregue: boolean;
+  }): Promise<ResultadoAcaoPedido> {
+    return this.aplicar(await firstValueFrom(this.http.post<RespostaApi>(this.url(), novo)));
+  }
+
   async marcarPronto(pedidoId: string, mensagem: string | null): Promise<ResultadoAcaoPedido> {
     return this.aplicar(await firstValueFrom(this.http.patch<RespostaApi>(this.url(`/${pedidoId}/pronto`), { mensagem })));
   }

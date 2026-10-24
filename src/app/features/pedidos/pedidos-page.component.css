@@ -162,3 +162,9 @@
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   }
 }
+
+/* "Registrar pedido": botão no topo da aba "Em andamento" */
+.acoes-pedidos {
+  display: flex;
+  justify-content: flex-end;
+}

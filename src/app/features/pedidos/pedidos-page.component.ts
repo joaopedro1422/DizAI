@@ -18,6 +18,7 @@ import {
 } from '../agenda/mensagens-prontas/mensagens-prontas.component';
 import { AcaoPedidoComponent } from './acao-pedido/acao-pedido.component';
 import { NumerosPedidosComponent } from './numeros-pedidos/numeros-pedidos.component';
+import { RegistrarPedidoComponent } from './registrar-pedido/registrar-pedido.component';
 import { AcaoPedido, PedidoCardComponent } from './pedido-card/pedido-card.component';
 import { SUGESTOES_PEDIDO, VARIAVEIS_PEDIDO } from './textos-pedido';
 
@@ -42,6 +43,7 @@ const TITULOS_ACAO: Record<AcaoPedido, string> = {
 @Component({
   selector: 'app-pedidos-page',
   imports: [
+    RegistrarPedidoComponent,
     RouterLink,
     IconeComponent,
     CarregandoComponent,
@@ -133,6 +135,14 @@ export class PedidosPageComponent implements OnInit {
       document.removeEventListener('visibilitychange', atualizar);
       window.removeEventListener('focus', atualizar);
     });
+  }
+
+  /** "Registrar pedido" aberto. */
+  protected readonly registrando = signal(false);
+
+  protected pedidoRegistrado(entregue: boolean): void {
+    this.registrando.set(false);
+    this.toastService.mostrar(entregue ? 'Pedido registrado como entregue' : 'Pedido registrado em preparo');
   }
 
   ngOnInit(): void {
