@@ -206,6 +206,7 @@
 
 /* ---------- o celular com o WhatsApp ---------- */
 .celular {
+  position: relative;   /* a tela do painel (moldura-tela-demo) fica por cima da conversa */
   display: flex;
   flex-direction: column;
   overflow: hidden;

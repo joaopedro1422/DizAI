@@ -1,0 +1,141 @@
+<!-- cópia de pedidos-page.component.html (celular, aba "Em andamento", filtro "Todos") -->
+<header class="topo-azul">
+  <div class="topo-azul__linha">
+    <span class="topo-azul__voltar"><app-icone nome="voltar" [tamanho]="22" /></span>
+  </div>
+  <div class="topo-azul__identidade topo-pedidos">
+    <div class="topo-azul__textos">
+      <h1 class="topo-azul__titulo">Pedidos</h1>
+    </div>
+    <div class="abas">
+      <span class="aba aba--ativa">
+        <app-icone nome="caixa" [tamanho]="16" />
+        Em andamento
+        @if (fase() !== 'entregue') {
+          <span class="aba__contador">1</span>
+        }
+      </span>
+      <span class="aba">
+        <app-icone nome="grafico" [tamanho]="16" />
+        Números
+      </span>
+    </div>
+  </div>
+</header>
+
+<main class="conteudo-tela pedidos">
+  <div class="acoes-pedidos">
+    <span class="btn btn--secundario btn--pequeno">
+      <app-icone nome="mais" [tamanho]="16" [espessura]="2.2" />
+      Registrar pedido
+    </span>
+  </div>
+
+  @if (fase() === 'entregue') {
+    <app-estado-vazio
+      icone="caixa"
+      titulo="Nenhum pedido em andamento"
+      descricao="Quando o assistente fechar um pedido, ele aparece no Chats. Depois de confirmar com o cliente, toque em “Pedido confirmado” e ele vem para cá."
+    />
+  } @else {
+    <div class="grupo-chips">
+      <span class="chip chip--pequeno chip--ativo">Todos · 1</span>
+      <span class="chip chip--pequeno">Em preparo · 1</span>
+      <span class="chip chip--pequeno">Prontos · 0</span>
+    </div>
+
+    <div class="pedidos__lista">
+      <!-- cópia de pedido-card.component.html (o :host é o .pedido-card) -->
+      <article class="pedido-card">
+        <div class="topo">
+          <div class="topo__textos">
+            <span class="topo__nome">{{ pedido().nome }}</span>
+            <span class="topo__detalhe">{{ pedido().whatsapp }} · confirmado há {{ pedido().confirmadoHa }}</span>
+          </div>
+          <span class="btn-icone btn-icone--sem-borda">
+            <app-icone nome="maisOpcoes" [tamanho]="22" [espessura]="2.6" />
+          </span>
+        </div>
+
+        <div class="selos">
+          <span class="selo">
+            <span class="selo__ponto"></span>
+            Em preparo
+          </span>
+        </div>
+
+        <dl class="resumo caixa-suave">
+          @for (item of pedido().resumo; track item.campo) {
+            <div class="resumo__item">
+              <dt class="resumo__campo">{{ item.campo }}</dt>
+              <dd class="resumo__valor">{{ item.valor }}</dd>
+            </div>
+          }
+        </dl>
+
+        <div class="rodape">
+          <span class="rodape__valor">{{ valor() }}</span>
+          <span class="btn-icone rodape__whatsapp"><app-icone nome="conversa" [tamanho]="18" /></span>
+        </div>
+
+        <div class="acoes">
+          <span class="btn btn--secundario">
+            <app-icone nome="sino" [tamanho]="16" />
+            Pedido pronto
+          </span>
+          <span class="btn btn--sucesso" [class.tocado]="fase() === 'toque-entregue'">
+            <app-icone nome="check" [tamanho]="16" [espessura]="2.4" />
+            Entregue
+          </span>
+        </div>
+      </article>
+    </div>
+  }
+
+  <div class="pedidos__rodape">
+    <span class="btn btn--secundario pedidos__chats">
+      <app-icone nome="conversa" [tamanho]="16" />
+      Pedidos esperando no Chats
+    </span>
+    <span class="btn btn--texto btn--pequeno">
+      <app-icone nome="conversa" [tamanho]="16" />
+      Mensagens prontas
+    </span>
+  </div>
+</main>
+
+<!-- cópia de bottom-sheet + acao-pedido ('entregue') + aviso-cliente -->
+@if (janelaAberta()) {
+  <div class="folha-demo">
+    <div class="fundo"></div>
+    <section class="folha">
+      <span class="folha__alca"></span>
+      <header class="folha__cabecalho">
+        <h2 class="folha__titulo">Pedido entregue</h2>
+        <span class="btn-icone btn-icone--suave"><app-icone nome="fechar" [tamanho]="18" [espessura]="2" /></span>
+      </header>
+      <div class="folha__conteudo">
+        <div class="acao-demo">
+        <div class="acao">
+          <p class="acao__texto">
+            {{ valor() }} entram no seu faturamento, o pedido sai da lista e o assistente volta a atender {{ primeiroNome() }}.
+          </p>
+          <div class="aviso-demo">
+            <label class="aviso__ligar">
+              <input type="checkbox" checked tabindex="-1">
+              <span>Mandar um agradecimento pelo WhatsApp</span>
+            </label>
+            <div class="aviso__corpo">
+              <textarea class="campo__entrada aviso__texto" rows="4" readonly tabindex="-1" [value]="agradecimento()"></textarea>
+              <span class="campo__dica">Vai pelo WhatsApp da loja, como uma mensagem sua.</span>
+            </div>
+          </div>
+          <span class="btn btn--grande btn--bloco btn--primario" [class.tocado]="fase() === 'toque-marcar'">
+            Marcar como entregue
+          </span>
+        </div>
+        </div>
+      </div>
+    </section>
+  </div>
+}

@@ -4,6 +4,9 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { LogoComponent } from '../../shared/components/logo/logo.component';
 import { BalaoConversaComponent } from './balao-conversa/balao-conversa.component';
+import { MolduraTelaDemoComponent } from './telas-demo/moldura-tela-demo.component';
+import { TelaAgendaDemoComponent } from './telas-demo/tela-agenda-demo.component';
+import { TelaPedidosDemoComponent } from './telas-demo/tela-pedidos-demo.component';
 import { DEMONSTRACOES, TIPOS_NEGOCIO, TipoNegocio, destaquesDe } from './conversas-demonstracao';
 import { ReprodutorConversa } from './reprodutor-conversa';
 
@@ -13,7 +16,15 @@ import { ReprodutorConversa } from './reprodutor-conversa';
  */
 @Component({
   selector: 'app-demonstracao-page',
-  imports: [RouterLink, IconeComponent, LogoComponent, BalaoConversaComponent],
+  imports: [
+    RouterLink,
+    IconeComponent,
+    LogoComponent,
+    BalaoConversaComponent,
+    MolduraTelaDemoComponent,
+    TelaPedidosDemoComponent,
+    TelaAgendaDemoComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './demonstracao-page.component.html',
   styleUrl: './demonstracao-page.component.css',

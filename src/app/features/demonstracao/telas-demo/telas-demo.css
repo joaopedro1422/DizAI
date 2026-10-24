@@ -1,0 +1,30 @@
+/* O que só existe na demonstração: o toque simulado e a entrada do item novo (o resto é cópia da tela real). */
+
+/* o "dedo" apertando um botão */
+.tocado {
+  transform: scale(0.96);
+  filter: brightness(0.9);
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+/* o horário que o assistente acabou de marcar entra na lista */
+.entra-novo {
+  animation: entra-novo 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes entra-novo {
+  from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+/* a janela que sobe de baixo, fechando depois do "Marcar como entregue" */
+.folha-demo--saindo {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entra-novo {
+    animation: none;
+  }
+}

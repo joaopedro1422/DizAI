@@ -13,6 +13,9 @@ import { RouterLink } from '@angular/router';
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { BalaoConversaComponent } from '../../demonstracao/balao-conversa/balao-conversa.component';
+import { MolduraTelaDemoComponent } from '../../demonstracao/telas-demo/moldura-tela-demo.component';
+import { TelaAgendaDemoComponent } from '../../demonstracao/telas-demo/tela-agenda-demo.component';
+import { TelaPedidosDemoComponent } from '../../demonstracao/telas-demo/tela-pedidos-demo.component';
 import { DEMONSTRACOES, TIPOS_NEGOCIO, TipoNegocio, destaquesDe } from '../../demonstracao/conversas-demonstracao';
 import { ItemConversa, ReprodutorConversa } from '../../demonstracao/reprodutor-conversa';
 
@@ -23,12 +26,13 @@ const PAUSA_ENTRE_CONVERSAS_MS = 4500;
 
 /**
  * Conversa ao vivo do hero: o visitante escolhe serviços ou produtos e o segmento, e assiste o assistente atendendo.
+ * No fim, o celular mostra a tela do painel (o pedido em Pedidos, o horário na Minha Agenda) e volta ao WhatsApp.
  * Ao terminar, segue para o próximo segmento do mesmo tipo. Pausa sozinha quando sai da tela.
  * A versão detalhada (checks e velocidade) fica em /demonstracao.
  */
 @Component({
   selector: 'app-demonstracao-conversa',
-  imports: [RouterLink, IconeComponent, BalaoConversaComponent],
+  imports: [RouterLink, IconeComponent, BalaoConversaComponent, MolduraTelaDemoComponent, TelaPedidosDemoComponent, TelaAgendaDemoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './demonstracao-conversa.component.html',
   styleUrl: './demonstracao-conversa.component.css',
@@ -52,7 +56,9 @@ export class DemonstracaoConversaComponent {
   protected readonly legenda = signal<string | null>(null);
 
   protected readonly etapas = computed(() => destaquesDe(this.segmento()));
-  protected readonly conversa = computed(() => this.reprodutor.visiveis().filter((item) => item.de !== 'notificacao'));
+  protected readonly conversa = computed(() =>
+    this.reprodutor.visiveis().filter((item) => item.de !== 'notificacao' && item.de !== 'tela'),
+  );
 
   private temporizadores: ReturnType<typeof setTimeout>[] = [];
   private desligarObservador: () => void = () => undefined;

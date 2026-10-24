@@ -62,6 +62,17 @@
         }
       </div>
 
+      <!-- a tela do painel (Pedidos ou Minha Agenda) por cima do WhatsApp, por alguns segundos -->
+      @if (reprodutor.telaAtual(); as tela) {
+        <app-moldura-tela-demo aria-hidden="true">
+          @if (tela.pedido) {
+            <app-tela-pedidos-demo [pedido]="tela.pedido" />
+          } @else if (tela.agenda) {
+            <app-tela-agenda-demo [agenda]="tela.agenda" />
+          }
+        </app-moldura-tela-demo>
+      }
+
       <div class="whatsapp__rodape" aria-hidden="true">
         <span class="whatsapp__campo">
           <app-icone nome="emoji" [tamanho]="20" />

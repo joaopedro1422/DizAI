@@ -1,0 +1,119 @@
+<!-- cópia de agenda-page.component.html (celular, aba "Agendamentos", visualização resumida) -->
+<header class="topo-azul">
+  <div class="topo-azul__linha">
+    <span class="topo-azul__voltar"><app-icone nome="voltar" [tamanho]="22" /></span>
+    <span class="link-topo">
+      <span class="link-topo__url">
+        <app-icone nome="link" [tamanho]="15" [espessura]="2" />
+        <span class="link-topo__texto">{{ agenda().link }}</span>
+      </span>
+      <span class="link-topo__copiar"><app-icone nome="copiar" [tamanho]="15" [espessura]="2" /></span>
+    </span>
+  </div>
+
+  <div class="topo-azul__identidade">
+    <div class="topo-azul__textos">
+      <h1 class="topo-azul__titulo">Minha Agenda</h1>
+    </div>
+    <span class="botao-numeros">
+      <app-icone nome="grafico" [tamanho]="16" [espessura]="2" />
+      Números
+    </span>
+  </div>
+
+  <div class="abas">
+    <span class="aba aba--ativa">
+      <app-icone nome="calendario" [tamanho]="16" />
+      Agendamentos
+    </span>
+    <span class="aba">
+      <app-icone nome="ajustes" [tamanho]="16" />
+      Configure
+    </span>
+  </div>
+</header>
+
+<main class="conteudo-tela agendamentos">
+  <div class="agenda-lateral">
+    <div class="calendario">
+      <div class="calendario__topo">
+        <span class="calendario__mes">Outubro</span>
+        <span class="calendario__setas">
+          <button type="button" class="btn-icone btn-icone--sem-borda" disabled tabindex="-1">
+            <app-icone nome="voltar" [tamanho]="18" [espessura]="2" />
+          </button>
+          <button type="button" class="btn-icone btn-icone--sem-borda" tabindex="-1">
+            <app-icone nome="avancar" [tamanho]="18" [espessura]="2" />
+          </button>
+        </span>
+      </div>
+      <app-faixa-dias rotulo="Dias da agenda" variante="limpa" [itens]="dias()" [selecionado]="agenda().selecionado" />
+    </div>
+  </div>
+
+  <div class="agenda-principal">
+    <div class="dia">
+      <div class="dia__cabecalho">
+        <h2 class="dia__titulo">{{ agenda().titulo }}</h2>
+        <span class="dia__resumo">{{ resumo() }}</span>
+      </div>
+    </div>
+
+    <div class="visualizacao">
+      <span class="visualizacao__rotulo">Visualização</span>
+      <span class="visualizacao__campo">
+        <select class="visualizacao__select" tabindex="-1" aria-hidden="true">
+          <option selected>Resumida</option>
+        </select>
+        <app-icone nome="setaBaixo" [tamanho]="14" [espessura]="2.4" />
+      </span>
+    </div>
+
+    <div class="lista-horarios">
+      @for (horario of horarios(); track horario.inicio) {
+        <article class="horario" [class.entra-novo]="horario.novo">
+          <div class="horario__tempo">
+            <span class="horario__inicio">{{ horario.inicio }}</span>
+            <span class="horario__fim">{{ horario.fim }}</span>
+          </div>
+          <div class="horario__corpo">
+            <span class="horario__nome">{{ horario.nome }}</span>
+            <span class="horario__servicos">{{ horario.servicos }} <span class="horario__duracao">· {{ horario.duracao }}</span></span>
+            <span class="horario__rodape">
+              <span class="horario__contato">
+                <button type="button" class="horario__whatsapp" tabindex="-1">
+                  <app-icone nome="conversa" [tamanho]="14" />
+                  {{ horario.whatsapp }}
+                </button>
+                <button type="button" class="horario__valor" tabindex="-1">{{ real(horario.valor) }}</button>
+              </span>
+            </span>
+          </div>
+          <div class="horario__lateral">
+            @if (horario.assistente) {
+              <span class="horario__assistente"><app-icone nome="brilho" [tamanho]="16" [espessura]="2" /></span>
+            }
+            <button type="button" class="btn-icone btn-icone--sem-borda horario__cancelar" tabindex="-1">
+              <app-icone nome="fechar" [tamanho]="18" />
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+
+    <div class="acoes-dia">
+      <span class="btn btn--primario btn--grande btn--bloco">
+        <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
+        Agendar horário
+      </span>
+      <span class="btn btn--secundario btn--bloco">
+        <app-icone nome="calendarioFolga" [tamanho]="18" />
+        Não vou atender neste dia
+      </span>
+      <span class="btn btn--texto btn--pequeno acoes-dia__mensagens">
+        <app-icone nome="conversa" [tamanho]="16" />
+        Mensagens prontas
+      </span>
+    </div>
+  </div>
+</main>

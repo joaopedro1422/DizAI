@@ -15,6 +15,8 @@ const DIGITACAO_MINIMA_MS = 900;
 const POR_CARACTERE_MS = 14;
 const DIGITACAO_MAXIMA_MS = 2600;
 const VELOCIDADE_RAPIDA = 2.2;
+/** Quanto tempo a tela do painel fica no celular antes de voltar ao WhatsApp (o roteiro de cada tela cabe nisso). */
+export const DURACAO_TELA_MS = { pedidos: 7200, agenda: 4800 } as const;
 
 export interface OpcoesReprodutor {
   /** Chamado quando um passo entra na conversa (o hero usa para o aviso e a legenda). */
@@ -41,6 +43,11 @@ export class ReprodutorConversa {
   readonly visiveis = computed(() => this.itens().slice(0, this.mostrados()));
   readonly terminou = computed(() => this.mostrados() >= this.itens().length);
   readonly alcancados = computed(() => new Set(this.visiveis().flatMap((item) => (item.destaque ? [item.destaque] : []))));
+  /** A tela do painel no celular, enquanto ela for o último passo (o próximo passo volta ao WhatsApp). */
+  readonly telaAtual = computed(() => {
+    const ultimo = this.visiveis().at(-1);
+    return ultimo?.de === 'tela' ? ultimo : null;
+  });
 
   private temporizador: ReturnType<typeof setTimeout> | undefined;
 
@@ -90,12 +97,15 @@ export class ReprodutorConversa {
       return;
     }
     this.digitando.set(proximo.de === 'assistente' || proximo.de === 'dono');
+    // a tela do painel fica à vista até o próximo passo: ele espera o roteiro dela terminar
+    const anterior = this.itens()[this.mostrados() - 1];
+    const tela = anterior?.de === 'tela' ? DURACAO_TELA_MS[anterior.pedido ? 'pedidos' : 'agenda'] : 0;
     this.temporizador = setTimeout(() => {
       this.digitando.set(false);
       this.mostrados.update((quantos) => quantos + 1);
       this.opcoes.aoMostrar?.(proximo);
       this.agendarProximo();
-    }, espera(proximo) / (this.rapido() ? VELOCIDADE_RAPIDA : 1));
+    }, tela + espera(proximo) / (this.rapido() ? VELOCIDADE_RAPIDA : 1));
   }
 }
 
@@ -114,12 +124,16 @@ function espera(item: ItemConversa): number {
   }
 }
 
-/** A hora anda um minuto a cada duas mensagens; o separador de dia recomeça às 09:30. */
+/**
+ * A hora anda um minuto a cada duas mensagens; o separador de dia recomeça às 09:30 e um passo com `hora`
+ * (lembrete, agradecimento) vai para ela.
+ */
 function prepararItens(segmento: SegmentoDemonstracao): ItemConversa[] {
-  const [horas, minutosIniciais] = segmento.inicio.split(':').map(Number);
-  let minutos = horas * 60 + minutosIniciais;
+  let minutos = emMinutos(segmento.inicio);
   return segmento.passos.map((passo, indice) => {
-    if (passo.de === 'dia') {
+    if (passo.hora) {
+      minutos = emMinutos(passo.hora);
+    } else if (passo.de === 'dia') {
       minutos = 9 * 60 + 30;
     } else if (indice % 2 === 0) {
       minutos += 1;
@@ -128,4 +142,9 @@ function prepararItens(segmento: SegmentoDemonstracao): ItemConversa[] {
     const escrita = passo.de === 'cliente' || passo.de === 'assistente' || passo.de === 'dono';
     return { ...passo, hora, linhas: escrita && passo.texto ? formatarWhatsapp(passo.texto) : [] };
   });
+}
+
+function emMinutos(hora: string): number {
+  const [horas, minutos] = hora.split(':').map(Number);
+  return horas * 60 + minutos;
 }

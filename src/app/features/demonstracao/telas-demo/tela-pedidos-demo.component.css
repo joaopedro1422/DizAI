@@ -1,0 +1,420 @@
+/*
+ * CÓPIA das regras de celular de estilos-topo-azul, pedidos-page, pedido-card, bottom-sheet, acao-pedido e aviso-cliente
+ * (sem as regras @media min-width, que no hero, dentro de um computador, mudariam o layout).
+ * Gerado a partir do CSS real: ao mudar a tela real, atualize esta cópia.
+ */
+
+/* ---- estilos-topo-azul.css ---- */
+/*
+ * Topo azul das telas de gestão (o mesmo desenho da tela do assistente): voltar, título e as abas num azul mais
+ * escuro, com a ativa em branco. Usado pela Agenda e pelos Pedidos (styleUrls de cada tela).
+ */
+.topo-azul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 18px 16px;
+  padding-top: calc(12px + env(safe-area-inset-top));
+  background: linear-gradient(160deg, var(--cor-primaria) 0%, #2C4F9E 100%);
+  color: #ffffff;
+}
+
+.topo-azul__linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topo-azul__voltar {
+  display: inline-flex;
+  margin-left: -6px;
+  padding: 6px;
+  border-radius: 10px;
+  color: #ffffff;
+}
+
+.topo-azul__voltar:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.topo-azul__identidade {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topo-azul__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.topo-azul__titulo {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.topo-azul .abas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border: none;
+  border-radius: var(--raio-medio);
+  background: rgba(10, 22, 52, 0.32);
+}
+
+.topo-azul .aba {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border: none;
+  border-radius: 11px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.topo-azul .aba:not(.aba--ativa):hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.topo-azul .aba--ativa {
+  background: #ffffff;
+  color: var(--cor-primaria);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(10, 20, 45, 0.25);
+}
+
+/* ---- pedidos-page.component.css ---- */
+/* No celular as abas vão embaixo do título (quebram a linha); no computador, ao lado */
+.topo-pedidos {
+  flex-wrap: wrap;
+}
+
+.topo-pedidos .abas {
+  flex: 1 1 100%;
+}
+
+.pedidos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 20px;
+  padding-bottom: 32px;
+}
+
+.pedidos__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pedidos__rodape {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.pedidos__chats {
+  width: 100%;
+}
+
+.aba__contador {
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: var(--raio-pilula);
+  background: #ffffff;
+  color: var(--cor-primaria);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.aba--ativa .aba__contador {
+  background: var(--cor-primaria);
+  color: #ffffff;
+}
+
+/* "Registrar pedido": botão no topo da aba "Em andamento" */
+.acoes-pedidos {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* ---- pedido-card.component.css (:host = .pedido-card) ---- */
+.pedido-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.09), 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.topo {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.topo__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.topo__nome {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.topo__detalhe {
+  font-size: 12px;
+  color: var(--cor-texto-suave);
+}
+
+.selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-ambar-fundo);
+  color: #7a4c00;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.selo__ponto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.selo--pronto {
+  background: #E3F2EA;
+  color: #1E6B45;
+}
+
+.selo--teste {
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto-suave);
+}
+
+/* "Anexo" (foto do modelo): link discreto no fim da linha dos selos */
+.anexo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  color: var(--cor-primaria);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.resumo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+}
+
+.resumo__item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.resumo__campo {
+  flex: none;
+  color: var(--cor-texto-suave);
+}
+
+.resumo__valor {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+}
+
+.rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rodape__valor {
+  font-size: 18px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.rodape__whatsapp {
+  color: var(--cor-primaria);
+}
+
+.acoes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.acoes--uma {
+  grid-template-columns: 1fr;
+}
+
+.acoes .btn {
+  min-height: 46px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+/* ---- bottom-sheet.component.css (:host = .folha-demo) ---- */
+.folha-demo {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.fundo {
+  position: absolute;
+  inset: 0;
+  background: var(--cor-sobreposicao);
+  animation: aparecer 0.2s ease both;
+}
+
+.folha {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  max-width: var(--largura-tela-app);
+  max-height: 92dvh;
+  overflow-y: auto;
+  padding: 10px 24px 24px;
+  border-radius: 24px 24px 0 0;
+  background: var(--cor-fundo);
+  animation: subir 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.folha__alca {
+  align-self: center;
+  width: 40px;
+  height: 4px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-borda);
+}
+
+.folha__cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.folha__titulo {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.folha__conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes subir {
+  from { transform: translateY(100%); }
+  to { transform: none; }
+}
+
+/* ---- acao-pedido.component.css (:host = .acao-demo) ---- */
+.acao {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.acao__texto {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
+}
+
+/* ---- aviso-cliente.component.css (:host = .aviso-demo) ---- */
+.aviso-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.aviso__ligar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.aviso__ligar input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--cor-primaria);
+}
+
+.aviso__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.aviso__modelos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.aviso__texto {
+  min-height: 104px;
+  resize: none;
+  line-height: 1.5;
+}

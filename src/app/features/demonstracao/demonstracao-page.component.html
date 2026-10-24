@@ -97,7 +97,7 @@
               <span class="notificacao__texto">{{ item.texto }}</span>
             </span>
           </div>
-        } @else {
+        } @else if (item.de !== 'tela') {
           <app-balao-conversa [item]="item" [segmento]="segmento()" />
         }
       }
@@ -117,6 +117,17 @@
         </div>
       }
     </div>
+
+    <!-- a tela do painel (Pedidos ou Minha Agenda) por cima do WhatsApp, por alguns segundos -->
+    @if (reprodutor.telaAtual(); as tela) {
+      <app-moldura-tela-demo aria-hidden="true">
+        @if (tela.pedido) {
+          <app-tela-pedidos-demo [pedido]="tela.pedido" />
+        } @else if (tela.agenda) {
+          <app-tela-agenda-demo [agenda]="tela.agenda" />
+        }
+      </app-moldura-tela-demo>
+    }
 
     <footer class="whats-rodape" aria-hidden="true">
       <span class="whats-rodape__campo">Mensagem</span>
