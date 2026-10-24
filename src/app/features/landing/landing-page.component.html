@@ -4,6 +4,7 @@
   </a>
   <div class="nav__links">
     <a routerLink="/" fragment="solucao" class="nav__link">Solução</a>
+    <a routerLink="/" fragment="recursos" class="nav__link">Recursos</a>
     <a routerLink="/" fragment="como" class="nav__link">Como funciona</a>
     <a routerLink="/" fragment="para-quem" class="nav__link">Para quem é</a>
     <a routerLink="/" fragment="perguntas" class="nav__link">Perguntas</a>
@@ -41,6 +42,8 @@
 
   <app-secao-solucao />
 
+  <app-secao-recursos />
+
   <section id="como" class="faixa--suave" aria-labelledby="como-titulo">
     <div class="container secao secao--espacosa">
       <div class="secao__cabecalho">
@@ -53,16 +56,6 @@
             <span class="passo__numero">{{ numeroDoPasso(indice) }}</span>
             <h3 class="passo__titulo">{{ passo.titulo }}</h3>
             <p class="cartao__texto">{{ passo.texto }}</p>
-            @if (passo.modos; as modos) {
-              <div class="passo__modos">
-                @for (modo of modos; track modo.ramo) {
-                  <div class="passo__modo">
-                    <app-icone [nome]="modo.icone" [tamanho]="16" [espessura]="2" />
-                    <span><strong>{{ modo.ramo }}</strong>{{ modo.texto }}</span>
-                  </div>
-                }
-              </div>
-            }
           </li>
         }
       </ol>
@@ -71,7 +64,6 @@
   <app-jornada-interativa />
   
 
-  <app-secao-recursos />
   <app-secao-galeria />
   <app-secao-para-quem />
 

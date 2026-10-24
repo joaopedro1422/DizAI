@@ -4,39 +4,95 @@
     <h2 id="solucao-titulo" class="secao__titulo">
       <span class="solucao__marca">DizAI</span>: atendimento de empresa grande, sem contratar ninguém.
     </h2>
+    <p class="secao__descricao">Para quem vende produtos e para quem presta serviços, todo dia, em qualquer horário.</p>
   </div>
 
   <div class="ganhos">
-    <!-- o ganho principal: tempo de volta, com a tela de Estatísticas do painel -->
+    <!-- o ganho principal: tempo de volta -->
     <article class="ganho ganho--tempo">
       <div class="ganho__textos">
         <span class="ganho__icone ganho__icone--claro"><app-icone nome="relogio" [tamanho]="22" [espessura]="2" /></span>
         <h3 class="ganho__titulo">Mais tempo para produzir e para descansar.</h3>
         <p class="ganho__texto">
-          Cada pergunta que o assistente responde é tempo que você não passa no celular. O painel mostra quanto você ganhou.
+          Cada pergunta que o assistente responde é tempo que você não passa no celular.
         </p>
-      </div>
-      <div class="estatisticas" aria-label="Exemplo da tela de Estatísticas do painel">
-        <span class="estatisticas__topo"><span>Estatísticas · últimos 30 dias</span><span>Exemplo</span></span>
-        <span class="estatisticas__tempo"><strong>14h 30min</strong> de tempo economizado</span>
-        <span class="estatisticas__numeros">
-          <span><strong>186</strong>atendimentos</span>
-          <span><strong>512</strong>respostas</span>
-          <span><strong>34</strong>agendamentos</span>
-        </span>
       </div>
     </article>
 
     @for (ganho of ganhos; track ganho.titulo) {
-      <article class="ganho">
-        <span class="ganho__icone" [class]="'ganho__icone--' + ganho.cor">
-          <app-icone [nome]="ganho.icone" [tamanho]="20" [espessura]="2" />
-        </span>
-        @if (ganho.para) {
-          <span class="ganho__para">{{ ganho.para }}</span>
-        }
-        <h3 class="ganho__titulo">{{ ganho.titulo }}</h3>
-        <p class="ganho__texto">{{ ganho.texto }}</p>
+      <article class="ganho" [class.ganho--largo]="ganho.largo">
+        <div class="ganho__cabeca">
+          <span class="ganho__icone">
+            <app-icone [nome]="ganho.icone" [tamanho]="20" [espessura]="2" />
+          </span>
+          <h3 class="ganho__titulo">{{ ganho.titulo }}</h3>
+          <p class="ganho__texto">{{ ganho.texto }}</p>
+        </div>
+
+        <!-- a miniatura da tela de verdade, no pé do card -->
+        <div class="detalhe" aria-hidden="true">
+          @switch (ganho.detalhe) {
+            @case ('resposta') {
+              <span class="detalhe__linha">
+                <span class="pilula pilula--escura"><app-icone nome="relogio" [tamanho]="12" [espessura]="2.2" />02:14</span>
+                <span class="detalhe__suave">respondido em 3 s</span>
+                <app-icone class="detalhe__visto" nome="checkDuplo" [tamanho]="15" [espessura]="2" />
+              </span>
+            }
+            @case ('conversa') {
+              <span class="mini-balao mini-balao--cliente">Aceita Pix?</span>
+              <span class="mini-balao">Aceitamos sim! Pix, cartão ou dinheiro 😊</span>
+            }
+            @case ('catalogo') {
+              <span class="arquivo">
+                <span class="arquivo__tipo">PDF</span>
+                <span class="arquivo__nome"><strong>Cardápio de outubro.pdf</strong><small>2 páginas · enviado na conversa</small></span>
+              </span>
+            }
+            @case ('portfolio') {
+              <span class="fotos">
+                <span class="fotos__item fotos__item--1"></span>
+                <span class="fotos__item fotos__item--2"></span>
+                <span class="fotos__item fotos__item--3"></span>
+                <span class="fotos__item fotos__item--mais">+24</span>
+              </span>
+            }
+            @case ('relatorios') {
+              <span class="relatorio">
+                <span class="relatorio__valor"><small>Faturamento do mês</small><strong>R$ 4.820,00</strong></span>
+                <span class="relatorio__barras">
+                  @for (altura of barras; track $index) {
+                    <span [style.height.%]="altura" [class.relatorio__barra--maior]="altura === 100"></span>
+                  }
+                </span>
+                <span class="pilula pilula--ambar"><app-icone nome="lampada" [tamanho]="12" [espessura]="2.2" />Sábado é o seu melhor dia</span>
+              </span>
+            }
+            @case ('jeito') {
+              <span class="detalhe__linha detalhe__linha--quebra">
+                <span class="pilula">Saudação</span>
+                <span class="pilula">Regras da loja</span>
+                <span class="pilula pilula--ativa">Tom: descontraído</span>
+              </span>
+            }
+            @case ('assumir') {
+              <span class="chave">
+                <span class="chave__texto"><strong>Assistente nesta conversa</strong><small>pausado: você respondeu</small></span>
+                <span class="chave__trilho"><span class="chave__bolinha"></span></span>
+              </span>
+            }
+            @case ('aviso') {
+              <span class="aviso-mini">
+                <span class="aviso-mini__icone"><app-icone nome="sino" [tamanho]="13" [espessura]="2" /></span>
+                <span><strong>Pedido para fechar</strong><small>Ana · 150 salgados</small></span>
+              </span>
+            }
+            @case ('verdade') {
+              <span class="mini-balao mini-balao--cliente">Entrega em Cabedelo?</span>
+              <span class="mini-balao">Vou confirmar, 1 minuto!</span>
+            }
+          }
+        </div>
       </article>
     }
   </div>

@@ -1,11 +1,10 @@
 <section id="galeria" class="galeria" aria-labelledby="galeria-titulo">
   <div class="container galeria__grade">
     <div class="galeria__texto">
-      <span class="galeria__sobretitulo">Galeria de trabalhos</span>
+      <span class="galeria__sobretitulo">Vitrine pública</span>
       <h2 id="galeria-titulo" class="galeria__titulo">Seus trabalhos vendem por você.</h2>
       <p class="galeria__descricao">
-        Monte uma página de portifólio com fotos do que você já fez.
-        Quando o cliente pede para ver, o assistente envia o link.
+        Uma página da sua loja, com a sua logo e as fotos do que você já fez, pronta para enviar aos clientes.
       </p>
 
       <ul class="beneficios">
@@ -19,8 +18,8 @@
         }
       </ul>
 
-      <a routerLink="/cadastro" class="btn btn--primario btn--grande galeria__acao">
-        Criar minha galeria grátis
+      <a routerLink="/cadastro" class="btn btn--primario btn--hero galeria__acao">
+        Criar minha vitrine grátis
         <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
       </a>
     </div>
@@ -43,11 +42,20 @@
       }
 
       <!-- a página pública da loja (/l/{slug}) aberta no celular -->
-      <figure class="celular" [attr.aria-label]="'Exemplo da galeria pública de ' + exemploAtual().nomeLoja + ' no celular'">
+      <figure class="celular" [attr.aria-label]="'Exemplo da vitrine pública de ' + exemploAtual().nomeLoja + ' no celular'">
         <div class="celular__tela">
           <app-vitrine-miniatura [exemplo]="exemploAtual()" [fase]="fase()" />
         </div>
       </figure>
+
+      <div class="setas">
+        <button type="button" class="setas__seta" aria-label="Loja de exemplo anterior" (click)="anterior()">
+          <app-icone nome="voltar" [tamanho]="18" [espessura]="2.2" />
+        </button>
+        <button type="button" class="setas__seta" aria-label="Próxima loja de exemplo" (click)="proximo()">
+          <app-icone nome="avancar" [tamanho]="18" [espessura]="2.2" />
+        </button>
+      </div>
     </div>
   </div>
 </section>

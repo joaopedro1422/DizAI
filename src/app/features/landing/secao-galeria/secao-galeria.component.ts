@@ -14,16 +14,17 @@ const TEMPOS_COM_AGENDA: { fase: FaseVitrine; ms: number }[] = [
 ];
 
 const BENEFICIOS = [
-  'Fotos separadas por tópico.',
-  'Com a sua logo, a sua capa e a cor da sua marca.',
-  'Para serviços: o cliente escolhe o horário na própria página.',
-  'Link que pode ser utilizado na bio do instagram e outros canais',
+  'Fotos separadas em tópicos',
+  'Personalize do seu jeito, com a sua cor e a sua logo',
+  'Link para colocar na bio do Instagram',
+  'O assistente envia o link quando o cliente pergunta por fotos e exemplos',
+  'Para serviços: agenda e horários livres na própria página, para o cliente agendar',
 ];
 
 /**
- * Seção da landing que mostra a galeria pública da loja dentro de um celular (a mesma página de /l/{slug}),
- * com a conversa em que o assistente envia o link. Troca sozinha entre lojas de exemplo; pausa com o mouse
- * ou o foco em cima e fica parada para quem pediu menos movimento no sistema.
+ * "Vitrine pública" da landing: o texto com os checks à esquerda e, à direita, a página da loja (/l/{slug}) dentro
+ * de um celular, com a conversa em que o assistente envia o link. Troca sozinha entre lojas de exemplo (ou pelas setas
+ * embaixo); pausa com o mouse ou o foco em cima e fica parada para quem pediu menos movimento no sistema.
  */
 @Component({
   selector: 'app-secao-galeria',
@@ -63,6 +64,26 @@ export class SecaoGaleriaComponent implements OnInit {
       }
       this.agendar();
     }, espera);
+  }
+
+  /** Setas embaixo do celular: a loja de exemplo anterior ou a próxima (dá a volta nas pontas). */
+  protected anterior(): void {
+    this.escolher((this.indiceAtual() - 1 + EXEMPLOS_GALERIA.length) % EXEMPLOS_GALERIA.length);
+  }
+
+  protected proximo(): void {
+    this.escolher((this.indiceAtual() + 1) % EXEMPLOS_GALERIA.length);
+  }
+
+  /** Mostra aquela loja do começo e recomeça a contagem. */
+  private escolher(indice: number): void {
+    clearTimeout(this.temporizador);
+    this.etapa = 0;
+    this.fase.set(TEMPOS_COM_AGENDA[0].fase);
+    this.indiceAtual.set(indice);
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      this.agendar();
+    }
   }
 
   private avancar(comAgenda: boolean): void {

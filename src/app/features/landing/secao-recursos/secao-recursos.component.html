@@ -1,100 +1,329 @@
-<section id="recursos" class="container secao" aria-labelledby="recursos-titulo">
-  <div class="secao__cabecalho">
-    <span class="secao__sobretitulo">Recursos</span>
-    <h2 id="recursos-titulo" class="secao__titulo">Um vendedor que conhece o seu negócio. E que sabe a hora de te chamar.</h2>
-  </div>
-
-  <div class="destaques">
-    <!-- Para quem vende: os dois modos de fechar -->
-    <article class="destaque destaque--vendas">
-      <div class="destaque__topo">
-        <span class="destaque__etiqueta">Para quem vende</span>
-        <div class="modos" role="radiogroup" aria-label="O que o assistente faz quando o cliente quer fechar">
-          @for (modo of modos; track modo.id) {
-            <button
-              type="button"
-              role="radio"
-              class="modos__opcao"
-              [class.modos__opcao--ativa]="modoVenda() === modo.id"
-              [attr.aria-checked]="modoVenda() === modo.id"
-              (click)="escolherModo(modo.id)"
-            >
-              {{ modo.rotulo }}
-            </button>
-          }
-        </div>
-      </div>
-      <h3 class="destaque__titulo">{{ venda().titulo }}</h3>
-      <p class="destaque__texto">{{ venda().texto }}</p>
-      <ul class="extras" aria-label="Também tem">
-        @for (extra of extrasVendas; track extra) {
-          <li class="extras__item"><app-icone nome="check" [tamanho]="15" [espessura]="2.6" />{{ extra }}</li>
-        }
-      </ul>
-      <div class="conversa destaque__conversa destaque__conversa--fixa" aria-live="polite">
-        <!-- @for com track na cena: trocar de cena ou de modo recria os balões e a animação de entrada roda de novo -->
-        @for (cena of [cenaVenda()]; track cena.id) {
-          <span class="balao balao--cliente balao--entra">{{ cena.cliente }}</span>
-          <span class="balao balao--assistente balao--entra balao--depois">{{ cena.resposta }}</span>
-        }
-      </div>
-      <div class="aviso" [class.aviso--escondido]="!avisoVendaVisivel()">
-        <span class="aviso__icone"><app-icone nome="sino" [tamanho]="16" [espessura]="2" /></span>
-        <span class="aviso__textos">
-          <strong>{{ venda().avisoTitulo }}</strong>
-          <span class="aviso__detalhe">{{ venda().avisoTexto }}</span>
-        </span>
-      </div>
-    </article>
-
-    <!-- Para quem presta serviço: a conversa troca de cena sozinha -->
-    <article class="destaque destaque--servicos">
-      <span class="destaque__etiqueta destaque__etiqueta--verde">Para quem presta serviço</span>
-      <h3 class="destaque__titulo">Marca horários sozinho, sem horário duplicado.</h3>
-      <p class="destaque__texto">
-        Você diz em quais dias e horários atende. O assistente oferece só os horários em que o serviço cabe, marca e confirma
-        na hora. O cliente remarca ou cancela pelo próprio WhatsApp.
+<section id="recursos" class="recursos" aria-labelledby="recursos-titulo">
+  <div class="container recursos__conteudo">
+    <header class="recursos__cabecalho">
+      <span class="recursos__sobretitulo">Recursos</span>
+      <h2 id="recursos-titulo" class="recursos__titulo">
+        Menos tempo no celular.<br>
+        <span class="recursos__titulo-destaque">{{ tipo() === 'produtos' ? 'Mais pedidos fechados.' : 'Mais horários marcados.' }}</span>
+      </h2>
+      <p class="recursos__descricao">
+        Escolha o seu tipo de negócio e veja o que muda, do primeiro "oi" do cliente até o dinheiro no fim do mês.
       </p>
-      <ul class="extras extras--verde" aria-label="Também tem">
-        @for (extra of extrasServicos; track extra) {
-          <li class="extras__item"><app-icone nome="check" [tamanho]="15" [espessura]="2.6" />{{ extra }}</li>
-        }
-      </ul>
-      <div class="conversa destaque__conversa destaque__conversa--fixa" aria-live="polite">
-        @if (cena() === 'primeira') {
-          <span class="balao balao--cliente balao--entra">Quais serviços vocês fazem?</span>
-          <span class="balao balao--assistente balao--entra balao--depois">Fazemos:
-- Manicure
-- Pedicure
-- Esmaltação em gel
-- Design de sobrancelha</span>
-        } @else {
-          <span class="balao balao--cliente balao--entra">Quero agendar pé e mão para amanhã às 14:00</span>
-          <span class="balao balao--assistente balao--entra balao--depois">Agendado! ✅
-Serviços: Manicure + Pedicure
-Data: quarta, 24/10
-Horário: 14:00 às 15:45</span>
-        }
-      </div>
-      <div class="aviso" [class.aviso--escondido]="cena() === 'primeira'">
-        <span class="aviso__icone"><app-icone nome="sino" [tamanho]="16" [espessura]="2" /></span>
-        <span class="aviso__textos">
-          <strong>Novo agendamento</strong>
-          <span class="aviso__detalhe">Maria · Manicure + Pedicure · qua 24/10 às 14:00</span>
-        </span>
-      </div>
-    </article>
-  </div>
 
-  <!-- você no controle -->
-  <div class="controle">
-    @for (recurso of controle; track recurso.titulo) {
-      <div class="controle__item">
-        <app-icone [nome]="recurso.icone" [tamanho]="20" [espessura]="2" />
-        <span>
-          <strong class="controle__titulo">{{ recurso.titulo }}</strong>
-          <span class="controle__texto">{{ recurso.texto }}</span>
-        </span>
+      <div class="abas" role="tablist" aria-label="Tipo de negócio">
+        <button
+          type="button"
+          role="tab"
+          id="aba-recursos-produtos"
+          aria-controls="painel-recursos"
+          class="abas__aba"
+          [class.abas__aba--ativa]="tipo() === 'produtos'"
+          [attr.aria-selected]="tipo() === 'produtos'"
+          (click)="escolherTipo('produtos')"
+        >
+          <app-icone nome="caixa" [tamanho]="18" [espessura]="2" />
+          Produtos
+        </button>
+        <button
+          type="button"
+          role="tab"
+          id="aba-recursos-servicos"
+          aria-controls="painel-recursos"
+          class="abas__aba"
+          [class.abas__aba--ativa]="tipo() === 'servicos'"
+          [attr.aria-selected]="tipo() === 'servicos'"
+          (click)="escolherTipo('servicos')"
+        >
+          <app-icone nome="calendario" [tamanho]="18" [espessura]="2" />
+          Serviços
+        </button>
+      </div>
+    </header>
+
+    <!-- @for com track no tipo: trocar de aba recria o conteúdo e as animações de entrada rodam de novo -->
+    @for (tipoAtual of [tipo()]; track tipoAtual) {
+      <div
+        id="painel-recursos"
+        class="painel"
+        role="tabpanel"
+        [attr.aria-labelledby]="tipoAtual === 'produtos' ? 'aba-recursos-produtos' : 'aba-recursos-servicos'"
+      >
+        <ul class="destaques" aria-label="O que você ganha">
+          @for (destaque of destaques(); track destaque; let i = $index) {
+            <li class="destaques__item entra" [style.--atraso]="i * 60 + 'ms'">
+              <span class="destaques__check"><app-icone nome="check" [tamanho]="12" [espessura]="3" /></span>
+              {{ destaque }}
+            </li>
+          }
+        </ul>
+
+        @if (tipoAtual === 'produtos') {
+          <div class="bento bento--produtos">
+            <!-- 1. coleta do pedido -->
+            <article class="card card--largo entra">
+              <div class="card__textos">
+                <span class="card__etiqueta"><app-icone nome="prancheta" [tamanho]="14" [espessura]="2.2" />Coleta de pedidos</span>
+                <h3 class="card__titulo">O pedido chega anotado. Você apenas confirma.</h3>
+                <p class="card__texto">
+                  O assistente tira as dúvidas, confere sabores, tamanhos e adicionais, calcula o prazo de preparo e
+                  pergunta os dados que você escolher: nome, retirada ou entrega, endereço. Depois te entrega o resumo
+                  com o total.
+                </p>
+              </div>
+              <div class="ilustra ilustra--resumo" aria-hidden="true">
+                <div class="resumo">
+                  <div class="resumo__topo">
+                    <span class="resumo__avatar">A</span>
+                    <span class="resumo__quem"><strong>Ana Souza</strong><small>(83) 98812-4410</small></span>
+                    <span class="selo selo--amarelo">Pronto para fechar</span>
+                  </div>
+                  <dl class="resumo__linhas">
+                    <div><dt>Itens</dt><dd>100 coxinhas + 50 kibes</dd></div>
+                    <div><dt>Retirada</dt><dd>Sábado, 15:00</dd></div>
+                    <div><dt>Pagamento</dt><dd>Pix na retirada</dd></div>
+                    <div class="resumo__total"><dt>Total</dt><dd>R$ 135,00</dd></div>
+                  </dl>
+                  <div class="resumo__botoes">
+                    <span class="botao-falso botao-falso--confirmar"><app-icone nome="check" [tamanho]="14" [espessura]="2.6" />Confirmar pedido</span>
+                    <span class="botao-falso">Já entregue</span>
+                  </div>
+                </div>
+                <div class="notificacao">
+                  <span class="notificacao__icone"><app-icone nome="sino" [tamanho]="14" [espessura]="2" /></span>
+                  <span><strong>Pedido para fechar</strong><small>100 coxinhas + 50 kibes</small></span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 2. gerenciador de pedidos -->
+            <article class="card card--alto entra" [style.--atraso]="'80ms'">
+              <div class="card__textos">
+                <span class="card__etiqueta"><app-icone nome="caixa" [tamanho]="14" [espessura]="2.2" />Gerenciador de pedidos</span>
+                <h3 class="card__titulo">Cada etapa avisa o cliente com um toque.</h3>
+                <p class="card__texto">
+                  Confirmado, pronto, entregue: mude o status e mande a mensagem pronta daquela etapa, com o nome e o
+                  valor já preenchidos.
+                </p>
+              </div>
+              <div class="ilustra ilustra--etapas" aria-hidden="true">
+                <div class="fila">
+                  <span class="fila__titulo">Em andamento <b>2</b></span>
+                  <span class="fila__pedido fila__pedido--ativo">
+                    <strong>Ana Souza</strong>100 coxinhas + 50 kibes<small>Sáb, 15:00 · R$ 135,00</small>
+                  </span>
+                  <span class="fila__pedido">
+                    <strong>Carlos Lima</strong>Bolo de ninho 2 kg<small>Sex, 18:00 · R$ 160,00</small>
+                  </span>
+                </div>
+                <ol class="etapas">
+                  @for (etapa of etapasPedido; track etapa.status; let i = $index) {
+                    <li class="etapas__item" [class.etapas__item--feita]="i < etapaAtual()" [class.etapas__item--atual]="i === etapaAtual()">
+                      <span class="etapas__ponto">
+                        @if (i < etapaAtual()) {
+                          <app-icone nome="check" [tamanho]="12" [espessura]="3" />
+                        } @else {
+                          {{ i + 1 }}
+                        }
+                      </span>
+                      <span class="etapas__nome">{{ etapa.status }}</span>
+                    </li>
+                  }
+                </ol>
+                @for (etapa of [etapasPedido[etapaAtual()]]; track etapa.status) {
+                  <div class="mensagem-pronta">
+                    <span class="mensagem-pronta__rotulo"><app-icone nome="conversa" [tamanho]="13" [espessura]="2" />Mensagem pronta · {{ etapa.status }}</span>
+                    <span class="mensagem-pronta__balao">{{ etapa.mensagem }}</span>
+                    <span class="mensagem-pronta__enviada"><app-icone nome="checkDuplo" [tamanho]="14" [espessura]="2" />Enviada pelo WhatsApp</span>
+                  </div>
+                }
+              </div>
+            </article>
+
+            <!-- 3. números -->
+            <article class="card card--largo entra" [style.--atraso]="'160ms'">
+              <div class="card__textos">
+                <span class="card__etiqueta"><app-icone nome="grafico" [tamanho]="14" [espessura]="2.2" />Relatórios e insights</span>
+                <h3 class="card__titulo">Saiba quanto vendeu, em que dia e para quem.</h3>
+                <p class="card__texto">
+                  Faturamento, ticket médio, tempo de preparo, os dias que mais vendem e os clientes que mais compram,
+                  sem planilha e sem caderno.
+                </p>
+              </div>
+              <div class="ilustra ilustra--numeros" aria-hidden="true">
+                <div class="numeros">
+                  <div class="numeros__destaque">
+                    <small>Faturamento · últimos 30 dias</small>
+                    <strong>R$ 4.820,00</strong>
+                  </div>
+                  <div class="barras">
+                    @for (barra of barrasPedidos; track barra.dia) {
+                      <span class="barras__coluna">
+                        <span class="barras__barra" [class.barras__barra--maior]="barra.valor === 100" [style.height.%]="barra.valor"></span>
+                        <small>{{ barra.dia }}</small>
+                      </span>
+                    }
+                  </div>
+                  <div class="numeros__indicadores">
+                    <span><small>Ticket médio</small><strong>R$ 68,00</strong></span>
+                    <span><small>Preparo médio</small><strong>2h10</strong></span>
+                    <span><small>Clientes fiéis</small><strong>12</strong></span>
+                  </div>
+                </div>
+                <div class="insights">
+                  <span class="insight"><app-icone nome="lampada" [tamanho]="14" [espessura]="2" />Sábado é o dia que mais vende</span>
+                  <span class="insight"><app-icone nome="pessoa" [tamanho]="14" [espessura]="2" />Melhor cliente: Ana, 6 pedidos</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        } @else {
+          <div class="bento bento--servicos">
+            <!-- 1. agendamento pela conversa -->
+            <article class="card card--largo entra">
+              <div class="card__textos">
+                <span class="card__etiqueta"><app-icone nome="calendario" [tamanho]="14" [espessura]="2.2" />Agendamento automático</span>
+                <h3 class="card__titulo">Marca o horário conversando, como você faria.</h3>
+                <p class="card__texto">
+                  O assistente oferece apenas as vagas em que o serviço cabe, marca, remarca e cancela pelo próprio
+                  WhatsApp. O cliente altera apenas os horários dele.
+                </p>
+              </div>
+              <div class="ilustra ilustra--conversa" aria-hidden="true">
+                <div class="conversa conversa--card">
+                  <span class="balao balao--cliente balao--entra">Tem horário amanhã à tarde pra pé e mão?</span>
+                  <span class="balao balao--assistente balao--entra balao--depois">Tenho às 14:00, 15:30 e 17:00. Qual fica melhor para você?</span>
+                  <span class="balao balao--cliente balao--entra balao--depois2">14h</span>
+                  <span class="balao balao--assistente balao--entra balao--depois3">Agendado! ✅
+Serviços: Manicure + Pedicure
+Data: sexta, 25/10
+Horário: 14:00 às 15:45</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- 2. mensagens automáticas -->
+            <article class="card card--alto entra" [style.--atraso]="'80ms'">
+              <div class="card__textos">
+                <span class="card__etiqueta"><app-icone nome="raio" [tamanho]="14" [espessura]="2.2" />Mensagens automáticas</span>
+                <h3 class="card__titulo">Confirma, lembra e agradece sozinho.</h3>
+                <p class="card__texto">Menos faltas e cliente bem tratado, sem você digitar nada.</p>
+              </div>
+              <ol class="linha-tempo" aria-hidden="true">
+                <li class="linha-tempo__item">
+                  <span class="linha-tempo__quando">Na hora</span>
+                  <span class="linha-tempo__balao">Agendado! ✅ Sexta, 25/10 às 14:00</span>
+                </li>
+                <li class="linha-tempo__item">
+                  <span class="linha-tempo__quando">2 horas antes</span>
+                  <span class="linha-tempo__balao">Oi, Maria! Lembrando do seu horário hoje às 14:00. Podemos confirmar?</span>
+                  <span class="linha-tempo__resposta">Estarei lá! 😊</span>
+                  <span class="selo selo--verde"><app-icone nome="check" [tamanho]="12" [espessura]="3" />Presença confirmada</span>
+                </li>
+                <li class="linha-tempo__item">
+                  <span class="linha-tempo__quando">15 min depois</span>
+                  <span class="linha-tempo__balao">Obrigada pela visita, Maria! Foi um prazer te atender 💅</span>
+                </li>
+              </ol>
+              <div class="editor-mensagem" aria-hidden="true">
+                <span class="editor-mensagem__rotulo"><app-icone nome="editar" [tamanho]="13" [espessura]="2" />Os textos são seus</span>
+                <span class="editor-mensagem__texto">Oi, <i>&#123;nome&#125;</i>! Seu horário de <i>&#123;servico&#125;</i> é <i>&#123;data&#125;</i> às <i>&#123;horario&#125;</i>.</span>
+              </div>
+            </article>
+
+            <!-- 3. vários profissionais -->
+            <article class="card entra" [style.--atraso]="'160ms'">
+              <div class="card__textos">
+                <span class="card__etiqueta"><app-icone nome="pessoas" [tamanho]="14" [espessura]="2.2" />Vários profissionais</span>
+                <h3 class="card__titulo">Uma agenda para toda a equipe.</h3>
+                <p class="card__texto">O cliente escolhe com quem ou "qualquer um", e o assistente acha quem está livre.</p>
+              </div>
+              <div class="grade-agenda" aria-hidden="true">
+                <div class="grade-agenda__horas">
+                  @for (hora of horasDaGrade; track hora) {
+                    <small>{{ hora }}</small>
+                  }
+                </div>
+                @for (profissional of agendaProfissionais; track profissional.nome) {
+                  <div class="grade-agenda__coluna">
+                    <span class="grade-agenda__nome">{{ profissional.nome }}</span>
+                    <span class="grade-agenda__trilho">
+                      @for (bloco of profissional.blocos; track bloco.inicio) {
+                        <span
+                          class="grade-agenda__bloco"
+                          [style.top.%]="(bloco.inicio / 6) * 100"
+                          [style.height.%]="(bloco.tamanho / 6) * 100"
+                        >{{ bloco.rotulo }}</span>
+                      }
+                    </span>
+                  </div>
+                }
+              </div>
+            </article>
+
+            <!-- 4. página de horários -->
+            <article class="card entra" [style.--atraso]="'200ms'">
+              <div class="card__textos">
+                <span class="card__etiqueta"><app-icone nome="link" [tamanho]="14" [espessura]="2.2" />Agenda online</span>
+                <h3 class="card__titulo">Seu link com os horários livres.</h3>
+                <p class="card__texto">O cliente vê as vagas, escolhe e manda a mensagem pronta. Funciona no Instagram também.</p>
+              </div>
+              <div class="pagina-horarios" aria-hidden="true">
+                <span class="pagina-horarios__endereco">/l/<strong>seu-salao</strong>/agenda</span>
+                <div class="pagina-horarios__dias">
+                  <span>Qui<strong>24</strong></span>
+                  <span class="pagina-horarios__dia--ativo">Sex<strong>25</strong></span>
+                  <span>Sáb<strong>26</strong></span>
+                  <span>Ter<strong>29</strong></span>
+                </div>
+                <div class="pagina-horarios__vagas">
+                  @for (horario of horariosLivres; track horario) {
+                    <span [class.pagina-horarios__vaga--ativa]="horario === '14:00'">{{ horario }}</span>
+                  }
+                </div>
+              </div>
+            </article>
+
+            <!-- 5. números -->
+            <article class="card card--inteiro entra" [style.--atraso]="'240ms'">
+              <div class="card__textos">
+                <span class="card__etiqueta"><app-icone nome="grafico" [tamanho]="14" [espessura]="2.2" />Relatórios e insights</span>
+                <h3 class="card__titulo">Saiba quanto faturou e o que mais vende.</h3>
+                <p class="card__texto">
+                  Faturamento do mês, ticket médio, serviços mais feitos, dias mais movimentados, quanto cada
+                  profissional atendeu e os clientes que mais voltam.
+                </p>
+              </div>
+              <div class="numeros numeros--servicos" aria-hidden="true">
+                <div class="numeros__destaque">
+                  <small>Faturamento · outubro</small>
+                  <strong>R$ 6.340,00</strong>
+                </div>
+                <div class="fatias">
+                  <span class="fatias__barra">
+                    @for (fatia of fatiasServicos; track fatia.nome) {
+                      <span [style.width.%]="fatia.parte" [style.background]="fatia.cor"></span>
+                    }
+                  </span>
+                  <span class="fatias__legenda">
+                    @for (fatia of fatiasServicos; track fatia.nome) {
+                      <small><i [style.background]="fatia.cor"></i>{{ fatia.nome }} {{ fatia.parte }}%</small>
+                    }
+                  </span>
+                </div>
+                <div class="numeros__indicadores">
+                  <span><small>Atendimentos</small><strong>118</strong></span>
+                  <span><small>Ticket médio</small><strong>R$ 53,70</strong></span>
+                  <span><small>Clientes fiéis</small><strong>41</strong></span>
+                </div>
+                <div class="insights">
+                  <span class="insight"><app-icone nome="lampada" [tamanho]="14" [espessura]="2" />Sexta é o dia mais movimentado</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        }
+
+        <app-fechamento-recursos [tipo]="tipoAtual" />
       </div>
     }
   </div>

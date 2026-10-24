@@ -1,0 +1,59 @@
+<div class="comuns">
+  <h3 class="comuns__titulo">E ainda vem junto, para quem {{ tipo() === 'produtos' ? 'vende produtos' : 'presta serviços' }}</h3>
+  <ul class="comuns__lista" [class.comuns__lista--tres]="doTipo().length % 4 !== 0">
+    @for (recurso of doTipo(); track recurso.titulo; let i = $index) {
+      <li class="comum entra" [style.--atraso]="200 + i * 40 + 'ms'">
+        <span class="comum__icone"><app-icone [nome]="recurso.icone" [tamanho]="18" [espessura]="2" /></span>
+        <strong class="comum__titulo">{{ recurso.titulo }}</strong>
+        <span class="comum__texto">{{ recurso.texto }}</span>
+      </li>
+    }
+  </ul>
+</div>
+
+<!-- no computador, a tela do painel e a chamada lado a lado -->
+<div class="final">
+  <!-- a tela de verdade do painel (print das telas reais com dados de exemplo) -->
+  <figure class="tela-painel">
+    @if (tipo() === 'produtos') {
+      <img
+        src="/landing/tela-pedidos.webp"
+        width="1440"
+        height="1146"
+        loading="lazy"
+        decoding="async"
+        alt="Tela de Pedidos do painel: pedidos em preparo e prontos para entregar, com os itens, o valor e os botões Pedido pronto e Entregue"
+      >
+    } @else {
+      <img
+        src="/landing/tela-agenda.webp"
+        width="1440"
+        height="1169"
+        loading="lazy"
+        decoding="async"
+        alt="Tela Minha Agenda do painel na visualização completa: o calendário do mês e os horários do dia, com os clientes, os serviços e os valores"
+      >
+    }
+  </figure>
+
+  <!-- o gancho final: testar com o próprio negócio -->
+  <div class="chamada">
+    <div class="chamada__textos">
+      <h3 class="chamada__titulo">Veja o assistente atendendo o seu negócio.</h3>
+      <p class="chamada__texto">
+        Cadastre {{ tipo() === 'produtos' ? 'os seus produtos' : 'os seus serviços' }} em poucos minutos e converse com o
+        assistente como se fosse um cliente, antes de ligar no WhatsApp.
+      </p>
+    </div>
+    <div class="chamada__acoes">
+      <a routerLink="/cadastro" class="btn btn--hero btn--primario">
+        Testar grátis
+        <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
+      </a>
+      <a routerLink="/demonstracao" [queryParams]="{ tipo: tipo() }" class="chamada__demo">
+        <app-icone nome="reproduzir" [tamanho]="14" />
+        Ver uma conversa de {{ tipo() === 'produtos' ? 'pedido' : 'agendamento' }}
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,7 @@
 :host{display:block}
-.jornada{padding:104px 0;background:radial-gradient(ellipse at 74% 54%,rgba(30,58,114,.075),transparent 36%),var(--cor-fundo-suave)}
-.jornada__layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(330px,400px);align-items:center;gap:clamp(36px,7vw,90px)}
-.jornada__texto{display:flex;flex-direction:column;align-items:flex-start;gap:18px;max-width:530px}
+.jornada{padding:8px 0 104px;background:radial-gradient(ellipse at 74% 54%,rgba(30,58,114,.075),transparent 36%),var(--cor-fundo-suave)}
+.jornada__layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(330px,400px);align-items:start;gap:clamp(36px,7vw,90px)}
+.jornada__texto{display:flex;flex-direction:column;align-items:flex-start;gap:18px;max-width:530px;padding-top:28px}
 .jornada__sobretitulo{color:var(--cor-primaria);font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .jornada__titulo{font-size:clamp(34px,4vw,50px);font-weight:800;letter-spacing:-.045em;line-height:1.08}
 .jornada__descricao{color:var(--cor-texto-secundario);font-size:18px;line-height:1.55}
@@ -34,13 +34,13 @@
 @keyframes etapa-entrada{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:900px){.jornada__layout{grid-template-columns:minmax(0,1fr) minmax(320px,360px);gap:28px}.jornada__titulo{font-size:clamp(32px,4.5vw,42px)}}
 @media(max-width:720px){
-  .jornada{padding:68px 0}.jornada__layout{grid-template-columns:1fr;gap:27px}
+  .jornada{padding:0 0 68px}.jornada__layout{grid-template-columns:1fr;gap:27px}
   .jornada__texto{gap:13px;max-width:600px}.jornada__titulo{font-size:clamp(32px,8vw,42px)}
   .jornada__descricao{font-size:16px}.jornada__etapa{margin-top:8px}.jornada__titulo-cena{font-size:20px}
   .jornada__descricao-cena{font-size:14px}.jornada__visual{gap:12px}
 }
 @media(max-width:420px){
-  .jornada{padding:58px 0}.jornada__layout{gap:22px}.jornada__passos{grid-template-columns:repeat(9,minmax(0,1fr));gap:1px}
+  .jornada{padding:0 0 58px}.jornada__layout{gap:22px}.jornada__passos{grid-template-columns:repeat(9,minmax(0,1fr));gap:1px}
   .jornada__passo{min-height:40px}.jornada__passo-rotulo{font-size:6.5px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}

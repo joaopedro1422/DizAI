@@ -24,8 +24,6 @@ interface Dor {
 interface Passo {
   titulo: string;
   texto: string;
-  /** No último passo: como o atendimento termina em cada ramo. */
-  modos?: { icone: NomeIcone; ramo: string; texto: string }[];
 }
 
 @Component({
@@ -82,11 +80,8 @@ export class LandingPageComponent {
     },
     {
       titulo: 'Ele atende do começo ao fim',
-      texto: 'Tira dúvidas, faz orçamentos e envia catálogo e fotos. Na hora de fechar:',
-      modos: [
-        { icone: 'calendario', ramo: 'Serviços', texto: 'Marca o horário sozinho na sua agenda e confirma com o cliente.' },
-        { icone: 'prancheta', ramo: 'Produtos', texto: 'Anota o pedido e te avisa no celular para você confirmar.' },
-      ],
+      texto:
+        'Tira dúvidas, faz orçamentos e envia catálogo e fotos. Na hora de fechar, marca o horário na sua agenda ou anota o pedido e te avisa no celular.',
     },
   ];
 

@@ -1,215 +1,322 @@
-/* Os dois recursos fortes, lado a lado (empilham no celular) */
-.destaques {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
-  gap: 20px;
+/*
+ * Recursos: faixa no azul da marca (a seção que fecha a venda), cards brancos com a ilustração da tela de
+ * verdade, recursos comuns em vidro e a conta do tempo economizado com o "Testar grátis".
+ */
+:host {
+  display: block;
+  --texto-claro: #FFFFFF;
+  --texto-claro-suave: #B9C4DA;
+  --vidro: rgba(255, 255, 255, 0.06);
+  --vidro-borda: rgba(255, 255, 255, 0.12);
+  --destaque: #8FB4FF;
+  /* as mesmas cores dos Números do painel (validadas para daltonismo) */
+  --serie-1: #2a78d6;
+  --serie-2: #eb6834;
+  --serie-3: #1baf7a;
+  --serie-4: #eda100;
 }
 
-.destaque {
+.recursos {
+  position: relative;
+  overflow: hidden;
+  padding: 112px 0;
+  background: var(--cor-primaria);
+  color: var(--texto-claro);
+}
+
+.recursos__conteudo {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 32px;
-  border-radius: 28px;
+  gap: 48px;
 }
 
-.destaque--vendas {
-  border: 1px solid #D6E1F5;
-  background: #F3F7FD;
+/* Cabeçalho --------------------------------------------------------------- */
+
+.recursos__cabecalho {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  max-width: 760px;
 }
 
-.destaque--servicos {
-  border: 1px solid #CFE6D6;
-  background: #F2FAF5;
+.recursos__sobretitulo {
+  color: var(--texto-claro-suave);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.destaque__topo {
+.recursos__titulo {
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.recursos__titulo-destaque {
+  /* o mesmo verde da faixa do MIT (#8fe3b0) */
+  background: linear-gradient(90deg, #B9CEFF, #8FE3B0 60%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.recursos__descricao {
+  max-width: 600px;
+  color: var(--texto-claro-suave);
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+.abas {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 12px;
+  padding: 5px;
+  border: 1px solid var(--vidro-borda);
+  border-radius: 18px;
+  background: var(--vidro);
+}
+
+.abas__aba {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 52px;
+  padding: 0 26px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--texto-claro-suave);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.abas__aba:not(.abas__aba--ativa):hover {
+  color: var(--texto-claro);
+}
+
+.abas__aba--ativa {
+  background: #FFFFFF;
+  color: var(--cor-primaria);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.abas__aba:focus-visible {
+  outline: 2px solid var(--destaque);
+  outline-offset: 2px;
+}
+
+.painel {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Destaques: checks verdes (o verde da faixa do MIT), como os do hero --------- */
+
+.destaques {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  gap: 12px 26px;
+  max-width: 980px;
+  margin: -8px 0 12px;
+  padding: 0;
+  list-style: none;
 }
 
-.destaque__etiqueta {
-  align-self: flex-start;
+.destaques__item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--texto-claro);
+  font-size: 15.5px;
+  font-weight: 600;
+}
+
+.destaques__check {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(143, 227, 176, 0.18);
+  color: #8FE3B0;
+}
+
+/* Bento ------------------------------------------------------------------- */
+
+.bento {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+  padding: 28px;
+  border-radius: 28px;
+  background: #FFFFFF;
+  color: var(--cor-texto);
+  box-shadow: 0 24px 60px rgba(4, 10, 25, 0.35);
+}
+
+.card--largo {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: 28px;
+}
+
+.card--alto {
+  grid-row: span 2;
+}
+
+.card--inteiro {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: 32px;
+}
+
+/* serviços: agendamento (2) + automáticas (alto) | profissionais + página | números (inteiro) */
+.bento--servicos .card--alto {
+  grid-row: span 2;
+}
+
+.card__textos {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.card__etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 5px 11px;
   border-radius: var(--raio-pilula);
-  background: #DCE6F7;
+  background: var(--cor-primaria-clara);
   color: var(--cor-primaria);
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
 }
 
-.destaque__etiqueta--verde {
-  background: #E3F2EA;
-  color: var(--cor-ativo);
-}
-
-.destaque__titulo {
-  font-size: 28px;
+.card__titulo {
+  font-size: clamp(22px, 2.2vw, 28px);
   font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1.15;
 }
 
-.destaque__texto {
+.card__texto {
+  color: var(--cor-texto-secundario);
   font-size: 15px;
   line-height: 1.6;
-  color: var(--cor-texto-secundario);
 }
 
-.destaque__conversa {
-  margin-top: auto;
+/* Entrada --------------------------------------------------------------- */
+
+.entra {
+  animation: sobe 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--atraso, 0ms);
 }
 
-/* altura reservada: a troca de cena não faz a página pular */
-.destaque__conversa--fixa {
-  justify-content: flex-end;
-  min-height: 196px;
+@keyframes sobe {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Coletar dados | Me chamar na hora */
-.modos {
-  display: flex;
-  gap: 2px;
-  padding: 3px;
-  border: 1px solid #D6E1F5;
-  border-radius: var(--raio-pilula);
-  background: #ffffff;
+@keyframes cresce {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
 }
 
-.modos__opcao {
-  min-height: 32px;
-  padding: 0 12px;
-  border: none;
-  border-radius: var(--raio-pilula);
-  background: transparent;
-  color: var(--cor-texto-secundario);
-  font-size: 12px;
-  font-weight: 700;
-  transition: background-color 0.15s ease, color 0.15s ease;
+@keyframes cresce-lado {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 
-.modos__opcao--ativa {
-  background: var(--cor-primaria);
-  color: #ffffff;
-}
-
-/* Aviso no celular embaixo da conversa */
-.aviso {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border: 1px solid var(--cor-borda);
-  border-radius: 14px;
-  background: #ffffff;
-  font-size: 13px;
-  transition: opacity 0.4s ease 1.4s, transform 0.4s ease 1.4s;
-}
-
-.aviso--escondido {
-  opacity: 0;
-  transform: translateY(6px);
-  transition-delay: 0s;
-}
-
-.aviso__icone {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
-  background: var(--cor-primaria);
-  color: #ffffff;
-}
-
-.aviso__textos {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.aviso__detalhe {
-  color: var(--cor-texto-suave);
-}
-
-/* Você no controle: 3 colunas no computador, 2 no tablet, 1 no celular */
-.controle {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  overflow: hidden;
-  border: 1px solid var(--cor-borda-suave);
-  border-radius: 24px;
-  background: var(--cor-borda-suave);
-  gap: 1px;
-}
-
-.controle__item {
-  display: flex;
-  gap: 14px;
-  padding: 24px;
-  background: var(--cor-fundo);
-}
-
-.controle__item app-icone {
-  margin-top: 2px;
-  color: var(--cor-primaria);
-}
-
-.controle__titulo {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 16px;
-}
-
-.controle__texto {
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--cor-texto-secundario);
-}
+/* Responsivo ---------------------------------------------------------------- */
 
 @media (max-width: 1023px) {
-  .controle { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
+  .bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
-@media (max-width: 640px) {
-  .controle { grid-template-columns: minmax(0, 1fr); }
-}
+  .card--largo,
+  .card--inteiro {
+    grid-column: 1 / -1;
+  }
 
-@media (prefers-reduced-motion: reduce) {
-  .aviso {
-    transition: none;
+  .card--alto,
+  .bento--servicos .card--alto {
+    grid-column: 1 / -1;
+    grid-row: auto;
   }
 }
 
-/* "Também tem": lista curta com check embaixo do texto de cada card */
-.extras {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+@media (max-width: 720px) {
+  .recursos {
+    padding: 72px 0;
+  }
+
+  .recursos__conteudo {
+    gap: 36px;
+  }
+
+  .recursos__descricao {
+    font-size: 16px;
+  }
+
+  .abas {
+    display: grid;
+    width: 100%;
+  }
+
+  .abas__aba {
+    min-height: 48px;
+    padding: 0 10px;
+    font-size: 15px;
+  }
+
+  .destaques {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 0;
+  }
+
+  .bento {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .card,
+  .card--largo,
+  .card--inteiro {
+    display: flex;
+    padding: 22px;
+    border-radius: 24px;
+  }
 }
 
-.extras__item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14.5px;
-  font-weight: 600;
-  color: var(--cor-texto);
-}
-
-.extras__item app-icone {
-  flex: none;
-  color: var(--cor-primaria);
-}
-
-.extras--verde .extras__item app-icone {
-  color: var(--cor-ativo);
+@media (prefers-reduced-motion: reduce) {
+  .entra {
+    animation: none;
+  }
 }

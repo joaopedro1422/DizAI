@@ -3,41 +3,92 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { NomeIcone } from '../../../shared/components/icone/icones';
 
-type CorGanho = 'azul' | 'verde' | 'ambar' | 'rosa';
+/** A miniatura no pé do card (o pedacinho da tela de verdade que prova o ganho). */
+type DetalheGanho =
+  | 'resposta'
+  | 'conversa'
+  | 'catalogo'
+  | 'portfolio'
+  | 'jeito'
+  | 'assumir'
+  | 'relatorios'
+  | 'aviso'
+  | 'verdade';
 
 interface Ganho {
   icone: NomeIcone;
-  cor: CorGanho;
   titulo: string;
   texto: string;
-  /** Ganho que vale só para um ramo. */
-  para?: 'Serviços' | 'Produtos';
+  detalhe: DetalheGanho;
+  /** Ocupa duas colunas no computador. */
+  largo?: boolean;
 }
 
+/** O que é do DizAI para qualquer negócio (o que é só de produtos ou de serviços fica na seção Recursos). */
 const GANHOS: Ganho[] = [
   {
     icone: 'raio',
-    cor: 'azul',
     titulo: 'Resposta em segundos, 24 horas',
-    texto: 'De madrugada, no domingo ou com as mãos ocupadas. Você ativa e desativa o assistente quando quiser.',
+    texto: 'De madrugada, no domingo ou com as mãos ocupadas. Você liga e desliga quando quiser.',
+    detalhe: 'resposta',
   },
-  { icone: 'calendario', cor: 'verde', para: 'Serviços', titulo: 'Agendamento automático', texto: 'Marca, remarca, lembra o cliente e confirma a presença.' },
-  { icone: 'prancheta', cor: 'ambar', para: 'Produtos', titulo: 'Pedidos anotados para você', texto: 'Coleta os dados que você escolhe e entrega o pedido pronto.' },
   {
     icone: 'conversa',
-    cor: 'rosa',
     titulo: 'Responde tudo sobre o seu negócio',
-    texto: 'Tira dúvidas, lista produtos e serviços, faz orçamentos e informa restrições.',
+    texto: 'Preços, opções, prazos, formas de pagamento, endereço e restrições, do jeito que você cadastrou.',
+    detalhe: 'conversa',
   },
-  { icone: 'documento', cor: 'azul', titulo: 'Catálogo em imagem ou PDF', texto: 'Envia o cardápio ou a tabela de preços na hora certa.' },
-  { icone: 'imagem', cor: 'rosa', titulo: 'Portfólio dos seus trabalhos', texto: 'Uma página com as suas fotos, que o assistente envia.' },
-  { icone: 'ajustes', cor: 'verde', titulo: 'Totalmente do seu jeito', texto: 'Saudação, regras e jeito de falar definidos por você.' },
-  { icone: 'pessoa', cor: 'ambar', titulo: 'Você assume a qualquer momento', texto: 'Respondeu pelo celular? O assistente sai daquela conversa.' },
+  {
+    icone: 'documento',
+    titulo: 'Catálogo em imagem ou PDF',
+    texto: 'Envia o cardápio ou a tabela de preços na saudação ou quando o cliente pedir.',
+    detalhe: 'catalogo',
+  },
+  {
+    icone: 'imagem',
+    titulo: 'Vitrine e portfólio com as suas fotos',
+    texto: 'Uma página exclusiva da sua loja, com os seus trabalhos por tema, que o assistente envia na conversa.',
+    detalhe: 'portfolio',
+  },
+  {
+    icone: 'grafico',
+    titulo: 'Relatório financeiro e insights do negócio',
+    texto: 'Quanto você faturou, o ticket médio, os dias que mais vendem e os clientes que mais voltam.',
+    detalhe: 'relatorios',
+    largo: true,
+  },
+  {
+    icone: 'ajustes',
+    titulo: 'Totalmente do seu jeito',
+    texto: 'Saudação, regras da loja e jeito de falar definidos por você.',
+    detalhe: 'jeito',
+  },
+  {
+    icone: 'pessoa',
+    titulo: 'Você assume a qualquer momento',
+    texto: 'Respondeu pelo celular? O assistente sai daquela conversa.',
+    detalhe: 'assumir',
+  },
+  {
+    icone: 'sino',
+    titulo: 'Aviso no celular',
+    texto: 'Cliente pronto para fechar ou com uma dúvida? Você fica sabendo na hora.',
+    detalhe: 'aviso',
+  },
+  {
+    icone: 'escudo',
+    titulo: 'Só fala o que é verdade',
+    texto: 'Não inventa preço nem prazo. Se não souber responder, te chama na mesma hora.',
+    detalhe: 'verdade',
+  },
 ];
 
+/** Barras da miniatura do relatório (altura em %). */
+const BARRAS = [36, 52, 44, 70, 58, 100, 30];
+
 /**
- * "A solução": os ganhos de usar o DizAI. O cartão grande mostra o tempo de volta com a tela de Estatísticas
- * do painel (números de exemplo); os outros, um ganho cada.
+ * "A solução": o que o DizAI faz por qualquer negócio. O cartão azul abre com o tempo de volta; os outros, um
+ * ganho cada, com uma miniatura da tela no pé.
  */
 @Component({
   selector: 'app-secao-solucao',
@@ -48,4 +99,5 @@ const GANHOS: Ganho[] = [
 })
 export class SecaoSolucaoComponent {
   protected readonly ganhos = GANHOS;
+  protected readonly barras = BARRAS;
 }

@@ -13,8 +13,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 56px 64px;
-  padding-top: 104px;
-  padding-bottom: 104px;
+  padding-top: 112px;
+  padding-bottom: 112px;
 }
 
 /* Texto -------------------------------------------------------------------- */
@@ -25,7 +25,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 18px;
-  max-width: 540px;
+  max-width: 560px;
 }
 
 .galeria__sobretitulo {
@@ -84,28 +84,56 @@
   margin-top: 10px;
 }
 
+/* Setas embaixo do celular: loja de exemplo anterior / próxima */
+.setas {
+  display: flex;
+  gap: 10px;
+}
+
+.setas__seta {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 50%;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.setas__seta:hover {
+  border-color: var(--cor-primaria);
+  color: var(--cor-primaria);
+}
+
+.galeria__acao {
+  margin-top: -4px;
+}
+
 /* Demonstração ------------------------------------------------------------- */
 
 .galeria__demonstracao {
-  position: relative;
   flex: 0 1 380px;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
   margin-inline: auto;
 }
 
-/* Balões da conversa que "levam" à galeria */
+/* Balões da conversa que "levam" à vitrine, em cima do celular (altura reservada para não pular na troca) */
 .conversa {
-  position: absolute;
-  z-index: 1;
-  /* No alto, ao lado da logo: cobre só a margem branca da página da loja */
-  top: 28px;
-  left: -135px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: flex-end;
   gap: 8px;
-  width: 230px;
+  width: 100%;
+  max-width: 320px;
+  min-height: 124px;
 }
 
 .conversa__balao {
@@ -216,29 +244,19 @@
   }
 }
 
-/* Sem espaço ao lado do celular: os balões ficam acima dele */
-@media (max-width: 1150px) {
-  .galeria__demonstracao {
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .conversa {
-    position: static;
-    width: 100%;
-    max-width: 320px;
-    /* Reserva a altura dos dois balões para a página não pular na troca */
-    min-height: 124px;
-    justify-content: flex-end;
-  }
-}
-
 @media (max-width: 640px) {
   .galeria__grade {
     gap: 40px;
     padding-top: 64px;
     padding-bottom: 64px;
+  }
+
+  .galeria__descricao {
+    font-size: 16px;
+  }
+
+  .galeria__acao {
+    width: 100%;
   }
 
   .celular__tela {

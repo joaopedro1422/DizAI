@@ -1,0 +1,192 @@
+:host {
+  display: block;
+  --texto-claro: #FFFFFF;
+  --texto-claro-suave: #B9C4DA;
+  --vidro: rgba(255, 255, 255, 0.06);
+  --vidro-borda: rgba(255, 255, 255, 0.12);
+  --destaque: #8FB4FF;
+}
+
+/* Recursos comuns ---------------------------------------------------------- */
+
+.comuns {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.comuns__titulo {
+  color: var(--texto-claro);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.comuns__lista {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 6 cards: 3 colunas, para não sobrar buraco na segunda linha */
+.comuns__lista--tres {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.comum {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  border: 1px solid var(--vidro-borda);
+  border-radius: 20px;
+  background: var(--vidro);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.comum:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.comum__icone {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  margin-bottom: 6px;
+  border-radius: 12px;
+  background: rgba(143, 180, 255, 0.16);
+  color: var(--destaque);
+}
+
+.comum__titulo {
+  font-size: 15.5px;
+}
+
+.comum__texto {
+  color: var(--texto-claro-suave);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+/* Tela do painel e chamada: lado a lado no computador, uma embaixo da outra no resto */
+.final {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  gap: 28px;
+  margin-top: 36px;
+}
+
+/* Print da tela real do painel (Pedidos ou Agenda) */
+.tela-painel {
+  margin: 0;
+  overflow: hidden;
+  border: 6px solid rgba(255, 255, 255, 0.14);
+  border-radius: 24px;
+  background: #FFFFFF;
+  box-shadow: 0 30px 70px rgba(4, 10, 25, 0.35);
+}
+
+.tela-painel img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Chamada final: testar com o próprio negócio -------------------------------- */
+
+.chamada {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 40px;
+  border-radius: 28px;
+  background: #FFFFFF;
+  color: var(--cor-texto);
+  box-shadow: 0 24px 60px rgba(4, 10, 25, 0.25);
+}
+
+.chamada__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chamada__titulo {
+  font-size: clamp(24px, 2.6vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.chamada__texto {
+  color: var(--cor-texto-secundario);
+  font-size: 15.5px;
+  line-height: 1.55;
+}
+
+.chamada__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 22px;
+}
+
+.chamada__demo {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--cor-primaria);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: rgba(30, 58, 114, 0.35);
+  text-underline-offset: 4px;
+}
+
+.chamada__demo:hover {
+  text-decoration-color: var(--cor-primaria);
+}
+
+.entra {
+  animation: sobe 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--atraso, 0ms);
+}
+
+@keyframes sobe {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1023px) {
+  .final { grid-template-columns: minmax(0, 1fr); }
+  .comuns__lista { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 720px) {
+  .comuns__lista { gap: 10px; }
+  .comum { padding: 16px; }
+  .chamada { padding: 26px 22px; border-radius: 24px; }
+  .final { margin-top: 24px; gap: 20px; }
+  .tela-painel { border-width: 4px; border-radius: 16px; }
+  .chamada__acoes { width: 100%; }
+  .chamada__acoes .btn { width: 100%; }
+}
+
+@media (max-width: 420px) {
+  .comuns__lista { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  /* no celular, ícone ao lado do texto: a lista fica curta */
+  .comum { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 2px 12px; padding: 14px; }
+  .comum__icone { grid-row: span 2; margin-bottom: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entra { animation: none; }
+}

@@ -43,7 +43,7 @@ const RAMOS: ExemploRamo[] = [
       'Mostra as fotos dos seus trabalhos no momento certo.',
       'Coleta medidas, endereço e o melhor horário para a visita.',
     ],
-    demonstracao: { tipo: 'produtos', segmento: 'sob-medida' },
+    demonstracao: { tipo: 'produtos', segmento: 'presentes' },
   },
   {
     rotulo: 'Produtos em geral',
@@ -53,7 +53,7 @@ const RAMOS: ExemploRamo[] = [
       'Envia o seu catálogo em PDF ou imagem na conversa.',
       'Segue as suas regras de troca e envio.',
     ],
-    demonstracao: { tipo: 'produtos', segmento: 'moda' },
+    demonstracao: { tipo: 'produtos', segmento: 'presentes' },
   },
 ];
 

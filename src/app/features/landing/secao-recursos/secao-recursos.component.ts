@@ -1,116 +1,95 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
-import { NomeIcone } from '../../../shared/components/icone/icones';
+import { FechamentoRecursosComponent } from './fechamento-recursos.component';
 
-type ModoVenda = 'coletar' | 'chamar';
-type Cena = 'primeira' | 'segunda';
+export type TipoNegocio = 'produtos' | 'servicos';
 
-/** Duas mensagens por vez na tela: a do cliente e a resposta do assistente. */
-interface CenaConversa {
-  id: string;
-  cliente: string;
-  resposta: string;
-}
-
-/** Os dois modos de "Quando o cliente quiser fechar" para quem vende (coletar é o padrão). */
-const MODOS_VENDA: Record<ModoVenda, {
-  rotulo: string;
-  titulo: string;
-  texto: string;
-  /** Coletar tem duas cenas (o pedido dos dados → o cliente responde); chamar, uma. */
-  cenas: CenaConversa[];
-  avisoTitulo: string;
-  avisoTexto: string;
-}> = {
-  coletar: {
-    rotulo: 'Coletar dados',
-    titulo: 'Anota o pedido e te entrega pronto para fechar.',
-    texto:
-      'Tira as dúvidas sobre produtos, preços e prazos, faz orçamentos, envia seu catálogo e, quando o cliente decide, coleta dados definidos por você e espera a sua confirmação.',
-    cenas: [
-      {
-        id: 'coletar-pedido',
-        cliente: 'Gostaria de 150 salgados para sábado',
-        resposta: 'Perfeito! Para prosseguirmos, me informe:\n- Quantidade de cada sabor\n- Retirada ou entrega\n- Seu nome',
-      },
-      { id: 'coletar-dados', cliente: '100 coxinhas e 50 kibes. Retiro sábado às 15h. Sou a Ana', resposta: '1 minuto!' },
-    ],
-    avisoTitulo: 'Pedido pronto para fechar',
-    avisoTexto: 'Ana · 150 salgados · retirada sábado às 15h',
-  },
-  chamar: {
-    rotulo: 'Me chamar na hora',
-    titulo: 'Te chama assim que o cliente quiser comprar.',
-    texto:
-      'Tira as dúvidas sobre produtos, preços e prazos, faz orçamentos, envia seu catálogo e, quando o cliente decide, passa a conversa para você na hora, com um aviso no celular. Você assume!',
-    cenas: [{ id: 'chamar', cliente: 'Gostaria de 150 salgados para sábado', resposta: '1 minuto!' }],
-    avisoTitulo: 'Cliente quer fechar um pedido',
-    avisoTexto: 'Ana · "Gostaria de 150 salgados para sábado"',
-  },
+/** O que cada tipo ganha, em checks verdes logo abaixo das abas (como no hero). */
+const DESTAQUES: Record<TipoNegocio, string[]> = {
+  produtos: [
+    'Mantém o cliente por perto fora do seu horário',
+    'Coleta os dados do pedido',
+    'Você confirma e resolve o pagamento',
+    'Gerencie e organize pedidos em uma tela própria para você',
+    'Ganhe uma página de portfólio',
+  ],
+  servicos: [
+    'Informa os horários livres da sua agenda',
+    'Marca, remarca e cancela agendamentos',
+    'Aceita vários profissionais',
+    'Lembra, confirma a presença e agradece depois do atendimento',
+  ],
 };
 
-interface RecursoControle {
-  icone: NomeIcone;
-  titulo: string;
-  texto: string;
-}
-
-/** Os recursos que respondem "e se ele errar?" e "e se eu quiser responder?". */
-const CONTROLE: RecursoControle[] = [
-  { icone: 'sino', titulo: 'Te avisa no celular', texto: 'Quando um cliente está pronto para fechar ou precisa de você.' },
-  { icone: 'escudo', titulo: 'Só fala o que é verdade', texto: 'Usa o que você cadastrou. Se não souber, diz "vou confirmar" e te chama.' },
-  { icone: 'pessoaIgnorada', titulo: 'Contatos pessoais de fora', texto: 'Família e amigos não falam com o assistente.' },
-  { icone: 'lampada', titulo: 'Aprende com o que não sabia', texto: 'A pergunta sem resposta vira sugestão de pergunta frequente.' },
-  { icone: 'relogio', titulo: 'Respeita o seu horário', texto: 'Fora do expediente, avisa o cliente quando você vai confirmar.' },
-  { icone: 'conversa', titulo: 'Teste antes de ligar', texto: 'Converse com o assistente como se fosse um cliente.' },
+/** Gerenciador de pedidos: cada etapa tem a sua mensagem pronta para o cliente. */
+const ETAPAS_PEDIDO = [
+  { status: 'Confirmado', mensagem: 'Oi, Ana! Seu pedido foi confirmado 😊 Fica pronto sábado às 15h.' },
+  { status: 'Pronto', mensagem: 'Ana, seu pedido está pronto para retirada! Total: R$ 135,00' },
+  { status: 'Entregue', mensagem: 'Obrigada pela preferência, Ana! Volte sempre 💛' },
 ];
 
-/** O que mais cada lado tem (lista curta embaixo do texto de cada card). */
-const EXTRAS_VENDAS = ['Gerenciador de pedidos com mensagens rápidas'];
-const EXTRAS_SERVICOS = [
-  'Adicione vários profissionais',
-  'Lembrete automático antes do horário',
-  'Mensagem de agradecimento depois do atendimento',
+/** Faturamento da semana de exemplo (altura das barras em %, mesmo desenho dos Números do painel). */
+const BARRAS_PEDIDOS = [
+  { dia: 'Seg', valor: 38 }, { dia: 'Ter', valor: 30 }, { dia: 'Qua', valor: 52 }, { dia: 'Qui', valor: 46 },
+  { dia: 'Sex', valor: 74 }, { dia: 'Sáb', valor: 100 }, { dia: 'Dom', valor: 22 },
 ];
 
-/** As conversas trocam de cena sozinhas (vendas: pedido → dados; serviços: pergunta → agendamento). */
-const TEMPO_POR_CENA_MS = 5000;
+/** "Faturamento por serviço" em barra 100% (as cores são as --serie-1..4 validadas para daltonismo). */
+const FATIAS_SERVICOS = [
+  { nome: 'Esmaltação em gel', parte: 42, cor: 'var(--serie-1)' },
+  { nome: 'Manicure', parte: 27, cor: 'var(--serie-2)' },
+  { nome: 'Pedicure', parte: 19, cor: 'var(--serie-3)' },
+  { nome: 'Sobrancelha', parte: 12, cor: 'var(--serie-4)' },
+];
+
+/** Agenda de um dia com 3 profissionais: início e duração em "meias horas" a partir das 9h. */
+const AGENDA_PROFISSIONAIS = [
+  { nome: 'Lucas', blocos: [{ inicio: 0, tamanho: 2, rotulo: 'Corte' }, { inicio: 3, tamanho: 3, rotulo: 'Corte + barba' }] },
+  { nome: 'Luis', blocos: [{ inicio: 1, tamanho: 2, rotulo: 'Barba' }, { inicio: 4, tamanho: 2, rotulo: 'Corte' }] },
+  { nome: 'Sergio', blocos: [{ inicio: 0, tamanho: 3, rotulo: 'Luzes' }, { inicio: 5, tamanho: 1, rotulo: 'Pezinho' }] },
+];
+
+const HORARIOS_LIVRES = ['09:00', '09:30', '10:30', '14:00', '15:30', '17:00'];
+
+const TEMPO_POR_ETAPA_MS = 2800;
 
 /**
- * "Recursos" da landing: dois cards em destaque com conversas de verdade (quem vende, com os dois modos
- * de fechamento; quem presta serviço, com o agendamento automático) e os recursos que deixam o lojista no controle.
+ * "Recursos" da landing, o gancho para o visitante testar: abas Produtos | Serviços com o ganho de cada recurso
+ * em destaque e uma ilustração da tela de verdade (pedido anotado, gerenciador de pedidos, números; agenda pela
+ * conversa, mensagens automáticas, profissionais, página de horários), os recursos comuns e a conta do tempo
+ * que o lojista ganha de volta, terminando no "Testar grátis".
  */
 @Component({
   selector: 'app-secao-recursos',
-  imports: [IconeComponent],
+  imports: [IconeComponent, FechamentoRecursosComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './secao-recursos.component.html',
-  styleUrls: ['../secao-landing.css', './secao-recursos.component.css'],
+  styleUrls: ['./secao-recursos.component.css', './ilustracoes-recursos.css'],
 })
 export class SecaoRecursosComponent {
-  protected readonly controle = CONTROLE;
-  protected readonly extrasVendas = EXTRAS_VENDAS;
-  protected readonly extrasServicos = EXTRAS_SERVICOS;
-  protected readonly modos = (Object.keys(MODOS_VENDA) as ModoVenda[]).map((id) => ({ id, rotulo: MODOS_VENDA[id].rotulo }));
-  protected readonly modoVenda = signal<ModoVenda>('coletar');
-  protected readonly venda = computed(() => MODOS_VENDA[this.modoVenda()]);
+  protected readonly tipo = signal<TipoNegocio>('produtos');
+  protected readonly destaques = computed(() => DESTAQUES[this.tipo()]);
 
-  protected readonly cena = signal<Cena>('primeira');
-  /** A cena de vendas que está na tela (o modo "chamar" só tem uma). */
-  protected readonly cenaVenda = computed(() => {
-    const cenas = this.venda().cenas;
-    return this.cena() === 'segunda' && cenas.length > 1 ? cenas[1] : cenas[0];
-  });
-  /** O aviso no celular só chega com o pedido pronto (no "chamar", desde o começo). */
-  protected readonly avisoVendaVisivel = computed(() => this.cenaVenda() === this.venda().cenas.at(-1));
+  protected readonly etapasPedido = ETAPAS_PEDIDO;
+  protected readonly barrasPedidos = BARRAS_PEDIDOS;
+  protected readonly fatiasServicos = FATIAS_SERVICOS;
+  protected readonly agendaProfissionais = AGENDA_PROFISSIONAIS;
+  protected readonly horariosLivres = HORARIOS_LIVRES;
+  protected readonly horasDaGrade = ['9h', '10h', '11h'];
+
+  /** Etapa do pedido em destaque no gerenciador (troca sozinha). */
+  protected readonly etapaAtual = signal(0);
 
   constructor() {
-    const temporizador = setInterval(() => this.cena.update((cena) => (cena === 'primeira' ? 'segunda' : 'primeira')), TEMPO_POR_CENA_MS);
+    const temporizador = setInterval(
+      () => this.etapaAtual.update((etapa) => (etapa + 1) % ETAPAS_PEDIDO.length),
+      TEMPO_POR_ETAPA_MS,
+    );
     inject(DestroyRef).onDestroy(() => clearInterval(temporizador));
   }
 
-  protected escolherModo(modo: ModoVenda): void {
-    this.modoVenda.set(modo);
+  protected escolherTipo(tipo: TipoNegocio): void {
+    this.tipo.set(tipo);
   }
 }

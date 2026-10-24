@@ -1,0 +1,813 @@
+/* Miniaturas das telas do painel nos cards da seção Recursos (separadas pelo limite de CSS por arquivo). */
+
+/* Ilustrações (telas do painel em miniatura) ---------------------------- */
+
+.ilustra {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--cor-fundo-suave);
+}
+
+.selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  border-radius: var(--raio-pilula);
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.selo--amarelo {
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-ambar);
+}
+
+.selo--verde {
+  align-self: flex-start;
+  background: #E3F2EA;
+  color: var(--cor-ativo);
+}
+
+/* resumo do pedido (card do Chats) */
+.resumo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border: 2px solid var(--cor-borda);
+  border-radius: 18px;
+  background: #FFFFFF;
+}
+
+.resumo__topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.resumo__avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--cor-primaria);
+  color: #FFFFFF;
+  font-weight: 800;
+}
+
+.resumo__quem {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 14px;
+}
+
+.resumo__quem small {
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+}
+
+.resumo__linhas {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--cor-fundo-suave);
+  font-size: 13.5px;
+}
+
+.resumo__linhas div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.resumo__linhas dt {
+  color: var(--cor-texto-suave);
+}
+
+.resumo__linhas dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+}
+
+.resumo__total {
+  padding-top: 7px;
+  border-top: 1px dashed var(--cor-borda);
+}
+
+.resumo__total dt,
+.resumo__total dd {
+  color: var(--cor-texto);
+  font-weight: 800;
+}
+
+.resumo__botoes {
+  display: flex;
+  gap: 8px;
+}
+
+.botao-falso {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 11px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.botao-falso--confirmar {
+  border-color: var(--cor-sucesso);
+  background: var(--cor-sucesso);
+  color: #FFFFFF;
+}
+
+/* aviso no celular flutuando sobre o resumo */
+.notificacao {
+  position: absolute;
+  top: -16px;
+  right: -10px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  max-width: 230px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(20, 26, 38, 0.92);
+  color: #FFFFFF;
+  font-size: 12.5px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.3);
+  animation: flutua 4s ease-in-out infinite;
+}
+
+.notificacao > span:last-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.notificacao small {
+  overflow: hidden;
+  color: #C3CBDA;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notificacao__icone {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--cor-primaria);
+}
+
+@keyframes flutua {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* gerenciador de pedidos: a fila da tela Pedidos, as etapas e a mensagem da etapa */
+.ilustra--etapas {
+  flex: 1;
+  gap: 18px;
+}
+
+.fila {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fila__titulo {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.fila__titulo b {
+  margin-left: 4px;
+  padding: 1px 7px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-primaria);
+  color: #FFFFFF;
+  font-size: 11px;
+}
+
+.fila__pedido {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 10px 12px;
+  border: 2px solid var(--cor-borda);
+  border-radius: 14px;
+  background: #FFFFFF;
+  font-size: 13px;
+}
+
+.fila__pedido--ativo {
+  border-color: var(--cor-primaria);
+}
+
+.fila__pedido small {
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+}
+
+.etapas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.etapas__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--cor-texto-suave);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+/* a linha entre um ponto e o próximo */
+.etapas__item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: calc(50% + 18px);
+  width: calc(100% - 36px);
+  height: 2px;
+  background: var(--cor-borda);
+  transition: background-color 0.4s ease;
+}
+
+.etapas__item--feita:not(:last-child)::after {
+  background: var(--cor-ativo);
+}
+
+.etapas__ponto {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--cor-borda);
+  border-radius: 50%;
+  background: #FFFFFF;
+  font-size: 12px;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.etapas__item--feita .etapas__ponto {
+  border-color: var(--cor-ativo);
+  background: var(--cor-ativo);
+  color: #FFFFFF;
+}
+
+.etapas__item--atual {
+  color: var(--cor-primaria);
+}
+
+.etapas__item--atual .etapas__ponto {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria);
+  color: #FFFFFF;
+  box-shadow: 0 0 0 5px rgba(30, 58, 114, 0.15);
+}
+
+.mensagem-pronta {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 16px;
+  background: #ECE5DD;
+  animation: sobe 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.mensagem-pronta__rotulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #54656F;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.mensagem-pronta__balao {
+  align-self: flex-end;
+  max-width: 92%;
+  padding: 9px 11px;
+  border-radius: 12px 12px 4px 12px;
+  background: #DCF8C6;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.mensagem-pronta__enviada {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-end;
+  gap: 4px;
+  color: #3B8FD9;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+/* números (mesmo desenho dos Números do painel) */
+.numeros {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 18px;
+  background: #FFFFFF;
+  box-shadow: inset 0 0 0 1px var(--cor-borda-suave);
+}
+
+.numeros--servicos {
+  background: var(--cor-fundo-suave);
+  box-shadow: none;
+}
+
+.numeros__destaque {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--cor-primaria);
+  color: #FFFFFF;
+}
+
+.numeros__destaque small {
+  color: #C3CBDA;
+  font-size: 12px;
+}
+
+.numeros__destaque strong {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.barras {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: end;
+  gap: 8px;
+  height: 110px;
+}
+
+.barras__coluna {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  height: 100%;
+  color: var(--cor-texto-suave);
+  font-size: 11px;
+}
+
+.barras__barra {
+  width: 100%;
+  max-height: calc(100% - 18px);
+  border-radius: 6px 6px 2px 2px;
+  background: #C9D7F0;
+  transform-origin: bottom;
+  animation: cresce 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.barras__barra--maior {
+  background: var(--cor-primaria);
+}
+
+.numeros__indicadores {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.numeros__indicadores span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--cor-fundo-suave);
+}
+
+.numeros--servicos .numeros__indicadores span {
+  background: #FFFFFF;
+}
+
+.numeros__indicadores small {
+  color: var(--cor-texto-suave);
+  font-size: 11.5px;
+}
+
+.numeros__indicadores strong {
+  font-size: 16px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.insights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.insight {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 11px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-ambar);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.fatias {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fatias__barra {
+  display: flex;
+  gap: 2px;
+  height: 16px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.fatias__barra span {
+  transform-origin: left;
+  animation: cresce-lado 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.fatias__legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  color: var(--cor-texto-secundario);
+  font-size: 12px;
+}
+
+.fatias__legenda small {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.fatias__legenda i {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+}
+
+/* agendamento pela conversa (balões do WhatsApp, como nas outras seções) */
+.conversa {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 18px;
+  background: #ECE5DD;
+}
+
+.balao {
+  max-width: 85%;
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.balao--cliente {
+  align-self: flex-end;
+  border-radius: 14px 14px 4px 14px;
+  background: #DCF8C6;
+}
+
+.balao--assistente {
+  align-self: flex-start;
+  border-radius: 14px 14px 14px 4px;
+  background: #FFFFFF;
+}
+
+.balao--entra {
+  animation: sobe 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.balao--depois {
+  animation-delay: 0.9s;
+}
+
+.ilustra--conversa {
+  padding: 0;
+  background: none;
+}
+
+.conversa--card {
+  min-height: 300px;
+  justify-content: flex-end;
+}
+
+.balao--depois2 {
+  animation-delay: 1.8s;
+}
+
+.balao--depois3 {
+  animation-delay: 2.7s;
+}
+
+/* linha do tempo das mensagens automáticas */
+.linha-tempo {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 0;
+  padding: 0 0 0 22px;
+  border-left: 2px dashed var(--cor-borda);
+  list-style: none;
+}
+
+.linha-tempo__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.linha-tempo__item::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: -30px;
+  width: 12px;
+  height: 12px;
+  border: 3px solid #FFFFFF;
+  border-radius: 50%;
+  background: var(--cor-primaria);
+  box-shadow: 0 0 0 1px var(--cor-borda);
+}
+
+.linha-tempo__quando {
+  color: var(--cor-primaria);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.linha-tempo__balao,
+.linha-tempo__resposta {
+  max-width: 94%;
+  padding: 9px 11px;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.linha-tempo__balao {
+  align-self: flex-start;
+  border-radius: 12px 12px 12px 4px;
+  background: var(--cor-fundo-suave);
+}
+
+.linha-tempo__resposta {
+  align-self: flex-end;
+  border-radius: 12px 12px 4px 12px;
+  background: #DCF8C6;
+}
+
+/* a mensagem de confirmação com as etiquetas, como em Agenda → Configure */
+.editor-mensagem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+  padding: 14px;
+  border: 1px dashed var(--cor-borda-forte);
+  border-radius: 16px;
+}
+
+.editor-mensagem__rotulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--cor-primaria);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.editor-mensagem__texto {
+  font-size: 13.5px;
+  line-height: 1.9;
+}
+
+.editor-mensagem__texto i {
+  padding: 2px 7px;
+  border-radius: 7px;
+  background: var(--cor-azul-fundo);
+  color: var(--cor-azul);
+  font-size: 12.5px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* agenda com vários profissionais */
+.grade-agenda {
+  display: grid;
+  grid-template-columns: 28px repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--cor-fundo-suave);
+}
+
+.grade-agenda__horas {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 26px 0 8px;
+  color: var(--cor-texto-suave);
+  font-size: 11px;
+}
+
+.grade-agenda__coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.grade-agenda__nome {
+  font-size: 12.5px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.grade-agenda__trilho {
+  position: relative;
+  height: 150px;
+  border-radius: 10px;
+  background: repeating-linear-gradient(180deg, #FFFFFF 0 24px, #F8F9FC 24px 25px);
+}
+
+.grade-agenda__bloco {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  overflow: hidden;
+  padding: 4px 6px;
+  border-left: 3px solid var(--cor-primaria);
+  border-radius: 6px;
+  background: var(--cor-azul-fundo);
+  color: var(--cor-primaria);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.grade-agenda__coluna:nth-of-type(3) .grade-agenda__bloco {
+  border-color: var(--cor-ativo);
+  background: #E3F2EA;
+  color: var(--cor-ativo);
+}
+
+.grade-agenda__coluna:nth-of-type(4) .grade-agenda__bloco {
+  border-color: var(--cor-rosa);
+  background: var(--cor-rosa-fundo);
+  color: var(--cor-rosa);
+}
+
+/* página de horários */
+.pagina-horarios {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--cor-fundo-suave);
+}
+
+.pagina-horarios__endereco {
+  overflow: hidden;
+  padding: 7px 12px;
+  border-radius: var(--raio-pilula);
+  background: #FFFFFF;
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pagina-horarios__endereco strong {
+  color: var(--cor-texto);
+}
+
+.pagina-horarios__dias {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.pagina-horarios__dias span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 7px 0;
+  border: 1px solid var(--cor-borda);
+  border-radius: 12px;
+  background: #FFFFFF;
+  color: var(--cor-texto-suave);
+  font-size: 11px;
+}
+
+.pagina-horarios__dias strong {
+  color: var(--cor-texto);
+  font-size: 16px;
+}
+
+.pagina-horarios__dias .pagina-horarios__dia--ativo {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria);
+  color: #C3CBDA;
+}
+
+.pagina-horarios__dias .pagina-horarios__dia--ativo strong {
+  color: #FFFFFF;
+}
+
+.pagina-horarios__vagas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.pagina-horarios__vagas span {
+  padding: 8px 0;
+  border: 1px solid var(--cor-borda);
+  border-radius: 10px;
+  background: #FFFFFF;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.pagina-horarios__vagas .pagina-horarios__vaga--ativa {
+  border-color: var(--cor-ativo);
+  background: #E3F2EA;
+  color: var(--cor-ativo);
+}
+
+@media (max-width: 720px) {
+  .ilustra { padding: 10px; }
+  .resumo { padding: 12px; }
+  .numeros__indicadores strong { font-size: 14px; }
+  .notificacao { right: 6px; }
+}
+
+@media (max-width: 420px) {
+  .resumo__topo { flex-wrap: wrap; }
+  .resumo__quem { flex-basis: calc(100% - 46px); }
+  .resumo__topo .selo { order: 3; margin-left: 46px; }
+  .resumo__botoes { flex-direction: column; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mensagem-pronta,
+  .barras__barra,
+  .fatias__barra span,
+  .balao--entra,
+  .notificacao { animation: none; }
+}
