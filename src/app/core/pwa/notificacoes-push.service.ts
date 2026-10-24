@@ -13,6 +13,13 @@ import { InstalacaoAppService } from './instalacao-app.service';
  */
 export type EstadoNotificacoes = 'indisponivel' | 'precisa-instalar' | 'desativado' | 'ativo' | 'bloqueado';
 
+/** "Testar notificação": aparelhos inscritos neste perfil e em quantos o aviso saiu. */
+export interface ResultadoTestePush {
+  configurado: boolean;
+  aparelhos: number;
+  enviados: number;
+}
+
 /**
  * Avisos no celular quando um pedido fica pronto para fechar (Web Push).
  * O aparelho se inscreve no navegador e a inscrição vai para POST /api/perfis/{id}/push/inscricoes.
@@ -49,7 +56,12 @@ export class NotificacoesPushService {
     }
     const registro = await navigator.serviceWorker.getRegistration();
     const inscricao = await registro?.pushManager.getSubscription();
-    this.estadoAtual.set(inscricao && Notification.permission === 'granted' ? 'ativo' : 'desativado');
+    const ativo = !!inscricao && Notification.permission === 'granted';
+    this.estadoAtual.set(ativo ? 'ativo' : 'desativado');
+    if (ativo && this.sessao.perfilId()) {
+      // o backend pode ter perdido a inscrição (troca de servidor, chave nova): reenvia, é idempotente
+      void this.ativar().catch(() => undefined);
+    }
   }
 
   /**
@@ -71,14 +83,26 @@ export class NotificacoesPushService {
       return this.estadoAtual();
     }
     const registro = await navigator.serviceWorker.ready;
-    const inscricao =
-      (await registro.pushManager.getSubscription()) ??
-      (await registro.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: base64UrlParaBytes(chave) }));
+    const bytesDaChave = base64UrlParaBytes(chave);
+    let inscricao = await registro.pushManager.getSubscription();
+    if (inscricao && !mesmaChave(inscricao, bytesDaChave)) {
+      // inscrita com a chave de outro servidor: o push dela nunca chegaria
+      await inscricao.unsubscribe();
+      inscricao = null;
+    }
+    inscricao ??= await registro.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: bytesDaChave });
     await firstValueFrom(
       this.http.post<void>(urlDoPerfil(this.sessao.perfilIdObrigatorio(), '/push/inscricoes'), inscricao.toJSON()),
     );
     this.estadoAtual.set('ativo');
     return 'ativo';
+  }
+
+  /** Manda um aviso de teste para os aparelhos inscritos (este incluído, se o envio deu certo). */
+  testar(): Promise<ResultadoTestePush> {
+    return firstValueFrom(
+      this.http.post<ResultadoTestePush>(urlDoPerfil(this.sessao.perfilIdObrigatorio(), '/push/teste'), null),
+    );
   }
 
   private async chavePublica(): Promise<string | null> {
@@ -91,6 +115,13 @@ export class NotificacoesPushService {
       return null;
     }
   }
+}
+
+function mesmaChave(inscricao: PushSubscription, chave: Uint8Array): boolean {
+  const atual = inscricao.options.applicationServerKey;
+  if (!atual) return true;   // navegador que não informa: fica com a inscrição que tem
+  const bytes = new Uint8Array(atual);
+  return bytes.length === chave.length && bytes.every((b, i) => b === chave[i]);
 }
 
 /** A chave VAPID vem em base64url; o navegador quer os bytes. */

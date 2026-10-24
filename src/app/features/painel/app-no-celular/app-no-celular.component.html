@@ -40,6 +40,18 @@
           {{ ativando() ? 'Ativando…' : 'Ativar avisos de pedidos' }}
         </button>
       }
+      @case ('ativo') {
+        <p class="app-celular__nota">Notificações ativas neste aparelho.</p>
+        <button
+          type="button"
+          class="btn btn--secundario btn--bloco"
+          [disabled]="testando()"
+          [attr.aria-busy]="testando()"
+          (click)="testarAvisos()"
+        >
+          {{ testando() ? 'Enviando…' : 'Testar notificação' }}
+        </button>
+      }
       @case ('precisa-instalar') {
         <p class="app-celular__nota">No iPhone, os avisos de pedido funcionam depois que o DizAI estiver na tela de início.</p>
       }

@@ -25,6 +25,8 @@ const ITEM_EDITAR: ItemMenuAcoes<AcaoPerfil> = { id: 'editar', rotulo: 'Editar d
 const ITEM_ESTATISTICAS: ItemMenuAcoes<AcaoPerfil> = { id: 'estatisticas', rotulo: 'Estatísticas', icone: 'grafico' };
 const ITEM_SENHA: ItemMenuAcoes<AcaoPerfil> = { id: 'senha', rotulo: 'Alterar senha', icone: 'cadeado' };
 const ITEM_ATALHO: ItemMenuAcoes<AcaoPerfil> = { id: 'atalho', rotulo: 'Baixar atalho', icone: 'celular' };
+/** Já instalado: a mesma janela, para ativar e testar as notificações deste aparelho. */
+const ITEM_NOTIFICACOES: ItemMenuAcoes<AcaoPerfil> = { id: 'atalho', rotulo: 'Notificações', icone: 'sino' };
 const ITEM_SAIR: ItemMenuAcoes<AcaoPerfil> = { id: 'sair', rotulo: 'Sair da conta', icone: 'sair', perigo: true };
 
 /** Topo do painel: saudação, identidade da loja, status do assistente e link público. */
@@ -54,12 +56,14 @@ export class ResumoLojaComponent {
   private readonly instalacaoApp = inject(InstalacaoAppService);
   private readonly router = inject(Router);
   private readonly rotas = inject(SessaoService).rotasDoPainel;
-  /** "Baixar atalho" só aparece enquanto o DizAI ainda não está instalado neste aparelho. */
-  protected readonly itensMenu = computed(() =>
-    this.instalacaoApp.podeInstalar()
-      ? [ITEM_EDITAR, ITEM_ESTATISTICAS, ITEM_SENHA, ITEM_ATALHO, ITEM_SAIR]
-      : [ITEM_EDITAR, ITEM_ESTATISTICAS, ITEM_SENHA, ITEM_SAIR],
-  );
+  /** "Baixar atalho" enquanto o DizAI ainda não está instalado neste aparelho; depois, "Notificações". */
+  protected readonly itensMenu = computed(() => [
+    ITEM_EDITAR,
+    ITEM_ESTATISTICAS,
+    ITEM_SENHA,
+    this.instalacaoApp.podeInstalar() ? ITEM_ATALHO : ITEM_NOTIFICACOES,
+    ITEM_SAIR,
+  ]);
 
   protected readonly enviandoFoto = signal(false);
   /** Sem foto, a inicial aparece na cor escolhida para a página pública. */

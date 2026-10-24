@@ -26,10 +26,14 @@ export class AppNoCelularComponent {
   protected readonly estadoAvisos = this.avisos.estado;
   protected readonly mostrarPassosIphone = signal(false);
   protected readonly ativando = signal(false);
+  protected readonly testando = signal(false);
 
+  /** No convite (menu ⋮ → Notificações) o "ativo" também aparece, com o botão de testar. */
   protected readonly temAlgoAFazer = computed(
     () =>
-      this.mostrarInstalar() || ['desativado', 'precisa-instalar', 'bloqueado'].includes(this.estadoAvisos()),
+      this.mostrarInstalar() ||
+      ['desativado', 'precisa-instalar', 'bloqueado'].includes(this.estadoAvisos()) ||
+      (this.modo() === 'convite' && this.estadoAvisos() === 'ativo'),
   );
 
   protected async instalar(): Promise<void> {
@@ -57,6 +61,29 @@ export class AppNoCelularComponent {
       this.toastService.mostrar('Não foi possível ativar os avisos. Tente de novo.');
     } finally {
       this.ativando.set(false);
+    }
+  }
+
+  protected async testarAvisos(): Promise<void> {
+    if (this.testando()) {
+      return;
+    }
+    this.testando.set(true);
+    try {
+      // garante que este aparelho está inscrito no servidor antes de mandar
+      await this.avisos.ativar();
+      const resultado = await this.avisos.testar();
+      if (!resultado.configurado) {
+        this.toastService.mostrar('As notificações estão desligadas no servidor.');
+      } else if (resultado.enviados === 0) {
+        this.toastService.mostrar('Não foi possível enviar o aviso. Desative e ative as notificações de novo.');
+      } else {
+        this.toastService.mostrar('Aviso enviado! Ele chega em alguns segundos.');
+      }
+    } catch {
+      this.toastService.mostrar('Não foi possível enviar o aviso de teste. Tente de novo.');
+    } finally {
+      this.testando.set(false);
     }
   }
 }
