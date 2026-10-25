@@ -1,5 +1,5 @@
 import { PeriodoAtendimento } from './agenda.model';
-import { AreaCorFundoVitrine, CorFundoVitrine, FonteVitrine } from './vitrine.model';
+import { AreaCorFundoVitrine, CorFundoVitrine, EstiloCor, FonteVitrine } from './vitrine.model';
 
 export type RamoNegocio =
   | 'SERVICOS_PRESENCIAIS'
@@ -79,6 +79,8 @@ export interface Perfil {
   fonteGaleria?: FonteVitrine;
   corFundoGaleria?: CorFundoVitrine;
   areaCorFundoGaleria?: AreaCorFundoVitrine;
+  /** Estilo da cor de destaque (null = normal). */
+  estiloCor?: EstiloCor | null;
   /** Referência da imagem de capa no Storage. */
   capaUrl?: string | null;
   ramo: RamoNegocio;
@@ -100,6 +102,11 @@ export interface Perfil {
   modoCatalogo: ModoCatalogo;
   /** Referências de lojas/{slug}/catalogo: 1 PDF ou até 2 imagens. Exiba com o pipe urlImagem. */
   catalogoArquivos: string[];
+  /**
+   * Todos os catálogos (o 1º é o de catalogoArquivos). Com 2 ou 3 (só produtos, modo "Quando perguntar"), cada um tem
+   * assunto e contexto, e o assistente envia o do assunto da conversa.
+   */
+  catalogos?: CatalogoConversa[];
   /** Liga e desliga as respostas automáticas. O lojista controla no painel. */
   iaAtiva: boolean;
   /** O número já foi vinculado à API oficial do WhatsApp (Meta). Sem isso o assistente não responde. */
@@ -123,6 +130,13 @@ export interface Perfil {
   senhaTemporaria?: boolean;
 }
 
+/** Um catálogo enviado na conversa: o assunto e o contexto só valem com 2 ou 3 catálogos. */
+export interface CatalogoConversa {
+  assunto: string | null;
+  contexto: string | null;
+  arquivos: string[];
+}
+
 /** Campos que o lojista altera na tela inicial do painel. */
 export type ConfiguracoesAtendimento = Pick<
   Perfil,
@@ -134,6 +148,7 @@ export type ConfiguracoesAtendimento = Pick<
   | 'instrucoesObrigatorias'
   | 'modoCatalogo'
   | 'catalogoArquivos'
+  | 'catalogos'
   | 'confirmaQualquerHora'
   | 'linkAgendamentoExterno'
 >;

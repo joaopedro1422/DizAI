@@ -18,6 +18,26 @@
   --grade: #edf0f5;
 }
 
+/* filtros à esquerda e "Exportar PDF" à direita (no celular, o botão desce para a linha de baixo) */
+.barra-numeros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.exportar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.exportar:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 /* "Mês": um chip com o seletor nativo dentro (no celular abre a lista do sistema) */
 .seletor-mes {
   position: relative;

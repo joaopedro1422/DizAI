@@ -15,7 +15,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 import { ERRO_AO_CARREGAR, mensagemDoErro } from '../../core/api/erro-api';
-import { Agendamento, NovoAgendamento, VendaProduto } from '../../core/models/agenda.model';
+import { Agendamento, ClienteListaEspera, NovoAgendamento, VendaProduto } from '../../core/models/agenda.model';
 import { AgendaService, DIAS_DA_AGENDA } from '../../core/services/agenda.service';
 import { DicasVistasService } from '../../core/services/dicas-vistas.service';
 import { PerfilService } from '../../core/services/perfil.service';
@@ -35,10 +35,11 @@ import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { HorariosAtendimentoComponent } from './horarios-atendimento/horarios-atendimento.component';
 import { MensagensProntasComponent } from './mensagens-prontas/mensagens-prontas.component';
 import { preencherMensagem } from './mensagens-prontas/variaveis-mensagem';
-import { montarLinhaDoTempo } from './linha-do-tempo';
+import { montarColunas, montarLinhaDoTempo } from './linha-do-tempo';
 import { NovoAgendamentoComponent } from './novo-agendamento/novo-agendamento.component';
 import { NumerosAgendaComponent } from './numeros-agenda/numeros-agenda.component';
 import { RegistrarVendaComponent } from './registrar-venda/registrar-venda.component';
+import { SeletorProfissionalComponent } from './seletor-profissional/seletor-profissional.component';
 import { EscolhaQuemEstaLivre, QuemEstaLivreComponent } from './quem-esta-livre/quem-esta-livre.component';
 import { formatarReal } from '../pedidos/textos-pedido';
 import { FormsModule } from '@angular/forms';
@@ -60,6 +61,7 @@ const ATUALIZAR_A_CADA_MS = 15_000;
   imports: [
     UrlImagemPipe,
     RegistrarVendaComponent,
+    SeletorProfissionalComponent,
     QuemEstaLivreComponent,
     NgTemplateOutlet,
     RouterLink,
@@ -77,7 +79,12 @@ const ATUALIZAR_A_CADA_MS = 15_000;
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './agenda-page.component.html',
-  styleUrls: ['../../shared/estilos-topo-azul.css', './agenda-page.component.css'],
+  styleUrls: [
+    '../../shared/estilos-topo-azul.css',
+    './agenda-page.component.css',
+    './agenda-colunas.css',
+    './lista-espera.css',
+  ],
 })
 export class AgendaPageComponent implements OnInit {
   private readonly agendaService = inject(AgendaService);
@@ -117,10 +124,13 @@ export class AgendaPageComponent implements OnInit {
   /** Quem atende; com 2+, os cards dizem com quem é e dá para filtrar a agenda por profissional. */
   protected readonly profissionais = this.agendaService.profissionais;
   protected readonly variosProfissionais = this.agendaService.variosProfissionais;
-  /** null = todos (só na visualização resumida; a linha do tempo mostra um profissional por vez). */
+  /**
+   * null = todos (na resumida; na completa do celular a linha do tempo mostra um profissional por vez; na do
+   * computador, todos lado a lado, um por coluna).
+   */
   protected readonly filtroProfissional = signal<string | null>(null);
   protected readonly profissionalVisivel = computed(() => {
-    if (!this.variosProfissionais()) {
+    if (!this.variosProfissionais() || this.completaEmColunas()) {
       return null;
     }
     return this.filtroProfissional() ?? (this.visualizacao() === 'completa' ? this.profissionais()[0]?.id ?? null : null);
@@ -144,6 +154,11 @@ export class AgendaPageComponent implements OnInit {
   });
 
   protected readonly cancelando = signal(false);
+  /** Qual botão do cancelamento foi tocado (o spinner aparece nele): true = "Cancelar e oferecer à lista". */
+  protected readonly avisandoLista = signal(false);
+  /** Cliente da lista de espera cujo "×" foi tocado: confirma antes de tirar da fila. */
+  protected readonly paraRemoverDaLista = signal<ClienteListaEspera | null>(null);
+  protected readonly removendoDaLista = signal(false);
   protected readonly confirmandoFolga = signal(false);
   protected readonly mudandoFolga = signal(false);
 
@@ -221,6 +236,20 @@ export class AgendaPageComponent implements OnInit {
     this.agendamentosDoDia().filter((a) => a.status === 'CANCELADO'),
   );
 
+  /**
+   * Lista de espera do dia escolhido, na ordem da fila. Filtrando um profissional, aparece quem quer ele ou
+   * qualquer um (a posição continua a do dia).
+   */
+  protected readonly listaEsperaDoDia = computed(() => {
+    const data = this.diaSelecionado();
+    const filtro = this.profissionalVisivel();
+    const nome = filtro ? this.profissionais().find((p) => p.id === filtro)?.nome : null;
+    return this.agendaService
+      .listaEspera()
+      .filter((l) => l.data === data && (!nome || l.profissional === null || l.profissional === nome));
+  });
+  protected readonly minutosListaEspera = computed(() => this.configuracao()?.listaEsperaMinutos ?? 15);
+
   /** Linha do tempo do dia: expediente (nada na folga), agendamentos confirmados e o agora (só hoje). */
   protected readonly linhaDoTempo = computed(() => {
     const data = this.diaSelecionado();
@@ -232,6 +261,36 @@ export class AgendaPageComponent implements OnInit {
   /** Tablet e computador (mesmo corte do CSS): as abas sobem para a linha do título. */
   private readonly consultaTelaGrande = window.matchMedia('(min-width: 760px)');
   protected readonly telaGrande = signal(this.consultaTelaGrande.matches);
+  /** Computador: a completa com 2+ profissionais mostra todos, um por coluna (no celular, um por vez). */
+  private readonly consultaComputador = window.matchMedia('(min-width: 1024px)');
+  private readonly computador = signal(this.consultaComputador.matches);
+  protected readonly completaEmColunas = computed(
+    () => this.computador() && this.variosProfissionais() && this.visualizacao() === 'completa',
+  );
+
+  /** A completa no computador com 2+ profissionais: a mesma grade do dia, com uma coluna para cada um. */
+  protected readonly linhaEmColunas = computed(() => {
+    if (!this.completaEmColunas()) {
+      return null;
+    }
+    const data = this.diaSelecionado();
+    const periodos = this.folgaNoDia() ? [] : this.periodosDoDia(data);
+    const agora = data === hojeIso() ? minutosDoDia(this.horaAgora()) : null;
+    return montarColunas(periodos, this.profissionais(), this.confirmadosDoDia(), agora);
+  });
+
+  /**
+   * A área das colunas rola sozinha (para o lado e para baixo). Rolada para o lado, a régua de horas presa à esquerda
+   * ganha o card com sombra; rolada para baixo, a linha dos nomes presa no topo também.
+   */
+  protected readonly colunasRoladas = signal(false);
+  protected readonly colunasRoladasParaBaixo = signal(false);
+
+  protected aoRolarColunas(evento: Event): void {
+    const area = evento.target as HTMLElement;
+    this.colunasRoladas.set(area.scrollLeft > 2);
+    this.colunasRoladasParaBaixo.set(area.scrollTop > 2);
+  }
 
   /** A linha vermelha da hora atual na visão completa (só hoje). */
   private readonly linhaAgora = viewChild<ElementRef<HTMLElement>>('linhaAgora');
@@ -256,6 +315,8 @@ export class AgendaPageComponent implements OnInit {
     const relogio = window.setInterval(() => this.horaAgora.set(horaAtual()), 60_000);
     const aoMudarTela = (evento: MediaQueryListEvent) => this.telaGrande.set(evento.matches);
     this.consultaTelaGrande.addEventListener('change', aoMudarTela);
+    const aoMudarComputador = (evento: MediaQueryListEvent) => this.computador.set(evento.matches);
+    this.consultaComputador.addEventListener('change', aoMudarComputador);
     // a tela fica aberta no balcão: o que a IA (ou a página pública) marcar aparece sozinho, como nos Pedidos,
     // com um sinal sonoro quando chega um agendamento novo. Com a aba escondida não busca; ao voltar, busca na hora.
     prepararSinalSonoro();
@@ -280,6 +341,7 @@ export class AgendaPageComponent implements OnInit {
     inject(DestroyRef).onDestroy(() => {
       window.clearInterval(relogio);
       this.consultaTelaGrande.removeEventListener('change', aoMudarTela);
+      this.consultaComputador.removeEventListener('change', aoMudarComputador);
       window.clearInterval(atualizacao);
       document.removeEventListener('visibilitychange', atualizar);
       window.removeEventListener('focus', atualizar);
@@ -452,20 +514,76 @@ export class AgendaPageComponent implements OnInit {
 
   // ---------------------------------------------------------------- cancelar
 
-  protected async confirmarCancelamento(): Promise<void> {
+  /**
+   * Quantos esperam uma vaga no dia do horário e poderiam ficar com ele (querem esse profissional ou qualquer um).
+   * Com alguém, o cancelamento pergunta se o horário vai para a lista. Horário que já passou não vai.
+   */
+  protected esperandoVaga(agendamento: Agendamento): number {
+    if (!this.modoAutomatico() || this.configuracao()?.listaEsperaAtiva === false || this.jaPassou(agendamento)) {
+      return 0;
+    }
+    return this.agendaService
+      .listaEspera()
+      .filter(
+        (l) =>
+          l.data === agendamento.data &&
+          l.status === 'AGUARDANDO' &&
+          (l.profissional === null || l.profissional === agendamento.profissionalNome),
+      ).length;
+  }
+
+  protected async confirmarCancelamento(avisarListaEspera = false): Promise<void> {
     const agendamento = this.paraCancelar();
     if (!agendamento || this.cancelando()) {
       return;
     }
     this.cancelando.set(true);
+    this.avisandoLista.set(avisarListaEspera);
     try {
-      await this.agendaService.cancelar(agendamento.id);
+      await this.agendaService.cancelar(agendamento.id, avisarListaEspera);
       this.paraCancelar.set(null);
-      this.toastService.mostrar('Horário cancelado e liberado na agenda');
+      const oferecida = this.agendaService
+        .listaEspera()
+        .some((l) => l.data === agendamento.data && l.status === 'OFERECIDA' && l.ofertaHorario !== null);
+      this.toastService.mostrar(
+        !avisarListaEspera
+          ? 'Horário cancelado e liberado na agenda'
+          : oferecida
+            ? 'Horário cancelado e oferecido à lista de espera'
+            : 'Horário cancelado. O serviço de quem está na lista não cabe neste horário: ele ficou livre na agenda.',
+      );
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível cancelar. Tente de novo.'));
     } finally {
       this.cancelando.set(false);
+    }
+  }
+
+  // ---------------------------------------------------------------- lista de espera
+
+  /** "14:32": até quando quem recebeu a vaga pode responder. */
+  protected horaDoPrazo(instante: string | null): string {
+    return instante ? new Date(instante).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '';
+  }
+
+  protected linkWhatsappDaLista(cliente: ClienteListaEspera): string {
+    return gerarLinkWhatsapp(cliente.whatsapp);
+  }
+
+  protected async removerDaLista(): Promise<void> {
+    const cliente = this.paraRemoverDaLista();
+    if (!cliente || this.removendoDaLista()) {
+      return;
+    }
+    this.removendoDaLista.set(true);
+    try {
+      await this.agendaService.removerDaListaEspera(cliente.id);
+      this.paraRemoverDaLista.set(null);
+      this.toastService.mostrar(`${cliente.nomeCliente} saiu da lista de espera`);
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível tirar da lista. Tente de novo.'));
+    } finally {
+      this.removendoDaLista.set(false);
     }
   }
 

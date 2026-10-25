@@ -1,0 +1,80 @@
+/* Catálogos por assunto (2 ou 3): cada um num cartão com o número, o assunto, o contexto e os arquivos */
+.catalogo-assunto {
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo-suave);
+}
+
+.catalogo-assunto__topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.catalogo-assunto__topo .campo__entrada {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  font-weight: 700;
+}
+
+.catalogo-assunto__numero {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--cor-primaria);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.catalogo-assunto textarea {
+  min-height: 0;
+  font-size: 14px;
+}
+
+.catalogo__enviar--varios {
+  min-height: 92px;
+  background: var(--cor-fundo);
+}
+
+/* "Separar por assunto" / "Adicionar outro catálogo" */
+.catalogo-adicionar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px dashed var(--cor-borda-forte);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo);
+  color: var(--cor-primaria);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.catalogo-adicionar:hover {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria-clara);
+}
+
+.catalogo-adicionar > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.catalogo-adicionar strong {
+  font-size: 14px;
+}
+
+.catalogo-adicionar__dica {
+  font-size: 12.5px;
+  color: var(--cor-texto-suave);
+}

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, output, signal } from '@angular/core';
 
 import { mensagemDoErro } from '../../../core/api/erro-api';
 import { CORES_MARCA, buscarCorMarca } from '../../../core/constants/cores-marca';
@@ -7,6 +7,7 @@ import {
   AreaCorFundoVitrine,
   ConfiguracaoVitrine,
   CorFundoVitrine,
+  EstiloCor,
   FONTES_VITRINE,
   FonteVitrine,
 } from '../../../core/models/vitrine.model';
@@ -16,6 +17,9 @@ import { ToastService } from '../../../core/services/toast.service';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
 import { arquivoDaCapa, desenharCapaDegrade } from './capa-degrade';
+import { OPCOES_FUNDO, SeletorFundoComponent } from './seletor-fundo.component';
+import { SeletorEstiloCorComponent } from './seletor-estilo-cor.component';
+import { fundoDoDestaque } from '../../../core/constants/estilos-cor';
 
 const TAMANHO_MAXIMO_CAPA_BYTES = 5 * 1024 * 1024;
 
@@ -24,7 +28,7 @@ const TAMANHO_MAXIMO_CAPA_BYTES = 5 * 1024 * 1024;
  */
 @Component({
   selector: 'app-seletor-cor-marca',
-  imports: [IconeComponent, UrlImagemPipe],
+  imports: [IconeComponent, UrlImagemPipe, SeletorFundoComponent, SeletorEstiloCorComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './seletor-cor-marca.component.html',
   styleUrl: './seletor-cor-marca.component.css',
@@ -35,12 +39,9 @@ export class SeletorCorMarcaComponent {
   private readonly armazenamentoFotos = inject(ArmazenamentoFotosService);
 
   readonly salvo = output<void>();
+  /** O fundo escolhido, pronto para o `background` do modal (null = sem cor): o modal fica com ele, como prévia. */
+  readonly corFundo = output<string | null>();
   protected readonly cores = CORES_MARCA;
-  protected readonly opcoesFundo: { valor: CorFundoVitrine; nome: string }[] = [
-    ...CORES_MARCA.map((cor) => ({ valor: cor.valor, nome: `${cor.nome} claro` })),
-    { valor: 'BRANCO', nome: 'Branco' },
-    { valor: 'SEM_COR', nome: 'Sem cor de fundo' },
-  ];
   protected readonly corAtual = signal<CorMarca>(this.perfilService.perfil().corMarca);
   protected readonly fonteAtual = signal<FonteVitrine>(
     this.perfilService.perfil().fonteGaleria ?? 'Poppins',
@@ -48,8 +49,15 @@ export class SeletorCorMarcaComponent {
   protected readonly fundoAtual = signal<CorFundoVitrine>(
     this.perfilService.perfil().corFundoGaleria ?? this.perfilService.perfil().corMarca,
   );
+  /** Normal, metálico, degradê ou vidro: muda como a cor pinta os botões e as etiquetas da vitrine. */
+  protected readonly estiloAtual = signal<EstiloCor>(this.perfilService.perfil().estiloCor ?? 'NORMAL');
+  protected readonly hexAtual = computed(() => buscarCorMarca(this.corAtual()).hex);
   protected readonly areaFundoAtual = signal<AreaCorFundoVitrine>(
     this.perfilService.perfil().areaCorFundoGaleria ?? 'CABECALHO',
+  );
+  /** A opção de fundo escolhida, com o nome e a cor (para o aviso embaixo do seletor). */
+  protected readonly fundoEscolhido = computed(
+    () => OPCOES_FUNDO.find((opcao) => opcao.valor === this.fundoAtual()) ?? OPCOES_FUNDO[0],
   );
   protected readonly capaAtual = computed(() => this.perfilService.perfil().capaUrl ?? null);
   protected readonly arquivoCapa = signal<File | null>(null);
@@ -69,6 +77,19 @@ export class SeletorCorMarcaComponent {
     return `'${fonte}', ${familia}`;
   });
 
+  constructor() {
+    // os fundos têm um pouco de transparência: sobre o branco, o que está atrás do modal não aparece
+    effect(() => {
+      const cor = this.fundoEscolhido().cor;
+      this.corFundo.emit(cor ? `linear-gradient(${cor}, ${cor}), #ffffff` : null);
+    });
+  }
+
+  /** As bolinhas de cor já aparecem no estilo escolhido. */
+  protected pintura(hex: string): string {
+    return fundoDoDestaque(hex, this.estiloAtual());
+  }
+
   protected escolherCor(cor: CorMarca): void {
     this.corAtual.set(cor);
   }
@@ -78,14 +99,6 @@ export class SeletorCorMarcaComponent {
     const fontePermitida = FONTES_VITRINE.find((opcao) => opcao === fonte);
     if (fontePermitida) {
       this.fonteAtual.set(fontePermitida);
-    }
-  }
-
-  protected alterarFundo(evento: Event): void {
-    const valor = (evento.target as HTMLSelectElement).value;
-    const opcao = this.opcoesFundo.find((item) => item.valor === valor);
-    if (opcao) {
-      this.fundoAtual.set(opcao.valor);
     }
   }
 
@@ -153,6 +166,7 @@ export class SeletorCorMarcaComponent {
         fonteGaleria: this.fonteAtual(),
         corFundoGaleria: this.fundoAtual(),
         areaCorFundoGaleria: this.areaFundoAtual(),
+        estiloCor: this.estiloAtual(),
         capaUrl,
       };
       await this.perfilService.atualizarConfiguracaoVitrine(configuracao);

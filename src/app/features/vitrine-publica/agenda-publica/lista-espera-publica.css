@@ -1,0 +1,35 @@
+/* Dia lotado com lista de espera: a opção entra no lugar dos horários, com o mesmo desenho de um horário. */
+.lista-espera__lotado {
+  margin-bottom: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--vitrine-suave);
+}
+
+.hora--lista-espera {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  grid-column: 1 / -1;
+  padding: 0 18px;
+}
+
+.lista-espera__aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 11px 13px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--vitrine-destaque) 9%, #ffffff);
+  color: var(--vitrine-texto);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.lista-espera__aviso app-icone {
+  flex: none;
+  margin-top: 1px;
+  color: var(--vitrine-destaque);
+}

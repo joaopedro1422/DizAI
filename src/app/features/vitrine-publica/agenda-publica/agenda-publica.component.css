@@ -65,7 +65,7 @@
 }
 
 .passo__numero--feito {
-  background: var(--vitrine-destaque);
+  background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
   color: #ffffff;
   transform: scale(1.04);
 }
@@ -219,7 +219,7 @@
 }
 
 .servico--escolhido .servico__marca {
-  background: var(--vitrine-destaque);
+  background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
   color: #ffffff;
   transform: scale(1.05);
 }
@@ -309,7 +309,7 @@
 
 .pessoa--escolhida .pessoa__marca {
   border-color: var(--vitrine-destaque);
-  background: var(--vitrine-destaque);
+  background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
 }
 
 /* ------------------------------------------------------------------ dia e horário */
@@ -361,7 +361,7 @@
 
 .hora--escolhida {
   border-color: var(--vitrine-destaque);
-  background: var(--vitrine-destaque);
+  background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
   color: #ffffff;
   transform: translateY(-1px);
   box-shadow: 0 6px 14px color-mix(in srgb, var(--vitrine-destaque) 28%, transparent);
@@ -513,7 +513,7 @@
   gap: 10px;
   min-height: 50px;
   border-radius: 15px;
-  background: var(--vitrine-destaque);
+  background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
   color: #ffffff;
   font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-size: 15px;
@@ -686,7 +686,7 @@
 }
 
 .produto--reservado .produto__botao {
-  background: var(--vitrine-destaque);
+  background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
   color: #ffffff;
 }
 

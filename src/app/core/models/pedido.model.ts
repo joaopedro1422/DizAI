@@ -37,10 +37,14 @@ export interface NumerosPedidos {
   entreguesRecentes: Pedido[];
   /** "2026-10" quando o filtro é um mês do calendário; null nos 7/30/90 dias. */
   mes: string | null;
-  /** Faturamento por dia (por semana em 90 dias). */
+  /** "2026" quando o filtro é um ano inteiro (série por mês); null nos outros. */
+  ano: string | null;
+  /** Faturamento por dia (por semana em 90 dias, por mês no ano). */
   serie: { inicio: string; valor: number; pedidos: number }[];
   /** SEG..DOM: em que dia da semana mais se entrega. */
   porDiaDaSemana: { dia: string; valor: number; pedidos: number }[];
+  /** O produto escolhido nos entregues (em quantos pedidos e quanto faturou), os 8 primeiros. */
+  produtosMaisVendidos?: { nome: string; pedidos: number; valor: number }[];
   /** Os 5 clientes que mais gastaram no período. */
   melhoresClientes: { nome: string; pedidos: number; valor: number }[];
   clientes: number;

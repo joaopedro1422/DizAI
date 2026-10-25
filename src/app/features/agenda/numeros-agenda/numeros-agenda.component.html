@@ -1,11 +1,13 @@
+<!-- os filtros do período e, no fim da linha, o relatório do mesmo período em PDF -->
+<div class="barra-numeros">
 <div class="filtros grupo-chips" role="radiogroup" aria-label="Período">
   @for (periodo of periodos; track periodo.dias) {
     <button
       type="button"
       role="radio"
       class="chip"
-      [class.chip--ativo]="!mes() && dias() === periodo.dias"
-      [attr.aria-checked]="!mes() && dias() === periodo.dias"
+      [class.chip--ativo]="!mes() && !ano() && dias() === periodo.dias"
+      [attr.aria-checked]="!mes() && !ano() && dias() === periodo.dias"
       (click)="escolherPeriodo(periodo.dias)"
     >
       {{ periodo.rotulo }}
@@ -21,6 +23,21 @@
       }
     </select>
   </label>
+  <!-- ano inteiro: 1º de janeiro a 31 de dezembro, gráfico por mês -->
+  <label class="seletor-mes chip" [class.chip--ativo]="!!ano()">
+    <span class="somente-leitor-tela">Ver um ano</span>
+    <select [value]="ano() ?? ''" (change)="escolherAno($event)">
+      <option value="" disabled>Ano</option>
+      @for (opcao of anos; track opcao) {
+        <option [value]="opcao">{{ opcao }}</option>
+      }
+    </select>
+  </label>
+</div>
+  <button type="button" class="chip exportar" [disabled]="!numeros() || carregando() || exportando()" (click)="exportarPdf()">
+    <app-icone nome="documento" [tamanho]="16" [espessura]="2" />
+    {{ exportando() ? 'Gerando o PDF…' : 'Exportar PDF' }}
+  </button>
 </div>
 
 @if (numeros(); as n) {
@@ -46,10 +63,10 @@
         <span class="kpi__valor">{{ real(n.valorMedio) }}</span>
         <span class="kpi__nota">por atendimento</span>
       </div>
-      @if (!n.mes || n.previstos > 0 || mesAtualOuFuturo(n.mes)) {
+      @if (mostrarPrevistos(n)) {
         <div class="kpi">
           <span class="kpi__icone"><app-icone nome="relogio" [tamanho]="16" [espessura]="2" /></span>
-          <span class="kpi__rotulo">{{ n.mes ? 'Ainda neste mês' : 'Próximos ' + n.dias + ' dias' }}</span>
+          <span class="kpi__rotulo">{{ n.ano ? 'Ainda neste ano' : n.mes ? 'Ainda neste mês' : 'Próximos ' + n.dias + ' dias' }}</span>
           <span class="kpi__valor">{{ n.previstos }}</span>
           <span class="kpi__nota">{{ real(n.valorPrevisto) }} previstos</span>
         </div>
@@ -60,7 +77,7 @@
     <section class="cartao cartao--largo" aria-labelledby="titulo-serie">
       <header class="cartao__topo">
         <div>
-          <h2 class="cartao__titulo" id="titulo-serie">Faturamento {{ porSemana() ? 'por semana' : 'por dia' }}</h2>
+          <h2 class="cartao__titulo" id="titulo-serie">Faturamento {{ nomeDaSerie() }}</h2>
           <p class="cartao__sub">Atendimentos que já aconteceram {{ textoPeriodo() }}</p>
         </div>
       </header>
@@ -73,7 +90,7 @@
             <span class="eixo__linha" style="bottom: 50%"><span class="eixo__rotulo">{{ real(topoSerie() / 2) }}</span></span>
             <span class="eixo__linha eixo__linha--base" style="bottom: 0"></span>
           </div>
-          <div class="colunas" role="list" [attr.aria-label]="'Faturamento ' + (porSemana() ? 'por semana' : 'por dia')">
+          <div class="colunas" role="list" [attr.aria-label]="'Faturamento ' + nomeDaSerie()">
             @for (coluna of colunas(); track coluna.chave) {
               <button
                 type="button"

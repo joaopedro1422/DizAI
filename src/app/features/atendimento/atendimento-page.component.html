@@ -210,8 +210,8 @@
         <app-catalogo-conversa
           [formulario]="formulario"
           [modo]="valores().modoCatalogo"
-          [arquivosSalvos]="valores().catalogoArquivos"
-          [mostrarErro]="tentouSalvar() && faltaCatalogo()"
+          [catalogos]="valores().catalogos"
+          [mostrarErro]="tentouSalvar() && (faltaCatalogo() || faltaAssuntoCatalogo())"
           [(pendentes)]="pendentesCatalogo"
         />
       </app-secao-configuracao>

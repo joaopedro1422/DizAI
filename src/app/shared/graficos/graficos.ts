@@ -5,6 +5,36 @@
 
 /** Quantos meses o seletor mostra (o atual e os anteriores). */
 const MESES_NO_SELETOR = 12;
+/** O primeiro ano do seletor de ano (o DizAI começou em 2026). */
+const PRIMEIRO_ANO = 2026;
+/** O "passo" de uma série por mês (filtro por ano): os pontos ficam a 28–31 dias um do outro. */
+export const PASSO_MES = 30;
+
+/** O filtro dos Números: últimos dias, um mês do calendário ("2026-10") ou um ano inteiro ("2026"). */
+export type FiltroNumeros = { dias: number } | { mes: string } | { ano: string };
+
+/** O ano atual e os anteriores, até o primeiro: ["2027", "2026"]. */
+export function anosDisponiveis(): string[] {
+  const atual = new Date().getFullYear();
+  return Array.from({ length: Math.max(1, atual - PRIMEIRO_ANO + 1) }, (_, i) => String(atual - i));
+}
+
+/** Período por extenso, para as notas: "dos últimos 30 dias", "de outubro de 2026" ou "de 2026". */
+export function textoDoPeriodo(n: { dias: number; mes: string | null; ano?: string | null }): string {
+  if (n.ano) return `de ${n.ano}`;
+  return n.mes ? `de ${nomeDoMes(n.mes).toLowerCase()}` : `dos últimos ${n.dias} dias`;
+}
+
+/** "por mês", "por semana" ou "por dia", pelo passo da série. */
+export function nomeDaSerie(passo: number): string {
+  return passo === PASSO_MES ? 'por mês' : passo === 7 ? 'por semana' : 'por dia';
+}
+
+/** Rótulo embaixo da coluna: "jan" na série por mês; "23/10" nas outras. */
+export function rotuloDoPonto(inicio: string, passo: number): string {
+  const data = deIso(inicio);
+  return passo === PASSO_MES ? data.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '') : diaMes(data);
+}
 
 /** O mês atual e os anteriores: { valor: "2026-10", rotulo: "Outubro de 2026" }. */
 export function mesesRecentes(): { valor: string; rotulo: string }[] {
@@ -42,15 +72,19 @@ export function topoDoEixo(maximo: number): number {
   return passo * potencia;
 }
 
-/** Dias entre dois pontos da série (1 = por dia, 7 = por semana). */
+/** Dias entre dois pontos da série (1 = por dia, 7 = por semana, PASSO_MES = por mês). */
 export function passoDaSerie(serie: { inicio: string }[]): number {
   if (serie.length < 2) return 1;
-  return Math.round((deIso(serie[1].inicio).getTime() - deIso(serie[0].inicio).getTime()) / 86_400_000);
+  const dias = Math.round((deIso(serie[1].inicio).getTime() - deIso(serie[0].inicio).getTime()) / 86_400_000);
+  return dias >= 28 ? PASSO_MES : dias;
 }
 
-/** Título da dica de um ponto: "Qui, 23/10" ou "Semana de 06/10". */
+/** Título da dica de um ponto: "Qui, 23/10", "Semana de 06/10" ou "Outubro de 2026". */
 export function tituloDoPonto(inicio: string, passo: number): string {
   const data = deIso(inicio);
+  if (passo === PASSO_MES) {
+    return nomeDoMes(inicio.slice(0, 7));
+  }
   if (passo === 7) {
     return `Semana de ${diaMes(data)}`;
   }

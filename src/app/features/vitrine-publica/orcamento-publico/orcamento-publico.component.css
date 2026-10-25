@@ -102,7 +102,7 @@
   height: 40px;
   border: none;
   border-radius: 50%;
-  background: var(--vitrine-destaque);
+  background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
   color: #ffffff;
 }
 
@@ -177,7 +177,7 @@
 
 .chip--ativo {
   border-color: var(--vitrine-destaque);
-  background: var(--vitrine-destaque);
+  background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
   color: #ffffff;
 }
 
@@ -361,7 +361,7 @@
 
 .botao-cheio {
   border-color: var(--vitrine-destaque);
-  background: var(--vitrine-destaque);
+  background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
   color: #ffffff;
 }
 
@@ -379,7 +379,7 @@
   max-width: 420px;
   min-height: 52px;
   border-radius: var(--raio-medio);
-  background: var(--vitrine-destaque);
+  background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
   color: #ffffff;
   font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   font-size: 15px;

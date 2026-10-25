@@ -115,3 +115,12 @@
   opacity: 0;
   cursor: pointer;
 }
+
+/* embaixo do "Cor de fundo": a janela está com a cor escolhida */
+.aviso-fundo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--cor-texto-secundario);
+}

@@ -38,67 +38,118 @@
       </div>
     }
 
-    <div class="campo">
-      <span class="campo__rotulo">Seu catálogo</span>
+    @for (cartao of cartoes(); track cartao.indice) {
+      @let i = cartao.indice;
+      <!-- com 2 ou 3 catálogos cada um vira um cartão com assunto e contexto; com 1, a tela de sempre -->
+      <section class="campo" [class.catalogo-assunto]="varios()" [attr.aria-label]="varios() ? 'Catálogo ' + (i + 1) : null">
+        @if (varios()) {
+          <div class="catalogo-assunto__topo">
+            <span class="catalogo-assunto__numero" aria-hidden="true">{{ i + 1 }}</span>
+            <input
+              class="campo__entrada"
+              [id]="'catalogo-assunto-' + i"
+              type="text"
+              maxlength="40"
+              placeholder="Assunto, ex.: Salgados"
+              aria-label="Assunto do catálogo"
+              [class.campo__entrada--erro]="mostrarErro() && !cartao.assunto.trim()"
+              [value]="cartao.assunto"
+              (input)="definirAssunto(i, $event)"
+            >
+            <button type="button" class="btn-icone btn-icone--suave" [attr.aria-label]="'Remover o catálogo ' + (i + 1)" (click)="removerCatalogo(i)">
+              <app-icone nome="lixeira" [tamanho]="16" />
+            </button>
+          </div>
+          <textarea
+            class="campo__entrada"
+            rows="2"
+            maxlength="300"
+            placeholder="Do que ele fala? Ex.: coxinha, kibe, kits para festa"
+            aria-label="Do que este catálogo fala"
+            [class.campo__entrada--erro]="mostrarErro() && !cartao.contexto.trim()"
+            [value]="cartao.contexto"
+            (input)="definirContexto(i, $event)"
+          ></textarea>
+        } @else {
+          <span class="campo__rotulo">Seu catálogo</span>
+        }
 
-      @if (itens().length === 0) {
-        <label class="area-tracejada catalogo__enviar" [class.catalogo__enviar--erro]="mostrarErro()">
-          <input
-            class="somente-leitor-tela"
-            type="file"
-            accept="application/pdf,image/jpeg,image/png"
-            multiple
-            aria-describedby="dica-arquivo-catalogo"
-            (change)="aoEscolherArquivos($event)"
-          >
-          <app-icone nome="prancheta" [tamanho]="24" />
-          <span>Enviar PDF ou imagem</span>
-          <span class="catalogo__formatos">1 PDF (até 15 MB) ou até 2 imagens JPG/PNG (até 5 MB)</span>
-        </label>
-      } @else {
-        <ul class="catalogo__arquivos">
-          @for (item of itens(); track item.chave) {
-            <li class="arquivo">
-              @if (item.pdf) {
-                <span class="arquivo__miniatura arquivo__miniatura--pdf" aria-hidden="true">PDF</span>
-              } @else {
-                <img class="arquivo__miniatura" [src]="item.url" alt="">
-              }
-              <span class="arquivo__textos">
-                <span class="arquivo__nome">{{ item.nome }}</span>
-                <span class="arquivo__detalhe">{{ item.detalhe }}</span>
-              </span>
-              @if (item.pdf && item.url) {
-                <a class="btn-icone btn-icone--suave" [href]="item.url" target="_blank" rel="noopener" aria-label="Abrir o PDF">
-                  <app-icone nome="externo" [tamanho]="16" />
-                </a>
-              }
-              <button type="button" class="btn-icone btn-icone--suave" [attr.aria-label]="'Remover ' + item.nome" (click)="item.remover()">
-                <app-icone nome="lixeira" [tamanho]="16" />
-              </button>
-            </li>
-          }
-        </ul>
+        @if (cartao.itens.length === 0) {
+          <label class="area-tracejada catalogo__enviar" [class.catalogo__enviar--varios]="varios()" [class.catalogo__enviar--erro]="mostrarErro()">
+            <input
+              class="somente-leitor-tela"
+              type="file"
+              accept="application/pdf,image/jpeg,image/png"
+              multiple
+              (change)="aoEscolherArquivos(i, $event)"
+            >
+            <app-icone nome="prancheta" [tamanho]="24" />
+            <span>Enviar PDF ou imagem</span>
+            <span class="catalogo__formatos">1 PDF (até 15 MB) ou até 2 imagens JPG/PNG (até 5 MB)</span>
+          </label>
+        } @else {
+          <ul class="catalogo__arquivos">
+            @for (item of cartao.itens; track item.chave) {
+              <li class="arquivo">
+                @if (item.pdf) {
+                  <span class="arquivo__miniatura arquivo__miniatura--pdf" aria-hidden="true">PDF</span>
+                } @else {
+                  <img class="arquivo__miniatura" [src]="item.url" alt="">
+                }
+                <span class="arquivo__textos">
+                  <span class="arquivo__nome">{{ item.nome }}</span>
+                  <span class="arquivo__detalhe">{{ item.detalhe }}</span>
+                </span>
+                @if (item.pdf && item.url) {
+                  <a class="btn-icone btn-icone--suave" [href]="item.url" target="_blank" rel="noopener" aria-label="Abrir o PDF">
+                    <app-icone nome="externo" [tamanho]="16" />
+                  </a>
+                }
+                <button type="button" class="btn-icone btn-icone--suave" [attr.aria-label]="'Remover ' + item.nome" (click)="item.remover()">
+                  <app-icone nome="lixeira" [tamanho]="16" />
+                </button>
+              </li>
+            }
+          </ul>
 
-        <label class="btn btn--secundario btn--pequeno catalogo__trocar">
-          <input
-            class="somente-leitor-tela"
-            type="file"
-            accept="application/pdf,image/jpeg,image/png"
-            multiple
-            (change)="aoEscolherArquivos($event)"
-          >
-          {{ podeAdicionarImagem() ? 'Adicionar a 2ª imagem ou trocar' : 'Trocar catálogo' }}
-        </label>
+          <label class="btn btn--secundario btn--pequeno catalogo__trocar">
+            <input
+              class="somente-leitor-tela"
+              type="file"
+              accept="application/pdf,image/jpeg,image/png"
+              multiple
+              (change)="aoEscolherArquivos(i, $event)"
+            >
+            {{ cartao.podeAdicionarImagem ? 'Adicionar a 2ª imagem ou trocar' : 'Trocar arquivo' }}
+          </label>
+        }
+
+        @if (mostrarErro() && cartao.itens.length === 0) {
+          <span class="campo__erro" role="alert">Envie o arquivo deste catálogo.</span>
+        }
+      </section>
+    }
+
+    @if (podeTerVarios()) {
+      @if (cartoes().length < maximoCatalogos) {
+        <button type="button" class="catalogo-adicionar" (click)="adicionarCatalogo()">
+          <app-icone nome="mais" [tamanho]="18" [espessura]="2.2" />
+          <span>
+            <strong>{{ varios() ? 'Adicionar outro catálogo' : 'Separar por assunto' }}</strong>
+            <span class="catalogo-adicionar__dica">
+              {{ varios() ? 'Até 3' : 'Vende mais de um tipo (ex.: salgados e doces)? O assistente envia o certo' }}
+            </span>
+          </span>
+        </button>
       }
+    } @else if (varios()) {
+      <p class="campo__erro" role="alert">
+        Na saudação vai um catálogo só. Escolha "Quando o cliente perguntar" ou deixe um catálogo.
+      </p>
+    }
 
-      @if (mostrarErro() && itens().length === 0) {
-        <span class="campo__erro" role="alert">Envie o catálogo para o assistente poder mandar na conversa.</span>
-      } @else {
-        <span class="campo__dica" id="dica-arquivo-catalogo">
-          Prefira imagem: ela aparece direto na conversa. Use PDF quando o catálogo tiver várias páginas.
-        </span>
-      }
-    </div>
+    <span class="campo__dica">
+      Prefira imagem: ela aparece direto na conversa. Use PDF quando o catálogo tiver várias páginas.
+    </span>
   </div>
 }

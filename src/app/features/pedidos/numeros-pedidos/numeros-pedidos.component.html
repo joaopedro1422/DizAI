@@ -1,11 +1,13 @@
+<!-- os filtros do período e, no fim da linha, o relatório do mesmo período em PDF -->
+<div class="barra-numeros">
 <div class="filtros grupo-chips" role="radiogroup" aria-label="Período">
   @for (periodo of periodos; track periodo.dias) {
     <button
       type="button"
       role="radio"
       class="chip"
-      [class.chip--ativo]="!mes() && dias() === periodo.dias"
-      [attr.aria-checked]="!mes() && dias() === periodo.dias"
+      [class.chip--ativo]="!mes() && !ano() && dias() === periodo.dias"
+      [attr.aria-checked]="!mes() && !ano() && dias() === periodo.dias"
       (click)="escolherPeriodo(periodo.dias)"
     >
       {{ periodo.rotulo }}
@@ -21,6 +23,21 @@
       }
     </select>
   </label>
+  <!-- ano inteiro: 1º de janeiro a 31 de dezembro, gráfico por mês -->
+  <label class="seletor-mes chip" [class.chip--ativo]="!!ano()">
+    <span class="somente-leitor-tela">Ver um ano</span>
+    <select [value]="ano() ?? ''" (change)="escolherAno($event)">
+      <option value="" disabled>Ano</option>
+      @for (opcao of anos; track opcao) {
+        <option [value]="opcao">{{ opcao }}</option>
+      }
+    </select>
+  </label>
+</div>
+  <button type="button" class="chip exportar" [disabled]="!numeros() || carregando() || exportando()" (click)="exportarPdf()">
+    <app-icone nome="documento" [tamanho]="16" [espessura]="2" />
+    {{ exportando() ? 'Gerando o PDF…' : 'Exportar PDF' }}
+  </button>
 </div>
 
 @if (numeros(); as n) {
@@ -63,7 +80,7 @@
     <section class="cartao cartao--largo" aria-labelledby="titulo-serie">
       <header class="cartao__topo">
         <div>
-          <h2 class="cartao__titulo" id="titulo-serie">Faturamento {{ porSemana() ? 'por semana' : 'por dia' }}</h2>
+          <h2 class="cartao__titulo" id="titulo-serie">Faturamento {{ nomeDaSerie() }}</h2>
           <p class="cartao__sub">Pedidos entregues {{ textoPeriodo() }}</p>
         </div>
       </header>
@@ -76,7 +93,7 @@
             <span class="eixo__linha" style="bottom: 50%"><span class="eixo__rotulo">{{ real(topoSerie() / 2) }}</span></span>
             <span class="eixo__linha eixo__linha--base" style="bottom: 0"></span>
           </div>
-          <div class="colunas" role="list" [attr.aria-label]="'Faturamento ' + (porSemana() ? 'por semana' : 'por dia')">
+          <div class="colunas" role="list" [attr.aria-label]="'Faturamento ' + nomeDaSerie()">
             @for (coluna of colunas(); track coluna.chave) {
               <button
                 type="button"
@@ -158,6 +175,31 @@
             }
           }
         </div>
+      }
+    </section>
+
+    <!-- produtos que mais vendem: pelo produto escolhido ao confirmar ou registrar o pedido -->
+    <section class="cartao" aria-labelledby="titulo-mais-vendidos">
+      <header class="cartao__topo">
+        <div>
+          <h2 class="cartao__titulo" id="titulo-mais-vendidos">Produtos que mais vendem</h2>
+          <p class="cartao__sub">Faturamento de cada um {{ textoPeriodo() }}</p>
+        </div>
+      </header>
+      @if (maisVendidos().length === 0) {
+        <p class="cartao__vazio">Escolha o produto ao confirmar ou registrar um pedido e ele aparece aqui.</p>
+      } @else {
+        <ol class="barras">
+          @for (produto of maisVendidos(); track produto.nome; let i = $index) {
+            <li class="barra">
+              <span class="barra__topo">
+                <span class="barra__nome"><span class="barra__posicao">{{ i + 1 }}</span>{{ produto.nome }}<span class="barra__extra">{{ produto.pedidos }} {{ produto.pedidos === 1 ? 'pedido' : 'pedidos' }}</span></span>
+                <span class="barra__valor">{{ real(produto.valor) }}</span>
+              </span>
+              <span class="barra__trilho"><span class="barra__preenchido" [style.width.%]="produto.largura"></span></span>
+            </li>
+          }
+        </ol>
       }
     </section>
 

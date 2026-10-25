@@ -6,6 +6,7 @@ import { ClienteService } from '../../../core/services/cliente.service';
 import { PedidoService } from '../../../core/services/pedido.service';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
+import { SeletorProdutoComponent } from '../seletor-produto/seletor-produto.component';
 
 /** Aceita "70", "70,5" ou "70.50". */
 const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
@@ -24,18 +25,25 @@ function chaveDoNumero(texto: string): string {
 }
 
 /**
- * "Registrar pedido" (tela Pedidos): pedido que chegou fora do assistente. Itens em texto livre, o valor (é o que
+ * "Registrar pedido" (tela Pedidos): pedido que chegou fora do assistente. O produto vendido (opcional, só para os
+ * Números), a descrição dos itens em texto livre, o valor (é o que
  * entra nos Números), o WhatsApp e o nome (opcionais). Ao digitar o número de um cliente que já existe (conversou,
  * pediu…), o nome vem preenchido sozinho.
  */
 @Component({
   selector: 'app-registrar-pedido',
-  imports: [IconeComponent, CarregandoComponent],
+  imports: [IconeComponent, CarregandoComponent, SeletorProdutoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form class="formulario" (submit)="$event.preventDefault(); registrar()" novalidate>
       <div class="campo">
-        <label for="pedido-itens" class="campo__rotulo">Itens do pedido</label>
+        <span class="campo__rotulo">Produto <span class="campo__rotulo-opcional">(opcional)</span></span>
+        <app-seletor-produto [valor]="produtoId()" (escolher)="produtoId.set($event)" />
+        <span class="campo__dica">Conta nos produtos que mais vendem, nos Números.</span>
+      </div>
+
+      <div class="campo">
+        <label for="pedido-itens" class="campo__rotulo">Descrição dos itens</label>
         <textarea
           id="pedido-itens"
           class="campo__entrada"
@@ -176,6 +184,7 @@ export class RegistrarPedidoComponent implements OnInit {
   protected readonly whatsapp = signal('');
   protected readonly nome = signal('');
   protected readonly entregue = signal(false);
+  protected readonly produtoId = signal<number | null>(null);
   protected readonly salvando = signal(false);
   protected readonly tentou = signal(false);
   protected readonly erro = signal('');
@@ -221,6 +230,7 @@ export class RegistrarPedidoComponent implements OnInit {
         whatsapp: this.whatsapp().trim(),
         nomeCliente: this.nome().trim(),
         entregue: this.entregue(),
+        produtoId: this.produtoId(),
       });
       this.registrado.emit({ entregue: this.entregue() });
     } catch (erro) {

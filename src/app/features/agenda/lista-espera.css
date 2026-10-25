@@ -1,0 +1,114 @@
+/* Lista de espera do dia: lista pequena no fim da agenda, como a dos cancelados (resumida e completa). */
+.lista-espera {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 16px;
+}
+
+.lista-espera__titulo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--cor-texto-suave);
+}
+
+.lista-espera__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--cor-borda-suave);
+}
+
+.lista-espera__item:last-child {
+  border-bottom: 0;
+}
+
+.lista-espera__posicao {
+  flex: none;
+  min-width: 26px;
+  padding: 1px 0;
+  border-radius: 6px;
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.lista-espera__texto {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--cor-texto-secundario);
+}
+
+.lista-espera__texto strong {
+  color: var(--cor-texto);
+}
+
+.lista-espera__whatsapp {
+  color: var(--cor-primaria);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lista-espera__whatsapp:hover {
+  text-decoration: underline;
+}
+
+.lista-espera__oferta {
+  display: block;
+  margin-top: 2px;
+  color: var(--cor-ambar);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.lista-espera__remover {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin: -3px -4px 0 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--cor-texto-suave);
+  cursor: pointer;
+}
+
+.lista-espera__remover:hover {
+  background: var(--cor-fundo-suave);
+  color: var(--cor-erro);
+}
+
+/* Cancelar com gente esperando vaga no dia: a pergunta antes dos dois botões */
+.aviso-lista-espera {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-primaria-clara);
+  color: var(--cor-texto-secundario);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.aviso-lista-espera app-icone {
+  flex: none;
+  margin-top: 1px;
+  color: var(--cor-primaria);
+}
+
+.aviso-lista-espera strong {
+  display: block;
+  color: var(--cor-texto);
+}

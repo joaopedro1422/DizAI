@@ -35,6 +35,33 @@ export interface ConfiguracaoAgenda {
   mensagemLembrete?: string;
   /** Só leitura: o lembrete padrão. */
   mensagemLembretePadrao?: string;
+  /** Lista de espera: o assistente oferece nos dias sem horário e avisa quando vaga. */
+  listaEsperaAtiva?: boolean;
+  /** Quanto tempo quem recebe a vaga tem para responder: 10, 15 ou 30 minutos. */
+  listaEsperaMinutos?: number;
+}
+
+/** AGUARDANDO: na fila. OFERECIDA: recebeu uma vaga e o prazo para responder está correndo. */
+export type StatusListaEspera = 'AGUARDANDO' | 'OFERECIDA';
+
+/** Um cliente na lista de espera de um dia: GET /api/perfis/{id}/agenda/lista-espera?de=&ate= */
+export interface ClienteListaEspera {
+  id: string;
+  /** "AAAA-MM-DD" */
+  data: string;
+  /** 1 = o primeiro da fila do dia. */
+  posicao: number;
+  nomeCliente: string;
+  /** Formato de exibição, ex.: "(83) 99999-0000". */
+  whatsapp: string;
+  servicos: string;
+  /** Com quem ele quer (2+ profissionais); null = qualquer um. */
+  profissional: string | null;
+  status: StatusListaEspera;
+  /** Só com a vaga oferecida: o horário ("14:00"), com quem e até quando ele pode responder (ISO). */
+  ofertaHorario: string | null;
+  ofertaProfissional: string | null;
+  ofertaExpiraEm: string | null;
 }
 
 export type StatusAgendamento = 'CONFIRMADO' | 'CANCELADO';
@@ -113,6 +140,8 @@ export interface NumerosAgenda {
   servicosMaisAgendados: { nome: string; quantidade: number }[];
   /** "2026-10" quando o filtro é um mês do calendário (previstos = o que falta do mês); null nos 7/30/90 dias. */
   mes: string | null;
+  /** "2026" quando o filtro é um ano inteiro (previstos = o que falta do ano; série por mês); null nos outros. */
+  ano: string | null;
   /** Vendas do "Registrar venda" no período, à parte do faturamento dos atendimentos. */
   faturamentoProdutos: number;
   produtosVendidos: number;
@@ -188,6 +217,10 @@ export interface AgendaPublica {
   profissionais?: { id: string; nome: string; fotoUrl?: string | null }[];
   /** Produtos à venda disponíveis: passo opcional "Também temos" (vazio = o passo não aparece). */
   produtos?: ProdutoAgendaPublica[];
+  /** Dia sem horário para o serviço: a página oferece "Entrar na lista de espera". */
+  listaEsperaAtiva?: boolean;
+  /** Quanto tempo quem recebe a vaga tem para responder (10, 15 ou 30 minutos). */
+  listaEsperaMinutos?: number;
 }
 
 export interface ProdutoAgendaPublica {
@@ -205,6 +238,8 @@ export interface DiaHorarios {
   /** false: o negócio não atende nesse dia (dia da semana fechado ou folga). */
   aberto: boolean;
   horarios: string[];
+  /** Sem horário para o serviço, mas com lista de espera (a loja usa e o expediente do dia ainda comporta o serviço). */
+  listaEspera?: boolean;
 }
 
 /**

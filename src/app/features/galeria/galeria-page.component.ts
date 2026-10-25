@@ -59,6 +59,8 @@ export class GaleriaPageComponent implements OnInit {
   private readonly conteudo = inject(ConteudoRamoService).conteudo;
   protected readonly exemploTopico = computed(() => this.conteudo().topicosSugeridos[0]);
   protected readonly modalAberto = signal<ModalGaleria>(null);
+  /** "Personalizar vitrine": o modal fica com a cor de fundo escolhida (prévia); null = branco. */
+  protected readonly fundoDaVitrine = signal<string | null>(null);
   protected readonly albumParaFotos = signal<number | null>(null);
   protected readonly enviandoFotos = signal(false);
   protected readonly criandoTopico = signal(false);

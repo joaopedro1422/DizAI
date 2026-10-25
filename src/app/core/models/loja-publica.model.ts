@@ -1,5 +1,5 @@
 import { CorMarca } from './perfil.model';
-import { AreaCorFundoVitrine, CorFundoVitrine, FonteVitrine } from './vitrine.model';
+import { AreaCorFundoVitrine, CorFundoVitrine, EstiloCor, FonteVitrine } from './vitrine.model';
 
 /** Tópico na página pública: `fotos` traz as primeiras; "Ver todas" busca o resto. */
 export interface AlbumPublico {
@@ -23,6 +23,8 @@ export interface LojaPublica {
   fonteGaleria?: FonteVitrine;
   corFundoGaleria?: CorFundoVitrine;
   areaCorFundoGaleria?: AreaCorFundoVitrine;
+  /** Estilo da cor de destaque (null = normal). */
+  estiloCor?: EstiloCor | null;
   /** Referência da imagem de capa no Storage. */
   capaUrl?: string | null;
   /** Número normalizado (só dígitos, com 55). */

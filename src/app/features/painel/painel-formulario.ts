@@ -1,6 +1,12 @@
 import { AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
-import { ConfiguracoesAtendimento, ModoCatalogo, ModoFotos, ModoPedido } from '../../core/models/perfil.model';
+import {
+  CatalogoConversa,
+  ConfiguracoesAtendimento,
+  ModoCatalogo,
+  ModoFotos,
+  ModoPedido,
+} from '../../core/models/perfil.model';
 import { urlValida } from '../../core/utils/validadores';
 
 /** No modo "link externo", o link do portfólio passa a ser obrigatório. */
@@ -30,6 +36,8 @@ export function criarFormularioConfiguracoes(fb: FormBuilder, valores: Configura
       modoCatalogo: fb.nonNullable.control<ModoCatalogo>(valores.modoCatalogo ?? 'NAO'),
       /** Arquivos já salvos; os escolhidos agora ficam no painel e sobem ao salvar. */
       catalogoArquivos: fb.nonNullable.control<string[]>(valores.catalogoArquivos ?? []),
+      /** Os catálogos (o 1º é o de catalogoArquivos); com 2 ou 3, cada um com assunto e contexto. */
+      catalogos: fb.nonNullable.control<CatalogoConversa[]>(catalogosIniciais(valores)),
       /** false = só no horário de funcionamento cadastrado em Dados da loja. */
       confirmaQualquerHora: fb.nonNullable.control<boolean>(valores.confirmaQualquerHora ?? true),
       linkAgendamentoExterno: [valores.linkAgendamentoExterno ?? '', [urlValida, Validators.maxLength(500)]],
@@ -39,3 +47,11 @@ export function criarFormularioConfiguracoes(fb: FormBuilder, valores: Configura
 }
 
 export type FormularioConfiguracoes = ReturnType<typeof criarFormularioConfiguracoes>;
+
+/** Sempre pelo menos um catálogo (o de catalogoArquivos), com assunto e contexto em texto (vazio = sem). */
+export function catalogosIniciais(valores: Partial<ConfiguracoesAtendimento>): CatalogoConversa[] {
+  const lista = valores.catalogos?.length
+    ? valores.catalogos
+    : [{ assunto: '', contexto: '', arquivos: valores.catalogoArquivos ?? [] }];
+  return lista.map((c) => ({ assunto: c.assunto ?? '', contexto: c.contexto ?? '', arquivos: [...c.arquivos] }));
+}

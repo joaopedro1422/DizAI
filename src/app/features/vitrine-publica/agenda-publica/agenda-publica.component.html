@@ -118,7 +118,7 @@
       </section>
     }
 
-    @if (podeVerDias() && diaSelecionado() && turnos().length > 0) {
+    @if (podeVerDias() && diaSelecionado() && (turnos().length > 0 || diaLotadoComLista())) {
       <section class="passo passo--entrada" aria-labelledby="passo-hora">
         <h2 class="passo__titulo" id="passo-hora">
           <span class="passo__numero" [class.passo__numero--feito]="!!horaSelecionada()">@if (!!horaSelecionada()) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {{{ 3 + passoExtra() }}}</span>
@@ -142,6 +142,29 @@
               }
             </div>
           </div>
+        }
+        <!-- dia sem horário livre: a lista de espera entra no lugar dos horários -->
+        @if (diaLotadoComLista()) {
+          <p class="lista-espera__lotado">Este dia está sem horário livre para {{ escolhidos().length > 1 ? 'estes serviços' : 'este serviço' }}.</p>
+          <div class="horarios" role="radiogroup" aria-label="Lista de espera">
+            <button
+              type="button"
+              role="radio"
+              class="hora hora--lista-espera"
+              [class.hora--escolhida]="naListaDeEspera()"
+              [attr.aria-checked]="naListaDeEspera()"
+              (click)="escolherHora(listaEspera)"
+            >
+              <app-icone nome="pessoas" [tamanho]="17" [espessura]="2" />
+              Entrar na lista de espera
+            </button>
+          </div>
+          @if (naListaDeEspera()) {
+            <p class="lista-espera__aviso" role="status">
+              <app-icone nome="sino" [tamanho]="16" [espessura]="2" />
+              Você será avisado quando um horário ficar livre e deve responder em até {{ minutosListaEspera() }} minutos.
+            </p>
+          }
         }
       </section>
     }
@@ -167,7 +190,7 @@
 
       @if (resumoEscolha(); as resumo) {
         <div class="resumo passo--entrada">
-          <span class="resumo__titulo">Resumo do agendamento</span>
+          <span class="resumo__titulo">{{ naListaDeEspera() ? 'Resumo da lista de espera' : 'Resumo do agendamento' }}</span>
           <span class="resumo__linha">
             <span class="resumo__icone"><app-icone nome="brilho" [tamanho]="15" [espessura]="2" /></span>
             <span><strong>{{ resumo.servicos }}</strong> · {{ resumo.duracao }}</span>
@@ -182,7 +205,7 @@
               <span>Com {{ nomeProfissional() }}</span>
             </span>
           }
-          @for (produto of produtosReservados(); track produto.id) {
+          @for (produto of naListaDeEspera() ? [] : produtosReservados(); track produto.id) {
             <span class="resumo__linha">
               <span class="resumo__icone"><app-icone nome="sacola" [tamanho]="15" [espessura]="2" /></span>
               <span>{{ produto.nome }}</span>
@@ -194,12 +217,14 @@
               <strong>{{ real(totalPreco()!) }}</strong>
             </span>
           }
-          <span class="resumo__nota">Ao enviar, o horário é conferido e confirmado na hora pelo WhatsApp.</span>
+          <span class="resumo__nota">
+            {{ naListaDeEspera() ? 'Ao enviar, você entra na fila deste dia e recebe a confirmação pelo WhatsApp.' : 'Ao enviar, o horário é conferido e confirmado na hora pelo WhatsApp.' }}
+          </span>
         </div>
       }
 
-      <!-- opcional: produtos à venda do negócio, para levar no dia (só reserva, não é compra) -->
-      @if (produtos().length > 0) {
+      <!-- opcional: produtos à venda do negócio, para levar no dia (só reserva, não é compra; na lista de espera, não) -->
+      @if (produtos().length > 0 && !naListaDeEspera()) {
         <section class="passo passo--entrada passo--produtos" aria-labelledby="passo-produtos">
           <div class="produtos__topo">
             <h2 class="passo__titulo" id="passo-produtos">

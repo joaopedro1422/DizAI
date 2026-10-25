@@ -1,6 +1,6 @@
 <div class="fundo" aria-hidden="true" (click)="fechar.emit()"></div>
 
-<section class="folha" role="dialog" aria-modal="true" [attr.aria-labelledby]="idTitulo">
+<section class="folha" role="dialog" aria-modal="true" [attr.aria-labelledby]="idTitulo" [style.background]="fundo()">
   <span class="folha__alca" aria-hidden="true"></span>
 
   <header class="folha__cabecalho">

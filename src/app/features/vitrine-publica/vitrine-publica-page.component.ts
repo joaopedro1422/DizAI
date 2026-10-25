@@ -5,6 +5,7 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, li
 import { RouterLink } from '@angular/router';
 
 import { SessaoService } from '../../core/auth/sessao.service';
+import { fundoDoDestaque } from '../../core/constants/estilos-cor';
 import { buscarCorMarca } from '../../core/constants/cores-marca';
 import { UrlImagemPipe, urlDaImagem } from '../../core/imagens/url-imagem';
 import { Foto } from '../../core/models/galeria.model';
@@ -89,6 +90,12 @@ export class VitrinePublicaPageComponent implements OnInit {
     return buscarCorMarca(corFundo ?? loja?.corMarca ?? 'PRETO').fundo;
   });
   protected readonly areaFundo = computed(() => this.loja()?.areaCorFundoGaleria ?? 'CABECALHO');
+
+  /** O `background` dos botões e etiquetas: a cor de destaque no estilo escolhido (normal, metálico...). */
+  protected readonly fundoDestaque = computed(() => {
+    const cor = this.corDestaque();
+    return cor ? fundoDoDestaque(cor, this.loja()?.estiloCor) : null;
+  });
 
   /** Cor escolhida pelo lojista no painel (sempre escura, para o texto branco). */
   protected readonly corDestaque = computed(() => {

@@ -36,6 +36,9 @@ export interface MarcaLinhaDoTempo {
 }
 
 export interface LinhaDoTempo {
+  /** Primeiro e último minuto da grade (meias horas). */
+  inicioDia: number;
+  fimDia: number;
   altura: number;
   /** Horas cheias e as meias horas em que algum agendamento começa ou termina. */
   marcas: MarcaLinhaDoTempo[];
@@ -51,27 +54,77 @@ interface Intervalo {
   fim: number;
 }
 
+/** Uma coluna da agenda completa no computador: os blocos de um profissional, na mesma grade dos outros. */
+export interface ColunaProfissional {
+  id: string;
+  nome: string;
+  /** Foto do profissional (referência no armazenamento); null = as iniciais. */
+  fotoUrl: string | null;
+  /** "Lucas Silva" -> "LS", no lugar da foto. */
+  iniciais: string;
+  blocos: BlocoLinhaDoTempo[];
+}
+
+/** A régua de horas (marcas e o agora) é a do dia inteiro, com todos; cada coluna tem os blocos de um profissional. */
+export interface LinhaEmColunas extends LinhaDoTempo {
+  colunas: ColunaProfissional[];
+}
+
+/**
+ * Agenda completa no computador com 2+ profissionais: todos lado a lado. A grade (início, fim e marcas) é a do dia com
+ * todos os agendamentos, para as colunas ficarem alinhadas; cada coluna mostra só os horários de quem atende nela
+ * (livre, fechado e passou valem para todos: os horários e as folgas são os do principal).
+ */
+export function montarColunas(
+  periodos: { inicio: string; fim: string }[],
+  profissionais: { id: string; nome: string; fotoUrl?: string | null }[],
+  agendamentos: Agendamento[],
+  agoraMinutos: number | null,
+): LinhaEmColunas | null {
+  const geral = montarLinhaDoTempo(periodos, agendamentos, agoraMinutos);
+  if (!geral) {
+    return null;
+  }
+  const faixa = { inicio: geral.inicioDia, fim: geral.fimDia };
+  const colunas = profissionais.map((profissional) => ({
+    id: profissional.id,
+    nome: profissional.nome,
+    fotoUrl: profissional.fotoUrl ?? null,
+    iniciais: iniciais(profissional.nome),
+    blocos:
+      montarLinhaDoTempo(
+        periodos,
+        agendamentos.filter((a) => a.profissionalId === profissional.id),
+        agoraMinutos,
+        faixa,
+      )?.blocos ?? [],
+  }));
+  return { ...geral, colunas };
+}
+
 /**
  * Monta a linha do tempo de um dia: do primeiro ao último horário (expediente ou agendamento), arredondado para
  * a meia hora. Todo minuto desse trecho cai em exatamente um bloco: agendamento, livre, passou ou fechado.
  * agoraMinutos: só para hoje (o livre que já passou vira "passou" e aparece a linha do agora).
+ * faixa: começo e fim fixos da grade (as colunas de vários profissionais usam a mesma).
  */
 export function montarLinhaDoTempo(
   periodos: { inicio: string; fim: string }[],
   agendamentos: Agendamento[],
   agoraMinutos: number | null,
+  faixa?: Intervalo,
 ): LinhaDoTempo | null {
   const expediente = unir(periodos.map((p) => ({ inicio: minutosDoDia(p.inicio), fim: minutosDoDia(p.fim) })));
   const marcados = [...agendamentos]
     .map((a) => ({ agendamento: a, inicio: minutosDoDia(a.inicio), fim: fimDoAgendamento(a) }))
     .sort((a, b) => a.inicio - b.inicio);
-  if (expediente.length === 0 && marcados.length === 0) {
+  if (!faixa && expediente.length === 0 && marcados.length === 0) {
     return null;
   }
 
   const todos = [...expediente, ...marcados];
-  const inicioDia = Math.floor(Math.min(...todos.map((t) => t.inicio)) / MINUTOS_POR_LINHA) * MINUTOS_POR_LINHA;
-  const fimDia = Math.ceil(Math.max(...todos.map((t) => t.fim)) / MINUTOS_POR_LINHA) * MINUTOS_POR_LINHA;
+  const inicioDia = faixa?.inicio ?? Math.floor(Math.min(...todos.map((t) => t.inicio)) / MINUTOS_POR_LINHA) * MINUTOS_POR_LINHA;
+  const fimDia = faixa?.fim ?? Math.ceil(Math.max(...todos.map((t) => t.fim)) / MINUTOS_POR_LINHA) * MINUTOS_POR_LINHA;
   const topo = (minutos: number) => (minutos - inicioDia) * PIXELS_POR_MINUTO;
   const bloco = (tipo: TipoBloco, inicio: number, fim: number, agendamento?: Agendamento): BlocoLinhaDoTempo => ({
     tipo,
@@ -125,7 +178,13 @@ export function montarLinhaDoTempo(
       ? { topo: topo(agoraMinutos), texto: formatarMinutos(agoraMinutos) }
       : null;
 
-  return { altura: topo(fimDia), marcas, marcasExtras, blocos, agora };
+  return { inicioDia, fimDia, altura: topo(fimDia), marcas, marcasExtras, blocos, agora };
+}
+
+/** "Lucas Silva" -> "LS"; "Lucas" -> "L". */
+function iniciais(nome: string): string {
+  const partes = nome.trim().split(/\s+/);
+  return ((partes[0]?.[0] ?? '') + (partes.length > 1 ? partes[partes.length - 1][0] : '')).toUpperCase();
 }
 
 /** 570 → "09:30" */

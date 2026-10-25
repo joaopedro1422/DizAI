@@ -1,0 +1,195 @@
+/*
+ * Agenda completa no computador com 2+ profissionais: a mesma linha do tempo (régua de horas, marcas e o agora
+ * atravessando tudo), com uma coluna para cada profissional. Muitos profissionais: a área rola para o lado, e cada
+ * coluna tem uma largura mínima para o card caber com folga.
+ */
+.colunas {
+  --largura-minima-coluna: 320px;
+  --espaco-entre-colunas: 10px;
+  /* rola sozinha nos dois sentidos: assim os nomes ficam presos no topo e a régua de horas presa à esquerda */
+  overflow: auto;
+  max-height: max(420px, calc(100vh - 150px));
+  margin: 8px 0 4px;
+  padding-bottom: 6px;   /* espaço para a barra de rolagem não encostar nos cards */
+}
+
+/* barras finas e cinza claro: Chrome/Edge/Safari pelo ::-webkit-scrollbar; os outros (Firefox) pelo padrão */
+@supports not selector(::-webkit-scrollbar) {
+  .colunas {
+    scrollbar-width: thin;
+    scrollbar-color: #D5DAE3 transparent;
+  }
+}
+
+.colunas::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.colunas::-webkit-scrollbar-track,
+.colunas::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.colunas::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: #D5DAE3 padding-box;
+}
+
+.colunas::-webkit-scrollbar-thumb:hover {
+  background-color: #BCC3D0;
+}
+
+.colunas__conteudo {
+  min-width: calc(
+    50px + var(--quantidade-colunas) * var(--largura-minima-coluna)
+      + (var(--quantidade-colunas) - 1) * var(--espaco-entre-colunas)
+  );
+}
+
+/* os nomes em cima de cada coluna, alinhados com os trilhos (depois da régua de horas) */
+.colunas__nomes {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: grid;
+  /* o canto (40 px + o espaço = 50 px, a largura da régua de horas no computador) e uma coluna por profissional */
+  grid-template-columns: 40px repeat(var(--quantidade-colunas), minmax(0, 1fr));
+  gap: var(--espaco-entre-colunas);
+  padding: 6px 0 8px;
+  background: var(--cor-fundo);
+  transition: box-shadow 0.2s ease;
+}
+
+.colunas--rolada-baixo .colunas__nomes {
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 6px 16px -6px rgba(15, 23, 42, 0.2);
+}
+
+.colunas__canto {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  align-self: stretch;
+  margin: -6px calc(-1 * var(--espaco-entre-colunas)) -8px 0;
+  background: var(--cor-fundo);
+}
+
+/* foto (ou iniciais) quadrada com cantos arredondados, do tamanho da linha do nome */
+.colunas__nome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cor-texto);
+}
+
+.colunas__foto {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  object-fit: cover;
+}
+
+.colunas__foto--iniciais {
+  display: grid;
+  place-items: center;
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+  font-size: 11px;
+  letter-spacing: 0;
+}
+
+.colunas__texto {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.colunas .linha {
+  margin-top: 8px;
+}
+
+/* os trilhos: a área dos blocos, depois da régua, dividida em colunas */
+.colunas__trilhos {
+  position: absolute;
+  inset: 0 0 0 var(--coluna-horas);
+  display: grid;
+  grid-template-columns: repeat(var(--quantidade-colunas), minmax(0, 1fr));
+  gap: var(--espaco-entre-colunas);
+}
+
+.coluna {
+  position: relative;
+  min-width: 0;
+}
+
+/* dentro da coluna o bloco ocupa a coluna toda (fora dela, começa depois da régua de horas) */
+.coluna .bloco {
+  left: 0;
+}
+
+/*
+ * Régua de horas: único filho "no fluxo" da linha (o resto é absoluto), presa à esquerda com sticky. O fundo branco
+ * (::before, um pouco maior que a régua) esconde os cards que passam por baixo; rolando, vira um card com sombra.
+ */
+.colunas__regua {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  width: var(--coluna-horas);
+  height: 100%;
+}
+
+.colunas__regua::before {
+  content: '';
+  position: absolute;
+  inset: -14px 0 -10px 0;
+  z-index: -1;
+  border-radius: 12px;
+  background: var(--cor-fundo);
+  transition: box-shadow 0.2s ease;
+}
+
+.colunas--rolada .colunas__regua::before {
+  box-shadow: 6px 0 18px rgba(15, 23, 42, 0.16), 1px 0 3px rgba(15, 23, 42, 0.1);
+}
+
+.colunas__regua .linha__hora {
+  left: 0;
+  margin-top: -8px;
+}
+
+.colunas__regua .linha__hora--meia {
+  font-weight: 500;
+  color: #A9B0BE;
+}
+
+.colunas__regua .linha__hora--destaque {
+  font-weight: 800;
+  color: var(--cor-primaria);
+}
+
+.colunas__regua .linha__agora-hora {
+  left: 0;
+  width: 42px;
+  margin-top: -8px;
+}
+
+/* computador: os horários da régua da esquerda um pouco maiores (no celular ficam como estão) */
+@media (min-width: 1024px) {
+  .linha {
+    --coluna-horas: 50px;
+  }
+
+  .linha__hora {
+    width: 42px;
+    font-size: 12.5px;
+  }
+}

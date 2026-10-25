@@ -93,6 +93,18 @@
   gap: 12px;
 }
 
+.lista-espera__prazo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.lista-espera__rotulo {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cor-texto);
+}
+
 .agradecimento__aviso {
   display: flex;
   align-items: flex-start;

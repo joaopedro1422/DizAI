@@ -9,7 +9,28 @@ import { CarregandoComponent } from '../../../shared/components/carregando/carre
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { formatarReal } from '../../pedidos/textos-pedido';
 import { pluralizar } from '../../../core/utils/colecao.utils';
-import { Dica, deIso, diaMes, dicaSobre, mesesRecentes, nomeDoMes, passoDaSerie, porcento, tituloDoPonto, topoDoEixo } from '../../../shared/graficos/graficos';
+import {
+  Dica,
+  anosDisponiveis,
+  dicaSobre,
+  mesesRecentes,
+  nomeDaSerie,
+  nomeDoMes,
+  passoDaSerie,
+  porcento,
+  rotuloDoPonto,
+  textoDoPeriodo,
+  tituloDoPonto,
+  topoDoEixo,
+} from '../../../shared/graficos/graficos';
+import {
+  DIA_DA_SEMANA_POR_EXTENSO,
+  DestaqueRelatorio,
+  RelatorioPdfService,
+  SecaoRelatorio,
+  periodoDoRelatorio,
+  sufixoDoArquivo,
+} from '../../../shared/relatorio/relatorio-pdf.service';
 
 const PERIODOS = [
   { dias: 7, rotulo: '7 dias' },
@@ -52,28 +73,34 @@ export class NumerosAgendaComponent implements OnInit {
   private readonly agendaService = inject(AgendaService);
   private readonly produtoService = inject(ProdutoService);
   private readonly toastService = inject(ToastService);
+  private readonly relatorioPdf = inject(RelatorioPdfService);
+  /** Gerando o PDF do relatório (o botão fica desligado). */
+  protected readonly exportando = signal(false);
 
   protected readonly periodos = PERIODOS;
   protected readonly dias = signal(30);
   /** Mês escolhido no seletor ("2026-10"); null = vale o período de dias. */
   protected readonly mes = signal<string | null>(null);
   protected readonly meses = mesesRecentes();
+  /** Ano escolhido no seletor ("2026"); null = vale o mês ou o período de dias. */
+  protected readonly ano = signal<string | null>(null);
+  protected readonly anos = anosDisponiveis();
   protected readonly nomeDoMes = nomeDoMes;
   protected readonly numeros = signal<NumerosAgenda | null>(null);
   protected readonly carregando = signal(true);
   /** Dica aberta e em qual gráfico ('serie', 'fatias', 'divisao'): uma por vez. */
   protected readonly dica = signal<Dica | null>(null);
 
-  /** Período por extenso, para as notas: "dos últimos 30 dias" / "de outubro de 2026". */
+  /** Período por extenso, para as notas: "dos últimos 30 dias", "de outubro de 2026" ou "de 2026". */
   protected readonly textoPeriodo = computed(() => {
     const n = this.numeros();
-    if (!n) return '';
-    return n.mes ? `de ${nomeDoMes(n.mes).toLowerCase()}` : `dos últimos ${n.dias} dias`;
+    return n ? textoDoPeriodo(n) : '';
   });
 
   // ------------------------------------------------------------------ gráfico do período (colunas)
-  protected readonly porSemana = computed(() => (this.numeros()?.serie.length ?? 0) > 1 && this.passoDaSerie() === 7);
   private readonly passoDaSerie = computed(() => passoDaSerie(this.numeros()?.serie ?? []));
+  /** "por dia", "por semana" (90 dias) ou "por mês" (ano). */
+  protected readonly nomeDaSerie = computed(() => nomeDaSerie(this.passoDaSerie()));
   protected readonly topoSerie = computed(() =>
     topoDoEixo(Math.max(0, ...(this.numeros()?.serie ?? []).map((p) => Number(p.valor)))),
   );
@@ -83,11 +110,10 @@ export class NumerosAgendaComponent implements OnInit {
     const meio = Math.floor((serie.length - 1) / 2);
     return serie.map((ponto, i) => {
       const valor = Number(ponto.valor);
-      const data = deIso(ponto.inicio);
       return {
         chave: ponto.inicio,
         altura: topo > 0 && valor > 0 ? Math.max(2, (valor / topo) * 100) : 0,
-        rotulo: i === 0 || i === meio || i === serie.length - 1 ? diaMes(data) : '',
+        rotulo: i === 0 || i === meio || i === serie.length - 1 ? rotuloDoPonto(ponto.inicio, this.passoDaSerie()) : '',
         titulo: this.tituloDoPonto(ponto),
         detalhe: `${formatarReal(valor)} · ${ponto.atendimentos} ${ponto.atendimentos === 1 ? 'atendimento' : 'atendimentos'}`,
       };
@@ -175,12 +201,136 @@ export class NumerosAgendaComponent implements OnInit {
     void this.carregar();
   }
 
+  /** "Exportar PDF": tudo o que a tela mostra, do mesmo período, num relatório com a logo e o nome da loja. */
+  protected async exportarPdf(): Promise<void> {
+    const n = this.numeros();
+    if (!n || this.exportando()) {
+      return;
+    }
+    this.exportando.set(true);
+    try {
+      const real = (valor: number) => formatarReal(Number(valor));
+      const periodo = this.textoPeriodo();
+      const passo = this.passoDaSerie();
+      const destaques: DestaqueRelatorio[] = [
+        { rotulo: 'Faturamento dos atendimentos', valor: real(n.faturamento), nota: `atendimentos ${periodo}` },
+        {
+          rotulo: 'Atendimentos',
+          valor: String(n.realizados),
+          nota: n.cancelados > 0 ? pluralizar(n.cancelados, 'cancelado', 'cancelados') : 'nenhum cancelado',
+        },
+        { rotulo: 'Ticket médio', valor: real(n.valorMedio), nota: 'por atendimento' },
+        ...(this.mostrarPrevistos(n)
+          ? [{
+              rotulo: n.ano ? 'Ainda neste ano' : n.mes ? 'Ainda neste mês' : `Próximos ${n.dias} dias`,
+              valor: String(n.previstos),
+              nota: `${real(n.valorPrevisto)} previstos`,
+            }]
+          : []),
+        { rotulo: 'Clientes', valor: String(n.clientes), nota: `${n.clientesRecorrentes} voltaram mais de uma vez` },
+        ...(this.mostrarProdutos(n)
+          ? [{
+              rotulo: 'Faturado com produtos',
+              valor: real(n.faturamentoProdutos),
+              nota: pluralizar(n.produtosVendidos, 'produto vendido', 'produtos vendidos'),
+            }]
+          : []),
+      ];
+      const secoes: SecaoRelatorio[] = [
+        {
+          titulo: 'Faturamento por serviço',
+          subtitulo: 'Quanto cada serviço trouxe no período',
+          colunas: ['Serviço', 'Atendimentos', 'Parte', 'Faturamento'],
+          linhas: this.fatias().map((f) => [f.nome, `${f.quantidade}×`, porcento(f.percentual), real(f.valor)]),
+          direita: [1, 2, 3],
+          vazio: 'Nenhum atendimento com valor no período.',
+        },
+        // por semana (90 dias) ou por mês (ano): a tabela completa ao lado do gráfico
+        ...(passo !== 1
+          ? [{
+              titulo: passo === 7 ? 'Semana a semana' : 'Mês a mês',
+              colunas: [passo === 7 ? 'Semana' : 'Mês', 'Atendimentos', 'Faturamento'],
+              linhas: n.serie.map((p) => [tituloDoPonto(p.inicio, passo), String(p.atendimentos), real(p.valor)]),
+              direita: [1, 2],
+              vazio: '',
+            }]
+          : []),
+        {
+          titulo: 'Serviços mais feitos',
+          subtitulo: 'Quantas vezes cada um foi feito',
+          colunas: ['#', 'Serviço', 'Vezes'],
+          linhas: this.maisFeitos().map((item, i) => [`${i + 1}º`, item.nome, `${item.quantidade}×`]),
+          direita: [2],
+          vazio: 'Nenhum atendimento no período.',
+        },
+        {
+          titulo: 'Dias mais movimentados',
+          subtitulo: this.melhorDia() ? `${this.melhorDia()} é o dia mais cheio ${periodo}` : 'Atendimentos por dia da semana',
+          colunas: ['Dia da semana', 'Atendimentos', 'Faturamento'],
+          linhas: n.porDiaDaSemana.map((d) => [DIA_DA_SEMANA_POR_EXTENSO[d.dia] ?? d.dia, String(d.atendimentos), real(d.valor)]),
+          direita: [1, 2],
+          vazio: '',
+        },
+        {
+          titulo: 'Melhores clientes',
+          subtitulo: n.clientes > 0
+            ? `${n.clientesRecorrentes} de ${n.clientes} clientes voltaram mais de uma vez (${porcento(this.recorrencia())})`
+            : undefined,
+          colunas: ['#', 'Cliente', 'Atendimentos', 'Total'],
+          linhas: this.clientes().map((c, i) => [`${i + 1}º`, c.nome, String(c.quantidade), real(c.valor)]),
+          direita: [2, 3],
+          vazio: 'Nenhum cliente atendido no período.',
+        },
+        ...(this.profissionais().length > 0
+          ? [{
+              titulo: 'Por profissional',
+              subtitulo: 'Faturamento dos atendimentos de cada um',
+              colunas: ['Profissional', 'Atendimentos', 'Faturamento'],
+              linhas: this.profissionais().map((p) => [p.nome, String(p.realizados), real(p.faturamento)]),
+              direita: [1, 2],
+              vazio: '',
+            }]
+          : []),
+        ...(this.mostrarProdutos(n)
+          ? [{
+              titulo: 'Produtos mais vendidos',
+              subtitulo: `${real(n.faturamentoProdutos)} com produtos · ${pluralizar(n.produtosVendidos, 'produto vendido', 'produtos vendidos')}`,
+              colunas: ['Produto', 'Quantidade', 'Faturamento'],
+              linhas: this.maisVendidos().map((item) => [item.nome, `${item.quantidade}×`, real(item.valor)]),
+              direita: [1, 2],
+              vazio: 'Nenhuma venda registrada no período.',
+            }]
+          : []),
+      ];
+      await this.relatorioPdf.exportar({
+        titulo: 'Relatório da agenda',
+        periodo: periodoDoRelatorio(n, nomeDoMes),
+        arquivo: `relatorio-agenda-${sufixoDoArquivo(n)}`,
+        destaques,
+        grafico: {
+          titulo: `Faturamento ${this.nomeDaSerie()}`,
+          subtitulo: `Atendimentos que já aconteceram ${periodo}`,
+          pontos: n.serie.map((p) => ({ rotulo: rotuloDoPonto(p.inicio, passo), valor: Number(p.valor) })),
+          formatar: real,
+          vazio: 'Nenhum atendimento com valor neste período ainda.',
+        },
+        secoes,
+      });
+    } catch (erro) {
+      console.error('Relatório em PDF', erro);
+      this.toastService.mostrar('Não foi possível gerar o PDF. Tente de novo.');
+    } finally {
+      this.exportando.set(false);
+    }
+  }
+
   protected escolherPeriodo(dias: number): void {
-    if (dias === this.dias() && !this.mes()) {
+    if (dias === this.dias() && !this.mes() && !this.ano()) {
       return;
     }
     this.dias.set(dias);
     this.mes.set(null);
+    this.ano.set(null);
     void this.carregar();
   }
 
@@ -190,12 +340,30 @@ export class NumerosAgendaComponent implements OnInit {
       return;
     }
     this.mes.set(valor);
+    this.ano.set(null);
+    void this.carregar();
+  }
+
+  protected escolherAno(evento: Event): void {
+    const valor = (evento.target as HTMLSelectElement).value;
+    if (!valor || valor === this.ano()) {
+      return;
+    }
+    this.ano.set(valor);
+    this.mes.set(null);
     void this.carregar();
   }
 
   /** O mês ainda tem dias pela frente (o atual): mostra o que falta marcado nele. */
   protected mesAtualOuFuturo(mes: string): boolean {
     return mes >= this.meses[0].valor;
+  }
+
+  /** Card dos previstos: nos dias, sempre; num mês ou ano, quando ainda falta algo dele (ou há algo marcado). */
+  protected mostrarPrevistos(n: NumerosAgenda): boolean {
+    if (n.previstos > 0) return true;
+    if (n.ano) return n.ano >= this.anos[0];
+    return !n.mes || this.mesAtualOuFuturo(n.mes);
   }
 
   /** A parte de produtos aparece com produto à venda cadastrado ou com alguma venda no período. */
@@ -228,8 +396,9 @@ export class NumerosAgendaComponent implements OnInit {
     this.carregando.set(true);
     this.dica.set(null);
     try {
+      const ano = this.ano();
       const mes = this.mes();
-      this.numeros.set(await this.agendaService.numeros(mes ? { mes } : { dias: this.dias() }));
+      this.numeros.set(await this.agendaService.numeros(ano ? { ano } : mes ? { mes } : { dias: this.dias() }));
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, ERRO_AO_CARREGAR));
     } finally {

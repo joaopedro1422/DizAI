@@ -25,7 +25,7 @@ import { RegrasNegocioComponent } from './regras-negocio/regras-negocio.componen
 import { TipoVideoAtendimento, VideoAtendimentoComponent } from './video-atendimento/video-atendimento.component';
 import { DicasVistasService } from '../../core/services/dicas-vistas.service';
 import { TesteAtendimentoComponent } from '../painel/teste-atendimento/teste-atendimento.component';
-import { criarFormularioConfiguracoes } from '../painel/painel-formulario';
+import { catalogosIniciais, criarFormularioConfiguracoes } from '../painel/painel-formulario';
 
 /**
  * "Como o assistente atende": quando o cliente quiser fechar, fotos, saudação, catálogo e instruções obrigatórias.
@@ -140,22 +140,30 @@ export class AtendimentoPageComponent implements OnInit {
   /** Último estado salvo, usado para saber se o lojista mudou alguma coisa. */
   private readonly valoresSalvos = signal(this.formulario.getRawValue());
 
-  /** Arquivos do catálogo escolhidos e ainda não enviados: sobem no "Salvar alterações". */
-  protected readonly pendentesCatalogo = signal<File[]>([]);
+  /** Arquivos escolhidos e ainda não enviados, um grupo por catálogo: sobem no "Salvar alterações". */
+  protected readonly pendentesCatalogo = signal<File[][]>([]);
 
   /** A barra de salvar só aparece quando o formulário difere do que está salvo (ou há catálogo novo). */
   protected readonly temAlteracoes = computed(
     () =>
-      JSON.stringify(this.valores()) !== JSON.stringify(this.valoresSalvos()) || this.pendentesCatalogo().length > 0,
+      JSON.stringify(this.valores()) !== JSON.stringify(this.valoresSalvos()) ||
+      this.pendentesCatalogo().some((grupo) => grupo.length > 0),
   );
 
-  /** Envio do catálogo ligado, mas sem nenhum arquivo salvo nem escolhido. */
+  /** Envio do catálogo ligado, mas algum catálogo sem arquivo salvo nem escolhido. */
   protected readonly faltaCatalogo = computed(
     () =>
       this.valores().modoCatalogo !== 'NAO' &&
-      this.valores().catalogoArquivos.length === 0 &&
-      this.pendentesCatalogo().length === 0,
+      this.valores().catalogos.some(
+        (catalogo, i) => catalogo.arquivos.length === 0 && (this.pendentesCatalogo()[i]?.length ?? 0) === 0,
+      ),
   );
+
+  /** Com 2 ou 3 catálogos, cada um precisa de assunto e contexto (é por eles que o assistente escolhe). */
+  protected readonly faltaAssuntoCatalogo = computed(() => {
+    const catalogos = this.valores().catalogos;
+    return catalogos.length > 1 && catalogos.some((c) => !c.assunto?.trim() || !c.contexto?.trim());
+  });
 
   protected readonly tentouSalvar = signal(false);
 
@@ -189,7 +197,8 @@ export class AtendimentoPageComponent implements OnInit {
       if (ramoUsaAgenda(this.perfilService.perfil().ramo)) {
         void this.agendaService.carregarConfiguracao().catch(() => undefined);
       }
-      this.formulario.reset(this.perfilService.perfil());
+      const perfil = this.perfilService.perfil();
+      this.formulario.reset({ ...perfil, catalogos: catalogosIniciais(perfil) });
       this.valoresSalvos.set(this.formulario.getRawValue());
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível carregar as configurações. Recarregue a página.'));
@@ -249,8 +258,16 @@ export class AtendimentoPageComponent implements OnInit {
       this.toastService.mostrar('Cadastre o horário de funcionamento em Dados da loja (toque em Configure).');
       return;
     }
+    if (this.valores().catalogos.length > 1 && this.valores().modoCatalogo === 'SAUDACAO') {
+      this.toastService.mostrar('Na saudação vai um catálogo só. Escolha "Quando o cliente perguntar" ou remova os outros.');
+      return;
+    }
+    if (this.faltaAssuntoCatalogo()) {
+      this.toastService.mostrar('Dê um assunto e diga do que fala cada catálogo.');
+      return;
+    }
     if (this.faltaCatalogo()) {
-      this.toastService.mostrar('Envie o catálogo (PDF ou imagem) ou escolha "Não" no envio do catálogo.');
+      this.toastService.mostrar('Envie o arquivo de cada catálogo (PDF ou imagem) ou escolha "Não" no envio do catálogo.');
       return;
     }
     this.salvandoConfiguracoes.set(true);
@@ -269,15 +286,22 @@ export class AtendimentoPageComponent implements OnInit {
     }
   }
 
-  /** Sobe os arquivos escolhidos do catálogo e junta as referências às que já estavam salvas. */
+  /**
+   * Sobe os arquivos escolhidos de cada catálogo e junta as referências às que já estavam salvas. O 1º catálogo
+   * também vai em catalogoArquivos (o campo de sempre).
+   */
   private async enviarCatalogoPendente(): Promise<void> {
+    const controle = this.formulario.controls.catalogos;
+    const catalogos = controle.value.map((c) => ({ ...c, arquivos: [...c.arquivos] }));
     const pendentes = this.pendentesCatalogo();
-    if (pendentes.length === 0) {
-      return;
+    for (let i = 0; i < catalogos.length; i++) {
+      const grupo = pendentes[i] ?? [];
+      if (grupo.length > 0) {
+        catalogos[i].arquivos.push(...(await this.armazenamentoFotos.enviar(grupo, { tipo: 'CATALOGO' })));
+      }
     }
-    const referencias = await this.armazenamentoFotos.enviar(pendentes, { tipo: 'CATALOGO' });
-    const controle = this.formulario.controls.catalogoArquivos;
-    controle.setValue([...controle.value, ...referencias]);
+    controle.setValue(catalogos);
+    this.formulario.controls.catalogoArquivos.setValue(catalogos[0]?.arquivos ?? []);
     this.pendentesCatalogo.set([]);
   }
 

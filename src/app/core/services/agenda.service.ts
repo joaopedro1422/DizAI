@@ -6,6 +6,7 @@ import { urlDoPerfil } from '../api/api-url';
 import { SessaoService } from '../auth/sessao.service';
 import {
   Agendamento,
+  ClienteListaEspera,
   ConfiguracaoAgenda,
   DisponibilidadeProfissional,
   MensagemPronta,
@@ -16,6 +17,7 @@ import {
   Profissional,
   VendaProduto,
 } from '../models/agenda.model';
+import { FiltroNumeros } from '../../shared/graficos/graficos';
 import { CarregamentoUnico } from '../utils/carregamento-unico';
 import { hojeIso, somarDias } from '../utils/datas-agenda';
 
@@ -35,6 +37,8 @@ export class AgendaService {
   readonly configuracao = signal<ConfiguracaoAgenda | null>(null);
   /** Agendamentos de hoje até DIAS_DA_AGENDA dias (confirmados e cancelados). */
   readonly agendamentos = signal<Agendamento[]>([]);
+  /** Lista de espera dos mesmos dias, na ordem da fila de cada dia. */
+  readonly listaEspera = signal<ClienteListaEspera[]>([]);
   /** Mensagens prontas para mandar ao cliente pelo WhatsApp (lembrete, endereço...). */
   readonly mensagensProntas = signal<MensagemPronta[]>([]);
   /** Quem atende, na ordem de cadastro (o primeiro é o dono). Com 2+, a agenda mostra com quem é cada horário. */
@@ -128,17 +132,33 @@ export class AgendaService {
     return firstValueFrom(this.http.post<VendaProduto>(this.url('/vendas'), { itens }));
   }
 
-  /** Últimos 7/30/90 dias, ou um mês do calendário ("2026-10"). */
-  numeros(filtro: { dias: number } | { mes: string }): Promise<NumerosAgenda> {
-    const params = 'mes' in filtro ? new HttpParams().set('mes', filtro.mes) : new HttpParams().set('dias', filtro.dias);
+  /** Últimos 7/30/90 dias, um mês do calendário ("2026-10") ou um ano inteiro ("2026"). */
+  numeros(filtro: FiltroNumeros): Promise<NumerosAgenda> {
+    const params =
+      'ano' in filtro
+        ? new HttpParams().set('ano', filtro.ano)
+        : 'mes' in filtro
+          ? new HttpParams().set('mes', filtro.mes)
+          : new HttpParams().set('dias', filtro.dias);
     return firstValueFrom(this.http.get<NumerosAgenda>(this.url('/numeros'), { params }));
   }
 
-  async cancelar(agendamentoId: string): Promise<void> {
+  /** avisarListaEspera: o horário liberado vai para o primeiro da lista de espera do dia em que o serviço caiba. */
+  async cancelar(agendamentoId: string, avisarListaEspera = false): Promise<void> {
+    const params = new HttpParams().set('avisarListaEspera', avisarListaEspera);
     const cancelado = await firstValueFrom(
-      this.http.post<Agendamento>(this.url(`/agendamentos/${agendamentoId}/cancelamento`), null),
+      this.http.post<Agendamento>(this.url(`/agendamentos/${agendamentoId}/cancelamento`), null, { params }),
     );
     this.agendamentos.update((lista) => lista.map((a) => (a.id === agendamentoId ? cancelado : a)));
+    if (avisarListaEspera) {
+      await this.buscarListaEspera();
+    }
+  }
+
+  /** O lojista tira alguém da fila; se ele estava com uma vaga, ela vai para o próximo. */
+  async removerDaListaEspera(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete<void>(this.url(`/lista-espera/${id}`)));
+    await this.buscarListaEspera();
   }
 
   carregarMensagensProntas(): Promise<void> {
@@ -169,15 +189,33 @@ export class AgendaService {
     this.carregamentoAgendamentos.reiniciar();
     this.configuracao.set(null);
     this.agendamentos.set([]);
+    this.listaEspera.set([]);
     this.profissionais.set([]);
   }
 
   private async buscarAgendamentos(): Promise<void> {
+    const [agendamentos] = await Promise.all([
+      firstValueFrom(this.http.get<Agendamento[]>(this.url('/agendamentos'), { params: this.periodo() })),
+      this.buscarListaEspera(),
+    ]);
+    this.agendamentos.set(ordenar(agendamentos));
+  }
+
+  /** A lista de espera é um extra da tela: se a busca falhar, a agenda continua com a lista que já tinha. */
+  private async buscarListaEspera(): Promise<void> {
+    try {
+      this.listaEspera.set(
+        await firstValueFrom(this.http.get<ClienteListaEspera[]>(this.url('/lista-espera'), { params: this.periodo() })),
+      );
+    } catch {
+      // segue com a lista anterior
+    }
+  }
+
+  /** De hoje até DIAS_DA_AGENDA dias. */
+  private periodo(): HttpParams {
     const de = hojeIso();
-    const params = new HttpParams().set('de', de).set('ate', somarDias(de, DIAS_DA_AGENDA - 1));
-    this.agendamentos.set(
-      ordenar(await firstValueFrom(this.http.get<Agendamento[]>(this.url('/agendamentos'), { params }))),
-    );
+    return new HttpParams().set('de', de).set('ate', somarDias(de, DIAS_DA_AGENDA - 1));
   }
 
   private url(caminho: string): string {

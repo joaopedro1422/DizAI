@@ -29,6 +29,12 @@
 
   @if (acao() !== 'recusar') {
     <div class="campo">
+      <span class="campo__rotulo">Produto vendido <span class="campo__rotulo-opcional">(opcional)</span></span>
+      <app-seletor-produto [valor]="produtoId()" (escolher)="produtoId.set($event)" />
+      <span class="campo__dica">Conta nos produtos que mais vendem, nos Números.</span>
+    </div>
+
+    <div class="campo">
       <label for="valor-pedido" class="campo__rotulo">Valor do pedido</label>
       <span class="campo-prefixado" [class.campo-prefixado--erro]="erroValor()">
         <span class="campo-prefixado__prefixo">R$</span>

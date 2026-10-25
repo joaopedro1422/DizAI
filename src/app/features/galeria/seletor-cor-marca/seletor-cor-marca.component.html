@@ -2,8 +2,8 @@
   <section class="campo">
     <div>
       <h3 class="campo__titulo">Cor de destaque</h3>
-      <p class="descricao">Usada nas categorias, no botão do WhatsApp e em detalhes da vitrine. Atual: <strong>{{ nomeCorAtual() }}</strong>.</p>
     </div>
+    <app-seletor-estilo-cor [valor]="estiloAtual()" [cor]="hexAtual()" (escolher)="estiloAtual.set($event)" />
     <div class="cores" role="radiogroup" aria-label="Cor de destaque da página pública">
       @for (cor of cores; track cor.valor) {
         @let selecionada = cor.valor === corAtual();
@@ -12,7 +12,7 @@
           role="radio"
           class="cor"
           [class.cor--selecionada]="selecionada"
-          [style.background]="cor.hex"
+          [style.background]="pintura(cor.hex)"
           [attr.aria-checked]="selecionada"
           [attr.aria-label]="cor.nome"
           [title]="cor.nome"
@@ -53,14 +53,18 @@
     <p class="fonte-preview" [style.font-family]="fonteCss()">O texto ficará assim</p>
   </div>
 
-  <label class="campo">
+  <div class="campo">
     <span class="campo__titulo">Cor de fundo</span>
-    <select [value]="fundoAtual()" (change)="alterarFundo($event)">
-      @for (opcao of opcoesFundo; track opcao.valor) {
-        <option [value]="opcao.valor">{{ opcao.nome }}</option>
+    <app-seletor-fundo [valor]="fundoAtual()" (escolher)="fundoAtual.set($event)" />
+    <p class="aviso-fundo">
+      <app-icone nome="informacao" [tamanho]="15" [espessura]="2" />
+      @if (fundoEscolhido().cor) {
+        Esta janela está com essa cor, para você ver como fica.
+      } @else {
+        Sem cor de fundo: a vitrine fica no branco padrão, como esta janela.
       }
-    </select>
-  </label>
+    </p>
+  </div>
 
   <label class="campo">
     <span class="campo__titulo">Aplicar o fundo em</span>

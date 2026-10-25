@@ -108,8 +108,8 @@
 
 @switch (modalAberto()) {
   @case ('vitrine') {
-    <app-bottom-sheet titulo="Personalizar vitrine" (fechar)="fecharModal()">
-      <app-seletor-cor-marca (salvo)="fecharModal()" />
+    <app-bottom-sheet titulo="Personalizar vitrine" [fundo]="fundoDaVitrine()" (fechar)="fecharModal()">
+      <app-seletor-cor-marca (salvo)="fecharModal()" (corFundo)="fundoDaVitrine.set($event)" />
     </app-bottom-sheet>
   }
   @case ('topico') {

@@ -31,6 +31,8 @@ interface Rascunho {
   agradecimentoAtivo: boolean;
   mensagemAgradecimento: string;
   mensagemLembrete: string;
+  listaEsperaAtiva: boolean;
+  listaEsperaMinutos: number;
   periodos: Record<DiaSemana, Trecho[]>;
 }
 
@@ -76,6 +78,9 @@ const LEMBRETES = [
   { minutos: 480, rotulo: '8 horas antes' },
   { minutos: 1440, rotulo: '1 dia antes' },
 ];
+
+/** Quanto tempo quem recebe a vaga da lista de espera tem para responder. */
+const PRAZOS_LISTA_ESPERA = [10, 15, 30];
 
 /** Quem liga o dia ganha o horário mais comum: manhã e tarde com pausa para o almoço. */
 const DIA_PADRAO: Trecho[] = [
@@ -126,6 +131,7 @@ export class HorariosAtendimentoComponent {
   protected readonly intervalos = INTERVALOS;
   protected readonly antecedencias = ANTECEDENCIAS;
   protected readonly lembretes = LEMBRETES;
+  protected readonly prazosListaEspera = PRAZOS_LISTA_ESPERA;
   protected readonly etiquetasAgradecimento = ETIQUETAS_AGRADECIMENTO;
   protected readonly maximoPeriodos = MAXIMO_PERIODOS_POR_DIA;
 
@@ -271,6 +277,14 @@ export class HorariosAtendimentoComponent {
     this.rascunho.update((r) => ({ ...r, lembreteMinutos: minutos }));
   }
 
+  protected alternarListaEspera(ativa: boolean): void {
+    this.rascunho.update((r) => ({ ...r, listaEsperaAtiva: ativa }));
+  }
+
+  protected escolherPrazoListaEspera(minutos: number): void {
+    this.rascunho.update((r) => ({ ...r, listaEsperaMinutos: minutos }));
+  }
+
   protected abrirCopia(): void {
     this.diasParaCopiar.set([]);
     this.copiando.set(true);
@@ -343,6 +357,8 @@ function paraRascunho(configuracao: ConfiguracaoAgenda): Rascunho {
     mensagemAgradecimento:
       configuracao.mensagemAgradecimento ?? configuracao.mensagemAgradecimentoPadrao ?? AGRADECIMENTO_PADRAO,
     mensagemLembrete: configuracao.mensagemLembrete ?? configuracao.mensagemLembretePadrao ?? LEMBRETE_PADRAO,
+    listaEsperaAtiva: configuracao.listaEsperaAtiva ?? true,
+    listaEsperaMinutos: configuracao.listaEsperaMinutos ?? 15,
     periodos,
   };
 }
@@ -360,6 +376,8 @@ function paraConfiguracao(rascunho: Rascunho, atual: ConfiguracaoAgenda): Config
     agradecimentoAtivo: rascunho.agradecimentoAtivo,
     mensagemAgradecimento: rascunho.mensagemAgradecimento,
     mensagemLembrete: rascunho.mensagemLembrete,
+    listaEsperaAtiva: rascunho.listaEsperaAtiva,
+    listaEsperaMinutos: rascunho.listaEsperaMinutos,
     periodos,
     diasBloqueados: atual.diasBloqueados,
   };

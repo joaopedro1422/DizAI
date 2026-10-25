@@ -187,6 +187,36 @@
       </div>
     </section>
 
+    <section class="cartao">
+      <div class="agradecimento__linha">
+        <div>
+          <h2 class="cartao__titulo">Lista de espera</h2>
+          <p class="cartao__descricao">
+            Quando o dia que o cliente quer está sem horário, o assistente oferece a lista de espera daquele dia. Se um
+            horário vagar e o serviço couber nele, o primeiro da fila recebe a vaga pelo WhatsApp e confirma com um toque.
+          </p>
+        </div>
+        <app-interruptor
+          rotulo="Usar a lista de espera"
+          [ligado]="rascunho().listaEsperaAtiva"
+          (alternar)="alternarListaEspera($event)"
+        />
+      </div>
+      @if (rascunho().listaEsperaAtiva) {
+        <div class="lista-espera__prazo">
+          <span class="lista-espera__rotulo">Tempo para o cliente responder à vaga</span>
+          <div class="grupo-chips" role="radiogroup" aria-label="Tempo para o cliente responder à vaga">
+            @for (minutos of prazosListaEspera; track minutos) {
+              <button type="button" role="radio" class="chip" [class.chip--ativo]="rascunho().listaEsperaMinutos === minutos" [attr.aria-checked]="rascunho().listaEsperaMinutos === minutos" (click)="escolherPrazoListaEspera(minutos)">
+                {{ minutos }} min
+              </button>
+            }
+          </div>
+          <p class="cartao__descricao">Quem não responde a tempo sai da lista, e a vaga vai para o próximo da fila.</p>
+        </div>
+      }
+    </section>
+
     <!-- as três mensagens: só o nome e a setinha; ao tocar, abrem com o editor -->
     @let abertas = mensagensAbertas();
     <section class="cartao expansivel" [class.expansivel--aberto]="abertas.includes('agendamento')">

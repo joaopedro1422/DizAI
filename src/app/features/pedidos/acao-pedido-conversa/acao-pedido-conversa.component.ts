@@ -11,6 +11,7 @@ import { ToastService } from '../../../core/services/toast.service';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { AvisoClienteComponent } from '../aviso-cliente/aviso-cliente.component';
+import { SeletorProdutoComponent } from '../seletor-produto/seletor-produto.component';
 import { AGRADECIMENTO_PADRAO } from '../textos-pedido';
 
 /** confirmar: vai para a tela Pedidos; entregar: já entra no faturamento; recusar: só devolve ao assistente. */
@@ -25,7 +26,7 @@ const TAMANHO_MAXIMO_ANEXO_BYTES = 5 * 1024 * 1024;
  */
 @Component({
   selector: 'app-acao-pedido-conversa',
-  imports: [CarregandoComponent, AvisoClienteComponent, IconeComponent, UrlImagemPipe],
+  imports: [CarregandoComponent, AvisoClienteComponent, IconeComponent, UrlImagemPipe, SeletorProdutoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './acao-pedido-conversa.component.html',
   styleUrl: './acao-pedido-conversa.component.css',
@@ -49,6 +50,8 @@ export class AcaoPedidoConversaComponent {
   /** Foto do modelo (opcional, só ao confirmar): já enviada ao armazenamento, aqui fica a referência. */
   protected readonly anexo = signal<string | null>(null);
   protected readonly enviandoAnexo = signal(false);
+  /** O produto vendido (opcional): só para os "Produtos que mais vendem" dos Números. */
+  protected readonly produtoId = signal<number | null>(null);
 
   protected readonly nome = computed(() => {
     const doResumo = this.conversa().resumoPedido.find((item) => item.campo.trim().toLowerCase().startsWith('nome'));
@@ -120,7 +123,14 @@ export class AcaoPedidoConversaComponent {
         const entregue = acao === 'entregar';
         const mensagem = entregue && this.avisar() ? this.textoAviso().trim() || null : null;
         const anexo = entregue ? null : this.anexo();
-        const resultado = await this.pedidoService.criarDaConversa(this.conversa().id, entregue, valor!, mensagem, anexo);
+        const resultado = await this.pedidoService.criarDaConversa(
+          this.conversa().id,
+          entregue,
+          valor!,
+          mensagem,
+          anexo,
+          this.produtoId(),
+        );
         this.toastService.mostrar(this.textoSucesso(entregue, resultado.aviso));
       }
       this.concluido.emit();

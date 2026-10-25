@@ -13,9 +13,9 @@
     }
     <div class="topo__textos">
       <h2 id="teste-titulo" class="topo__nome">{{ perfil().nomeLoja }}</h2>
-      <span class="topo__status">{{ pendente() ? 'digitando…' : 'Teste do seu assistente' }}</span>
+      <span class="topo__status">{{ respondendo() ? 'digitando…' : 'Teste do seu assistente' }}</span>
     </div>
-    <button type="button" class="topo__recomecar" [disabled]="pendente() !== null || mensagens().length === 0" (click)="recomecar()">
+    <button type="button" class="topo__recomecar" [disabled]="respondendo() || mensagens().length === 0" (click)="recomecar()">
       Recomeçar
     </button>
   </header>
@@ -60,6 +60,8 @@
         <span class="balao__texto">{{ pendente }}</span>
         <span class="balao__hora"><app-icone nome="relogio" [tamanho]="11" [espessura]="2" /></span>
       </div>
+    }
+    @if (respondendo()) {
       <div class="balao balao--digitando" aria-label="O assistente está escrevendo">
         <i></i><i></i><i></i>
       </div>
@@ -87,7 +89,7 @@
       (ngModelChange)="texto.set($event)"
       (keydown)="aoTeclar($event)"
     ></textarea>
-    <button type="submit" class="entrada__enviar" [disabled]="!texto().trim() || pendente() !== null" aria-label="Enviar">
+    <button type="submit" class="entrada__enviar" [disabled]="!texto().trim() || respondendo()" aria-label="Enviar">
       <app-icone nome="seta" [tamanho]="20" [espessura]="2.4" />
     </button>
   </form>

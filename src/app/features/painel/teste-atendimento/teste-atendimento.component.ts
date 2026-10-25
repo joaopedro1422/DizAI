@@ -28,6 +28,9 @@ type ItemConversa =
   | { tipo: 'mensagem'; deCliente: boolean; linhas: LinhaFormatada[]; hora: string }
   | { tipo: 'aviso'; texto: string };
 
+/** De quanto em quanto tempo a tela busca as mensagens enquanto o assistente responde. */
+const ACOMPANHAR_A_CADA_MS = 700;
+
 const AVISOS: Partial<Record<AcaoTeste, string>> = {
   TRANSFERIR_HUMANO: 'Aqui o assistente passaria a conversa para você e te avisaria no celular.',
   SEM_INFORMACAO: 'O assistente não soube responder: aqui a conversa iria para você. Continue o teste normalmente.',
@@ -58,8 +61,10 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
 
   protected readonly carregando = signal(true);
   protected readonly mensagens = signal<MensagemTeste[]>([]);
-  /** Mensagem já enviada que espera a resposta (aparece na hora, com o "digitando…" do assistente). */
+  /** Mensagem já enviada que ainda não voltou do servidor (aparece na hora, antes da lista atualizar). */
   protected readonly pendente = signal<string | null>(null);
+  /** Esperando a resposta do assistente: o "digitando…" fica até ela chegar. */
+  protected readonly respondendo = signal(false);
   protected readonly aviso = signal<string | null>(null);
   protected readonly erro = signal<string | null>(null);
   protected readonly texto = signal('');
@@ -114,30 +119,55 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
 
   protected async enviar(): Promise<void> {
     const texto = this.texto().trim();
-    if (!texto || this.pendente()) {
+    if (!texto || this.respondendo()) {
       return;
     }
     this.texto.set('');
     this.aviso.set(null);
     this.erro.set(null);
     this.pendente.set(texto);
+    this.respondendo.set(true);
     this.rolarParaOFim();
+    // como no WhatsApp: a saudação é gravada antes da IA responder, então aparece primeiro
+    let terminou = false;
+    const acompanhar = window.setInterval(() => void this.acompanhar(() => terminou), ACOMPANHAR_A_CADA_MS);
     try {
       const resposta = await this.servico.enviar(texto);
+      terminou = true;
       this.mensagens.set(resposta.mensagens);
       this.aviso.set(resposta.acao ? (AVISOS[resposta.acao] ?? null) : null);
     } catch (erro) {
+      terminou = true;
       this.erro.set(mensagemDoErro(erro, 'O assistente não respondeu agora. Tente de novo.'));
       this.texto.set(texto);   // devolve o texto para não precisar escrever de novo
     } finally {
+      window.clearInterval(acompanhar);
       this.pendente.set(null);
+      this.respondendo.set(false);
       this.rolarParaOFim();
       this.campo()?.nativeElement.focus();
     }
   }
 
+  /** Enquanto o assistente pensa, traz o que já foi gravado (a mensagem do cliente e a saudação). */
+  private async acompanhar(terminou: () => boolean): Promise<void> {
+    try {
+      const lista = await this.servico.mensagens();
+      if (terminou() || lista.length <= this.mensagens().length) {
+        return;
+      }
+      this.mensagens.set(lista);
+      if (lista.some((m) => m.origem === 'CLIENTE' && m.texto === this.pendente())) {
+        this.pendente.set(null);   // a mensagem do cliente já está na lista
+      }
+      this.rolarParaOFim();
+    } catch {
+      // só uma espiada: a resposta completa chega pelo envio
+    }
+  }
+
   protected async recomecar(): Promise<void> {
-    if (this.pendente()) {
+    if (this.respondendo()) {
       return;
     }
     try {

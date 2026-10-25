@@ -16,6 +16,15 @@
             "outputPath": "dist/dizai-frontend",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "allowedCommonJsDependencies": [
+              "jspdf-autotable",
+              "html2canvas",
+              "dompurify",
+              "canvg",
+              "core-js",
+              "raf",
+              "rgbcolor"
+            ],
             "polyfills": [
               "zone.js"
             ],

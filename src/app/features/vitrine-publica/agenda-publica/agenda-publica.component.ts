@@ -11,6 +11,9 @@ import { FaixaDiasComponent, ItemFaixaDia } from '../../../shared/components/fai
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { formatarReal } from '../../pedidos/textos-pedido';
 
+/** O "horário" escolhido quando o cliente toca em "Entrar na lista de espera" (dia sem horário livre). */
+const LISTA_ESPERA = 'lista-espera';
+
 /** Horários do dia em grupos, para a lista não virar um muro de botões. */
 const TURNOS = [
   { nome: 'Manhã', ate: '12:00' },
@@ -22,13 +25,15 @@ const TURNOS = [
  * Aba "Agenda" da página pública: o cliente escolhe o serviço, o dia e o horário livre e envia
  * tudo pronto pelo WhatsApp. Nada é marcado aqui: o assistente confere a agenda e confirma na conversa
  * (assim um horário que alguém pegou no meio do caminho nunca é confirmado duas vezes).
+ * Dia sem horário livre (com a lista de espera ligada na loja): no lugar dos horários aparece "Entrar na lista de
+ * espera"; o resto do caminho é o mesmo (nome e "Enviar pelo WhatsApp") e o assistente põe o cliente na fila.
  */
 @Component({
   selector: 'app-agenda-publica',
   imports: [IconeComponent, CarregandoComponent, FaixaDiasComponent, UrlImagemPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './agenda-publica.component.html',
-  styleUrl: './agenda-publica.component.css',
+  styleUrls: ['./agenda-publica.component.css', './lista-espera-publica.css'],
 })
 export class AgendaPublicaComponent implements OnInit {
   readonly slug = input.required<string>();
@@ -106,13 +111,25 @@ export class AgendaPublicaComponent implements OnInit {
     ].join(' · ');
   });
 
+  protected readonly minutosListaEspera = computed(() => this.agenda()?.listaEsperaMinutos ?? 15);
+  protected readonly listaEspera = LISTA_ESPERA;
+  /** O cliente escolheu "Entrar na lista de espera" em vez de um horário. */
+  protected readonly naListaDeEspera = computed(() => this.horaSelecionada() === LISTA_ESPERA);
+
+  /** Dia lotado continua tocável quando aceita lista de espera (é por ele que o cliente entra na fila). */
   protected readonly itensFaixa = computed<ItemFaixaDia[]>(() =>
     this.dias().map((dia) => ({
       data: dia.data,
-      desativado: dia.horarios.length === 0,
+      desativado: dia.horarios.length === 0 && !dia.listaEspera,
       detalhe: !dia.aberto ? 'Fechado' : dia.horarios.length === 0 ? 'Lotado' : '',
     })),
   );
+
+  /** O dia escolhido está sem horário para o serviço, mas aceita lista de espera: a página oferece a lista. */
+  protected readonly diaLotadoComLista = computed(() => {
+    const dia = this.dias().find((d) => d.data === this.diaSelecionado());
+    return !!dia?.listaEspera && dia.horarios.length === 0 && !this.carregandoHorarios();
+  });
 
   protected readonly turnos = computed(() => {
     const horarios = this.dias().find((d) => d.data === this.diaSelecionado())?.horarios ?? [];
@@ -124,8 +141,13 @@ export class AgendaPublicaComponent implements OnInit {
     }).filter((turno) => turno.horarios.length > 0);
   });
 
+  /** Sem lista de espera, nenhum dia com horário = nada para escolher. Com ela, os dias lotados continuam na faixa. */
   protected readonly semHorarioNoMes = computed(
-    () => this.escolhidos().length > 0 && !this.carregandoHorarios() && this.dias().every((d) => d.horarios.length === 0),
+    () =>
+      this.escolhidos().length > 0 &&
+      !this.carregandoHorarios() &&
+      this.dias().every((d) => d.horarios.length === 0) &&
+      !this.dias().some((d) => d.listaEspera),
   );
 
   protected readonly pronto = computed(
@@ -138,7 +160,8 @@ export class AgendaPublicaComponent implements OnInit {
     if (!this.pronto() || !dia || !hora) {
       return null;
     }
-    return { servicos: this.textoServicos(), quando: `${diaPorExtenso(dia)} às ${hora}`, duracao: formatarDuracao(this.duracaoTotal()) };
+    const quando = hora === LISTA_ESPERA ? `${diaPorExtenso(dia)} · lista de espera` : `${diaPorExtenso(dia)} às ${hora}`;
+    return { servicos: this.textoServicos(), quando, duracao: formatarDuracao(this.duracaoTotal()) };
   });
 
   /** O nome é obrigatório: é como o horário aparece na agenda do lojista. */
@@ -150,6 +173,18 @@ export class AgendaPublicaComponent implements OnInit {
     const hora = this.horaSelecionada();
     if (!this.pronto() || !dia || !hora || this.faltaNome()) {
       return null;
+    }
+    if (hora === LISTA_ESPERA) {
+      // a mensagem que o assistente reconhece como pedido para entrar na lista de espera do dia
+      const linhas = [
+        'Olá! Quero entrar na lista de espera:',
+        '',
+        `*Serviço:* ${this.textoServicos()}`,
+        ...(this.comProfissionais() ? [`*Profissional:* ${this.nomeProfissional()}`] : []),
+        `*Data:* ${diaPorExtenso(dia)}`,
+        `*Nome:* ${this.nome().trim()}`,
+      ];
+      return `${gerarLinkWhatsapp(this.numeroWhatsapp())}?text=${encodeURIComponent(linhas.join('\n'))}`;
     }
     // blocos separados por linha em branco e rótulos em negrito (o WhatsApp mostra *texto* em negrito)
     const reservados = this.produtosReservados();
@@ -275,8 +310,12 @@ export class AgendaPublicaComponent implements OnInit {
         return;
       }
       this.dias.set(dias);
-      // mantém o dia escolhido se ainda tiver vaga; senão vai para o primeiro dia livre
-      const atual = dias.find((d) => d.data === this.diaSelecionado() && d.horarios.length > 0);
+      // mantém o dia escolhido se ainda tiver vaga (ou se ele está lotado e a loja tem lista de espera);
+      // senão vai para o primeiro dia livre
+      const atual = dias.find(
+        (d) =>
+          d.data === this.diaSelecionado() && (d.horarios.length > 0 || !!d.listaEspera),
+      );
       this.diaSelecionado.set(atual?.data ?? dias.find((d) => d.horarios.length > 0)?.data ?? null);
     } catch {
       if (busca === this.buscaAtual) {

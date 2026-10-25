@@ -29,6 +29,8 @@ let proximoIdTitulo = 0;
 })
 export class BottomSheetComponent implements AfterViewInit, OnDestroy {
   readonly titulo = input.required<string>();
+  /** Cor de fundo da janela (ex.: a prévia do fundo da vitrine); null = o branco de sempre. */
+  readonly fundo = input<string | null>(null);
   readonly fechar = output<void>();
 
   protected readonly idTitulo = `bottom-sheet-titulo-${++proximoIdTitulo}`;

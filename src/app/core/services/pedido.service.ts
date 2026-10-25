@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
+import { FiltroNumeros } from '../../shared/graficos/graficos';
+
 import { urlDoPerfil } from '../api/api-url';
 import { SessaoService } from '../auth/sessao.service';
 import { MensagemPronta, NovaMensagemPronta } from '../models/agenda.model';
@@ -72,9 +74,16 @@ export class PedidoService {
     valor: number,
     mensagem: string | null,
     anexo: string | null = null,
+    /** O produto vendido (só para os "Produtos que mais vendem" dos Números); null = não escolheu. */
+    produtoId: number | null = null,
   ): Promise<ResultadoAcaoPedido> {
     const resposta = await firstValueFrom(
-      this.http.post<RespostaApi>(this.url(`/da-conversa/${conversaId}?entregue=${entregue}`), { valor, mensagem, anexo }),
+      this.http.post<RespostaApi>(this.url(`/da-conversa/${conversaId}?entregue=${entregue}`), {
+        valor,
+        mensagem,
+        anexo,
+        produtoId,
+      }),
     );
     return this.aplicar(resposta);
   }
@@ -86,6 +95,7 @@ export class PedidoService {
     whatsapp: string;
     nomeCliente: string;
     entregue: boolean;
+    produtoId: number | null;
   }): Promise<ResultadoAcaoPedido> {
     return this.aplicar(await firstValueFrom(this.http.post<RespostaApi>(this.url(), novo)));
   }
@@ -108,8 +118,13 @@ export class PedidoService {
   }
 
   /** Últimos 7/30/90 dias, ou um mês do calendário ("2026-10"). */
-  async numeros(filtro: { dias: number } | { mes: string }): Promise<NumerosPedidos> {
-    const consulta = 'mes' in filtro ? `mes=${encodeURIComponent(filtro.mes)}` : `dias=${filtro.dias}`;
+  async numeros(filtro: FiltroNumeros): Promise<NumerosPedidos> {
+    const consulta =
+      'ano' in filtro
+        ? `ano=${encodeURIComponent(filtro.ano)}`
+        : 'mes' in filtro
+          ? `mes=${encodeURIComponent(filtro.mes)}`
+          : `dias=${filtro.dias}`;
     const numeros = await firstValueFrom(this.http.get<NumerosApi>(this.url(`/numeros?${consulta}`)));
     return { ...numeros, entreguesRecentes: numeros.entreguesRecentes.map(paraPedido) };
   }

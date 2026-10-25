@@ -160,7 +160,16 @@
         }
 
         <!-- Resumida (cards, o padrão) ou Completa (linha do tempo do dia) -->
-        @if (variosProfissionais()) {
+        @if (variosProfissionais() && !completaEmColunas() && !telaGrande()) {
+          <!-- celular: um seletor (as tags tomam muito espaço com muitos profissionais) -->
+          <app-seletor-profissional
+            class="filtro-profissional"
+            [profissionais]="profissionais()"
+            [escolhidoId]="profissionalVisivel()"
+            [comTodos]="visualizacao() === 'resumida'"
+            (escolher)="filtroProfissional.set($event)"
+          />
+        } @else if (variosProfissionais() && !completaEmColunas()) {
           <div class="filtro-profissional grupo-chips" role="radiogroup" aria-label="Profissional">
             @if (visualizacao() === 'resumida') {
               <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="!profissionalVisivel()" [attr.aria-checked]="!profissionalVisivel()" (click)="filtroProfissional.set(null)">Todos</button>
@@ -267,6 +276,66 @@
             }
           </div>
         } @else {
+          @if (completaEmColunas()) {
+            <!-- computador, 2+ profissionais: a mesma linha do tempo, com uma coluna para cada um (rola para o lado) -->
+            @if (linhaEmColunas(); as linha) {
+              <div class="colunas" [class.colunas--rolada]="colunasRoladas()" [class.colunas--rolada-baixo]="colunasRoladasParaBaixo()" [style.--quantidade-colunas]="linha.colunas.length" (scroll)="aoRolarColunas($event)">
+                <div class="colunas__conteudo">
+                  <div class="colunas__nomes" aria-hidden="true">
+                    <!-- canto em cima da régua: cobre os nomes que passam por baixo ao rolar para o lado -->
+                    <span class="colunas__canto"></span>
+                    @for (coluna of linha.colunas; track coluna.id) {
+                      <span class="colunas__nome">
+                        @if (coluna.fotoUrl) {
+                          <img class="colunas__foto" [src]="coluna.fotoUrl | urlImagem" alt="">
+                        } @else {
+                          <span class="colunas__foto colunas__foto--iniciais">{{ coluna.iniciais }}</span>
+                        }
+                        <span class="colunas__texto">{{ coluna.nome }}</span>
+                      </span>
+                    }
+                  </div>
+                  <div class="linha" [style.height.px]="linha.altura">
+                    <!-- a régua de horas fica parada à esquerda ao rolar para o lado (vira um card com sombra) -->
+                    <div class="colunas__regua" aria-hidden="true">
+                      @for (marca of linha.marcas; track marca.texto) {
+                        <span class="linha__hora" [class.linha__hora--meia]="!marca.cheia" [class.linha__hora--destaque]="marca.destaque" [style.top.px]="marca.topo">{{ marca.texto }}</span>
+                      }
+                      @for (extra of linha.marcasExtras; track extra.texto) {
+                        <span class="linha__hora linha__hora--extra" [style.top.px]="extra.topo">{{ extra.texto }}</span>
+                      }
+                      @if (linha.agora; as agora) {
+                        <span class="linha__agora-hora" [style.top.px]="agora.topo">{{ agora.texto }}</span>
+                      }
+                    </div>
+                    @for (marca of linha.marcas; track marca.texto) {
+                      <div class="linha__marca" [class.linha__marca--meia]="!marca.cheia" [style.top.px]="marca.topo" aria-hidden="true"></div>
+                    }
+
+                    <div class="colunas__trilhos">
+                      @for (coluna of linha.colunas; track coluna.id) {
+                        <div class="coluna" role="list" [attr.aria-label]="'Horários de ' + coluna.nome">
+                          @for (bloco of coluna.blocos; track bloco.inicio + bloco.tipo) {
+                            <ng-container *ngTemplateOutlet="blocoDaLinha; context: { $implicit: bloco, comProfissional: false }" />
+                          }
+                        </div>
+                      }
+                    </div>
+
+                    @if (linha.agora; as agora) {
+                      <div #linhaAgora class="linha__agora" [style.top.px]="agora.topo" aria-hidden="true"></div>
+                    }
+                  </div>
+                </div>
+              </div>
+            } @else if (!folgaNoDia()) {
+              <app-estado-vazio
+                icone="calendario"
+                titulo="Fechado neste dia"
+                descricao="Você não atende neste dia da semana. Mude em Configure ou agende à mão."
+              />
+            }
+          } @else {
           <!-- linha do tempo: cada bloco ocupa exatamente o seu horário (30 min = 48 px) -->
           @if (linhaDoTempo(); as linha) {
             <div class="linha" [style.height.px]="linha.altura" role="list" aria-label="Horários do dia">
@@ -280,90 +349,8 @@
               }
 
               @for (bloco of linha.blocos; track bloco.inicio + bloco.tipo) {
-                @switch (bloco.tipo) {
-                  @case ('agendamento') {
-                    @let agendamento = bloco.agendamento!;
-                    <article
-                      class="bloco bloco--agendamento"
-                      [class.bloco--em-andamento]="bloco.emAndamento"
-                      [class.bloco--confirmado]="agendamento.presencaConfirmada"
-                      [class.bloco--medio]="bloco.altura < 70"
-                      [class.bloco--curto]="bloco.altura < 40"
-                      [style.top.px]="bloco.topo"
-                      [style.height.px]="bloco.altura - 2"
-                      role="listitem"
-                    >
-                      <div class="bloco__linha">
-                        <span class="bloco__horario">{{ bloco.textoInicio }} – {{ bloco.textoFim }}</span>
-                        @if (bloco.altura < 70) {
-                          <span class="bloco__nome bloco__nome--junto">{{ agendamento.nomeCliente }}</span>
-                        }
-                        @if (variosProfissionais()) {
-                          <span class="bloco__profissional" [attr.aria-label]="'Com ' + agendamento.profissionalNome">
-                            <app-icone nome="pessoa" [tamanho]="11" [espessura]="2" />
-                            {{ agendamento.profissionalNome }}
-                          </span>
-                        }
-                        @if (agendamento.presencaConfirmada) {
-                          <span class="bloco__presenca" title="Presença confirmada" aria-label="Presença confirmada">
-                            <app-icone nome="check" [tamanho]="13" [espessura]="3" />
-                          </span>
-                        }
-                        @if (agendamento.origem === 'WHATSAPP') {
-                          <span class="bloco__assistente" title="Marcado pelo assistente" aria-label="Marcado pelo assistente">
-                            <app-icone nome="brilho" [tamanho]="13" [espessura]="2" />
-                          </span>
-                        }
-                        <!-- bloco baixo: o nome está nesta linha, então o produto e o valor também -->
-                        @if (bloco.altura < 70) {
-                          <ng-container *ngTemplateOutlet="produtoEValor; context: { $implicit: agendamento }" />
-                        }
-                        <button type="button" class="bloco__cancelar" [attr.aria-label]="'Cancelar o horário de ' + agendamento.nomeCliente" (click)="paraCancelar.set(agendamento)">
-                          <app-icone nome="fechar" [tamanho]="15" [espessura]="2" />
-                        </button>
-                      </div>
-                      @if (bloco.altura >= 70) {
-                        <!-- nome à esquerda; "1 produto" e o valor na mesma linha, no fim -->
-                        <div class="bloco__linha-nome">
-                          <span class="bloco__nome">{{ agendamento.nomeCliente }}</span>
-                          <ng-container *ngTemplateOutlet="produtoEValor; context: { $implicit: agendamento }" />
-                        </div>
-                      }
-                      @if (bloco.altura >= 40) {
-                        <span class="bloco__detalhe">
-                          <span class="bloco__servico">{{ agendamento.servicos }}</span>
-                          @if (agendamento.whatsapp) {
-                            <button type="button" class="bloco__whatsapp" [attr.aria-label]="'Mandar mensagem para ' + agendamento.nomeCliente" (click)="paraMensagem.set(agendamento)">
-                              {{ agendamento.whatsapp }}
-                            </button>
-                          }
-                        </span>
-                      }
-                    </article>
-                  }
-                  @case ('livre') {
-                    <div
-                      class="bloco bloco--livre"
-                      [class.bloco--sem-texto]="bloco.altura < 24"
-                      [style.top.px]="bloco.topo"
-                      [style.height.px]="bloco.altura - 2"
-                      role="listitem"
-                    >
-                      @if (bloco.altura >= 24) {
-                        <span>{{ bloco.textoInicio }} – {{ bloco.textoFim }} · livre</span>
-                      }
-                    </div>
-                  }
-                  @case ('fechado') {
-                    <div class="bloco bloco--fechado" [style.top.px]="bloco.topo" [style.height.px]="bloco.altura - 2" aria-hidden="true">
-                      @if (bloco.altura >= 24) {
-                        <span>{{ folgaNoDia() ? 'Folga' : 'Fechado' }} · {{ bloco.textoInicio }} – {{ bloco.textoFim }}</span>
-                      }
-                    </div>
-                  }
-                }
+                <ng-container *ngTemplateOutlet="blocoDaLinha; context: { $implicit: bloco, comProfissional: variosProfissionais() }" />
               }
-
               @if (linha.agora; as agora) {
                 <div #linhaAgora class="linha__agora" [style.top.px]="agora.topo" aria-hidden="true">
                   <span class="linha__agora-hora">{{ agora.texto }}</span>
@@ -377,9 +364,40 @@
               descricao="Você não atende neste dia da semana. Mude em Configure ou agende à mão."
             />
           }
+          }
         }
 
-        <!-- nas duas visualizações: os cancelados ficam no fim, numa lista pequena -->
+        <!-- nas duas visualizações: a lista de espera e os cancelados ficam no fim, em listas pequenas -->
+        @if (listaEsperaDoDia().length > 0) {
+          <div class="lista-espera">
+            <span class="lista-espera__titulo">
+              <app-icone nome="pessoas" [tamanho]="15" />
+              Lista de espera
+            </span>
+            @for (cliente of listaEsperaDoDia(); track cliente.id) {
+              <div class="lista-espera__item">
+                <span class="lista-espera__posicao">{{ cliente.posicao }}º</span>
+                <span class="lista-espera__texto">
+                  <strong>{{ cliente.nomeCliente }}</strong>
+                  · <a class="lista-espera__whatsapp" [href]="linkWhatsappDaLista(cliente)" target="_blank" rel="noopener">{{ cliente.whatsapp }}</a>
+                  · {{ cliente.servicos }}
+                  @if (variosProfissionais()) {
+                    · {{ cliente.profissional ? 'com ' + cliente.profissional : 'qualquer profissional' }}
+                  }
+                  @if (cliente.status === 'OFERECIDA') {
+                    <span class="lista-espera__oferta">
+                      Vaga das {{ cliente.ofertaHorario }}{{ variosProfissionais() ? ' com ' + cliente.ofertaProfissional : '' }} oferecida · responde até {{ horaDoPrazo(cliente.ofertaExpiraEm) }}
+                    </span>
+                  }
+                </span>
+                <button type="button" class="lista-espera__remover" [attr.aria-label]="'Tirar ' + cliente.nomeCliente + ' da lista de espera'" (click)="paraRemoverDaLista.set(cliente)">
+                  <app-icone nome="fechar" [tamanho]="15" [espessura]="2" />
+                </button>
+              </div>
+            }
+          </div>
+        }
+
         @if (canceladosDoDia().length > 0) {
           <div class="cancelados">
             <span class="cancelados__titulo">Cancelados</span>
@@ -508,12 +526,65 @@
           Avisar no WhatsApp
         </a>
       }
-      <button type="button" class="btn btn--excluir btn--grande btn--bloco" [disabled]="cancelando()" [attr.aria-busy]="cancelando()" (click)="confirmarCancelamento()">
-        @if (cancelando()) {
+      @let esperando = esperandoVaga(agendamento);
+      @if (esperando > 0) {
+        <!-- tem gente esperando vaga neste dia: o dono escolhe se o horário vai para a lista -->
+        <div class="aviso-lista-espera" role="status">
+          <app-icone nome="pessoas" [tamanho]="18" />
+          <p>
+            <strong>{{ esperando === 1 ? '1 pessoa espera' : esperando + ' pessoas esperam' }} uma vaga neste dia.</strong>
+            Oferecer este horário à lista de espera? O primeiro da fila em que o serviço caiba recebe a vaga pelo
+            WhatsApp e tem {{ minutosListaEspera() }} minutos para confirmar.
+          </p>
+        </div>
+        <button type="button" class="btn btn--primario btn--grande btn--bloco" [disabled]="cancelando()" [attr.aria-busy]="cancelando() && avisandoLista()" (click)="confirmarCancelamento(true)">
+          @if (cancelando() && avisandoLista()) {
+            <app-carregando modo="inline" variante="claro" [tamanho]="20" />
+            Cancelando…
+          } @else {
+            Cancelar e oferecer à lista
+          }
+        </button>
+        <button type="button" class="btn btn--secundario btn--bloco" [disabled]="cancelando()" [attr.aria-busy]="cancelando() && !avisandoLista()" (click)="confirmarCancelamento(false)">
+          @if (cancelando() && !avisandoLista()) {
+            <app-carregando modo="inline" [tamanho]="18" />
+            Cancelando…
+          } @else {
+            Cancelar sem avisar a lista
+          }
+        </button>
+      } @else {
+        <button type="button" class="btn btn--excluir btn--grande btn--bloco" [disabled]="cancelando()" [attr.aria-busy]="cancelando()" (click)="confirmarCancelamento()">
+          @if (cancelando()) {
+            <app-carregando modo="inline" variante="claro" [tamanho]="20" />
+            Cancelando…
+          } @else {
+            Cancelar horário
+          }
+        </button>
+      }
+    </div>
+  </app-bottom-sheet>
+}
+
+@if (paraRemoverDaLista(); as cliente) {
+  <app-bottom-sheet [titulo]="'Tirar ' + cliente.nomeCliente + ' da lista de espera?'" (fechar)="paraRemoverDaLista.set(null)">
+    <div class="confirmacao">
+      <p class="confirmacao__texto">
+        <strong>{{ diaPorExtenso(cliente.data) }}</strong> · {{ cliente.servicos }} · {{ cliente.posicao }}º da fila
+      </p>
+      <p class="confirmacao__texto">
+        O cliente não é avisado e deixa de receber as vagas deste dia.
+        @if (cliente.status === 'OFERECIDA') {
+          A vaga das {{ cliente.ofertaHorario }}, que esperava a resposta dele, vai para o próximo da fila.
+        }
+      </p>
+      <button type="button" class="btn btn--excluir btn--grande btn--bloco" [disabled]="removendoDaLista()" [attr.aria-busy]="removendoDaLista()" (click)="removerDaLista()">
+        @if (removendoDaLista()) {
           <app-carregando modo="inline" variante="claro" [tamanho]="20" />
-          Cancelando…
+          Tirando…
         } @else {
-          Cancelar horário
+          Tirar da lista
         }
       </button>
     </div>
@@ -567,6 +638,92 @@
 }
 
 <!-- linha do tempo: "1 produto" (reservado pela agenda online) e o valor do atendimento, alinhados à direita -->
+<!-- um bloco da linha do tempo (agendamento, livre ou fechado); comProfissional: mostra com quem é (fora das colunas) -->
+<ng-template #blocoDaLinha let-bloco let-comProfissional="comProfissional">
+  @switch (bloco.tipo) {
+    @case ('agendamento') {
+      @let agendamento = bloco.agendamento!;
+      <article
+        class="bloco bloco--agendamento"
+        [class.bloco--em-andamento]="bloco.emAndamento"
+        [class.bloco--confirmado]="agendamento.presencaConfirmada"
+        [class.bloco--medio]="bloco.altura < 70"
+        [class.bloco--curto]="bloco.altura < 40"
+        [style.top.px]="bloco.topo"
+        [style.height.px]="bloco.altura - 2"
+        role="listitem"
+      >
+        <div class="bloco__linha">
+          <span class="bloco__horario">{{ bloco.textoInicio }} – {{ bloco.textoFim }}</span>
+          @if (bloco.altura < 70) {
+            <span class="bloco__nome bloco__nome--junto">{{ agendamento.nomeCliente }}</span>
+          }
+          @if (comProfissional) {
+            <span class="bloco__profissional" [attr.aria-label]="'Com ' + agendamento.profissionalNome">
+              <app-icone nome="pessoa" [tamanho]="11" [espessura]="2" />
+              {{ agendamento.profissionalNome }}
+            </span>
+          }
+          @if (agendamento.presencaConfirmada) {
+            <span class="bloco__presenca" title="Presença confirmada" aria-label="Presença confirmada">
+              <app-icone nome="check" [tamanho]="13" [espessura]="3" />
+            </span>
+          }
+          @if (agendamento.origem === 'WHATSAPP') {
+            <span class="bloco__assistente" title="Marcado pelo assistente" aria-label="Marcado pelo assistente">
+              <app-icone nome="brilho" [tamanho]="13" [espessura]="2" />
+            </span>
+          }
+          <!-- bloco baixo: o nome está nesta linha, então o produto e o valor também -->
+          @if (bloco.altura < 70) {
+            <ng-container *ngTemplateOutlet="produtoEValor; context: { $implicit: agendamento }" />
+          }
+          <button type="button" class="bloco__cancelar" [attr.aria-label]="'Cancelar o horário de ' + agendamento.nomeCliente" (click)="paraCancelar.set(agendamento)">
+            <app-icone nome="fechar" [tamanho]="15" [espessura]="2" />
+          </button>
+        </div>
+        @if (bloco.altura >= 70) {
+          <!-- nome à esquerda; "1 produto" e o valor na mesma linha, no fim -->
+          <div class="bloco__linha-nome">
+            <span class="bloco__nome">{{ agendamento.nomeCliente }}</span>
+            <ng-container *ngTemplateOutlet="produtoEValor; context: { $implicit: agendamento }" />
+          </div>
+        }
+        @if (bloco.altura >= 40) {
+          <span class="bloco__detalhe">
+            <span class="bloco__servico">{{ agendamento.servicos }}</span>
+            @if (agendamento.whatsapp) {
+              <button type="button" class="bloco__whatsapp" [attr.aria-label]="'Mandar mensagem para ' + agendamento.nomeCliente" (click)="paraMensagem.set(agendamento)">
+                {{ agendamento.whatsapp }}
+              </button>
+            }
+          </span>
+        }
+      </article>
+    }
+    @case ('livre') {
+      <div
+        class="bloco bloco--livre"
+        [class.bloco--sem-texto]="bloco.altura < 24"
+        [style.top.px]="bloco.topo"
+        [style.height.px]="bloco.altura - 2"
+        role="listitem"
+      >
+        @if (bloco.altura >= 24) {
+          <span>{{ bloco.textoInicio }} – {{ bloco.textoFim }} · livre</span>
+        }
+      </div>
+    }
+    @case ('fechado') {
+      <div class="bloco bloco--fechado" [style.top.px]="bloco.topo" [style.height.px]="bloco.altura - 2" aria-hidden="true">
+        @if (bloco.altura >= 24) {
+          <span>{{ folgaNoDia() ? 'Folga' : 'Fechado' }} · {{ bloco.textoInicio }} – {{ bloco.textoFim }}</span>
+        }
+      </div>
+    }
+  }
+</ng-template>
+
 <ng-template #produtoEValor let-agendamento>
   <span class="bloco__extras">
     @if (agendamento.produtos.length) {
