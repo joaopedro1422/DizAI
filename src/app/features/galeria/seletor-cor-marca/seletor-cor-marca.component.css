@@ -124,3 +124,86 @@
   font-size: 13px;
   color: var(--cor-texto-secundario);
 }
+
+/* Menu de categorias: duas opções lado a lado, cada uma com a prévia do menu */
+.menus {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.menu-opcao {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 8px 10px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font: inherit;
+  cursor: pointer;
+}
+
+.menu-opcao--marcada {
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 3px var(--cor-primaria-clara);
+}
+
+.menu-opcao__nome {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.menu-previa {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 8px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--previa-fundo);
+}
+
+.menu-previa__item {
+  flex: none;
+  padding: 5px 10px;
+  border-radius: var(--raio-pilula);
+  background: color-mix(in srgb, var(--previa-fundo) 90%, #000000);
+  color: #1c1a19;
+  font-size: 13px;
+}
+
+.menu-previa__item--ativo {
+  background: var(--previa-destaque);
+  color: #ffffff;
+}
+
+.menu-previa--minimalista {
+  gap: 14px;
+}
+
+.menu-previa--minimalista .menu-previa__item {
+  padding: 4px 0;
+  border-radius: 0;
+  background: none;
+  color: #6b6461;
+}
+
+.menu-previa--minimalista .menu-previa__item--ativo {
+  position: relative;
+  color: #1c1a19;
+  font-weight: 700;
+}
+
+.menu-previa--minimalista .menu-previa__item--ativo::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2.5px;
+  border-radius: 2px;
+  background: var(--previa-destaque);
+}

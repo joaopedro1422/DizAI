@@ -38,7 +38,7 @@
         }
 
         @if (!mostrandoAgenda()) {
-          <nav class="categorias">
+          <nav class="categorias" [class.categorias--minimalista]="loja.estiloMenu === 'MINIMALISTA'">
             @for (categoria of loja.categorias; track categoria; let primeira = $first) {
               <span class="categoria" [class.categoria--ativa]="primeira">{{ categoria }}</span>
             }

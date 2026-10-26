@@ -12,7 +12,7 @@ import { CarregandoComponent } from '../../../shared/components/carregando/carre
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { AvisoClienteComponent } from '../aviso-cliente/aviso-cliente.component';
 import { SeletorProdutoComponent } from '../seletor-produto/seletor-produto.component';
-import { AGRADECIMENTO_PADRAO } from '../textos-pedido';
+import { AGRADECIMENTO_PADRAO, lerValorPago } from '../textos-pedido';
 
 /** confirmar: vai para a tela Pedidos; entregar: já entra no faturamento; recusar: só devolve ao assistente. */
 export type AcaoPedidoConversa = 'confirmar' | 'entregar' | 'recusar';
@@ -72,6 +72,10 @@ export class AcaoPedidoConversaComponent {
     return PADRAO_VALOR.test(texto) ? Number(texto.replace(',', '.')) : null;
   });
   protected readonly erroValor = computed(() => this.acao() !== 'recusar' && this.tentouSalvar() && this.valor() === null);
+  /** "Já pago" (só ao confirmar): o sinal que o cliente já pagou. Não entra no faturamento. */
+  protected readonly pagoTexto = signal('');
+  private readonly pago = computed(() => lerValorPago(this.pagoTexto(), this.valor()));
+  protected readonly erroPago = computed(() => (this.acao() === 'confirmar' ? this.pago().erro : ''));
 
   /** Envia a imagem escolhida na hora: no "Confirmar pedido" só vai a referência. */
   protected async aoEscolherAnexo(evento: Event): Promise<void> {
@@ -111,7 +115,7 @@ export class AcaoPedidoConversaComponent {
     this.tentouSalvar.set(true);
     const acao = this.acao();
     const valor = this.valor();
-    if (acao !== 'recusar' && valor === null) {
+    if (acao !== 'recusar' && (valor === null || this.erroPago())) {
       return;
     }
     this.salvando.set(true);
@@ -130,6 +134,7 @@ export class AcaoPedidoConversaComponent {
           mensagem,
           anexo,
           this.produtoId(),
+          entregue ? null : this.pago().pago,
         );
         this.toastService.mostrar(this.textoSucesso(entregue, resultado.aviso));
       }

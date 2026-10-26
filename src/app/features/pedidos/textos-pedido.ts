@@ -7,6 +7,27 @@ export function formatarReal(valor: number): string {
   return REAL.format(valor);
 }
 
+const PADRAO_VALOR_PAGO = /^\d{1,7}([.,]\d{1,2})?$/;
+
+/**
+ * "Já pago" (sinal, 50% antecipado): vazio ou zero = nada pago. Só aparece na tela Pedidos; o faturamento usa o valor.
+ * Volta o número, null (nada pago) ou o erro para mostrar embaixo do campo.
+ */
+export function lerValorPago(texto: string, valorDoPedido: number | null): { pago: number | null; erro: string } {
+  const limpo = texto.trim();
+  if (!limpo) {
+    return { pago: null, erro: '' };
+  }
+  if (!PADRAO_VALOR_PAGO.test(limpo)) {
+    return { pago: null, erro: 'Use só números, por exemplo 90,00.' };
+  }
+  const pago = Number(limpo.replace(',', '.'));
+  if (valorDoPedido !== null && pago > valorDoPedido) {
+    return { pago: null, erro: 'Não pode passar do valor do pedido.' };
+  }
+  return { pago: pago === 0 ? null : pago, erro: '' };
+}
+
 /** Pedaços que o lojista pode usar nos avisos; viram os dados do pedido na hora de enviar. */
 export const VARIAVEIS_PEDIDO = [
   { chave: '{nome}', rotulo: 'Nome', exemplo: 'João' },

@@ -7,7 +7,7 @@ import { ToastService } from '../../../core/services/toast.service';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { AvisoClienteComponent } from '../aviso-cliente/aviso-cliente.component';
 import { AcaoPedido } from '../pedido-card/pedido-card.component';
-import { AGRADECIMENTO_PADRAO, AVISO_PRONTO_PADRAO, formatarReal } from '../textos-pedido';
+import { AGRADECIMENTO_PADRAO, AVISO_PRONTO_PADRAO, formatarReal, lerValorPago } from '../textos-pedido';
 
 const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
 
@@ -45,6 +45,14 @@ export class AcaoPedidoComponent {
     return PADRAO_VALOR.test(texto) ? Number(texto.replace(',', '.')) : null;
   });
   protected readonly erroValor = computed(() => this.tentouSalvar() && this.novoValor() === null);
+  /** "Já pago" (sinal): vem com o que já estava no pedido; vazio = nada pago. */
+  protected readonly pagoDigitado = signal<string | null>(null);
+  protected readonly pagoTexto = computed(() => {
+    const salvo = this.pedido().valorPago;
+    return this.pagoDigitado() ?? (salvo ? salvo.toFixed(2).replace('.', ',') : '');
+  });
+  private readonly pago = computed(() => lerValorPago(this.pagoTexto(), this.novoValor()));
+  protected readonly erroPago = computed(() => this.pago().erro);
 
   protected digitarValor(evento: Event): void {
     this.valorDigitado.set((evento.target as HTMLInputElement).value);
@@ -75,10 +83,10 @@ export class AcaoPedidoComponent {
           break;
         case 'valor': {
           const valor = this.novoValor();
-          if (valor === null) {
+          if (valor === null || this.erroPago()) {
             return;
           }
-          await this.pedidoService.atualizarValor(id, valor);
+          await this.pedidoService.atualizarValor(id, valor, this.pago().pago);
           this.toastService.mostrar('Valor atualizado');
           break;
         }

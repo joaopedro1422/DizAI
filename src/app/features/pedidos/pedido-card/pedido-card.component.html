@@ -40,7 +40,12 @@
 }
 
 <div class="rodape">
-  <span class="rodape__valor">{{ valor() }}</span>
+  <span class="rodape__valores">
+    <span class="rodape__valor">{{ valor() }}</span>
+    @if (pago(); as pago) {
+      <span class="rodape__pago">Pago: {{ pago }}</span>
+    }
+  </span>
   @if (linkWhatsapp(); as link) {
     <a class="btn-icone rodape__whatsapp" [href]="link" target="_blank" rel="noopener" [attr.aria-label]="'Conversar com ' + nome() + ' no WhatsApp'">
       <app-icone nome="conversa" [tamanho]="18" />

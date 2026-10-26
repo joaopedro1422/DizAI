@@ -54,6 +54,37 @@
   </div>
 
   <div class="campo">
+    <span class="campo__titulo" id="titulo-menu">Menu de categorias</span>
+    <div class="menus" role="radiogroup" aria-labelledby="titulo-menu">
+      @for (estilo of estilosMenu; track estilo.valor) {
+        @let marcado = estilo.valor === menuAtual();
+        <button
+          type="button"
+          role="radio"
+          class="menu-opcao"
+          [class.menu-opcao--marcada]="marcado"
+          [attr.aria-checked]="marcado"
+          (click)="menuAtual.set(estilo.valor)"
+        >
+          <!-- prévia com a fonte, a cor e o fundo escolhidos -->
+          <span
+            class="menu-previa"
+            [class.menu-previa--minimalista]="estilo.valor === 'MINIMALISTA'"
+            [style.font-family]="fonteCss()"
+            [style.--previa-destaque]="pintura(hexAtual())"
+            [style.--previa-fundo]="fundoEscolhido().cor ?? '#ffffff'"
+            aria-hidden="true"
+          >
+            <span class="menu-previa__item menu-previa__item--ativo">Bolos</span>
+            <span class="menu-previa__item">Tortas</span>
+          </span>
+          <span class="menu-opcao__nome">{{ estilo.nome }}</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="campo">
     <span class="campo__titulo">Cor de fundo</span>
     <app-seletor-fundo [valor]="fundoAtual()" (escolher)="fundoAtual.set($event)" />
     <p class="aviso-fundo">

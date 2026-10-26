@@ -19,6 +19,7 @@ const DESTAQUES: Record<TipoNegocio, string[]> = {
     'Marca, remarca e cancela agendamentos',
     'Aceita vários profissionais',
     'Lembra, confirma a presença e agradece depois do atendimento',
+    'Mensagens personalizadas por você',
   ],
 };
 

@@ -1,5 +1,5 @@
 import type { CorMarca } from '../../../core/models/perfil.model';
-import type { AreaCorFundoVitrine, FonteVitrine } from '../../../core/models/vitrine.model';
+import type { AreaCorFundoVitrine, EstiloMenu, FonteVitrine } from '../../../core/models/vitrine.model';
 
 /**
  * Foto da galeria de exemplo. O degradê nos tons do trabalho aparece enquanto a imagem carrega.
@@ -37,6 +37,8 @@ export interface ExemploGaleria {
   corMarca: CorMarca;
   areaCorFundoGaleria: AreaCorFundoVitrine;
   fonteGaleria: FonteVitrine;
+  /** Menu das categorias, como na vitrine (Personalizar vitrine): arredondado ou minimalista. */
+  estiloMenu: EstiloMenu;
   /** Logo da loja em public/landing/galeria/logos/ (no lugar da inicial). */
   logo?: string;
   /** "degrade" = a "capa pronta" com a cor da loja; ou o caminho de uma foto em public/. Sem capa: omitido. */
@@ -59,6 +61,7 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
     corMarca: 'VINHO',
     areaCorFundoGaleria: 'CABECALHO',
     fonteGaleria: 'Cormorant Garamond',
+    estiloMenu: 'MINIMALISTA',
     logo: '/landing/galeria/logos/bella-studio.svg',
     capa: 'degrade',
     link: 'dizai.com/l/bella-studio',
@@ -95,6 +98,7 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
     corMarca: 'ROSA_ESCURO',
     areaCorFundoGaleria: 'PAGINA',
     fonteGaleria: 'Playfair Display',
+    estiloMenu: 'ARREDONDADO',
     logo: '/landing/galeria/logos/pedacinho-do-ceu.jpg',
     capa: '/landing/galeria/bolos/02.webp',
     link: 'dizai.com/l/pedacinho-do-ceu',
@@ -121,6 +125,7 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
     corMarca: 'MARROM',
     areaCorFundoGaleria: 'CABECALHO',
     fonteGaleria: 'Lora',
+    estiloMenu: 'MINIMALISTA',
     logo: '/landing/galeria/logos/arte-em-madeira.svg',
     link: 'dizai.com/l/arte-em-madeira',
     pergunta: 'Tem fotos de cozinhas planejadas que vocês já fizeram?',
@@ -146,6 +151,7 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
     corMarca: 'MOSTARDA',
     areaCorFundoGaleria: 'PAGINA',
     fonteGaleria: 'Montserrat',
+    estiloMenu: 'ARREDONDADO',
     logo: '/landing/galeria/logos/ze-eletricista.svg',
     capa: 'degrade',
     link: 'dizai.com/l/ze-eletricista',
@@ -182,6 +188,7 @@ export const EXEMPLOS_GALERIA: ExemploGaleria[] = [
     corMarca: 'AZUL_PETROLEO',
     areaCorFundoGaleria: 'CABECALHO',
     fonteGaleria: 'Poppins',
+    estiloMenu: 'MINIMALISTA',
     logo: '/landing/galeria/logos/casa-e-cortina.svg',
     link: 'dizai.com/l/casa-e-cortina',
     pergunta: 'Tem foto de cortina blackout instalada?',

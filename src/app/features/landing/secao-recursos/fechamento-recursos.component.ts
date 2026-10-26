@@ -47,6 +47,12 @@ const DO_TIPO: Record<TipoNegocio, RecursoDoTipo[]> = {
   ],
   servicos: [
     {
+      icone: 'pessoas',
+      titulo: 'Lista de espera',
+      texto:
+        'Dia lotado e clientes esperando? O DizAI fornece uma fila de espera automática: vagou horário, a mensagem de aviso é enviada aos clientes na ordem da fila.',
+    },
+    {
       icone: 'listaRepetida',
       titulo: 'Remarca e cancela pelo WhatsApp',
       texto: 'O cliente resolve na conversa e altera apenas os próprios horários. Você recebe o aviso.',
@@ -60,11 +66,6 @@ const DO_TIPO: Record<TipoNegocio, RecursoDoTipo[]> = {
       icone: 'sino',
       titulo: 'Lembrete com confirmação',
       texto: 'De 1 hora a 1 dia antes. Quando o cliente responde que vem, o card ganha "Presença confirmada".',
-    },
-    {
-      icone: 'editar',
-      titulo: 'Mensagens personalizadas por você',
-      texto: 'Confirmação, lembrete e agradecimento com o seu texto, e o nome, o serviço e o horário preenchidos.',
     },
     {
       icone: 'calendarioFolga',

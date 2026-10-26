@@ -119,6 +119,19 @@
   font-variant-numeric: tabular-nums;
 }
 
+.rodape__valores {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rodape__pago {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cor-sucesso);
+  font-variant-numeric: tabular-nums;
+}
+
 .rodape__whatsapp {
   color: var(--cor-primaria);
 }

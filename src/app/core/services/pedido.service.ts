@@ -76,6 +76,8 @@ export class PedidoService {
     anexo: string | null = null,
     /** O produto vendido (só para os "Produtos que mais vendem" dos Números); null = não escolheu. */
     produtoId: number | null = null,
+    /** Sinal já pago (só aparece na tela Pedidos); null = nada. */
+    valorPago: number | null = null,
   ): Promise<ResultadoAcaoPedido> {
     const resposta = await firstValueFrom(
       this.http.post<RespostaApi>(this.url(`/da-conversa/${conversaId}?entregue=${entregue}`), {
@@ -83,6 +85,7 @@ export class PedidoService {
         mensagem,
         anexo,
         produtoId,
+        valorPago,
       }),
     );
     return this.aplicar(resposta);
@@ -112,8 +115,11 @@ export class PedidoService {
     return this.aplicar(await firstValueFrom(this.http.patch<RespostaApi>(this.url(`/${pedidoId}/cancelar`), null)));
   }
 
-  async atualizarValor(pedidoId: string, valor: number): Promise<void> {
-    const atualizado = paraPedido(await firstValueFrom(this.http.patch<PedidoApi>(this.url(`/${pedidoId}/valor`), { valor })));
+  /** "Editar valor": o valor do pedido e a parte já paga (null = nada pago). */
+  async atualizarValor(pedidoId: string, valor: number, valorPago: number | null): Promise<void> {
+    const atualizado = paraPedido(
+      await firstValueFrom(this.http.patch<PedidoApi>(this.url(`/${pedidoId}/valor`), { valor, valorPago })),
+    );
     this.lista.update((pedidos) => pedidos.map((p) => (p.id === pedidoId ? atualizado : p)));
   }
 
@@ -185,6 +191,7 @@ function paraPedido(pedido: PedidoApi): Pedido {
   return {
     ...pedido,
     valor: Number(pedido.valor),
+    valorPago: pedido.valorPago == null ? null : Number(pedido.valorPago),
     confirmadoEm: new Date(pedido.confirmadoEm),
     prontoEm: pedido.prontoEm ? new Date(pedido.prontoEm) : null,
     entregueEm: pedido.entregueEm ? new Date(pedido.entregueEm) : null,

@@ -20,6 +20,8 @@
         (animationend)="finalizarIntroducao($event)"
       >
         <div class="vitrine__introducao-identidade">
+          <!-- o brilho que atravessa a logo fica num ::after deste invólucro (a img não tem pseudo-elemento) -->
+          <span class="vitrine__introducao-brilho">
           @if (fotoPerfilUrl(); as foto) {
             @if (fotoPerfilFalhou()) {
               <span class="vitrine__introducao-inicial">{{ inicial() }}</span>
@@ -35,6 +37,7 @@
           } @else {
             <span class="vitrine__introducao-inicial">{{ inicial() }}</span>
           }
+          </span>
           <span class="vitrine__introducao-nome">{{ nomeLoja() }}</span>
         </div>
       </div>
@@ -105,9 +108,14 @@
       }
 
       @if (albuns().length > 0 && !mostrandoAgenda() && !mostrandoOrcamento()) {
-        <nav class="categorias animacao-entrada animacao-entrada--2" aria-label="Categorias">
+        <nav
+          class="categorias animacao-entrada animacao-entrada--2"
+          [class.categorias--minimalista]="menuMinimalista()"
+          aria-label="Categorias"
+        >
           @for (album of albuns(); track album.slug; let primeiro = $first) {
-            <button type="button" class="categoria" [class.categoria--ativa]="primeiro" (click)="irParaAlbum(album)">
+            @let ativa = albumAtivo() ? albumAtivo() === album.slug : primeiro;
+            <button type="button" class="categoria" [class.categoria--ativa]="ativa" [attr.aria-current]="ativa ? 'true' : null" (click)="irParaAlbum(album)">
               {{ album.nome }}
             </button>
           }

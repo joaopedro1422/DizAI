@@ -135,7 +135,10 @@ export class VitrinePublicaPageComponent implements OnInit {
       this.iniciarIntroducao();
       this.situacao.set('pronta');
       this.contarVisita(loja.slug);
-
+      // link antigo (a loja mudou de nome): o endereço passa a ser o do nome novo
+      if (loja.slug !== this.slug()) {
+        this.location.replaceState(this.caminho(this.aba()));
+      }
     } catch (erro) {
       const naoExiste = erro instanceof HttpErrorResponse && erro.status === 404;
       this.situacao.set(naoExiste ? 'nao-encontrada' : 'erro');
@@ -194,8 +197,14 @@ export class VitrinePublicaPageComponent implements OnInit {
   /** Troca a aba e o endereço (/l/slug ou /l/slug/agenda), para o link copiado abrir onde o cliente estava. */
   protected mudarAba(aba: AbaVitrine): void {
     this.abaAtual.set(aba);
-    this.location.replaceState(`/l/${this.slug()}${aba === 'galeria' ? '' : '/' + aba}`);
+    this.location.replaceState(this.caminho(aba));
     document.title = `${this.nomeLoja()} | ${tituloDaAba(aba, this.loja())}`;
+  }
+
+  /** /l/slug ou /l/slug/agenda, com o slug atual da loja (o da rota pode ser um link antigo). */
+  private caminho(aba: AbaVitrine): string {
+    const slug = this.loja()?.slug ?? this.slug();
+    return `/l/${slug}${aba === 'galeria' ? '' : '/' + aba}`;
   }
 
   protected recarregar(): void {
@@ -263,7 +272,14 @@ export class VitrinePublicaPageComponent implements OnInit {
     this.fotoAberta.set(null);
   }
 
+  /** Menu das categorias: arredondado (padrão) ou minimalista (texto com a barra de destaque embaixo). */
+  protected readonly menuMinimalista = computed(() => this.loja()?.estiloMenu === 'MINIMALISTA');
+
+  /** A categoria tocada fica marcada no menu (null = a primeira). */
+  protected readonly albumAtivo = signal<string | null>(null);
+
   protected irParaAlbum(album: AlbumPublico): void {
+    this.albumAtivo.set(album.slug);
     document.getElementById(this.idSecao(album))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 

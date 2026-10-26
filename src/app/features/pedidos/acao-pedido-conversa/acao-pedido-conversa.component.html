@@ -31,20 +31,35 @@
     <div class="campo">
       <span class="campo__rotulo">Produto vendido <span class="campo__rotulo-opcional">(opcional)</span></span>
       <app-seletor-produto [valor]="produtoId()" (escolher)="produtoId.set($event)" />
-      <span class="campo__dica">Conta nos produtos que mais vendem, nos Números.</span>
+      <span class="campo__dica">Utilizado apenas para análise financeira.</span>
     </div>
 
     <div class="campo">
-      <label for="valor-pedido" class="campo__rotulo">Valor do pedido</label>
-      <span class="campo-prefixado" [class.campo-prefixado--erro]="erroValor()">
-        <span class="campo-prefixado__prefixo">R$</span>
-        <input id="valor-pedido" type="text" inputmode="decimal" placeholder="0,00" [value]="valorTexto()" (input)="digitarValor($event)">
-      </span>
-      @if (erroValor()) {
-        <span class="campo__erro" role="alert">Informe o valor, por exemplo 127,50.</span>
-      } @else {
-        <span class="campo__dica">Já vem com o total da conversa. Ajuste se combinou outro valor: é ele que conta no faturamento.</span>
+    <div class="valores">
+      <div class="campo">
+        <label for="valor-pedido" class="campo__rotulo">Valor do pedido</label>
+        <span class="campo-prefixado" [class.campo-prefixado--erro]="erroValor()">
+          <span class="campo-prefixado__prefixo">R$</span>
+          <input id="valor-pedido" type="text" inputmode="decimal" placeholder="0,00" [value]="valorTexto()" (input)="digitarValor($event)">
+        </span>
+      </div>
+      @if (acao() === 'confirmar') {
+        <div class="campo">
+          <label for="valor-pago" class="campo__rotulo">Já pago <span class="campo__rotulo-opcional">(opcional)</span></label>
+          <span class="campo-prefixado" [class.campo-prefixado--erro]="!!erroPago()">
+            <span class="campo-prefixado__prefixo">R$</span>
+            <input id="valor-pago" type="text" inputmode="decimal" placeholder="0,00" [value]="pagoTexto()" (input)="pagoTexto.set($any($event.target).value)">
+          </span>
+        </div>
       }
+    </div>
+    @if (erroValor()) {
+      <span class="campo__erro" role="alert">Informe o valor, por exemplo 127,50.</span>
+    } @else if (erroPago()) {
+      <span class="campo__erro" role="alert">Já pago: {{ erroPago() }}</span>
+    } @else {
+      <span class="campo__dica">Ajuste se combinou outro valor com o cliente.</span>
+    }
     </div>
   }
 

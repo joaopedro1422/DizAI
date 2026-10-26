@@ -8,6 +8,7 @@ import {
   ConfiguracaoVitrine,
   CorFundoVitrine,
   EstiloCor,
+  EstiloMenu,
   FONTES_VITRINE,
   FonteVitrine,
 } from '../../../core/models/vitrine.model';
@@ -51,6 +52,12 @@ export class SeletorCorMarcaComponent {
   );
   /** Normal, metálico, degradê ou vidro: muda como a cor pinta os botões e as etiquetas da vitrine. */
   protected readonly estiloAtual = signal<EstiloCor>(this.perfilService.perfil().estiloCor ?? 'NORMAL');
+  /** Menu das categorias na vitrine: etiquetas arredondadas ou só o texto com a barra embaixo. */
+  protected readonly menuAtual = signal<EstiloMenu>(this.perfilService.perfil().estiloMenu ?? 'ARREDONDADO');
+  protected readonly estilosMenu: { valor: EstiloMenu; nome: string }[] = [
+    { valor: 'ARREDONDADO', nome: 'Arredondado' },
+    { valor: 'MINIMALISTA', nome: 'Minimalista' },
+  ];
   protected readonly hexAtual = computed(() => buscarCorMarca(this.corAtual()).hex);
   protected readonly areaFundoAtual = signal<AreaCorFundoVitrine>(
     this.perfilService.perfil().areaCorFundoGaleria ?? 'CABECALHO',
@@ -167,6 +174,7 @@ export class SeletorCorMarcaComponent {
         corFundoGaleria: this.fundoAtual(),
         areaCorFundoGaleria: this.areaFundoAtual(),
         estiloCor: this.estiloAtual(),
+        estiloMenu: this.menuAtual(),
         capaUrl,
       };
       await this.perfilService.atualizarConfiguracaoVitrine(configuracao);

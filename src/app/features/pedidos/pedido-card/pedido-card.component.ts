@@ -34,6 +34,11 @@ export class PedidoCardComponent {
   protected readonly nome = computed(() => this.pedido().nomeCliente || this.pedido().whatsapp || 'Cliente');
   protected readonly pronto = computed(() => this.pedido().status === 'PRONTO');
   protected readonly valor = computed(() => formatarReal(this.pedido().valor));
+  /** Sinal já pago (só informação: o faturamento usa o valor inteiro). */
+  protected readonly pago = computed(() => {
+    const pago = this.pedido().valorPago;
+    return pago ? formatarReal(pago) : null;
+  });
   protected readonly linkWhatsapp = computed(() =>
     this.pedido().whatsapp ? gerarLinkWhatsapp(this.pedido().whatsapp) : null,
   );

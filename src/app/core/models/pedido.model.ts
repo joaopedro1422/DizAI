@@ -13,6 +13,8 @@ export interface Pedido {
   resumo: ItemResumoPedido[];
   /** O valor que o lojista confirmou (é ele que entra no faturamento). */
   valor: number;
+  /** Parte já paga (sinal): só aparece na tela Pedidos; o faturamento usa sempre o valor. null = nada informado. */
+  valorPago?: number | null;
   status: StatusPedido;
   /** Veio da conversa de teste do painel: aparece na lista, mas não entra nos números. */
   teste: boolean;

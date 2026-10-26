@@ -99,6 +99,40 @@
   object-fit: cover;
 }
 
+/* Fio de luz: uma faixa clara em diagonal atravessa a logo enquanto ela está parada no meio da tela */
+.vitrine__introducao-brilho {
+  position: relative;
+  display: block;
+  border-radius: 50%;
+}
+
+.vitrine__introducao-brilho::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    115deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.06) 44%,
+    rgba(255, 255, 255, 0.38) 50%,
+    rgba(255, 255, 255, 0.06) 56%,
+    transparent 62%
+  ) no-repeat;
+  background-size: 250% 100%;
+  background-position: 135% 0;
+  pointer-events: none;
+}
+
+.vitrine__introducao--animando .vitrine__introducao-brilho::after {
+  animation: vitrine-introducao-brilho 1.2s ease-in-out 0.4s both;
+}
+
+@keyframes vitrine-introducao-brilho {
+  from { background-position: 135% 0; }
+  to { background-position: -35% 0; }
+}
+
 .vitrine__introducao-inicial {
   display: grid;
   place-items: center;
@@ -246,16 +280,19 @@
   display: none;
 }
 
+/* Arredondado (padrão): etiquetas no tom do fundo da página, um pouco mais escuro; a escolhida na cor de destaque */
 .categoria {
   flex: none;
   min-height: 40px;
   padding: 0 16px;
-  border: 1px solid var(--vitrine-borda);
+  border: 1px solid color-mix(in srgb, var(--vitrine-fundo-selecionado, #ffffff) 84%, #000000);
   border-radius: var(--raio-pilula);
-  background: #ffffff;
+  background: color-mix(in srgb, var(--vitrine-fundo-selecionado, #ffffff) 93%, #000000);
   color: var(--vitrine-texto);
-  font-size: 13px;
+  font-family: var(--vitrine-fonte);
+  font-size: 16px;
   font-weight: 500;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .categoria--ativa {
@@ -263,6 +300,39 @@
   background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
   color: #ffffff;
   font-weight: 600;
+}
+
+/* Minimalista: só o texto; a escolhida ganha uma barra da cor de destaque embaixo */
+.categorias--minimalista {
+  gap: 24px;
+}
+
+.categorias--minimalista .categoria {
+  position: relative;
+  min-height: 40px;
+  padding: 0 1px;
+  border: none;
+  border-radius: 0;
+  background: none;
+  color: color-mix(in srgb, var(--vitrine-texto) 70%, transparent);
+  font-size: 17px;
+}
+
+.categorias--minimalista .categoria--ativa {
+  color: var(--vitrine-texto);
+  font-weight: 700;
+}
+
+/* a barra é um elemento à parte: assim ela também pinta no metálico, degradê e vidro */
+.categorias--minimalista .categoria--ativa::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
 }
 
 .albuns {

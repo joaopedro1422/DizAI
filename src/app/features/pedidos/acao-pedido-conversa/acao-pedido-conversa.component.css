@@ -82,3 +82,10 @@
   font-size: 14px;
   font-weight: 600;
 }
+
+/* Valor do pedido à esquerda e "Já pago" (sinal) à direita */
+.valores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 10px;
+}
