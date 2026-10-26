@@ -6,8 +6,11 @@
  */
 export type StatusConversa = 'IA_ATIVA' | 'HUMANO_ATIVO' | 'AGUARDANDO_DONO' | 'EM_PEDIDO';
 
-/** Por que a conversa está esperando o dono da loja. */
-export type MotivoEspera = 'PRONTO_PARA_FECHAR' | 'PEDIU_HUMANO' | 'IA_SEM_RESPOSTA';
+/**
+ * Por que a conversa está esperando o dono da loja. DUVIDA: lojas de produtos, a conversa foi passada por uma
+ * pergunta (ex.: topo), não por um pedido.
+ */
+export type MotivoEspera = 'PRONTO_PARA_FECHAR' | 'PEDIU_HUMANO' | 'IA_SEM_RESPOSTA' | 'DUVIDA';
 
 export interface ItemResumoPedido {
   campo: string;

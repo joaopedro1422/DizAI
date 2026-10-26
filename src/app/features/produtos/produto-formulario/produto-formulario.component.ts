@@ -28,6 +28,10 @@ const PADRAO_PRECO = /^\d{1,7}([.,]\d{1,2})?$/;
 const DURACOES_COMUNS = [30, 45, 60, 90, 120];
 
 type GrupoVariacao = FormGroup<{ nome: FormControl<string>; preco: FormControl<string> }>;
+type GrupoFaixa = FormGroup<{ quantidade: FormControl<string>; preco: FormControl<string> }>;
+
+/** Preço por quantidade: até 4 faixas, a partir de 2 unidades. */
+const MAXIMO_FAIXAS = 4;
 type GrupoAtributo = FormGroup<{ nome: FormControl<string>; opcoes: FormControl<string>; quantidade: FormControl<number>; modo: FormControl<ModoEscolha> }>;
 
 /** Formulário do modal "Novo produto". */
@@ -90,10 +94,19 @@ export class ProdutoFormularioComponent implements OnInit {
     atributos: this.fb.array<GrupoAtributo>([]),
     /** Variações de preço (só produtos): nome + valor, os dois obrigatórios. */
     variacoes: this.fb.array<GrupoVariacao>([]),
+    /** Preço por quantidade (só produtos, sem variações): a partir de N unidades, R$ X cada. */
+    faixasPreco: this.fb.array<GrupoFaixa>([]),
   });
+
+  /** Quantidade repetida ou faixa sem o preço do produto. */
+  protected readonly erroFaixas = signal('');
 
   protected get variacoes(): FormArray<GrupoVariacao> {
     return this.formulario.controls.variacoes;
+  }
+
+  protected get faixas(): FormArray<GrupoFaixa> {
+    return this.formulario.controls.faixasPreco;
   }
 
   protected get atributos(): FormArray<GrupoAtributo> {
@@ -122,6 +135,9 @@ export class ProdutoFormularioComponent implements OnInit {
       });
       (produto.variacoes ?? []).forEach((variacao) =>
         this.variacoes.push(this.novaVariacao(variacao.nome, String(variacao.preco).replace('.', ','))),
+      );
+      (produto.faixasPreco ?? []).forEach((faixa) =>
+        this.faixas.push(this.novaFaixa(String(faixa.quantidadeMinima), String(faixa.preco).replace('.', ','))),
       );
       produto.atributos.forEach((atributo) => {
         this.atributos.push(
@@ -223,6 +239,46 @@ export class ProdutoFormularioComponent implements OnInit {
     });
   }
 
+  protected adicionarFaixa(): void {
+    if (this.faixas.length < MAXIMO_FAIXAS) {
+      this.faixas.push(this.novaFaixa());
+    }
+  }
+
+  protected removerFaixa(indice: number): void {
+    this.faixas.removeAt(indice);
+    this.erroFaixas.set('');
+  }
+
+  protected faixaComErro(indice: number, campo: 'quantidade' | 'preco'): boolean {
+    return campoComErro(this.faixas.at(indice).controls[campo]);
+  }
+
+  private novaFaixa(quantidade = '', preco = ''): GrupoFaixa {
+    return this.fb.nonNullable.group({
+      quantidade: [quantidade, [Validators.required, Validators.pattern(/^\d{1,6}$/), Validators.min(2)]],
+      preco: [preco, [Validators.required, Validators.pattern(PADRAO_PRECO)]],
+    });
+  }
+
+  /** Faixas pedem o preço do produto (vale abaixo da primeira) e uma quantidade diferente em cada. */
+  private conferirFaixas(): boolean {
+    this.erroFaixas.set('');
+    if (this.ramoServico() || this.faixas.length === 0) {
+      return true;
+    }
+    if (!this.formulario.controls.preco.value.trim()) {
+      this.erroFaixas.set('Informe o preço do produto: ele vale abaixo da primeira faixa.');
+      return false;
+    }
+    const quantidades = this.faixas.getRawValue().map((faixa) => Number(faixa.quantidade));
+    if (new Set(quantidades).size !== quantidades.length) {
+      this.erroFaixas.set('Use uma quantidade diferente em cada faixa.');
+      return false;
+    }
+    return true;
+  }
+
   protected removerAtributo(indice: number): void {
     this.atributos.removeAt(indice);
   }
@@ -244,7 +300,8 @@ export class ProdutoFormularioComponent implements OnInit {
     if (faltaFoto) {
       this.erroFoto.set('Adicione uma foto: ela aparece para o cliente na página de agendamento.');
     }
-    if (this.formulario.invalid || faltaFoto || this.enviandoFoto()) {
+    const faixasOk = this.conferirFaixas();
+    if (this.formulario.invalid || faltaFoto || !faixasOk || this.enviandoFoto()) {
       this.formulario.markAllAsTouched();
       return;
     }
@@ -278,6 +335,12 @@ export class ProdutoFormularioComponent implements OnInit {
       variacoes: this.ramoServico()
         ? []
         : valores.variacoes.map((v) => ({ nome: v.nome.trim(), preco: Number(v.preco.trim().replace(',', '.')) })),
+      faixasPreco:
+        this.ramoServico() || valores.variacoes.length > 0
+          ? []
+          : valores.faixasPreco
+              .map((f) => ({ quantidadeMinima: Number(f.quantidade), preco: Number(f.preco.trim().replace(',', '.')) }))
+              .sort((a, b) => a.quantidadeMinima - b.quantidadeMinima),
       produtoAVenda: this.ehProdutoAVenda(),
       // só o produto à venda tem foto neste formulário; nos outros a foto atual é preservada pela tela
       ...(this.ehProdutoAVenda() ? { fotoUrl: this.foto() } : {}),

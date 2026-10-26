@@ -101,9 +101,53 @@
     @if (variacoes.length > 0) {
       <span class="campo__dica">Com variações, o cliente escolhe uma e o valor dela vale no lugar deste preço.</span>
     }
+
+    @if (!ramoServico() && variacoes.length === 0) {
+      @if (faixas.length === 0) {
+        <button type="button" class="link-faixas" (click)="adicionarFaixa()">
+          <app-icone nome="mais" [tamanho]="14" [espessura]="2.4" />
+          Preço por quantidade
+        </button>
+      } @else {
+        <div class="faixas caixa-suave" formArrayName="faixasPreco">
+          <span class="faixas__titulo">Preço por quantidade</span>
+          @for (faixa of faixas.controls; track faixa; let indice = $index) {
+            <div class="faixa" [formGroupName]="indice">
+              <span class="faixa__texto">A partir de</span>
+              <input
+                class="campo__entrada faixa__quantidade"
+                [class.campo__entrada--erro]="faixaComErro(indice, 'quantidade')"
+                type="text"
+                inputmode="numeric"
+                formControlName="quantidade"
+                placeholder="100"
+                [attr.aria-label]="'Quantidade mínima da faixa ' + (indice + 1)"
+              >
+              <span class="faixa__texto">un.</span>
+              <span class="campo-prefixado faixa__preco" [class.campo-prefixado--erro]="faixaComErro(indice, 'preco')">
+                <span class="campo-prefixado__prefixo">R$</span>
+                <input type="text" inputmode="decimal" formControlName="preco" placeholder="0,80" [attr.aria-label]="'Valor de cada unidade na faixa ' + (indice + 1)">
+              </span>
+              <button type="button" class="btn-icone btn-icone--sem-borda faixa__remover" aria-label="Remover faixa" (click)="removerFaixa(indice)">
+                <app-icone nome="fechar" [tamanho]="15" [espessura]="2" />
+              </button>
+            </div>
+          }
+          @if (erroFaixas()) {
+            <span class="campo__erro" role="alert">{{ erroFaixas() }}</span>
+          }
+          <div class="faixas__rodape">
+            <span class="campo__dica">Valor de cada unidade. Abaixo disso, vale o preço acima.</span>
+            @if (faixas.length < 4) {
+              <button type="button" class="link-faixas" (click)="adicionarFaixa()">+ Faixa</button>
+            }
+          </div>
+        </div>
+      }
+    }
   </div>
 
-  @if (!ramoServico()) {
+  @if (!ramoServico() && faixas.length === 0) {
     <div class="campo">
       <div class="atributos__cabecalho">
         <span class="campo__rotulo">Variações de preço <span class="campo__rotulo-opcional">(opcional)</span></span>
@@ -178,39 +222,6 @@
     </div>
   }
 
-  @if (!ramoServico()) {
-    <div class="campo">
-      <label for="produto-antecedencia" class="campo__rotulo">
-        Antecedência mínima <span class="campo__rotulo-opcional">(opcional)</span>
-      </label>
-      <span class="campo__dica">
-        Só se este {{ conteudo().termoItem }} precisa de um tempo de preparo diferente do cadastrado para a loja
-        (ex.: tortas com 1 dia de antecedência). Em branco, vale a antecedência da loja.
-      </span>
-      <div class="linha-duracao">
-        <span class="linha-duracao__valor">
-          <input
-            id="produto-antecedencia"
-            class="campo__entrada"
-            [class.campo__entrada--erro]="temErro('antecedencia')"
-            type="text"
-            inputmode="numeric"
-            formControlName="antecedencia"
-            placeholder="Igual à da loja"
-          >
-        </span>
-        <select class="campo__entrada linha-antecedencia__unidade" formControlName="antecedenciaUnidade" aria-label="Unidade da antecedência">
-          <option value="MINUTOS">minutos</option>
-          <option value="HORAS">horas</option>
-          <option value="DIAS">dias</option>
-        </select>
-      </div>
-      @if (temErro('antecedencia')) {
-        <span class="campo__erro" role="alert">Use um número inteiro de 0 a 720.</span>
-      }
-    </div>
-  }
-
   <div class="campo">
     <div class="atributos__cabecalho">
       <span class="campo__rotulo">
@@ -268,6 +279,39 @@
       Adicionar opção
     </button>
   </div>
+
+  @if (!ramoServico()) {
+    <div class="campo">
+      <label for="produto-antecedencia" class="campo__rotulo">
+        Antecedência mínima <span class="campo__rotulo-opcional">(opcional)</span>
+      </label>
+      <span class="campo__dica">
+        Só se este {{ conteudo().termoItem }} precisa de um tempo de preparo diferente do cadastrado para a loja
+        (ex.: tortas com 1 dia de antecedência). Em branco, vale a antecedência da loja.
+      </span>
+      <div class="linha-duracao">
+        <span class="linha-duracao__valor">
+          <input
+            id="produto-antecedencia"
+            class="campo__entrada"
+            [class.campo__entrada--erro]="temErro('antecedencia')"
+            type="text"
+            inputmode="numeric"
+            formControlName="antecedencia"
+            placeholder="Igual à da loja"
+          >
+        </span>
+        <select class="campo__entrada linha-antecedencia__unidade" formControlName="antecedenciaUnidade" aria-label="Unidade da antecedência">
+          <option value="MINUTOS">minutos</option>
+          <option value="HORAS">horas</option>
+          <option value="DIAS">dias</option>
+        </select>
+      </div>
+      @if (temErro('antecedencia')) {
+        <span class="campo__erro" role="alert">Use um número inteiro de 0 a 720.</span>
+      }
+    </div>
+  }
 
   <button type="submit" class="btn btn--primario btn--grande btn--bloco" [disabled]="salvando()" [attr.aria-busy]="salvando()">
     @if (salvando()) {

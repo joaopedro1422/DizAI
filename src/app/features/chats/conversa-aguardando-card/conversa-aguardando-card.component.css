@@ -89,6 +89,12 @@
   text-align: right;
 }
 
+.resumo__duvida {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .acoes {
   display: flex;
   gap: 8px;

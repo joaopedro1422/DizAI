@@ -42,6 +42,11 @@ export class ConversaAguardandoCardComponent {
     () => this.conversa().motivoEspera === 'PRONTO_PARA_FECHAR' && !ramoDeServico(this.perfil().ramo),
   );
 
+  /** Conversa passada por uma pergunta: o card mostra só o assunto, sem resumo de pedido nem os botões do pedido. */
+  protected readonly duvida = computed(() =>
+    this.conversa().motivoEspera === 'DUVIDA' ? (this.conversa().resumoPedido[0]?.valor ?? '') : null,
+  );
+
   protected readonly motivo = computed(() => {
     const motivoEspera = this.conversa().motivoEspera;
     return motivoEspera ? MOTIVOS_ESPERA[motivoEspera] : null;

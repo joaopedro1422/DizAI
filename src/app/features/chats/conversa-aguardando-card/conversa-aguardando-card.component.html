@@ -17,7 +17,14 @@
 
 <p class="mensagem">"{{ conversa().ultimaMensagem }}"</p>
 
-@if (conversa().resumoPedido.length > 0) {
+@if (duvida() !== null) {
+  @if (duvida()) {
+    <div class="resumo caixa-suave">
+      <span class="rotulo-maiusculo">Dúvida do cliente</span>
+      <p class="resumo__duvida">{{ duvida() }}</p>
+    </div>
+  }
+} @else if (conversa().resumoPedido.length > 0) {
   <div class="resumo caixa-suave">
     <span class="rotulo-maiusculo">{{ tituloResumo() }}</span>
     <dl class="resumo__lista">

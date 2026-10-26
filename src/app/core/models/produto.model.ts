@@ -46,11 +46,19 @@ export interface Produto {
   variacoes?: VariacaoProduto[];
   /** Negócios de serviço: item à venda (minoxidil, esmalte), não um serviço. Sem duração e nunca agendado. */
   produtoAVenda?: boolean;
+  /** Produtos: preço por quantidade (ex.: a partir de 100 un., R$ 0,80 cada). Abaixo da 1ª faixa vale o preço. */
+  faixasPreco?: FaixaPreco[];
 }
 
 /** Uma variação de preço: nome e valor (obrigatório). */
 export interface VariacaoProduto {
   nome: string;
+  preco: number;
+}
+
+/** A partir de `quantidadeMinima` unidades, `preco` cada (vale para todas as unidades do pedido). */
+export interface FaixaPreco {
+  quantidadeMinima: number;
   preco: number;
 }
 
