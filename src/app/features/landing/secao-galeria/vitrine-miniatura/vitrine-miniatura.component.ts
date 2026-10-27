@@ -55,6 +55,11 @@ export class VitrineMiniaturaComponent {
   private readonly rolagem = viewChild<ElementRef<HTMLElement>>('rolagem');
 
   protected readonly corMarca = computed(() => buscarCorMarca(this.exemplo().corMarca));
+  /** Manuscritas (Dancing Script, Pacifico, Caveat) ficam com o nome grande; as outras, um pouco menor. */
+  protected readonly fonteManuscrita = computed(() =>
+    (['Dancing Script', 'Pacifico', 'Caveat'] as string[]).includes(this.exemplo().fonteGaleria),
+  );
+
   protected readonly fonte = computed(() => {
     const fonte = this.exemplo().fonteGaleria;
     const serifadas = ['Playfair Display', 'Cormorant Garamond', 'Lora'];

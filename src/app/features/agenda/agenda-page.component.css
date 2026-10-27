@@ -615,7 +615,7 @@ a.faixa-aviso {
   justify-content: space-between;
   gap: 8px;
   padding: 0 10px;
-  border: 1px dashed #C7CFDD;
+  border: 1px dashed #A7B2C4;   /* um pouco mais escura: com vários profissionais as divisões sumiam */
   background: var(--cor-fundo);
   color: var(--cor-texto-suave);
   font-size: 12px;

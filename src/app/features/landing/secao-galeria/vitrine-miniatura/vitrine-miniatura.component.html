@@ -19,7 +19,7 @@
             <span class="loja__inicial">{{ inicial() }}</span>
           }
           <div class="loja__textos">
-            <span class="loja__nome">{{ loja.nomeLoja }}</span>
+            <span class="loja__nome" [class.loja__nome--normal]="!fonteManuscrita()">{{ loja.nomeLoja }}</span>
             <span class="loja__descricao">{{ loja.descricao }}</span>
           </div>
         </header>
