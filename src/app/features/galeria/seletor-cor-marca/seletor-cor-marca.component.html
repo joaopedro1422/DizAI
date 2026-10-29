@@ -29,26 +29,13 @@
   <div class="campo">
     <label class="campo__titulo" for="fonte-vitrine">Fonte</label>
     <select id="fonte-vitrine" [value]="fonteAtual()" (change)="alterarFonte($event)">
-      <optgroup label="Elegantes">
-        <option value="Playfair Display">Playfair Display</option>
-        <option value="Cormorant Garamond">Cormorant Garamond</option>
-        <option value="Lora">Lora</option>
-      </optgroup>
-      <optgroup label="Modernas">
-        <option value="Montserrat">Montserrat</option>
-        <option value="Poppins">Poppins</option>
-        <option value="DM Sans">DM Sans</option>
-      </optgroup>
-      <optgroup label="Manuscritas">
-        <option value="Dancing Script">Dancing Script</option>
-        <option value="Pacifico">Pacifico</option>
-        <option value="Caveat">Caveat</option>
-      </optgroup>
-      <optgroup label="Impactantes">
-        <option value="Oswald">Oswald</option>
-        <option value="Bebas Neue">Bebas Neue</option>
-        <option value="Roboto Condensed">Roboto Condensed</option>
-      </optgroup>
+      @for (grupo of gruposFontes; track grupo.rotulo) {
+        <optgroup [label]="grupo.rotulo">
+          @for (fonte of grupo.fontes; track fonte) {
+            <option [value]="fonte" [selected]="fonte === fonteAtual()">{{ fonte }}</option>
+          }
+        </optgroup>
+      }
     </select>
     <p class="fonte-preview" [style.font-family]="fonteCss()">O texto ficará assim</p>
   </div>
@@ -79,6 +66,29 @@
             <span class="menu-previa__item">Tortas</span>
           </span>
           <span class="menu-opcao__nome">{{ estilo.nome }}</span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="campo">
+    <span class="campo__titulo" id="titulo-layout">Fotos dos tópicos</span>
+    <div class="layouts" role="radiogroup" aria-labelledby="titulo-layout">
+      @for (layout of layoutsFotos; track layout.valor) {
+        @let marcado = layoutAtual() === layout.valor;
+        <button
+          type="button"
+          role="radio"
+          class="layout"
+          [class.layout--marcado]="marcado"
+          [attr.aria-checked]="marcado"
+          (click)="layoutAtual.set(layout.valor)"
+        >
+          <span class="layout__previa" [class]="'layout__previa layout__previa--' + layout.valor.toLowerCase()" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+          </span>
+          <span class="layout__nome">{{ layout.nome }}</span>
+          <span class="layout__descricao">{{ layout.descricao }}</span>
         </button>
       }
     </div>

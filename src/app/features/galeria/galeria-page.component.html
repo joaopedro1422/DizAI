@@ -72,6 +72,10 @@
               [album]="album"
               (adicionarFotos)="abrirAdicionarFotos(album.id)"
               (excluir)="solicitarExclusaoTopico($event)"
+              (adicionarFeedback)="abrirFeedback(album.id)"
+              (editarFeedback)="abrirFeedback(album.id, $event)"
+              (excluirFeedback)="excluirFeedback(album.id, $event)"
+              (editarEndereco)="abrirEndereco(album)"
             />
           </div>
         }
@@ -120,12 +124,31 @@
   @case ('fotos') {
     <app-bottom-sheet titulo="Adicionar fotos" (fechar)="fecharModal()">
       <app-fotos-formulario
-        [albuns]="albuns()"
+        [albuns]="albunsDeFotos()"
         [albumInicialId]="albumParaFotos()"
         [enviando]="enviandoFotos()"
         (salvo)="enviarFotos($event)"
         (novoTopico)="abrirNovoTopico()"
       />
+    </app-bottom-sheet>
+  }
+  @case ('feedback') {
+    <app-bottom-sheet [titulo]="feedbackEmEdicao() ? 'Editar feedback' : 'Novo feedback'" (fechar)="fecharModal()">
+      <app-feedback-formulario [feedback]="feedbackEmEdicao()" [salvando]="salvandoFeedback()" (salvo)="salvarFeedback($event)" />
+    </app-bottom-sheet>
+  }
+  @case ('endereco') {
+    <app-bottom-sheet titulo="Endereço do mapa" (fechar)="fecharModal()">
+      <div class="endereco-edicao">
+        <label class="campo">
+          <span class="campo__rotulo">Endereço completo</span>
+          <textarea class="campo__entrada" rows="3" maxlength="300" [value]="novoEndereco()" (input)="novoEndereco.set($any($event.target).value)"></textarea>
+          <span class="campo__dica">Rua, número, bairro, cidade e CEP: é o que aparece no mapa da vitrine.</span>
+        </label>
+        <button type="button" class="btn btn--primario btn--grande btn--bloco" [disabled]="!novoEndereco().trim() || salvandoFeedback()" (click)="salvarEndereco()">
+          {{ salvandoFeedback() ? 'Salvando…' : 'Salvar endereço' }}
+        </button>
+      </div>
     </app-bottom-sheet>
   }
   @case ('excluir') {

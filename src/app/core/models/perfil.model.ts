@@ -1,5 +1,5 @@
 import { PeriodoAtendimento } from './agenda.model';
-import { AreaCorFundoVitrine, CorFundoVitrine, EstiloCor, EstiloMenu, FonteVitrine } from './vitrine.model';
+import { AreaCorFundoVitrine, CorFundoVitrine, EstiloCor, EstiloMenu, FonteVitrine, LayoutFotos } from './vitrine.model';
 
 export type RamoNegocio =
   | 'SERVICOS_PRESENCIAIS'
@@ -83,6 +83,7 @@ export interface Perfil {
   estiloCor?: EstiloCor | null;
   /** Menu de categorias da vitrine (null = arredondado). */
   estiloMenu?: EstiloMenu | null;
+  layoutFotos?: LayoutFotos | null;
   /** Referência da imagem de capa no Storage. */
   capaUrl?: string | null;
   ramo: RamoNegocio;

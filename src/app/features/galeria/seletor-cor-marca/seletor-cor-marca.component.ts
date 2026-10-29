@@ -9,7 +9,10 @@ import {
   CorFundoVitrine,
   EstiloCor,
   EstiloMenu,
+  LayoutFotos,
   FONTES_VITRINE,
+  GRUPOS_FONTES,
+  fonteComFamilia,
   FonteVitrine,
 } from '../../../core/models/vitrine.model';
 import { ArmazenamentoFotosService } from '../../../core/services/armazenamento-fotos.service';
@@ -32,7 +35,7 @@ const TAMANHO_MAXIMO_CAPA_BYTES = 5 * 1024 * 1024;
   imports: [IconeComponent, UrlImagemPipe, SeletorFundoComponent, SeletorEstiloCorComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './seletor-cor-marca.component.html',
-  styleUrl: './seletor-cor-marca.component.css',
+  styleUrls: ['./seletor-cor-marca.component.css', './layout-fotos.css'],
 })
 export class SeletorCorMarcaComponent {
   private readonly perfilService = inject(PerfilService);
@@ -58,6 +61,14 @@ export class SeletorCorMarcaComponent {
     { valor: 'ARREDONDADO', nome: 'Arredondado' },
     { valor: 'MINIMALISTA', nome: 'Minimalista' },
   ];
+  /** Como as fotos de cada tópico aparecem na vitrine. */
+  protected readonly layoutAtual = signal<LayoutFotos>(this.perfilService.perfil().layoutFotos ?? 'GRADE');
+  protected readonly layoutsFotos: { valor: LayoutFotos; nome: string; descricao: string }[] = [
+    { valor: 'GRADE', nome: 'Grade', descricao: 'Quadrados, 3 por linha' },
+    { valor: 'MOSAICO', nome: 'Mosaico', descricao: 'Alturas diferentes' },
+    { valor: 'DESTAQUE', nome: 'Destaque', descricao: 'A 1ª foto grande' },
+    { valor: 'CARROSSEL', nome: 'Carrossel', descricao: 'Rola para o lado' },
+  ];
   protected readonly hexAtual = computed(() => buscarCorMarca(this.corAtual()).hex);
   protected readonly areaFundoAtual = signal<AreaCorFundoVitrine>(
     this.perfilService.perfil().areaCorFundoGaleria ?? 'CABECALHO',
@@ -76,13 +87,8 @@ export class SeletorCorMarcaComponent {
   );
   protected readonly salvando = signal(false);
   protected readonly nomeCorAtual = computed(() => buscarCorMarca(this.corAtual()).nome);
-  protected readonly fonteCss = computed(() => {
-    const fonte = this.fonteAtual();
-    const serifadas: FonteVitrine[] = ['Playfair Display', 'Cormorant Garamond', 'Lora'];
-    const manuscritas: FonteVitrine[] = ['Dancing Script', 'Pacifico', 'Caveat'];
-    const familia = serifadas.includes(fonte) ? 'serif' : manuscritas.includes(fonte) ? 'cursive' : 'sans-serif';
-    return `'${fonte}', ${familia}`;
-  });
+  protected readonly fonteCss = computed(() => fonteComFamilia(this.fonteAtual()));
+  protected readonly gruposFontes = GRUPOS_FONTES;
 
   constructor() {
     // os fundos têm um pouco de transparência: sobre o branco, o que está atrás do modal não aparece
@@ -175,6 +181,7 @@ export class SeletorCorMarcaComponent {
         areaCorFundoGaleria: this.areaFundoAtual(),
         estiloCor: this.estiloAtual(),
         estiloMenu: this.menuAtual(),
+        layoutFotos: this.layoutAtual(),
         capaUrl,
       };
       await this.perfilService.atualizarConfiguracaoVitrine(configuracao);

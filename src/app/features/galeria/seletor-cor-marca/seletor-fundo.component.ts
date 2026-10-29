@@ -11,11 +11,12 @@ interface OpcaoFundo {
   cor: string | null;
 }
 
-/** Branco, os fundos claros de cada cor de destaque (com nome próprio) e "Sem cor". */
+/** Branco, os fundos claros de cada cor de destaque (com nome próprio), "Sem cor" e o tema escuro. */
 export const OPCOES_FUNDO: OpcaoFundo[] = [
   { valor: 'BRANCO', nome: 'Branco', cor: '#ffffff' },
   ...CORES_MARCA.map((cor) => ({ valor: cor.valor, nome: cor.nomeFundo, cor: cor.fundo })),
   { valor: 'SEM_COR', nome: 'Sem cor (transparente)', cor: null },
+  { valor: 'ESCURO', nome: 'Tema escuro (preto)', cor: '#0f0e0d' },
 ];
 
 /**

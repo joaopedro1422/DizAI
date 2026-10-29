@@ -34,7 +34,7 @@ interface Indicador {
   imports: [RouterLink, CabecalhoPaginaComponent, CarregandoComponent, IconeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './estatisticas-page.component.html',
-  styleUrls: ['./estatisticas-page.component.css', './estatisticas-pc.css'],
+  styleUrls: ['./estatisticas-page.component.css', './horario-pico.css', './estatisticas-pc.css'],
 })
 export class EstatisticasPageComponent implements OnInit {
   private readonly estatisticasService = inject(EstatisticasService);

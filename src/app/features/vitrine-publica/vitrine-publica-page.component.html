@@ -2,6 +2,7 @@
   class="tela-app vitrine vitrine--entrada"
   [class.vitrine--introducao]="introducaoAtiva()"
   [class.vitrine--fundo-pagina]="areaFundo() === 'PAGINA'"
+  [class.vitrine--escura]="temaEscuro()"
   [class.vitrine--agenda]="situacao() === 'pronta' && mostrandoAgenda()"
   [style.--vitrine-destaque]="corDestaque()"
   [style.--vitrine-destaque-fundo]="fundoDestaque()"
@@ -67,7 +68,8 @@
       </header>
 
       @if (temAgenda() || temOrcamento()) {
-        <div class="alternar animacao-entrada animacao-entrada--2" role="tablist" aria-label="O que ver">
+        <div class="alternar animacao-entrada animacao-entrada--2" [class.alternar--unica]="soAgenda()" role="tablist" aria-label="O que ver">
+          @if (!soAgenda()) {
           <button
             type="button"
             role="tab"
@@ -79,6 +81,7 @@
             <app-icone nome="imagem" [tamanho]="17" />
             Trabalhos
           </button>
+          }
           @if (temAgenda()) {
             <button
               type="button"
@@ -135,16 +138,23 @@
         <app-orcamento-publico [slug]="slug()" [numeroWhatsapp]="numeroWhatsapp()" />
       </main>
     } @else {
-    <main class="albuns animacao-entrada animacao-entrada--3">
+    <main class="albuns animacao-entrada animacao-entrada--3" [attr.data-layout]="layoutFotos()">
       @for (album of albuns(); track album.slug) {
         <section class="album" [id]="idSecao(album)" [attr.aria-labelledby]="idSecao(album) + '-titulo'">
           <div class="album__cabecalho">
             <h2 class="album__nome" [id]="idSecao(album) + '-titulo'">{{ album.nome }}</h2>
-            <span class="album__contagem">{{ contagemFotos(album) }}</span>
+            @if (album.tipo !== 'LOCALIZACAO') {
+              <span class="album__contagem">{{ album.tipo === 'FEEDBACKS' ? resumoFeedbacks(album) : contagemFotos(album) }}</span>
+            }
           </div>
-          @if (album.descricao) {
-            <p class="album__descricao">{{ album.descricao }}</p>
-          }
+
+          @if (album.tipo === 'LOCALIZACAO') {
+            @if (album.endereco; as endereco) {
+              <app-mapa-loja [endereco]="endereco" />
+            }
+          } @else if (album.tipo === 'FEEDBACKS') {
+            <app-carrossel-feedbacks [feedbacks]="album.feedbacks ?? []" />
+          } @else {
           <div class="album__grade">
             @for (foto of fotosParaExibir(album); track foto.id; let indice = $index) {
               <button type="button" class="album__botao-foto" [attr.aria-label]="'Ampliar foto ' + (indice + 1) + ' de ' + album.nome" (click)="abrirFoto(album, indice)">
@@ -169,6 +179,7 @@
                 <app-icone nome="seta" [tamanho]="16" [espessura]="2" />
               }
             </button>
+          }
           }
         </section>
       } @empty {

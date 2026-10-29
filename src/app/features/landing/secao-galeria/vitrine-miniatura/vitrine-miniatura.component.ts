@@ -11,6 +11,7 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { ehFonteManuscrita, fonteComFamilia } from '../../../../core/models/vitrine.model';
 import { buscarCorMarca } from '../../../../core/constants/cores-marca';
 import { diaPorExtenso, hojeIso, somarDias } from '../../../../core/utils/datas-agenda';
 import { FaixaDiasComponent, ItemFaixaDia } from '../../../../shared/components/faixa-dias/faixa-dias.component';
@@ -55,18 +56,10 @@ export class VitrineMiniaturaComponent {
   private readonly rolagem = viewChild<ElementRef<HTMLElement>>('rolagem');
 
   protected readonly corMarca = computed(() => buscarCorMarca(this.exemplo().corMarca));
-  /** Manuscritas (Dancing Script, Pacifico, Caveat) ficam com o nome grande; as outras, um pouco menor. */
-  protected readonly fonteManuscrita = computed(() =>
-    (['Dancing Script', 'Pacifico', 'Caveat'] as string[]).includes(this.exemplo().fonteGaleria),
-  );
+  /** Manuscritas ficam com o nome grande; as outras, um pouco menor. */
+  protected readonly fonteManuscrita = computed(() => ehFonteManuscrita(this.exemplo().fonteGaleria));
 
-  protected readonly fonte = computed(() => {
-    const fonte = this.exemplo().fonteGaleria;
-    const serifadas = ['Playfair Display', 'Cormorant Garamond', 'Lora'];
-    const manuscritas = ['Dancing Script', 'Pacifico', 'Caveat'];
-    const familia = serifadas.includes(fonte) ? 'serif' : manuscritas.includes(fonte) ? 'cursive' : 'sans-serif';
-    return `'${fonte}', ${familia}`;
-  });
+  protected readonly fonte = computed(() => fonteComFamilia(this.exemplo().fonteGaleria));
   protected readonly inicial = computed(() => this.exemplo().nomeLoja.charAt(0).toUpperCase());
 
   protected readonly capa = computed(() => {

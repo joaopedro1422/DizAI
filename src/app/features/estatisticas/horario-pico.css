@@ -1,0 +1,45 @@
+/* Horário de pico: um insight rápido abaixo dos indicadores */
+.pico {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+  box-shadow: var(--sombra-card);
+}
+
+.pico__icone {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--cor-azul-fundo);
+  color: var(--cor-azul);
+}
+
+.pico__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.pico__titulo {
+  font-size: 15.5px;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.pico__detalhe {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
+}
+
+.pico__detalhe strong {
+  color: var(--cor-texto);
+}

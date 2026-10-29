@@ -18,6 +18,8 @@ export interface Estatisticas {
   diasDeConta: number | null;
   /** Tempo economizado dividido pelos dias do período em que a conta já existia. */
   minutosPorDia: number;
+  /** Quando os clientes mais chamam; null com menos de 10 mensagens no período. */
+  horarioPico?: HorarioPico | null;
 }
 
 /** Pergunta que o assistente não soube responder: sugestão de pergunta frequente. */
@@ -25,4 +27,14 @@ export interface PerguntaSemResposta {
   id: string;
   pergunta: string;
   criadaEm: string;
+}
+
+/** A janela de 3 horas com mais mensagens de clientes ("19h às 22h") e quanto chega fora do horário de funcionamento. */
+export interface HorarioPico {
+  inicio: number;
+  fim: number;
+  percentualNoPico: number;
+  /** null quando a loja atende "Sempre" ou não tem horário cadastrado. */
+  percentualForaDoHorario: number | null;
+  mensagens: number;
 }

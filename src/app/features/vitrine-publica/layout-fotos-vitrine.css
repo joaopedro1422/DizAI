@@ -1,0 +1,71 @@
+/*
+ * Layouts das fotos dos tópicos (Personalizar vitrine → Fotos dos tópicos). GRADE é o de sempre
+ * (vitrine-publica-page.component.css); aqui ficam as variações, pelo data-layout do <main>.
+ */
+
+/* Mosaico: colunas com a altura natural de cada foto, estilo Pinterest */
+.albuns[data-layout='MOSAICO'] .album__grade {
+  display: block;
+  columns: 2;
+  column-gap: 6px;
+}
+
+.albuns[data-layout='MOSAICO'] .album__botao-foto {
+  width: 100%;
+  margin-bottom: 6px;
+  break-inside: avoid;
+}
+
+.albuns[data-layout='MOSAICO'] .album__foto {
+  aspect-ratio: auto;
+  height: auto;
+}
+
+/* Destaque: a 1ª foto grande (2×2) e as outras em volta */
+.albuns[data-layout='DESTAQUE'] .album__botao-foto:first-child {
+  position: relative;
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* a foto grande ocupa o espaço das 2 linhas (quem dá a altura são as quadradas ao lado) */
+.albuns[data-layout='DESTAQUE'] .album__botao-foto:first-child .album__foto {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+/* Carrossel: uma linha que rola para o lado, fotos em retrato (4:5, o formato do Instagram) */
+.albuns[data-layout='CARROSSEL'] .album__grade {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+
+.albuns[data-layout='CARROSSEL'] .album__botao-foto {
+  flex: 0 0 62%;
+  scroll-snap-align: start;
+}
+
+.albuns[data-layout='CARROSSEL'] .album__foto {
+  aspect-ratio: 4 / 5;
+}
+
+@media (min-width: 600px) {
+  .albuns[data-layout='MOSAICO'] .album__grade {
+    columns: 3;
+  }
+
+  .albuns[data-layout='CARROSSEL'] .album__botao-foto {
+    flex-basis: 31%;
+  }
+}
+
+/* Serviço sem fotos publicadas: a agenda sozinha, numa aba só na largura toda */
+.alternar--unica {
+  grid-template-columns: 1fr;
+}

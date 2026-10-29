@@ -1,5 +1,5 @@
 import { CorMarca } from './perfil.model';
-import { AreaCorFundoVitrine, CorFundoVitrine, EstiloCor, EstiloMenu, FonteVitrine } from './vitrine.model';
+import { AreaCorFundoVitrine, CorFundoVitrine, EstiloCor, EstiloMenu, FonteVitrine, LayoutFotos } from './vitrine.model';
 
 /** Tópico na página pública: `fotos` traz as primeiras; "Ver todas" busca o resto. */
 export interface AlbumPublico {
@@ -10,6 +10,20 @@ export interface AlbumPublico {
   fotos: string[];
   /** Os ids das fotos de `fotos`, na mesma ordem (para o link de cada foto). */
   idsFotos?: number[];
+  /** FEEDBACKS: tópico de depoimentos (slides), sem fotos. Sem o campo (backend antigo) = fotos. */
+  tipo?: 'FOTOS' | 'FEEDBACKS' | 'LOCALIZACAO';
+  feedbacks?: FeedbackPublico[];
+  /** LOCALIZACAO ("Como chegar"): o endereço do mapa. */
+  endereco?: string | null;
+}
+
+/** Depoimento de cliente na vitrine. data: "AAAA-MM-DD" ou null. */
+export interface FeedbackPublico {
+  id: number;
+  texto: string;
+  nome: string;
+  data: string | null;
+  estrelas: number;
 }
 
 /** Página pública da loja (/l/:slug), aberta pelo cliente sem login. */
@@ -27,6 +41,7 @@ export interface LojaPublica {
   estiloCor?: EstiloCor | null;
   /** Menu de categorias da vitrine (null = arredondado). */
   estiloMenu?: EstiloMenu | null;
+  layoutFotos?: LayoutFotos | null;
   /** Referência da imagem de capa no Storage. */
   capaUrl?: string | null;
   /** Número normalizado (só dígitos, com 55). */

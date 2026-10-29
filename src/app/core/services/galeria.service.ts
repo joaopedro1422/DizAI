@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { urlDoPerfil } from '../api/api-url';
 import { SessaoService } from '../auth/sessao.service';
-import { Album, Foto, NovoAlbum } from '../models/galeria.model';
+import { Album, Feedback, Foto, NovoAlbum, NovoFeedback, TipoTopico } from '../models/galeria.model';
 import { VisitasGaleria } from '../models/visitas.model';
 import { CarregamentoUnico } from '../utils/carregamento-unico';
 
@@ -22,6 +22,9 @@ interface AlbumApi {
   descricao: string | null;
   quantidadeFotos: number;
   previa?: Foto[];
+  tipo?: TipoTopico | null;
+  feedbacks?: Feedback[];
+  endereco?: string | null;
 }
 
 interface ExclusaoAlbumApi {
@@ -61,6 +64,26 @@ export class GaleriaService {
    * Registra as referências das fotos já enviadas pelo ArmazenamentoFotosService.
    * Depois busca a galeria de novo para a prévia e as contagens virem do backend.
    */
+  /** "Como chegar": troca o endereço do mapa (nome e descrição continuam os mesmos). */
+  async atualizarEndereco(album: Album, endereco: string): Promise<void> {
+    await firstValueFrom(
+      this.http.put<unknown>(this.url(`/albuns/${album.id}`), { nome: album.nome, descricao: album.descricao, endereco }),
+    );
+    await this.buscar();
+  }
+
+  /** Tópico de feedbacks: cadastra, edita ou exclui um depoimento e busca a galeria de novo. */
+  async salvarFeedback(albumId: number, feedback: NovoFeedback, feedbackId: number | null = null): Promise<void> {
+    const url = this.url(`/albuns/${albumId}/feedbacks${feedbackId ? '/' + feedbackId : ''}`);
+    await firstValueFrom(feedbackId ? this.http.put<unknown>(url, feedback) : this.http.post<unknown>(url, feedback));
+    await this.buscar();
+  }
+
+  async excluirFeedback(albumId: number, feedbackId: number): Promise<void> {
+    await firstValueFrom(this.http.delete<void>(this.url(`/albuns/${albumId}/feedbacks/${feedbackId}`)));
+    await this.buscar();
+  }
+
   async adicionarFotos(albumId: number, urls: string[]): Promise<void> {
     await firstValueFrom(this.http.post<unknown>(this.url(`/albuns/${albumId}/fotos`), { urls }));
     await this.buscar();
@@ -109,6 +132,13 @@ export class GaleriaService {
   }
 }
 
-function paraAlbum({ previa, descricao, ...album }: AlbumApi): Album {
-  return { ...album, descricao: descricao ?? '', fotos: previa ?? [] };
+function paraAlbum({ previa, descricao, tipo, feedbacks, ...album }: AlbumApi): Album {
+  return {
+    ...album,
+    descricao: descricao ?? '',
+    fotos: previa ?? [],
+    tipo: tipo ?? 'FOTOS',
+    feedbacks: feedbacks ?? [],
+    endereco: album.endereco ?? null,
+  };
 }

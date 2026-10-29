@@ -1,3 +1,5 @@
+import { CarrosselFeedbacksComponent } from './carrossel-feedbacks/carrossel-feedbacks.component';
+import { MapaLojaComponent } from '../../shared/components/mapa-loja/mapa-loja.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '@angular/common';
 import { Meta } from '@angular/platform-browser';
@@ -10,7 +12,7 @@ import { buscarCorMarca } from '../../core/constants/cores-marca';
 import { UrlImagemPipe, urlDaImagem } from '../../core/imagens/url-imagem';
 import { Foto } from '../../core/models/galeria.model';
 import { AlbumPublico, LojaPublica } from '../../core/models/loja-publica.model';
-import { FonteVitrine } from '../../core/models/vitrine.model';
+import { FonteVitrine, fonteComFamilia } from '../../core/models/vitrine.model';
 import { LojaPublicaService } from '../../core/services/loja-publica.service';
 import { ToastService } from '../../core/services/toast.service';
 import { pluralizar } from '../../core/utils/colecao.utils';
@@ -36,10 +38,10 @@ type AbaVitrine = 'galeria' | 'agenda' | 'orcamento';
 /** Página pública com os trabalhos da loja, aberta pelo cliente a partir do link enviado no WhatsApp. */
 @Component({
   selector: 'app-vitrine-publica-page',
-  imports: [RouterLink, IconeComponent, LogoComponent, VisualizadorFotoComponent, CarregandoComponent, UrlImagemPipe, AgendaPublicaComponent, OrcamentoPublicoComponent],
+  imports: [RouterLink, IconeComponent, LogoComponent, VisualizadorFotoComponent, CarregandoComponent, UrlImagemPipe, AgendaPublicaComponent, OrcamentoPublicoComponent, CarrosselFeedbacksComponent, MapaLojaComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './vitrine-publica-page.component.html',
-  styleUrl: './vitrine-publica-page.component.css',
+  styleUrls: ['./vitrine-publica-page.component.css', './layout-fotos-vitrine.css'],
 })
 export class VitrinePublicaPageComponent implements OnInit {
   /** Vem da rota /l/:slug */
@@ -64,8 +66,12 @@ export class VitrinePublicaPageComponent implements OnInit {
 
   protected readonly albuns = computed(() => this.loja()?.albuns ?? []);
   protected readonly temAgenda = computed(() => this.loja()?.agendaAtiva === true);
+  /** Serviço com agenda e nada publicado na galeria: a página é só a agenda (uma aba, na largura toda). */
+  protected readonly soAgenda = computed(() => this.temAgenda() && this.loja() !== null && this.albuns().length === 0);
   protected readonly abaAtual = linkedSignal(() => this.aba());
-  protected readonly mostrandoAgenda = computed(() => this.temAgenda() && this.abaAtual() === 'agenda');
+  protected readonly mostrandoAgenda = computed(() => this.temAgenda() && (this.soAgenda() || this.abaAtual() === 'agenda'));
+  /** Como as fotos aparecem (Personalizar vitrine → Fotos dos tópicos). */
+  protected readonly layoutFotos = computed(() => this.loja()?.layoutFotos ?? 'GRADE');
   /** Aba "Orçamento" em standby: o componente está pronto, mas a aba só volta depois de replanejada. */
   protected readonly temOrcamento = computed(() => ORCAMENTO_NA_VITRINE && this.loja()?.orcamentoAtivo === true);
   protected readonly mostrandoOrcamento = computed(() => this.temOrcamento() && this.abaAtual() === 'orcamento');
@@ -78,9 +84,14 @@ export class VitrinePublicaPageComponent implements OnInit {
   protected readonly fonteSelecionada = computed<FonteVitrine>(
     () => this.loja()?.fonteGaleria ?? 'Poppins',
   );
+  /** Tema escuro (Cor de fundo → "Tema escuro (preto)"): a página toda escura, textos e detalhes em branco. */
+  protected readonly temaEscuro = computed(() => this.loja()?.corFundoGaleria === 'ESCURO');
   protected readonly fundoPagina = computed(() => {
     const loja = this.loja();
     const corFundo = loja?.corFundoGaleria;
+    if (corFundo === 'ESCURO') {
+      return '#0f0e0d';
+    }
     if (corFundo === 'BRANCO') {
       return '#ffffff';
     }
@@ -89,19 +100,32 @@ export class VitrinePublicaPageComponent implements OnInit {
     }
     return buscarCorMarca(corFundo ?? loja?.corMarca ?? 'PRETO').fundo;
   });
-  protected readonly areaFundo = computed(() => this.loja()?.areaCorFundoGaleria ?? 'CABECALHO');
+  protected readonly areaFundo = computed(() =>
+    this.temaEscuro() ? 'PAGINA' : (this.loja()?.areaCorFundoGaleria ?? 'CABECALHO'),
+  );
 
   /** O `background` dos botões e etiquetas: a cor de destaque no estilo escolhido (normal, metálico...). */
   protected readonly fundoDestaque = computed(() => {
-    const cor = this.corDestaque();
-    return cor ? fundoDoDestaque(cor, this.loja()?.estiloCor) : null;
+    const cor = this.corDaMarca();
+    if (!cor) {
+      return null;
+    }
+    // no escuro, preto e grafite sumiriam no fundo: os botões ficam num cinza um pouco mais claro
+    const corNoTema = this.temaEscuro() && (cor === '#151515' || cor === '#3F4652') ? '#3a3633' : cor;
+    return fundoDoDestaque(corNoTema, this.loja()?.estiloCor);
   });
 
-  /** Cor escolhida pelo lojista no painel (sempre escura, para o texto branco). */
-  protected readonly corDestaque = computed(() => {
+  /** A cor escolhida pelo lojista (os preenchimentos usam ela também no tema escuro). */
+  private readonly corDaMarca = computed(() => {
     const corMarca = this.loja()?.corMarca;
     return corMarca ? buscarCorMarca(corMarca).hex : null;
   });
+
+  /**
+   * Cor dos detalhes (textos, bordas, ícones) na cor de destaque. No tema escuro os detalhes ficam brancos; os
+   * preenchimentos (botões, etiqueta ativa) continuam na cor da marca pelo --vitrine-destaque-fundo.
+   */
+  protected readonly corDestaque = computed(() => (this.temaEscuro() ? '#ffffff' : this.corDaMarca()));
   protected readonly inicial = computed(() => this.nomeLoja().trim().charAt(0).toUpperCase());
 
   /** Foto ampliada no momento (fotos do tópico + posição). */
@@ -231,6 +255,14 @@ export class VitrinePublicaPageComponent implements OnInit {
     return this.albunsExpandidos().has(album.slug);
   }
 
+  /** Cabeçalho do tópico de feedbacks: "★ 4,8 · 12 avaliações". */
+  protected resumoFeedbacks(album: AlbumPublico): string {
+    const feedbacks = album.feedbacks ?? [];
+    const media = feedbacks.reduce((soma, f) => soma + f.estrelas, 0) / Math.max(1, feedbacks.length);
+    const nota = media.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    return `★ ${nota} · ${feedbacks.length} ${feedbacks.length === 1 ? 'avaliação' : 'avaliações'}`;
+  }
+
   protected contagemFotos(album: AlbumPublico): string {
     return pluralizar(album.quantidadeFotos, 'foto', 'fotos');
   }
@@ -299,13 +331,7 @@ export class VitrinePublicaPageComponent implements OnInit {
     });
   }
 
-  protected readonly fonteCss = computed(() => {
-    const fonte = this.fonteSelecionada();
-    const serifadas: FonteVitrine[] = ['Playfair Display', 'Cormorant Garamond', 'Lora'];
-    const manuscritas: FonteVitrine[] = ['Dancing Script', 'Pacifico', 'Caveat'];
-    const familia = serifadas.includes(fonte) ? 'serif' : manuscritas.includes(fonte) ? 'cursive' : 'sans-serif';
-    return `'${fonte}', ${familia}`;
-  });
+  protected readonly fonteCss = computed(() => fonteComFamilia(this.fonteSelecionada()));
 }
 
 function tituloDaAba(aba: AbaVitrine, loja: LojaPublica | null): string {

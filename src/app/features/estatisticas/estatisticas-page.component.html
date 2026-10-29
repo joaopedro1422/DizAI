@@ -59,6 +59,21 @@
         }
       </div>
 
+      @if (n.horarioPico; as pico) {
+        <section class="pico" aria-labelledby="titulo-pico">
+          <span class="pico__icone"><app-icone nome="relogio" [tamanho]="20" /></span>
+          <div class="pico__textos">
+            <h2 class="pico__titulo" id="titulo-pico">Seus clientes chamam mais entre {{ pico.inicio }}h e {{ pico.fim }}h</h2>
+            <p class="pico__detalhe">
+              {{ pico.percentualNoPico }}% das {{ pico.mensagens }} mensagens chegaram nesse horário.
+              @if (pico.percentualForaDoHorario !== null && pico.percentualForaDoHorario > 0) {
+                <strong>{{ pico.percentualForaDoHorario }}% chegaram fora do seu horário de funcionamento</strong>, e o assistente respondeu por você.
+              }
+            </p>
+          </div>
+        </section>
+      }
+
       @if (n.perguntasSemResposta > 0) {
         <a class="sugestoes" [routerLink]="rotaPerguntas()">
           <app-icone nome="lampada" [tamanho]="18" />

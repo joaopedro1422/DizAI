@@ -22,7 +22,7 @@
   margin-top: 12px;
   padding: 11px 13px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--vitrine-destaque) 9%, #ffffff);
+  background: color-mix(in srgb, var(--vitrine-destaque) 9%, var(--vitrine-cartao, #ffffff));
   color: var(--vitrine-texto);
   font-size: 13.5px;
   line-height: 1.5;

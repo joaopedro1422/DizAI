@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { RouterLink } from '@angular/router';
 
 import { ERRO_AO_CARREGAR, mensagemDoErro } from '../../core/api/erro-api';
-import { Album, NovoAlbum } from '../../core/models/galeria.model';
+import { Album, Feedback, NovoAlbum, NovoFeedback } from '../../core/models/galeria.model';
 import { VisitasGaleria } from '../../core/models/visitas.model';
 import { buscarCorMarca } from '../../core/constants/cores-marca';
 import { ArmazenamentoFotosService } from '../../core/services/armazenamento-fotos.service';
@@ -18,12 +18,13 @@ import { CabecalhoPaginaComponent } from '../../shared/components/cabecalho-pagi
 import { EstadoVazioComponent } from '../../shared/components/estado-vazio/estado-vazio.component';
 import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { AlbumCardComponent } from './album-card/album-card.component';
+import { FeedbackFormularioComponent } from './feedback-formulario/feedback-formulario.component';
 import { FotosEscolhidas, FotosFormularioComponent } from './fotos-formulario/fotos-formulario.component';
 import { SeletorCorMarcaComponent } from './seletor-cor-marca/seletor-cor-marca.component';
 import { TopicoFormularioComponent } from './topico-formulario/topico-formulario.component';
 import { VideoGaleriaComponent } from './video-galeria/video-galeria.component';
 
-type ModalGaleria = 'topico' | 'fotos' | 'vitrine' | 'excluir' | null;
+type ModalGaleria = 'topico' | 'fotos' | 'feedback' | 'endereco' | 'vitrine' | 'excluir' | null;
 
 @Component({
   selector: 'app-galeria-page',
@@ -39,6 +40,7 @@ type ModalGaleria = 'topico' | 'fotos' | 'vitrine' | 'excluir' | null;
     CarregandoComponent,
     SeletorCorMarcaComponent,
     VideoGaleriaComponent,
+    FeedbackFormularioComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './galeria-page.component.html',
@@ -78,7 +80,16 @@ export class GaleriaPageComponent implements OnInit {
     `${pluralizar(this.visitas()?.ultimos7Dias ?? 0, 'visualização', 'visualizações')} esta semana`,
   );
 
-  protected readonly semTopicos = computed(() => this.albuns().length === 0);
+  /** Fotos só vão para tópicos de fotos (os de feedbacks têm o próprio cadastro). */
+  protected readonly albunsDeFotos = computed(() => this.albuns().filter((album) => album.tipo === 'FOTOS'));
+  /** "Como chegar" aberto para trocar o endereço. */
+  protected readonly albumDoEndereco = signal<Album | null>(null);
+  protected readonly novoEndereco = signal('');
+  protected readonly semTopicos = computed(() => this.albunsDeFotos().length === 0);
+  /** Tópico de feedbacks aberto no modal e o feedback em edição (null = novo). */
+  protected readonly albumParaFeedback = signal<number | null>(null);
+  protected readonly feedbackEmEdicao = signal<Feedback | null>(null);
+  protected readonly salvandoFeedback = signal(false);
   protected readonly albunsNaOrdemRascunho = computed(() => {
     const albunsPorId = new Map(this.albuns().map((album) => [album.id, album]));
     return this.ordemRascunho()
@@ -131,13 +142,13 @@ export class GaleriaPageComponent implements OnInit {
       this.toastService.mostrar('Crie um tópico antes de adicionar fotos.');
       return;
     }
-    const unicoAlbum = this.albuns().length === 1 ? this.albuns()[0].id : null;
+    const unicoAlbum = this.albunsDeFotos().length === 1 ? this.albunsDeFotos()[0].id : null;
     this.albumParaFotos.set(albumId ?? unicoAlbum);
     this.modalAberto.set('fotos');
   }
 
   protected fecharModal(): void {
-    if (!this.enviandoFotos() && !this.criandoTopico() && !this.excluindoTopico()) {
+    if (!this.enviandoFotos() && !this.criandoTopico() && !this.excluindoTopico() && !this.salvandoFeedback()) {
       this.modalAberto.set(null);
       this.topicoParaExcluir.set(null);
     }
@@ -179,11 +190,74 @@ export class GaleriaPageComponent implements OnInit {
       const album = await this.galeriaService.criarAlbum(novoAlbum);
       this.ordemRascunho.update((ids) => [...ids, album.id]);
       this.ordemSalva.update((ids) => [...ids, album.id]);
-      this.abrirAdicionarFotos(album.id);
+      if (album.tipo === 'FEEDBACKS') {
+        this.abrirFeedback(album.id);
+      } else if (album.tipo === 'LOCALIZACAO') {
+        this.modalAberto.set(null);
+        this.toastService.mostrar('Mapa adicionado à sua vitrine');
+      } else {
+        this.abrirAdicionarFotos(album.id);
+      }
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível criar o tópico. Tente de novo.'));
     } finally {
       this.criandoTopico.set(false);
+    }
+  }
+
+  protected abrirEndereco(album: Album): void {
+    this.albumDoEndereco.set(album);
+    this.novoEndereco.set(album.endereco ?? '');
+    this.modalAberto.set('endereco');
+  }
+
+  protected async salvarEndereco(): Promise<void> {
+    const album = this.albumDoEndereco();
+    const endereco = this.novoEndereco().trim();
+    if (!album || !endereco || this.salvandoFeedback()) {
+      return;
+    }
+    this.salvandoFeedback.set(true);
+    try {
+      await this.galeriaService.atualizarEndereco(album, endereco);
+      this.toastService.mostrar('Endereço atualizado');
+      this.modalAberto.set(null);
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível salvar o endereço. Tente de novo.'));
+    } finally {
+      this.salvandoFeedback.set(false);
+    }
+  }
+
+  protected abrirFeedback(albumId: number, feedback: Feedback | null = null): void {
+    this.albumParaFeedback.set(albumId);
+    this.feedbackEmEdicao.set(feedback);
+    this.modalAberto.set('feedback');
+  }
+
+  protected async salvarFeedback(feedback: NovoFeedback): Promise<void> {
+    const albumId = this.albumParaFeedback();
+    if (albumId === null || this.salvandoFeedback()) {
+      return;
+    }
+    this.salvandoFeedback.set(true);
+    try {
+      await this.galeriaService.salvarFeedback(albumId, feedback, this.feedbackEmEdicao()?.id ?? null);
+      this.toastService.mostrar(this.feedbackEmEdicao() ? 'Feedback atualizado' : 'Feedback adicionado');
+      this.modalAberto.set(null);
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível salvar o feedback. Tente de novo.'));
+    } finally {
+      this.salvandoFeedback.set(false);
+    }
+  }
+
+  protected async excluirFeedback(albumId: number, feedback: Feedback): Promise<void> {
+    try {
+      await this.galeriaService.excluirFeedback(albumId, feedback.id);
+      this.toastService.mostrar(`Feedback de ${feedback.nome} excluído`);
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível excluir o feedback. Tente de novo.'));
     }
   }
 

@@ -9,8 +9,19 @@
  font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
  display: flex;
  flex-direction: column;
- background-color: #ffffff;
+ background-color: var(--vitrine-pagina, #ffffff);
  color: var(--vitrine-texto);
+}
+
+/* Tema escuro: a mesma vitrine com a paleta invertida (os botões continuam na cor de destaque da loja) */
+.vitrine--escura {
+  --vitrine-texto: #f4f1ee;
+  --vitrine-suave: #b4aca6;
+  --vitrine-borda: #3a3532;
+  --vitrine-fundo-suave: #24211f;
+  --vitrine-cartao: #1c1a19;
+  --vitrine-pagina: #0f0e0d;
+  color-scheme: dark;
 }
 
 .vitrine--fundo-pagina {
@@ -205,7 +216,7 @@
   border: 2px solid #ffffff;
   border-radius: 50%;
   object-fit: cover;
-  background: #ffffff;
+  background: var(--vitrine-cartao, #ffffff);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
 }
 
@@ -226,7 +237,7 @@
 .loja__descricao {
   max-width: 340px;
   margin: 0 auto;
-  font-size: 14.5px;
+  font-size: 13.5px;
   line-height: 1.5;
   color: var(--vitrine-suave);
 }
@@ -240,7 +251,7 @@
   padding: 5px;
   border: 1px solid color-mix(in srgb, var(--vitrine-destaque) 10%, transparent);
   border-radius: var(--raio-pilula);
-  background: color-mix(in srgb, var(--vitrine-destaque) 7%, #ffffff);
+  background: color-mix(in srgb, var(--vitrine-destaque) 7%, var(--vitrine-cartao, #ffffff));
 }
 
 .alternar__opcao {

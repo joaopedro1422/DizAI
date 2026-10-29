@@ -4,10 +4,22 @@
     <span class="album__contagem">{{ contagem() }}</span>
   </div>
   <div class="album__acoes">
-    <button type="button" class="btn btn--secundario btn--pequeno" (click)="adicionarFotos.emit()">
-      <app-icone nome="mais" [tamanho]="14" [espessura]="2.2" />
-      Fotos
-    </button>
+    @if (ehLocalizacao()) {
+      <button type="button" class="btn btn--secundario btn--pequeno" (click)="editarEndereco.emit()">
+        <app-icone nome="editar" [tamanho]="14" [espessura]="2.2" />
+        Endereço
+      </button>
+    } @else if (ehFeedbacks()) {
+      <button type="button" class="btn btn--secundario btn--pequeno" (click)="adicionarFeedback.emit()">
+        <app-icone nome="mais" [tamanho]="14" [espessura]="2.2" />
+        Feedback
+      </button>
+    } @else {
+      <button type="button" class="btn btn--secundario btn--pequeno" (click)="adicionarFotos.emit()">
+        <app-icone nome="mais" [tamanho]="14" [espessura]="2.2" />
+        Fotos
+      </button>
+    }
     <app-menu-acoes
       rotuloBotao="Opções do tópico"
       [itens]="itensMenu"
@@ -20,7 +32,37 @@
   <p class="album__descricao">{{ album().descricao }}</p>
 }
 
-@if (album().quantidadeFotos === 0) {
+@if (ehLocalizacao()) {
+  @if (album().endereco; as endereco) {
+    <app-mapa-loja [endereco]="endereco" [altura]="170" [comBotoes]="false" />
+  }
+} @else if (ehFeedbacks()) {
+  @if (album().feedbacks.length === 0) {
+    <button type="button" class="area-tracejada" (click)="adicionarFeedback.emit()">
+      Nenhum feedback ainda
+      <span class="album__chamada">Adicionar o primeiro feedback</span>
+    </button>
+  } @else {
+    <ul class="feedbacks">
+      @for (feedback of album().feedbacks; track feedback.id) {
+        <li class="feedback">
+          <div class="feedback__textos">
+            <span class="feedback__estrelas" [attr.aria-label]="feedback.estrelas + ' de 5 estrelas'">
+              @for (n of estrelas; track n) {
+                <span [class.feedback__estrela--apagada]="n > feedback.estrelas">★</span>
+              }
+            </span>
+            <p class="feedback__texto">"{{ feedback.texto }}"</p>
+            <span class="feedback__autor">
+              {{ feedback.nome }}@if (feedback.data) { · {{ dataCurta(feedback.data) }} }
+            </span>
+          </div>
+          <app-menu-acoes rotuloBotao="Opções do feedback" [itens]="itensMenuFeedback" (escolher)="aoEscolherNoFeedback($event, feedback)" />
+        </li>
+      }
+    </ul>
+  }
+} @else if (album().quantidadeFotos === 0) {
   <button type="button" class="area-tracejada" (click)="adicionarFotos.emit()">
     Nenhuma foto ainda
     <span class="album__chamada">Adicionar as primeiras fotos</span>

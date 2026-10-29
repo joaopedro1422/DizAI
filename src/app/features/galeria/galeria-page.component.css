@@ -152,3 +152,10 @@
   font-size: 13px;
   color: var(--cor-texto-suave);
 }
+
+/* "Como chegar": trocar o endereço do mapa */
+.endereco-edicao {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
