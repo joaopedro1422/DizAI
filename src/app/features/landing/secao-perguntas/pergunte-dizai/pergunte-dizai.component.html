@@ -1,4 +1,6 @@
 <section class="pergunte" aria-labelledby="pergunte-titulo">
+  <!-- no celular os dois blocos somem (display: contents) e tudo fica numa coluna; no computador, lado a lado -->
+  <div class="pergunte__intro">
   <!-- logo no centro com brilho girando em volta -->
   <div class="pergunte__orbe" aria-hidden="true">
     <span class="pergunte__aura"></span>
@@ -10,6 +12,20 @@
 
   <h3 id="pergunte-titulo" class="pergunte__titulo">Pergunte ao <span class="pergunte__brilho-texto">DizAI</span></h3>
   <p class="pergunte__descricao">Conte do seu negócio ou fale aquela dúvida que ficou na sua cabeça ao ler esta página.</p>
+
+  <!-- só no computador: perguntas prontas para começar com um toque -->
+  <div class="pergunte__sugestoes">
+    <span class="pergunte__sugestoes-titulo">Experimente perguntar</span>
+    @for (sugestao of sugestoes; track sugestao) {
+      <button type="button" class="pergunte__sugestao" [disabled]="!!perguntaPendente()" (click)="perguntar(sugestao)">
+        {{ sugestao }}
+        <app-icone nome="seta" [tamanho]="15" [espessura]="2.2" />
+      </button>
+    }
+  </div>
+  </div>
+
+  <div class="pergunte__chat">
 
   <form class="pergunte__caixa" (ngSubmit)="enviar()">
     <label class="somente-leitor-tela" for="pergunte-campo">Sua pergunta para o DizAI</label>
@@ -63,5 +79,6 @@
         </div>
       </div>
     }
+  </div>
   </div>
 </section>

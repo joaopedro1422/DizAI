@@ -83,8 +83,9 @@
   margin-top: 36px;
 }
 
-/* Print da tela real do painel (Pedidos ou Agenda) */
+/* A tela real do painel (Pedidos ou Agenda) em HTML: 1440 px reduzidos para a largura da moldura */
 .tela-painel {
+  position: relative;
   margin: 0;
   overflow: hidden;
   border: 6px solid rgba(255, 255, 255, 0.14);
@@ -93,10 +94,14 @@
   box-shadow: 0 30px 70px rgba(4, 10, 25, 0.35);
 }
 
-.tela-painel img {
-  display: block;
-  width: 100%;
-  height: auto;
+.tela-painel iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  transform: scale(var(--escala));
+  transform-origin: 0 0;
+  pointer-events: none;
 }
 
 /* Chamada final: testar com o próprio negócio -------------------------------- */

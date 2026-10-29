@@ -261,6 +261,13 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
+/* no celular os dois botões ocupam a largura toda, um embaixo do outro */
+@media (max-width: 640px) {
+  .chamada-final__acoes > .btn {
+    flex: 1 1 100%;
+  }
+}
+
 /* Rodapé ------------------------------------------------------------------- */
 
 .rodape {

@@ -104,64 +104,31 @@
       </article>
     }
 
-    <!-- o último, na largura toda: a vitrine pública com tudo o que ela reúne -->
+    <!-- o último: no celular igual aos outros; no computador, na largura toda com o que a vitrine reúne -->
     <article class="ganho ganho--vitrine">
-      <div class="vitrine-card__textos">
-        <span class="vitrine-card__selo"><app-icone nome="imagem" [tamanho]="15" [espessura]="2.2" />Vitrine pública</span>
-        <h3 class="vitrine-card__titulo">Uma página exclusiva da sua loja, pronta para enviar.</h3>
+      <div class="ganho__cabeca">
+        <span class="ganho__icone">
+          <app-icone nome="imagem" [tamanho]="20" [espessura]="2" />
+        </span>
+        <h3 class="ganho__titulo">Vitrine pública da sua loja</h3>
         <p class="ganho__texto">
-          Com a sua logo, as suas cores e a sua fonte. O assistente envia o link na conversa e você divulga no
-          Instagram, no status ou onde quiser.
+          Uma página exclusiva, com a sua logo e as suas cores. O assistente envia o link na conversa e você divulga
+          no Instagram, no status ou onde quiser.
         </p>
-        <ul class="vitrine-card__lista">
-          @for (recurso of recursosVitrine; track recurso.texto) {
-            <li>
-              <span class="vitrine-card__icone"><app-icone [nome]="recurso.icone" [tamanho]="16" [espessura]="2" /></span>
-              {{ recurso.texto }}
-            </li>
-          }
-        </ul>
-        <button type="button" class="btn btn--primario vitrine-card__ver" (click)="verVitrine()">
-          Ver
-          <app-icone nome="setaBaixo" [tamanho]="18" [espessura]="2.2" />
+        <button type="button" class="ganho__ver" (click)="verVitrine()">
+          Ver mais
+          <app-icone nome="seta" [tamanho]="16" [espessura]="2.2" />
         </button>
       </div>
 
-      <!-- miniatura da vitrine: capa, loja, abas e os blocos (fotos, feedback, mapa, agenda) -->
-      <div class="mini-vitrine" aria-hidden="true">
-        <span class="mini-vitrine__capa"></span>
-        <span class="mini-vitrine__loja">
-          <span class="mini-vitrine__logo">S</span>
-          <span><strong>Sálvia Studio</strong><small>dizai.com/l/salvia-studio</small></span>
-        </span>
-        <span class="mini-vitrine__abas">
-          <span class="mini-vitrine__aba--ativa">Trabalhos</span>
-          <span>Agendar horário</span>
-        </span>
-        <span class="mini-vitrine__blocos">
-          <span class="bloco bloco--fotos">
-            <small>Unhas em gel</small>
-            <span class="fotos">
-              <span class="fotos__item fotos__item--1"></span>
-              <span class="fotos__item fotos__item--2"></span>
-              <span class="fotos__item fotos__item--3"></span>
-              <span class="fotos__item fotos__item--mais">+24</span>
-            </span>
+      <div class="detalhe vitrine-recursos" aria-hidden="true">
+        @for (recurso of recursosVitrine; track recurso.titulo) {
+          <span class="vitrine-recursos__item">
+            <span class="vitrine-recursos__icone"><app-icone [nome]="recurso.icone" [tamanho]="16" [espessura]="2" /></span>
+            <strong>{{ recurso.titulo }}</strong>
+            <small>{{ recurso.texto }}</small>
           </span>
-          <span class="bloco">
-            <span class="bloco__estrelas">★★★★★</span>
-            <span class="bloco__citacao">"Atendimento impecável, saí apaixonada pelas unhas!"</span>
-            <small>Marina</small>
-          </span>
-          <span class="bloco bloco--mapa">
-            <span class="bloco__pino"><app-icone nome="local" [tamanho]="16" [espessura]="2.2" /></span>
-            <span><strong>Como chegar</strong><small>Rua das Flores, 120 · Traçar rota</small></span>
-          </span>
-          <span class="bloco">
-            <strong>Agendar horário</strong>
-            <span class="bloco__horarios"><span>09:00</span><span class="bloco__horario--ativo">10:30</span><span>14:00</span></span>
-          </span>
-        </span>
+        }
       </div>
     </article>
   </div>

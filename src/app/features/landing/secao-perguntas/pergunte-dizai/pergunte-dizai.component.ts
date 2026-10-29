@@ -11,6 +11,12 @@ const TROCAS_DE_CONTEXTO = 4;
 const LIMITE_LETRAS = 600;
 /** A resposta aparece aos poucos, como num chat de IA: letras por passo a cada 16 ms. */
 const LETRAS_POR_PASSO = 3;
+/** Perguntas prontas ao lado da caixa (só no computador). */
+const SUGESTOES = [
+  'Tenho uma confeitaria e vendo por encomenda. O DizAI serve para mim?',
+  'Como o assistente marca os horários da minha agenda?',
+  'Preciso trocar o número do meu WhatsApp?',
+];
 
 /** Abaixo das perguntas frequentes: o visitante pergunta o que quiser e a IA do DizAI responde logo abaixo. */
 @Component({
@@ -18,7 +24,7 @@ const LETRAS_POR_PASSO = 3;
   imports: [FormsModule, IconeComponent, LogoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './pergunte-dizai.component.html',
-  styleUrl: './pergunte-dizai.component.css',
+  styleUrls: ['./pergunte-dizai.component.css', './pergunte-dizai-pc.css'],
 })
 export class PergunteDizaiComponent {
   private readonly assistente = inject(AssistenteDizaiService);
@@ -27,6 +33,7 @@ export class PergunteDizaiComponent {
   private digitacao?: number;
 
   protected readonly limiteLetras = LIMITE_LETRAS;
+  protected readonly sugestoes = SUGESTOES;
   protected readonly texto = signal('');
   protected readonly trocas = signal<TrocaDizai[]>([]);
   /** Quantas letras da última resposta já apareceram. */
@@ -45,6 +52,11 @@ export class PergunteDizaiComponent {
       evento.preventDefault();
       void this.enviar();
     }
+  }
+
+  protected perguntar(sugestao: string): void {
+    this.texto.set(sugestao);
+    void this.enviar();
   }
 
   protected async enviar(): Promise<void> {

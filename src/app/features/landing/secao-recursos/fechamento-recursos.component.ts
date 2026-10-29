@@ -1,4 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  afterNextRender,
+  computed,
+  inject,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
@@ -91,6 +102,9 @@ const DO_TIPO: Record<TipoNegocio, RecursoDoTipo[]> = {
   ],
 };
 
+/** Largura em que as telas do painel (public/landing/tela-*.html) foram desenhadas. */
+const LARGURA_TELA = 1440;
+
 /**
  * Fim da seção Recursos: o resto do que cada tipo de negócio ganha e a chamada para testar com o próprio negócio.
  * Fica num componente próprio para o CSS de cada um caber no limite do build.
@@ -106,4 +120,22 @@ export class FechamentoRecursosComponent {
   readonly tipo = input.required<TipoNegocio>();
 
   protected readonly doTipo = computed(() => DO_TIPO[this.tipo()]);
+  /** Altura da tela em HTML (desenhada com 1440 px de largura). */
+  protected readonly alturaTela = computed(() => (this.tipo() === 'produtos' ? 1146 : 1125));
+  /** Quanto a tela de 1440 px encolhe para caber na moldura. */
+  protected readonly escala = signal(0.4);
+
+  private readonly tela = viewChild.required<ElementRef<HTMLElement>>('tela');
+
+  constructor() {
+    let observador: ResizeObserver | undefined;
+    afterNextRender(() => {
+      const moldura = this.tela().nativeElement;
+      const medir = () => this.escala.set(moldura.clientWidth / LARGURA_TELA || 0.4);
+      medir();
+      observador = new ResizeObserver(medir);
+      observador.observe(moldura);
+    });
+    inject(DestroyRef).onDestroy(() => observador?.disconnect());
+  }
 }

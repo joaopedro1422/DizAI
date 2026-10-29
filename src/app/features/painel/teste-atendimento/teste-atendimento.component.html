@@ -34,6 +34,30 @@
       @if (item.tipo === 'aviso') {
         <p class="nota nota--aviso">{{ item.texto }}</p>
       } @else {
+        @if (item.audio; as audio) {
+          <!-- áudio do cliente: nota de voz como no WhatsApp; tocar mostra o que o assistente entendeu -->
+          <div class="balao balao--cliente balao--audio">
+            <button type="button" class="nota-voz" [attr.aria-expanded]="transcricoesAbertas().has($index)"
+                    aria-label="Mostrar a transcrição do áudio" (click)="alternarTranscricao($index)">
+              <span class="nota-voz__play"><app-icone nome="reproduzir" [tamanho]="18" [espessura]="2" /></span>
+              <span class="nota-voz__ondas" aria-hidden="true">
+                @for (altura of audio.ondas; track $index) {
+                  <i [style.height.%]="altura"></i>
+                }
+              </span>
+              <span class="nota-voz__foto"><app-icone nome="microfone" [tamanho]="16" [espessura]="2.2" /></span>
+            </button>
+            <span class="nota-voz__rodape">
+              <span>{{ audio.duracao }}</span>
+              <span class="balao__hora">{{ item.hora }}</span>
+            </span>
+            @if (transcricoesAbertas().has($index)) {
+              <span class="nota-voz__transcricao">{{ audio.transcricao }}</span>
+            } @else {
+              <button type="button" class="nota-voz__ver" (click)="alternarTranscricao($index)">Ver transcrição</button>
+            }
+          </div>
+        } @else {
         <div class="balao" [class.balao--cliente]="item.deCliente">
           <!-- a mesma formatação do WhatsApp: listas com "-", *negrito*, _itálico_ e ~riscado~ -->
           <span class="balao__texto">
@@ -52,12 +76,29 @@
           </span>
           <span class="balao__hora">{{ item.hora }}</span>
         </div>
+        }
       }
     }
 
-    @if (pendente(); as pendente) {
+    @if (audioPendente(); as audio) {
+      <div class="balao balao--cliente balao--audio">
+        <span class="nota-voz">
+          <span class="nota-voz__play"><app-icone nome="reproduzir" [tamanho]="18" [espessura]="2" /></span>
+          <span class="nota-voz__ondas" aria-hidden="true">
+            @for (altura of audio.ondas; track $index) {
+              <i [style.height.%]="altura"></i>
+            }
+          </span>
+          <span class="nota-voz__foto"><app-icone nome="microfone" [tamanho]="16" [espessura]="2.2" /></span>
+        </span>
+        <span class="nota-voz__rodape">
+          <span>{{ audio.duracao }}</span>
+          <span class="balao__hora"><app-icone nome="relogio" [tamanho]="11" [espessura]="2" /></span>
+        </span>
+      </div>
+    } @else if (pendente()) {
       <div class="balao balao--cliente">
-        <span class="balao__texto">{{ pendente }}</span>
+        <span class="balao__texto">{{ pendente() }}</span>
         <span class="balao__hora"><app-icone nome="relogio" [tamanho]="11" [espessura]="2" /></span>
       </div>
     }

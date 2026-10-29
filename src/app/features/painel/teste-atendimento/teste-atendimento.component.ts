@@ -25,11 +25,36 @@ const MARCADOR_CATALOGO = '[Catálogo enviado ao cliente]';
 
 /** Uma linha da conversa na tela: mensagem, aviso do sistema (catálogo, transferência) ou separador de dia. */
 type ItemConversa =
-  | { tipo: 'mensagem'; deCliente: boolean; linhas: LinhaFormatada[]; hora: string }
+  | { tipo: 'mensagem'; deCliente: boolean; linhas: LinhaFormatada[]; hora: string; audio: NotaDeVoz | null }
   | { tipo: 'aviso'; texto: string };
+
+/** Áudio do cliente: o backend grava a transcrição com esta marca na frente (AudioClienteService.PREFIXO). */
+const MARCA_AUDIO = '🎤 ';
+
+/** A transcrição desenhada como a nota de voz do WhatsApp: ondas, duração estimada e o texto escondido. */
+interface NotaDeVoz {
+  ondas: number[];
+  duracao: string;
+  transcricao: string;
+}
+
+/** Ondas fixas para o mesmo texto (o áudio não é guardado, então o desenho sai do próprio texto). */
+function notaDeVoz(transcricao: string, segundos?: number): NotaDeVoz {
+  let semente = 7;
+  for (const letra of transcricao) {
+    semente = (semente * 31 + letra.charCodeAt(0)) % 9973;
+  }
+  const ondas = Array.from({ length: 30 }, (_, i) => 22 + ((semente * (i + 3) * 17) % 78));
+  // sem a duração real, estima pela fala (umas 2,5 palavras por segundo)
+  const total = segundos ?? Math.max(1, Math.round(transcricao.split(/\s+/).filter(Boolean).length / 2.5));
+  return { ondas, duracao: `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`, transcricao };
+}
 
 /** De quanto em quanto tempo a tela busca as mensagens enquanto o assistente responde. */
 const ACOMPANHAR_A_CADA_MS = 700;
+
+/** Texto da mensagem pendente enquanto o áudio é transcrito (a tela desenha a nota de voz). */
+const TRANSCREVENDO = '🎤 Transcrevendo o áudio…';
 
 /** Limite da gravação no teste: passou disso, envia o que já gravou. */
 const DURACAO_MAXIMA_AUDIO_S = 120;
@@ -48,7 +73,7 @@ const AVISOS: Partial<Record<AcaoTeste, string>> = {
   imports: [FormsModule, IconeComponent, UrlImagemPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './teste-atendimento.component.html',
-  styleUrl: './teste-atendimento.component.css',
+  styleUrls: ['./teste-atendimento.component.css', './nota-voz-teste.css'],
   host: {
     '(document:keydown.escape)': 'fechar.emit()',
   },
@@ -85,6 +110,13 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
   private relogioGravacao: number | undefined;
   private gravacaoCancelada = false;
 
+  /** Notas de voz com a transcrição aberta (posição na conversa). */
+  protected readonly transcricoesAbertas = signal<ReadonlySet<number>>(new Set());
+  /** Enquanto o áudio gravado é transcrito, aparece como nota de voz com o tempo gravado. */
+  protected readonly audioPendente = computed(() =>
+    this.pendente() === TRANSCREVENDO ? notaDeVoz('', this.segundosGravados()) : null,
+  );
+
   protected readonly inicial = computed(() => this.perfil().nomeLoja.trim().charAt(0).toUpperCase() || '?');
 
   protected readonly itens = computed<ItemConversa[]>(() =>
@@ -96,6 +128,9 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
             deCliente: mensagem.origem === 'CLIENTE',
             linhas: formatarWhatsapp(mensagem.texto),
             hora: horaDe(mensagem.criadoEm),
+            audio: mensagem.origem === 'CLIENTE' && mensagem.texto.startsWith(MARCA_AUDIO)
+              ? notaDeVoz(mensagem.texto.slice(MARCA_AUDIO.length).trim())
+              : null,
           },
     ),
   );
@@ -202,7 +237,17 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
       this.erro.set('Áudio muito curto. Toque no microfone, fale e toque em enviar.');
       return;
     }
-    await this.conversar('🎤 Transcrevendo o áudio…', () => this.servico.enviarAudio(audio));
+    await this.conversar(TRANSCREVENDO, () => this.servico.enviarAudio(audio));
+  }
+
+  protected alternarTranscricao(posicao: number): void {
+    this.transcricoesAbertas.update((abertas) => {
+      const novas = new Set(abertas);
+      if (!novas.delete(posicao)) {
+        novas.add(posicao);
+      }
+      return novas;
+    });
   }
 
   /** Mostra a mensagem do cliente pendente, acompanha a saudação e põe a resposta do assistente na tela. */

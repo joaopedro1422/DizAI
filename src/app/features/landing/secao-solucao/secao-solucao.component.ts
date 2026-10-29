@@ -89,12 +89,12 @@ const BARRAS = [36, 52, 44, 70, 58, 100, 30];
 /** Ondas da nota de voz na miniatura do áudio (altura em %). */
 const ONDAS = [30, 55, 80, 45, 95, 60, 35, 70, 50, 85, 40, 65, 30, 50, 75, 40, 25];
 
-/** O que a vitrine pública reúne (o último card, na largura toda). */
-const RECURSOS_VITRINE: { icone: NomeIcone; texto: string }[] = [
-  { icone: 'imagem', texto: 'Portfólio com as fotos dos seus trabalhos, separadas por tema' },
-  { icone: 'estrela', texto: 'Feedbacks dos clientes, com as estrelas de cada um' },
-  { icone: 'local', texto: '"Como chegar": o seu endereço com mapa e rota' },
-  { icone: 'calendario', texto: 'Para serviços, é também a sua página de agendamento online' },
+/** O que a vitrine pública reúne (no computador, ao lado do texto do último card). */
+const RECURSOS_VITRINE: { icone: NomeIcone; titulo: string; texto: string }[] = [
+  { icone: 'imagem', titulo: 'Portfólio', texto: 'Suas fotos separadas por tema' },
+  { icone: 'estrela', titulo: 'Feedbacks', texto: 'O que os clientes dizem, com estrelas' },
+  { icone: 'local', titulo: 'Como chegar', texto: 'Endereço com mapa e rota' },
+  { icone: 'calendario', titulo: 'Agendamento', texto: 'Para serviços, a sua agenda online' },
 ];
 
 /**

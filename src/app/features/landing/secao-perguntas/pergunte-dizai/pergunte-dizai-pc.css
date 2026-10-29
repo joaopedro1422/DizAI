@@ -1,0 +1,119 @@
+/* Celular: os blocos não existem para o layout (fica tudo numa coluna, como sempre foi) */
+.pergunte__intro,
+.pergunte__chat {
+  display: contents;
+}
+
+.pergunte__sugestoes {
+  display: none;
+}
+
+/* Computador: um painel na largura do conteúdo, apresentação à esquerda e o chat à direita */
+@media (min-width: 1024px) {
+  :host {
+    margin-top: 88px;
+  }
+
+  .pergunte {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    align-items: start;
+    gap: 56px;
+    max-width: none;
+    padding: 56px;
+    border: 1px solid #E3E8F5;
+    border-radius: 32px;
+    background:
+      radial-gradient(circle at 0% 0%, rgba(76, 125, 240, 0.1), transparent 45%),
+      radial-gradient(circle at 100% 100%, rgba(140, 92, 246, 0.08), transparent 45%),
+      var(--cor-fundo);
+    text-align: left;
+  }
+
+  .pergunte__intro {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pergunte__chat {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .pergunte__titulo {
+    font-size: 42px;
+    line-height: 1.1;
+  }
+
+  .pergunte__descricao {
+    max-width: 440px;
+    margin: 12px 0 32px;
+    font-size: 17px;
+    line-height: 1.55;
+  }
+
+  .pergunte__campo {
+    min-height: 168px;
+  }
+
+  .pergunte__sugestoes {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    gap: 10px;
+  }
+
+  .pergunte__sugestoes-titulo {
+    color: var(--cor-texto-suave);
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .pergunte__sugestao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 13px 16px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 14px;
+    background: var(--cor-fundo);
+    color: var(--cor-texto);
+    font: inherit;
+    font-size: 14.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  }
+
+  .pergunte__sugestao app-icone {
+    flex: none;
+    color: var(--cor-primaria);
+  }
+
+  .pergunte__sugestao:hover:not(:disabled) {
+    border-color: var(--cor-primaria);
+    color: var(--cor-primaria);
+    transform: translateX(3px);
+  }
+
+  .pergunte__sugestao:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+
+  .pergunte__conversa {
+    margin-top: 24px;
+  }
+}
+
+@media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
+  .pergunte__sugestao { transition: none; }
+  .pergunte__sugestao:hover:not(:disabled) { transform: none; }
+}

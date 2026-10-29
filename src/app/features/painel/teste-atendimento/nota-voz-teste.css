@@ -1,0 +1,85 @@
+/* Áudio do cliente desenhado como a nota de voz do WhatsApp (a transcrição fica escondida até tocar) */
+.balao--audio {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 270px;
+  max-width: 82%;
+  padding: 7px 9px 5px;
+}
+
+.nota-voz {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nota-voz__play { display: inline-flex; flex: none; color: #54656F; }
+
+.nota-voz__ondas {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 2px;
+  height: 28px;
+}
+
+.nota-voz__ondas i {
+  flex: 1;
+  min-height: 3px;
+  border-radius: 2px;
+  background: #8BA89A;
+}
+
+/* o "fone" verde no lugar da foto do contato, como na nota de voz gravada na hora */
+.nota-voz__foto {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #25D366;
+  color: #ffffff;
+}
+
+.nota-voz__rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 28px;
+  color: #667781;
+  font-size: 11px;
+}
+
+.nota-voz__rodape .balao__hora { float: none; margin: 0; }
+
+.nota-voz__ver {
+  align-self: flex-start;
+  margin: 2px 0 0 28px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #027EB5;
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.nota-voz__transcricao {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(11, 20, 26, 0.1);
+  color: #3B4A54;
+  font-size: 13.5px;
+  font-style: italic;
+  line-height: 1.4;
+}
