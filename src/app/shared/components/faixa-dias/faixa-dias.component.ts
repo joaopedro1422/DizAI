@@ -74,7 +74,7 @@ export interface ItemFaixaDia {
     .faixa {
       position: relative;
       display: flex;
-      gap: 8px;
+      gap: 4px;
       overflow-x: auto;
       padding: 4px 2px 8px;
       scroll-snap-type: x proximity;

@@ -283,6 +283,8 @@ export class AgendaPageComponent implements OnInit {
    * A área das colunas rola sozinha (para o lado e para baixo). Rolada para o lado, a régua de horas presa à esquerda
    * ganha o card com sombra; rolada para baixo, a linha dos nomes presa no topo também.
    */
+  /** Mouse em cima de um horário da régua: a altura dele (px), para a linha que atravessa a agenda inteira. */
+  protected readonly horaEmFoco = signal<number | null>(null);
   protected readonly colunasRoladas = signal(false);
   protected readonly colunasRoladasParaBaixo = signal(false);
 

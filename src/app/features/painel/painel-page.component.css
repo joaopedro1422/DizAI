@@ -165,13 +165,21 @@
     grid-row: 3;
   }
 
+  /* o convite do app fica na coluna da direita, logo abaixo do aviso do WhatsApp (sem o aviso, no lugar dele) */
+  .conteudo > app-no-celular {
+    grid-column: 2;
+    grid-row: 3;
+  }
+
+  .conteudo:not(:has(> app-alerta-conexao-whatsapp)) > app-no-celular {
+    grid-row: 2;
+  }
+
   .conteudo:has(> .aviso-senha) > app-no-celular {
     grid-row: 4;
   }
 
-  /* o convite do app ocupa as duas colunas, no fim */
-  .conteudo > app-no-celular {
-    grid-column: 1 / -1;
+  .conteudo:has(> .aviso-senha):not(:has(> app-alerta-conexao-whatsapp)) > app-no-celular {
     grid-row: 3;
   }
 }

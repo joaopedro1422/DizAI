@@ -1,4 +1,11 @@
 <form class="formulario" [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
+  @if (modelo(); as copiado) {
+    <p class="aviso-informativo">
+      <app-icone nome="copiar" [tamanho]="16" />
+      <span>Copiado de <strong>{{ copiado.nome }}</strong>. Troque o nome e o que for diferente: o original continua como está.</span>
+    </p>
+  }
+
   @if (ehProdutoAVenda()) {
     <div class="campo">
       <span class="campo__rotulo">Foto do produto</span>

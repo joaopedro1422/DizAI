@@ -1,0 +1,72 @@
+/*
+ * Computador: as perguntas num painel branco à esquerda; à direita, o que o assistente não soube responder e as
+ * ideias do ramo. No celular nada muda (tudo aqui fica dentro do @media).
+ */
+@media (min-width: 1024px) {
+  app-cabecalho-pagina .btn--acao-principal {
+    width: auto;
+    min-height: 46px;
+    padding-inline: 22px;
+  }
+
+  .perguntas {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    gap: 24px 32px;
+  }
+
+  .perguntas > app-carregando {
+    grid-column: 1 / -1;
+  }
+
+  .perguntas__lista {
+    display: flex;
+    flex-direction: column;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    padding: 4px 28px;
+    border: 1px solid var(--cor-borda-suave);
+    border-radius: var(--raio-grande);
+    background: var(--cor-fundo);
+  }
+
+  .perguntas__lista > .pergunta:last-child {
+    border-bottom: none;
+  }
+
+  .pergunta {
+    padding: 22px 0;
+  }
+
+  .pergunta__titulo {
+    font-size: 16px;
+  }
+
+  .pergunta__resposta {
+    max-width: 720px;
+    font-size: 14.5px;
+  }
+
+  .sem-resposta {
+    grid-column: 2;
+    grid-row: 1;
+    margin-top: 0;
+  }
+
+  .perguntas__ideias {
+    grid-column: 2;
+    grid-row: 2;
+    margin-top: 0;
+  }
+
+  .perguntas:not(:has(> .sem-resposta)) > .perguntas__ideias {
+    grid-row: 1;
+  }
+
+  /* sem nada para a coluna da direita, a lista usa a largura toda */
+  .perguntas:not(:has(> .sem-resposta)):not(:has(> .perguntas__ideias)) > .perguntas__lista {
+    grid-column: 1 / -1;
+  }
+}

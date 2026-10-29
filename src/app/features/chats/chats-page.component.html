@@ -1,9 +1,10 @@
-<div class="tela-app">
+<div class="tela-app tela-pc">
   <!-- topo azul (o mesmo da Agenda e dos Pedidos): abas num azul mais escuro, a ativa em branco -->
   <header class="topo-azul">
     <div class="topo-azul__linha">
       <a class="topo-azul__voltar" [routerLink]="rotaInicio()" aria-label="Voltar para o painel">
         <app-icone nome="voltar" [tamanho]="22" />
+        <span class="topo-azul__voltar-texto" aria-hidden="true">Voltar</span>
       </a>
       <!-- todos os clientes (quem conversou, agendou ou pediu), com busca e o histórico de cada um -->
       <a class="botao-clientes" [routerLink]="rotaClientes()">
@@ -49,7 +50,7 @@
   @if (carregando()) {
     <app-carregando texto="Carregando conversas…" />
   } @else if (abaAtual() === 'aguardando') {
-    <main id="painel-aguardando" role="tabpanel" aria-labelledby="aba-aguardando" class="lista conteudo-tela">
+    <main id="painel-aguardando" role="tabpanel" aria-labelledby="aba-aguardando" class="lista conteudo-tela corpo-pc">
       @for (conversa of aguardandoDono(); track conversa.id) {
         <app-conversa-aguardando-card
           [conversa]="conversa"
@@ -65,9 +66,9 @@
       }
     </main>
   } @else {
-    <main id="painel-andamento" role="tabpanel" aria-labelledby="aba-andamento" class="conteudo-tela conversas">
+    <main id="painel-andamento" role="tabpanel" aria-labelledby="aba-andamento" class="conteudo-tela conversas corpo-pc">
       @for (conversa of emAndamento(); track conversa.id) {
-        <article class="conversa">
+        <button type="button" class="conversa" (click)="conversaAberta.set(conversa)">
           <app-avatar modo="icone" [nome]="nomeExibicao(conversa)" />
           <span class="conversa__textos">
             <span class="conversa__linha">
@@ -77,7 +78,8 @@
             <span class="conversa__mensagem">{{ conversa.ultimaMensagem }}</span>
             <span class="conversa__status" [class.conversa__status--dono]="conversa.status === 'HUMANO_ATIVO' || conversa.status === 'EM_PEDIDO'"><span class="conversa__ponto"></span>{{ textoStatus(conversa) }}</span>
           </span>
-        </article>
+          <app-icone class="conversa__seta" nome="avancar" [tamanho]="18" [espessura]="2" />
+        </button>
       } @empty {
         <app-estado-vazio
           icone="conversa"
@@ -92,6 +94,12 @@
 @if (acaoPedido(); as aberta) {
   <app-bottom-sheet [titulo]="titulosAcaoPedido[aberta.acao]" (fechar)="acaoPedido.set(null)">
     <app-acao-pedido-conversa [conversa]="aberta.conversa" [acao]="aberta.acao" (concluido)="acaoPedido.set(null)" />
+  </app-bottom-sheet>
+}
+
+@if (conversaAberta(); as aberta) {
+  <app-bottom-sheet titulo="Conversa" (fechar)="conversaAberta.set(null)">
+    <app-detalhe-conversa [conversa]="aberta" (alterada)="conversaAberta.set(null)" />
   </app-bottom-sheet>
 }
 

@@ -37,7 +37,7 @@ const TODAS_AS_CATEGORIAS = 'Todos';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './produtos-page.component.html',
-  styleUrls: ['../../shared/estilos-listagem.css', './produtos-page.component.css'],
+  styleUrls: ['../../shared/estilos-listagem.css', './produtos-page.component.css', './produtos-pc.css'],
 })
 export class ProdutosPageComponent implements OnInit {
   private readonly produtoService = inject(ProdutoService);
@@ -60,6 +60,8 @@ export class ProdutosPageComponent implements OnInit {
   protected readonly filtroAtual = signal(TODAS_AS_CATEGORIAS);
   protected readonly modalAberto = signal(false);
   protected readonly produtoEmEdicao = signal<Produto | null>(null);
+  /** "Duplicar": o item que serve de base para o novo cadastro. */
+  protected readonly produtoModelo = signal<Produto | null>(null);
   /** Negócios de serviço: o modal aberto pelo "Adicionar produto" cadastra um produto à venda. */
   protected readonly novoProdutoAVenda = signal(false);
   protected readonly ramoServico = computed(() => ramoDeServico(this.perfil().ramo));
@@ -128,6 +130,7 @@ export class ProdutosPageComponent implements OnInit {
 
   protected abrirModal(produtoAVenda = false): void {
     this.produtoEmEdicao.set(null);
+    this.produtoModelo.set(null);
     this.novoProdutoAVenda.set(produtoAVenda);
     this.modalAberto.set(true);
   }
@@ -135,10 +138,19 @@ export class ProdutosPageComponent implements OnInit {
   protected fecharModal(): void {
     this.modalAberto.set(false);
     this.produtoEmEdicao.set(null);
+    this.produtoModelo.set(null);
   }
 
   protected editarProduto(produto: Produto): void {
     this.produtoEmEdicao.set(produto);
+    this.modalAberto.set(true);
+  }
+
+  /** Abre o cadastro de um novo item já com os dados deste (serviço continua serviço; produto à venda, produto). */
+  protected duplicarProduto(produto: Produto): void {
+    this.produtoEmEdicao.set(null);
+    this.produtoModelo.set(produto);
+    this.novoProdutoAVenda.set(!!produto.produtoAVenda);
     this.modalAberto.set(true);
   }
 
@@ -177,6 +189,7 @@ export class ProdutosPageComponent implements OnInit {
     this.salvando.set(true);
     try {
       const produto = this.produtoEmEdicao();
+      const modelo = this.produtoModelo();
       if (produto) {
         const atualizacao: ProdutoAtualizacao = {
           ...novoProduto,
@@ -186,14 +199,17 @@ export class ProdutosPageComponent implements OnInit {
         };
         await this.produtoService.atualizar(produto.id, atualizacao);
       } else {
-        await this.produtoService.adicionar(novoProduto);
+        // a cópia leva a foto do original (o formulário só manda a foto do produto à venda)
+        await this.produtoService.adicionar(
+          modelo && novoProduto.fotoUrl === undefined ? { ...novoProduto, fotoUrl: modelo.fotoUrl ?? null } : novoProduto,
+        );
       }
       this.filtroAtual.set(TODAS_AS_CATEGORIAS);
       // mostra a aba do item salvo (Serviços ou Produtos)
       this.tipoAtual.set(novoProduto.produtoAVenda ? 'produtos' : 'servicos');
       this.fecharModal();
       const termo = novoProduto.produtoAVenda ? 'Produto' : capitalizar(this.conteudo().termoItem);
-      this.toastService.mostrar(produto ? `${termo} atualizado` : `${termo} adicionado`);
+      this.toastService.mostrar(produto ? `${termo} atualizado` : modelo ? `${termo} duplicado` : `${termo} adicionado`);
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível salvar. Tente de novo.'));
     } finally {

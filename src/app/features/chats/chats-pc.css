@@ -1,0 +1,65 @@
+/*
+ * Computador: o topo azul alinhado à coluna central, com as abas à direita do título; as conversas esperando você
+ * em duas colunas de cards e as em andamento num painel branco. No celular nada muda.
+ */
+@media (min-width: 1024px) {
+  .topo-azul {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 12px 32px;
+    padding: 18px var(--margem-pc) 26px;
+  }
+
+  .topo-azul__linha {
+    grid-column: 1 / -1;
+  }
+
+  .topo-azul__titulo {
+    font-size: 32px;
+  }
+
+  .topo-azul__sub {
+    font-size: 15px;
+  }
+
+  .topo-azul .abas {
+    grid-column: 2;
+  }
+
+  .lista {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 20px;
+  }
+
+  .lista > app-estado-vazio {
+    grid-column: 1 / -1;
+  }
+
+  app-conversa-aguardando-card {
+    border-color: var(--cor-borda-suave);
+    background: var(--cor-fundo);
+    box-shadow: var(--sombra-card);
+  }
+
+  .conversas.corpo-pc {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 48px;
+    margin: 32px var(--margem-pc) 64px;
+    padding: 6px 28px;
+    border: 1px solid var(--cor-borda-suave);
+    border-radius: var(--raio-grande);
+    background: var(--cor-fundo);
+  }
+
+  .conversas > app-estado-vazio {
+    grid-column: 1 / -1;
+  }
+
+  .conversa {
+    padding: 16px 0;
+  }
+}

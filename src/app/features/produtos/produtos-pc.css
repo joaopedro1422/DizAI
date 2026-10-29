@@ -1,0 +1,65 @@
+/*
+ * Computador: os botões de adicionar ficam à direita do título, as abas e as categorias alinhadas à coluna central
+ * e os itens numa grade de cards. No celular nada muda (tudo aqui fica dentro do @media).
+ */
+@media (min-width: 1024px) {
+  .acoes-cadastro {
+    display: flex;
+    gap: 10px;
+  }
+
+  app-cabecalho-pagina .btn--acao-principal {
+    width: auto;
+    min-height: 46px;
+    padding-inline: 22px;
+  }
+
+  .tipos {
+    width: fit-content;
+    margin: 28px var(--margem-pc) 0;
+  }
+
+  .tipos__aba {
+    padding: 0 22px;
+    white-space: nowrap;
+  }
+
+  .filtros {
+    flex-wrap: wrap;
+    overflow: visible;
+    margin: 0 var(--margem-pc);
+    padding: 24px 0 0;
+    border-bottom: none;
+  }
+
+  .tipos + .filtros {
+    padding-top: 16px;
+  }
+
+  .lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    align-items: start;
+    gap: 16px;
+  }
+
+  .tipos ~ .lista,
+  .filtros ~ .lista {
+    padding-top: 20px;
+  }
+
+  .lista > app-carregando,
+  .lista > app-estado-vazio {
+    grid-column: 1 / -1;
+  }
+
+  app-produto-card {
+    border-color: var(--cor-borda-suave);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  app-produto-card:hover {
+    border-color: var(--cor-borda);
+    box-shadow: 0 6px 18px -8px rgba(15, 23, 42, 0.14);
+  }
+}

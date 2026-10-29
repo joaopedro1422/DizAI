@@ -28,7 +28,7 @@
   /* Estados */
   --cor-sucesso: #3A8E19;
   --cor-sucesso-hover: #317A15;
-  --cor-ativo: #2F7A4F;
+  --cor-ativo: #318338;
   --cor-alerta: #C68A12;
   --cor-erro: #B3261E;
 
@@ -542,5 +542,41 @@ textarea.campo__entrada {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Telas do painel no computador (classe tela-pc no contêiner da tela)
+   A tela usa a largura toda sobre o fundo cinza claro e o conteúdo fica numa coluna central de até 1120 px:
+   --margem-pc é a margem lateral que alinha cabeçalho, filtros e conteúdo. No celular nada muda.
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 1024px) {
+  .tela-app.tela-pc {
+    --largura-tela-app: none;
+    --margem-pc: max(40px, calc((100% - 1120px) / 2));
+    border-left: none;
+    border-right: none;
+    background: var(--cor-fundo-suave);
+  }
+
+  .tela-app.tela-pc .corpo-pc {
+    padding: 32px var(--margem-pc) 64px;
+  }
+
+  /* barra de salvar alterações: na largura toda, com os botões à direita, alinhados à coluna central */
+  body:has(.tela-pc) .barra-fixa-inferior {
+    max-width: none;
+    justify-content: flex-end;
+    padding-inline: max(40px, calc((100% - 1120px) / 2));
+  }
+
+  body:has(.tela-pc) .barra-fixa-inferior > .btn {
+    flex: none;
+    min-width: 140px;
+  }
+
+  body:has(.tela-pc) .barra-fixa-inferior > .btn--primario {
+    min-width: 220px;
   }
 }

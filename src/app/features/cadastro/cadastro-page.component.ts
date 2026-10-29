@@ -7,6 +7,7 @@ import { AutenticacaoService } from '../../core/auth/autenticacao.service';
 import { ToastService } from '../../core/services/toast.service';
 import { CarregandoComponent } from '../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../shared/components/icone/icone.component';
+import { PainelMarcaComponent } from '../../shared/components/painel-marca/painel-marca.component';
 import { criarFormularioCadastro } from './cadastro-formulario';
 import { EtapaDadosNegocioComponent } from './etapas/etapa-dados-negocio.component';
 import { EtapaAcessoComponent } from './etapas/etapa-acesso.component';
@@ -20,6 +21,7 @@ const TOTAL_ETAPAS = 3;
     ReactiveFormsModule,
     RouterLink,
     IconeComponent,
+    PainelMarcaComponent,
     EtapaDadosNegocioComponent,
     EtapaRamoComponent,
     EtapaAcessoComponent,

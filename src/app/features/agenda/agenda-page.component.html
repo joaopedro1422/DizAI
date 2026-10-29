@@ -35,6 +35,7 @@
     <div class="topo-azul__linha">
       <a class="topo-azul__voltar" [routerLink]="rotaInicio()" aria-label="Voltar para o painel">
         <app-icone nome="voltar" [tamanho]="22" />
+        <span class="topo-azul__voltar-texto" aria-hidden="true">Voltar</span>
       </a>
       <!-- link da agenda online: abre a página pública; o botão ao lado copia -->
       <span class="link-topo">
@@ -299,10 +300,10 @@
                     <!-- a régua de horas fica parada à esquerda ao rolar para o lado (vira um card com sombra) -->
                     <div class="colunas__regua" aria-hidden="true">
                       @for (marca of linha.marcas; track marca.texto) {
-                        <span class="linha__hora" [class.linha__hora--meia]="!marca.cheia" [class.linha__hora--destaque]="marca.destaque" [style.top.px]="marca.topo">{{ marca.texto }}</span>
+                        <span class="linha__hora" [class.linha__hora--meia]="!marca.cheia" [class.linha__hora--destaque]="marca.destaque" [class.linha__hora--foco]="horaEmFoco() === marca.topo" [style.top.px]="marca.topo" (mouseenter)="horaEmFoco.set(marca.topo)" (mouseleave)="horaEmFoco.set(null)">{{ marca.texto }}</span>
                       }
                       @for (extra of linha.marcasExtras; track extra.texto) {
-                        <span class="linha__hora linha__hora--extra" [style.top.px]="extra.topo">{{ extra.texto }}</span>
+                        <span class="linha__hora linha__hora--extra" [class.linha__hora--foco]="horaEmFoco() === extra.topo" [style.top.px]="extra.topo" (mouseenter)="horaEmFoco.set(extra.topo)" (mouseleave)="horaEmFoco.set(null)">{{ extra.texto }}</span>
                       }
                       @if (linha.agora; as agora) {
                         <span class="linha__agora-hora" [style.top.px]="agora.topo">{{ agora.texto }}</span>
@@ -325,6 +326,9 @@
                     @if (linha.agora; as agora) {
                       <div #linhaAgora class="linha__agora" [style.top.px]="agora.topo" aria-hidden="true"></div>
                     }
+                    @if (horaEmFoco(); as topo) {
+                      <div class="linha__foco" [style.top.px]="topo" aria-hidden="true"></div>
+                    }
                   </div>
                 </div>
               </div>
@@ -341,11 +345,14 @@
             <div class="linha" [style.height.px]="linha.altura" role="list" aria-label="Horários do dia">
               @for (marca of linha.marcas; track marca.texto) {
                 <div class="linha__marca" [class.linha__marca--meia]="!marca.cheia" [style.top.px]="marca.topo" aria-hidden="true">
-                  <span class="linha__hora" [class.linha__hora--destaque]="marca.destaque">{{ marca.texto }}</span>
+                  <span class="linha__hora" [class.linha__hora--destaque]="marca.destaque" [class.linha__hora--foco]="horaEmFoco() === marca.topo" (mouseenter)="horaEmFoco.set(marca.topo)" (mouseleave)="horaEmFoco.set(null)">{{ marca.texto }}</span>
                 </div>
               }
               @for (extra of linha.marcasExtras; track extra.texto) {
-                <span class="linha__hora linha__hora--extra" [style.top.px]="extra.topo" aria-hidden="true">{{ extra.texto }}</span>
+                <span class="linha__hora linha__hora--extra" [class.linha__hora--foco]="horaEmFoco() === extra.topo" [style.top.px]="extra.topo" aria-hidden="true" (mouseenter)="horaEmFoco.set(extra.topo)" (mouseleave)="horaEmFoco.set(null)">{{ extra.texto }}</span>
+              }
+              @if (horaEmFoco(); as topo) {
+                <div class="linha__foco" [style.top.px]="topo" aria-hidden="true"></div>
               }
 
               @for (bloco of linha.blocos; track bloco.inicio + bloco.tipo) {

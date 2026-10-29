@@ -252,27 +252,115 @@
 /* Atalho explícito para o modal de dados da loja ------------------------- */
 
 
-/* Computador: o cabeçalho ocupa a largura toda; identidade e etiquetas à esquerda, status à direita.
-   No celular nada muda (tudo aqui fica dentro do @media). */
+/*
+ * Computador: uma faixa só, sem os cantos arredondados do celular. À esquerda a foto, o nome e o ramo (em texto
+ * corrido, não em etiquetas); à direita o status do assistente numa tira horizontal e o menu da conta.
+ * A largura do conteúdo é a mesma dos cards do painel (1200 px). No celular nada muda.
+ */
 @media (min-width: 1024px) {
   :host {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
-    align-content: center;
-    column-gap: 40px;
-    row-gap: 14px;
-    padding: 32px max(40px, calc((100% - 1200px) / 2)) 32px;
-    border-radius: 0 0 32px 32px;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      'avatar textos status menu'
+      'avatar etiquetas status menu';
+    align-items: center;
+    gap: 4px 20px;
+    padding: 26px max(40px, calc((100% - 1200px) / 2));
+    border-radius: 0;
+    box-shadow: 0 1px 0 var(--cor-borda-suave);
   }
 
-  .identidade,
+  .identidade {
+    display: contents;
+  }
+
+  .avatar {
+    grid-area: avatar;
+  }
+
+  .avatar__inicial,
+  .avatar__foto {
+    width: 72px;
+    height: 72px;
+  }
+
+  .identidade__textos {
+    grid-area: textos;
+    align-self: end;
+  }
+
+  .identidade__nome {
+    font-size: 30px;
+  }
+
+  .identidade__descricao {
+    display: none;
+  }
+
+  .identidade app-menu-acoes {
+    grid-area: menu;
+    margin-right: -8px;
+  }
+
+  /* ramo e formas de atendimento: "Doces e salgados · Retirada no local · Entrega" */
   .etiquetas {
-    grid-column: 1;
+    grid-area: etiquetas;
+    align-self: start;
+    gap: 0;
   }
 
+  .etiqueta {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--cor-texto-suave);
+    font-size: 13.5px;
+    font-weight: 500;
+  }
+
+  .etiqueta + .etiqueta::before {
+    content: '·';
+    margin: 0 8px;
+    color: var(--cor-borda-forte);
+  }
+
+  /* status, respostas automáticas e link público lado a lado */
   .cartao-status {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    align-self: center;
+    grid-area: status;
+    flex-direction: row;
+    align-items: stretch;
+    margin-left: 12px;
+    border-color: var(--cor-borda-suave);
+    box-shadow: var(--sombra-card);
+  }
+
+  .status {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 3px;
+    padding: 10px 18px;
+    border-bottom: none;
+    border-right: 1px solid var(--cor-borda-suave);
+  }
+
+  .status__telefone {
+    padding-left: 18px;
+  }
+
+  .ia-ativa {
+    gap: 16px;
+    padding: 10px 18px;
+    border-bottom: none;
+    border-right: 1px solid var(--cor-borda-suave);
+  }
+
+  .ia-ativa__descricao {
+    display: none;
+  }
+
+  .link-publico {
+    width: clamp(200px, 20vw, 280px);
   }
 }

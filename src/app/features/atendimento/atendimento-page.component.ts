@@ -25,6 +25,7 @@ import { RegrasNegocioComponent } from './regras-negocio/regras-negocio.componen
 import { TipoVideoAtendimento, VideoAtendimentoComponent } from './video-atendimento/video-atendimento.component';
 import { DicasVistasService } from '../../core/services/dicas-vistas.service';
 import { TesteAtendimentoComponent } from '../painel/teste-atendimento/teste-atendimento.component';
+import { MensagensRepasseComponent } from './mensagens-repasse/mensagens-repasse.component';
 import { catalogosIniciais, criarFormularioConfiguracoes } from '../painel/painel-formulario';
 
 /**
@@ -46,9 +47,10 @@ import { catalogosIniciais, criarFormularioConfiguracoes } from '../painel/paine
     EditarPerfilComponent,
     RegrasNegocioComponent,
     VideoAtendimentoComponent,
+    MensagensRepasseComponent,
   ],
   templateUrl: './atendimento-page.component.html',
-  styleUrl: './atendimento-page.component.css',
+  styleUrls: ['./atendimento-page.component.css', './atendimento-pc.css'],
 })
 export class AtendimentoPageComponent implements OnInit {
   private readonly perfilService = inject(PerfilService);

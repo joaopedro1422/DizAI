@@ -35,6 +35,11 @@
   color: var(--cor-texto-secundario);
 }
 
+/* contêiner da lista: só existe para o layout do computador (contatos-ignorados-pc.css) */
+.contatos-ignorados__lista {
+  display: contents;
+}
+
 .contato {
   display: flex;
   align-items: center;

@@ -1,4 +1,4 @@
-<div class="tela-app">
+<div class="tela-app tela-pc">
   <app-cabecalho-pagina titulo="Contatos a ignorar" [subtitulo]="subtitulo()" [comDivisor]="true">
     <div class="acoes">
       <button type="button" class="btn btn--primario btn--bloco btn--acao-principal" (click)="abrirModal('whatsapp')">
@@ -12,7 +12,7 @@
     </div>
   </app-cabecalho-pagina>
 
-  <main class="contatos-ignorados">
+  <main class="contatos-ignorados corpo-pc">
     <section class="explicacao caixa-destaque" aria-labelledby="explicacao-titulo">
       <h2 id="explicacao-titulo" class="explicacao__titulo">Usa o mesmo número para a vida pessoal e o trabalho?</h2>
       <p class="explicacao__texto">
@@ -24,6 +24,7 @@
     @if (carregando()) {
       <app-carregando texto="Carregando seus contatos…" />
     } @else {
+      <div class="contatos-ignorados__lista">
       @for (contato of contatos(); track contato.id) {
         <article class="contato">
           <app-avatar [nome]="contato.nome || '#'" [tamanho]="42" />
@@ -59,6 +60,7 @@
           descricao="Por enquanto o assistente responde todo mundo que mandar mensagem."
         />
       }
+      </div>
 
       <p class="contatos-ignorados__nota">
         <app-icone nome="escudo" [tamanho]="16" />

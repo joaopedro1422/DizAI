@@ -41,6 +41,10 @@ export function criarFormularioConfiguracoes(fb: FormBuilder, valores: Configura
       /** false = só no horário de funcionamento cadastrado em Dados da loja. */
       confirmaQualquerHora: fb.nonNullable.control<boolean>(valores.confirmaQualquerHora ?? true),
       linkAgendamentoExterno: [valores.linkAgendamentoExterno ?? '', [urlValida, Validators.maxLength(500)]],
+      /** Mensagens de passagem para o dono (vazio = a de sempre). */
+      mensagemRepasseNaHora: [valores.mensagemRepasseNaHora ?? '', Validators.maxLength(200)],
+      mensagemRepassePedido: [valores.mensagemRepassePedido ?? '', Validators.maxLength(200)],
+      mensagemSemResposta: [valores.mensagemSemResposta ?? '', Validators.maxLength(200)],
     },
     { validators: [linkObrigatorioNoModoExterno, linkAgendamentoNoModoExterno] },
   );

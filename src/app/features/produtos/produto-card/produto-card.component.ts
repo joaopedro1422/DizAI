@@ -8,7 +8,7 @@ import { IconeComponent } from '../../../shared/components/icone/icone.component
 import { ItemMenuAcoes, MenuAcoesComponent } from '../../../shared/components/menu-acoes/menu-acoes.component';
 import { PrecoProdutoPipe } from '../../../shared/pipes/preco-produto.pipe';
 
-type AcaoProduto = 'editar' | 'excluir';
+type AcaoProduto = 'editar' | 'duplicar' | 'excluir';
 
 @Component({
   selector: 'app-produto-card',
@@ -145,10 +145,13 @@ type AcaoProduto = 'editar' | 'excluir';
 export class ProdutoCardComponent {
   readonly produto = input.required<Produto>();
   readonly editar = output<Produto>();
+  /** Cadastrar um novo a partir deste (o formulário abre preenchido com os dados dele). */
+  readonly duplicar = output<Produto>();
   readonly excluir = output<Produto>();
 
   protected readonly itensMenu: ItemMenuAcoes<AcaoProduto>[] = [
     { id: 'editar', rotulo: 'Editar', icone: 'editar' },
+    { id: 'duplicar', rotulo: 'Duplicar', icone: 'copiar' },
     { id: 'excluir', rotulo: 'Excluir', icone: 'lixeira', perigo: true },
   ];
   protected readonly resumoOpcoes = computed(() => {
@@ -164,6 +167,8 @@ export class ProdutoCardComponent {
   protected aoEscolherAcao(acao: AcaoProduto): void {
     if (acao === 'editar') {
       this.editar.emit(this.produto());
+    } else if (acao === 'duplicar') {
+      this.duplicar.emit(this.produto());
     } else {
       this.excluir.emit(this.produto());
     }

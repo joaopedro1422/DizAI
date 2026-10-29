@@ -1,6 +1,13 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { IconeComponent } from '../icone/icone.component';
+import { NomeIcone } from '../icone/icones';
+
+/** Selo ao lado do título (ex.: "Agenda" nos serviços presenciais). */
+export interface EtiquetaOpcao {
+  texto: string;
+  icone: NomeIcone;
+}
 
 /**
  * Opção de escolha única em formato de card (título + descrição + marcador).
@@ -25,6 +32,12 @@ import { IconeComponent } from '../icone/icone.component';
           {{ titulo() }}
           @if (destaque()) {
             <app-icone class="opcao__destaque" nome="brilho" [tamanho]="16" [espessura]="2" />
+          }
+          @if (etiqueta(); as selo) {
+            <span class="opcao__etiqueta">
+              <app-icone [nome]="selo.icone" [tamanho]="12" [espessura]="2.2" />
+              {{ selo.texto }}
+            </span>
           }
         </span>
         @if (descricao()) {
@@ -84,6 +97,20 @@ import { IconeComponent } from '../icone/icone.component';
       vertical-align: -2px;
     }
 
+    .opcao__etiqueta {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 8px;
+      padding: 2px 8px;
+      border-radius: var(--raio-pilula);
+      background: var(--cor-primaria-clara);
+      color: var(--cor-primaria);
+      font-size: 11.5px;
+      font-weight: 700;
+      vertical-align: 1px;
+    }
+
     .opcao__textos {
       display: flex;
       flex-direction: column;
@@ -107,6 +134,7 @@ export class OpcaoCardComponent {
   /** Mostra a estrelinha ao lado do título (opção especial, ex.: agendamento automático). */
   readonly destaque = input(false);
   readonly descricao = input('');
+  readonly etiqueta = input<EtiquetaOpcao | null>(null);
   readonly selecionado = input(false);
   readonly selecionar = output<void>();
 }

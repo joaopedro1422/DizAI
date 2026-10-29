@@ -469,7 +469,7 @@ a.faixa-aviso {
   justify-content: flex-start;
   gap: 1px;
   padding: 6px 8px 6px 11px;
-  border-left: 3px solid #A9B3C6;
+  border-left: 4px solid #A9B3C6;
   background: #F1F3F7;
   color: var(--cor-texto);
 }
@@ -900,7 +900,8 @@ a.faixa-aviso {
   .agenda-principal {
     min-height: calc(100dvh - 190px);
     padding: 20px 24px 28px;
-    border: 1px solid var(--cor-borda-suave);
+    border-radius: 0px !important;
+    border: 1.5px solid var(--cor-borda-suave);
     border-radius: var(--raio-grande);
     background: var(--cor-fundo);
     box-shadow: 0 10px 30px rgba(15, 23, 42, 0.09), 0 2px 6px rgba(15, 23, 42, 0.06);
@@ -913,25 +914,41 @@ a.faixa-aviso {
 
 @media (min-width: 1024px) {
   .agendamentos {
-    grid-template-columns: 340px minmax(0, 1fr);
-    gap: 32px;
+    /* coluna da esquerda um pouco menor (o zoom abaixo encolhe o calendário e os botões na mesma proporção):
+       sobra mais espaço para os agendamentos */
+    grid-template-columns: 285px minmax(0, 1fr);
+    gap: 24px;
+    border-radius: 0px !important;
+  }
+  .agendamentos{
+    padding-right: 0px !important;
+        padding-top: 0px !important;
+  }
+  .agenda-lateral {
+    position: sticky;
+
+    top: 16px;
+    align-self: start;   /* sem esticar: assim ela fica presa no topo ao rolar a página */
+    zoom: 0.84;          /* 340 px de desenho em 285 px de coluna: tudo menor, na mesma proporção */
+  }
+
+  /* os agendamentos ocupam a altura inteira da tela, abaixo do topo azul, até o fim */
+  .tela-agenda {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tela-agenda > .agendamentos {
+    flex: 1;
+    padding-bottom: 0;
+  }
+
+  .tela-agenda > .agendamentos > .agenda-principal {
+    align-self: stretch;   /* a grade usa align-items: start; aqui a área da direita vai até o fim da tela */
+    border-left-color: #DCE0E7;   /* o limite entre a coluna da esquerda e os agendamentos, um pouco mais cinza */
   }
 }
 
-/* Computador largo: os cards do dia em colunas */
-@media (min-width: 1280px) {
-  .lista-horarios {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
-  }
-}
-
-@media (min-width: 1680px) {
-  .lista-horarios {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
 
 /* "Números": botão no topo azul, ao lado do título (fora das abas) */
 .botao-numeros {

@@ -1,4 +1,4 @@
-<div class="tela-app tela-admin">
+<div class="tela-app tela-admin tela-pc">
   <app-cabecalho-pagina titulo="Gerenciamento" [subtitulo]="subtitulo()" [comDivisor]="true">
     <button
       acoesTopo
@@ -12,7 +12,7 @@
     </button>
   </app-cabecalho-pagina>
 
-  <main class="conteudo-tela admin">
+  <main class="conteudo-tela admin corpo-pc">
     @if (senhaGerada(); as gerada) {
       <section class="senha-gerada" aria-labelledby="titulo-senha-gerada">
         <h2 id="titulo-senha-gerada" class="senha-gerada__titulo">Senha temporária de {{ gerada.whatsapp }}</h2>

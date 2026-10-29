@@ -1,127 +1,151 @@
-.conteudo {
+/* Celular (base). O computador fica em conectar-whatsapp-pc.css. */
+
+/* Topo azul: subtítulo e a trilha dos passos ------------------------------- */
+
+.topo-conectar {
+  padding-bottom: 20px;
+}
+
+.topo-conectar__conteudo {
   display: flex;
   flex-direction: column;
-  gap: 28px;
-  padding-top: 24px;
+  gap: 12px;
 }
 
-/* Já conectado ------------------------------------------------------------- */
-
-.conectado {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px;
-  border-radius: var(--raio-medio);
-  background: #E7F4E1;
-}
-
-.conectado__icone {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--cor-sucesso);
-  color: #FFFFFF;
-}
-
-.conectado__textos {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.topo-conectar__subtitulo {
+  margin-top: 4px;
   font-size: 14px;
   line-height: 1.5;
+  color: var(--cor-texto-sobre-escuro);
 }
 
-/* Progresso do assistente --------------------------------------------------- */
-
-.progresso {
+.trilha {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-top: 6px;
 }
 
-.progresso__textos {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 28px;
-  font-size: 13px;
+.trilha__passo {
+  font-size: 12px;
   font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.trilha__segmentos {
+  display: flex;
+  gap: 4px;
+}
+
+.trilha__segmento {
+  flex: 1;
+  height: 4px;
+  border-radius: var(--raio-pilula);
+  background: rgba(255, 255, 255, 0.22);
+  transition: background-color 0.3s ease;
+}
+
+.trilha__segmento--feito {
+  background: #ffffff;
+}
+
+.trilha__proximo {
+  font-size: 13px;
+  color: var(--cor-texto-sobre-escuro);
+}
+
+/* Conteúdo ------------------------------------------------------------------ */
+
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 28px 20px 40px;
+}
+
+.lateral {
+  display: none;
+}
+
+.principal {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Já conectado */
+.conectado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0 8px;
+  text-align: center;
+}
+
+.conectado__icone {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 6px;
+  border-radius: 50%;
+  background: var(--cor-sucesso);
+  box-shadow: 0 0 0 8px #E7F4E1;
+  color: #ffffff;
+}
+
+.conectado__titulo {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.conectado__texto {
+  font-size: 15px;
+  line-height: 1.55;
   color: var(--cor-texto-secundario);
 }
 
-.progresso__voltar {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 6px;
-  border: none;
-  background: none;
-  color: var(--cor-primaria);
-  font-size: 14px;
-  font-weight: 700;
+.conectado .btn {
+  margin-top: 12px;
 }
 
-.progresso__voltar:disabled {
-  opacity: 0.4;
-}
-
-.progresso__trilho {
-  height: 6px;
-  border-radius: 6px;
-  background: var(--cor-borda);
-  overflow: hidden;
-}
-
-.progresso__barra {
-  display: block;
-  height: 100%;
-  border-radius: 6px;
-  background: var(--cor-primaria);
-  transition: width 0.3s ease;
-}
-
-/* Etapa atual (um cartão por vez) ------------------------------------------- */
+/* Etapa atual --------------------------------------------------------------- */
 
 .etapa {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
   animation: surgir-etapa 0.25s ease-out both;
 }
 
 @keyframes surgir-etapa {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
 }
 
-.etapa__numero {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--cor-primaria);
-  color: #FFFFFF;
-  font-size: 18px;
+/* no celular o "Passo X de Y" já está no topo azul */
+.etapa__sobretitulo {
+  display: none;
+  font-size: 12px;
   font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cor-primaria);
 }
 
 .etapa__titulo {
-  font-family: var(--fonte-titulo);
-  font-size: 24px;
-  font-weight: 500;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.22;
 }
 
 .etapa__texto {
-  font-size: 16px;
+  font-size: 15.5px;
   line-height: 1.6;
   color: var(--cor-texto-secundario);
 }
@@ -129,9 +153,11 @@
 .etapa__atencao {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
+  gap: 10px;
+  margin-top: 4px;
   padding: 12px 14px;
-  border-radius: var(--raio-pequeno);
+  border-left: 3px solid var(--cor-alerta);
+  border-radius: 4px var(--raio-pequeno) var(--raio-pequeno) 4px;
   background: var(--cor-ambar-fundo);
   color: var(--cor-ambar);
   font-size: 14px;
@@ -141,85 +167,125 @@
 
 .etapa__atencao app-icone {
   flex: none;
-  margin-top: 1px;
 }
 
-.etapa .btn {
-  margin-top: 8px;
+.etapa__acoes {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.etapa__acoes .btn {
   gap: 8px;
 }
 
-/* Pergunta inicial ------------------------------------------------------------ */
+.etapa__voltar {
+  flex: none;
+  padding-inline: 16px;
+}
 
+.etapa__avancar {
+  flex: 1;
+}
+
+.etapa__voltar-texto {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: none;
+  background: none;
+  color: var(--cor-texto-suave);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.etapa__voltar-texto:hover:not(:disabled) {
+  color: var(--cor-primaria);
+}
+
+.etapa__voltar-texto:disabled {
+  opacity: 0.4;
+}
+
+/* Pergunta inicial: o ícone do app ajuda a reconhecer qual é */
 .opcoes {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 4px;
+  margin-top: 8px;
 }
 
 .opcao {
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 18px 16px;
+  padding: 16px;
   border: 1px solid var(--cor-borda);
   border-radius: var(--raio-medio);
   background: var(--cor-fundo);
   color: var(--cor-texto);
   text-align: left;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 
 .opcao:hover,
 .opcao:focus-visible {
   border-color: var(--cor-primaria);
-  background: var(--cor-selecionado);
+  box-shadow: 0 6px 18px -10px rgba(30, 58, 114, 0.45);
 }
 
-.opcao__icone {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.opcao__app {
+  display: grid;
+  place-items: center;
   flex: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: var(--cor-primaria-clara);
-  color: var(--cor-primaria);
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: #1FAF55;
+  color: #1FAF55;
+}
+
+.opcao__app--comum {
+  background: #25D366;
 }
 
 .opcao__textos {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .opcao__titulo {
-  font-size: 16px;
+  font-size: 15.5px;
   line-height: 1.3;
 }
 
 .opcao__descricao {
   font-size: 13px;
   line-height: 1.45;
-  color: var(--cor-texto-secundario);
+  color: var(--cor-texto-suave);
 }
 
 .opcao__seta {
   flex: none;
-  color: var(--cor-texto-suave);
+  color: var(--cor-borda-forte);
+  transition: color 0.15s ease, transform 0.15s ease;
 }
 
-/* Checklist "tenha em mãos" --------------------------------------------------- */
+.opcao:hover .opcao__seta {
+  color: var(--cor-primaria);
+  transform: translateX(2px);
+}
 
+/* "Tenha em mãos": uma lista com divisórias */
 .checklist {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 0;
+  margin: 4px 0 0;
   padding: 0;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
   list-style: none;
 }
 
@@ -227,76 +293,108 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 15px;
+  padding: 14px;
+  font-size: 14.5px;
   line-height: 1.5;
 }
 
+.checklist__item + .checklist__item {
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
 .checklist__icone {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   flex: none;
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  background: var(--cor-fundo-suave);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--cor-primaria-clara);
   color: var(--cor-primaria);
 }
 
-/* Botão da Meta e o que acontece na janela ------------------------------------ */
-
+/* Botão da Meta (azul do Facebook) e o que acontece na janela */
 .botao-meta {
-  min-height: 60px;
-  font-size: 17px;
+  gap: 10px;
+  min-height: 58px;
+  margin-top: 8px;
+  border: none;
+  background: #1877F2;
+  color: #ffffff;
+  font-size: 16.5px;
+}
+
+.botao-meta:hover:not(:disabled) {
+  background: #166FE0;
+}
+
+.botao-meta__f {
+  flex: none;
 }
 
 .janela-meta {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 18px;
-  border-radius: var(--raio-medio);
-  background: var(--cor-fundo-suave);
+  gap: 16px;
+  margin-top: 12px;
 }
 
 .janela-meta__titulo {
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--cor-texto-suave);
 }
 
+/* linha do tempo: os números ligados por um fio */
 .janela-meta__passos {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .janela-meta__passo {
+  position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 14px;
+  padding-bottom: 18px;
+}
+
+.janela-meta__passo:last-child {
+  padding-bottom: 0;
+}
+
+.janela-meta__passo:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: 30px;
+  bottom: 2px;
+  left: 13px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--cor-borda);
 }
 
 .janela-meta__numero {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   flex: none;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  border: 2px solid var(--cor-primaria);
+  background: var(--cor-primaria-clara);
   color: var(--cor-primaria);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .janela-meta__textos {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  padding-top: 3px;
   font-size: 14px;
   line-height: 1.5;
   color: var(--cor-texto-secundario);
@@ -306,55 +404,85 @@
   color: var(--cor-texto);
 }
 
-/* Se algo der errado ---------------------------------------------------------- */
+/* Se algo der errado: abre e fecha */
+.problemas {
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+}
 
 .problemas__titulo {
-  cursor: pointer;
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  font-size: 14.5px;
   font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+}
+
+.problemas__titulo::-webkit-details-marker {
+  display: none;
+}
+
+.problemas__titulo app-icone:first-child {
   color: var(--cor-primaria);
+}
+
+.problemas__seta {
+  margin-left: auto;
+  color: var(--cor-texto-suave);
+  transition: transform 0.2s ease;
+}
+
+.problemas[open] .problemas__seta {
+  transform: rotate(180deg);
 }
 
 .problemas__lista {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin: 10px 0 0;
-  padding-left: 18px;
+  margin: 0;
+  padding: 0 16px 16px 44px;
   font-size: 14px;
   line-height: 1.55;
   color: var(--cor-texto-secundario);
 }
 
-/* Atendimento individual --------------------------------------------------- */
+/* Atendimento individual ------------------------------------------------------ */
 
 .ajuda {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: 10px;
-  padding: 20px;
-  border: 1px solid var(--cor-borda);
+  padding: 18px;
   border-radius: var(--raio-grande);
   background: var(--cor-fundo-suave);
 }
 
-.ajuda__icone {
+.ajuda__cabecalho {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: var(--cor-primaria-clara);
+  gap: 12px;
+}
+
+.ajuda__icone {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--cor-fundo);
   color: var(--cor-primaria);
 }
 
 .ajuda__titulo {
-  font-family: var(--fonte-titulo);
-  font-size: 20px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.3;
 }
 
 .ajuda__texto {
@@ -364,7 +492,9 @@
 }
 
 .ajuda .btn {
-  margin-top: 6px;
+  gap: 8px;
+  margin-top: 4px;
+  background: var(--cor-fundo);
 }
 
 .ajuda__email {
@@ -375,17 +505,17 @@
 
 /* Atalho de desenvolvimento (não aparece no build de produção) */
 .dev {
+  padding: 14px 16px;
   border: 1.5px dashed var(--cor-borda-forte);
   border-radius: var(--raio-medio);
-  padding: 14px 16px;
   background: var(--cor-fundo-tracejado);
 }
 
 .dev__titulo {
-  cursor: pointer;
   font-size: 14px;
   font-weight: 700;
   color: var(--cor-texto-secundario);
+  cursor: pointer;
 }
 
 .dev__texto {

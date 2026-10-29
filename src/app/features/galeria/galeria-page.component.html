@@ -1,4 +1,4 @@
-<div class="tela-app">
+<div class="tela-app tela-pc">
   <app-cabecalho-pagina titulo="Galeria" [subtitulo]="resumo()" [comDivisor]="true">
     <button acaoTitulo type="button" class="botao-cor" (click)="abrirConfiguracaoVitrine()">
       <span class="botao-cor__amostra" [style.background]="corPagina()" aria-hidden="true"></span>
@@ -27,7 +27,7 @@
     </div>
   </app-cabecalho-pagina>
 
-  <main class="lista conteudo-tela" [class.lista--com-barra]="temAlteracoesOrdem()">
+  <main class="lista conteudo-tela corpo-pc" [class.lista--com-barra]="temAlteracoesOrdem()">
     @if (visitas()) {
       <p class="visitas">
         <app-icone nome="olho" [tamanho]="15" [espessura]="2" />

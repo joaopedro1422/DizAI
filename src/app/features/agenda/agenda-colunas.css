@@ -6,9 +6,10 @@
 .colunas {
   --largura-minima-coluna: 320px;
   --espaco-entre-colunas: 10px;
-  /* rola sozinha nos dois sentidos: assim os nomes ficam presos no topo e a régua de horas presa à esquerda */
-  overflow: auto;
-  max-height: max(420px, calc(100vh - 150px));
+  /* para cima e para baixo rola a própria página; aqui dentro só a rolagem para o lado (muitos profissionais),
+     com a régua de horas presa à esquerda */
+  overflow-x: auto;
+  overflow-y: hidden;
   margin: 8px 0 4px;
   padding-bottom: 6px;   /* espaço para a barra de rolagem não encostar nos cards */
 }
@@ -191,5 +192,48 @@
   .linha__hora {
     width: 42px;
     font-size: 12.5px;
+  }
+}
+
+/* Mouse num horário da régua: uma linha atravessa a agenda inteira (por cima dos cards e de todas as colunas),
+   para ver onde aquele horário começa nos profissionais mais à direita. Some ao tirar o mouse. */
+.linha__hora {
+  cursor: default;
+  transition: color 0.12s ease;
+}
+
+.linha__hora--foco,
+.colunas__regua .linha__hora--foco {
+  color: var(--cor-primaria);
+  font-weight: 800;
+}
+
+.linha__foco {
+  position: absolute;
+  z-index: 6;
+  left: var(--coluna-horas);
+  right: 0;
+  height: 0;
+  border-top: 1.5px solid var(--cor-primaria);
+  opacity: 0.75;
+  pointer-events: none;
+  animation: linha-foco-entrar 0.12s ease-out;
+}
+
+/* o começo da linha, junto da régua */
+.linha__foco::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: -4.5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cor-primaria);
+}
+
+@keyframes linha-foco-entrar {
+  from {
+    opacity: 0;
   }
 }

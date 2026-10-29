@@ -10,6 +10,7 @@ import { BottomSheetComponent } from '../../shared/components/bottom-sheet/botto
 import { CarregandoComponent } from '../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { LogoComponent } from '../../shared/components/logo/logo.component';
+import { PainelMarcaComponent } from '../../shared/components/painel-marca/painel-marca.component';
 import { EsqueciSenhaComponent } from './esqueci-senha/esqueci-senha.component';
 
 /** Login de quem já tem conta. */
@@ -20,6 +21,7 @@ import { EsqueciSenhaComponent } from './esqueci-senha/esqueci-senha.component';
     RouterLink,
     IconeComponent,
     LogoComponent,
+    PainelMarcaComponent,
     CarregandoComponent,
     BottomSheetComponent,
     EsqueciSenhaComponent,

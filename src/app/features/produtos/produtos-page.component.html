@@ -1,4 +1,4 @@
-<div class="tela-app">
+<div class="tela-app tela-pc">
   <app-cabecalho-pagina [titulo]="conteudo().tituloItens" [subtitulo]="subtitulo()">
     <app-botao-video acoesTopo (abrir)="mostrarVideo.set(true)" />
     @if (ramoServico()) {
@@ -44,12 +44,17 @@
     </div>
   }
 
-  <main class="lista conteudo-tela">
+  <main class="lista conteudo-tela corpo-pc">
     @if (carregando()) {
       <app-carregando texto="Carregando seu catálogo…" />
     } @else {
       @for (produto of produtosFiltrados(); track produto.id) {
-        <app-produto-card [produto]="produto" (editar)="editarProduto($event)" (excluir)="solicitarExclusao($event)" />
+        <app-produto-card
+          [produto]="produto"
+          (editar)="editarProduto($event)"
+          (duplicar)="duplicarProduto($event)"
+          (excluir)="solicitarExclusao($event)"
+        />
       } @empty {
         <app-estado-vazio
           icone="caixa"
@@ -64,10 +69,14 @@
 @if (modalAberto()) {
   @let editandoProduto = produtoEmEdicao()?.produtoAVenda || (!produtoEmEdicao() && novoProdutoAVenda());
   @let termoModal = editandoProduto ? 'produto' : conteudo().termoItem;
-  <app-bottom-sheet [titulo]="produtoEmEdicao() ? 'Editar ' + termoModal : editandoProduto ? 'Novo produto' : conteudo().tituloNovoItem" (fechar)="fecharModal()">
+  <app-bottom-sheet
+    [titulo]="produtoEmEdicao() ? 'Editar ' + termoModal : produtoModelo() ? 'Duplicar ' + termoModal : editandoProduto ? 'Novo produto' : conteudo().tituloNovoItem"
+    (fechar)="fecharModal()"
+  >
     <app-produto-formulario
       [categoriasExistentes]="categorias()"
       [produto]="produtoEmEdicao()"
+      [modelo]="produtoModelo()"
       [produtoAVenda]="novoProdutoAVenda()"
       [salvando]="salvando()"
       (salvo)="adicionarProduto($event)"

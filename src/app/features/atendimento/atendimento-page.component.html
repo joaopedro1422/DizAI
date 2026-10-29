@@ -1,8 +1,9 @@
-<div class="tela-app tela-atendimento">
+<div class="tela-app tela-atendimento tela-pc">
   <!-- topo azul: o que é a tela e o "Testar atendimento" em destaque -->
   <header class="topo">
     <a class="topo__voltar" [routerLink]="rotaInicio()" aria-label="Voltar para o painel">
       <app-icone nome="voltar" [tamanho]="22" />
+      <span class="topo__voltar-texto" aria-hidden="true">Voltar</span>
     </a>
     <div class="topo__identidade">
       <!-- headset num círculo branco; a bolinha verde aparece com o assistente respondendo -->
@@ -119,6 +120,11 @@
             ></textarea>
             <span class="campo__dica">Escreva do seu jeito, separando os itens por vírgula.</span>
           </div>
+        }
+
+        <!-- o que o cliente recebe quando a conversa passa para o dono (só nos modos que passam o pedido) -->
+        @if (valores().modoPedido === 'ENCAMINHAR_AO_DONO' || valores().modoPedido === 'COLETAR_DADOS') {
+          <app-mensagens-repasse [formulario]="formulario" [modo]="valores().modoPedido" />
         }
       </app-secao-configuracao>
 

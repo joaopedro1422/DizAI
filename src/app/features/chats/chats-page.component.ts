@@ -17,6 +17,7 @@ import { TempoDecorridoPipe } from '../../shared/pipes/tempo-decorrido.pipe';
 import { ConversaAguardandoCardComponent } from './conversa-aguardando-card/conversa-aguardando-card.component';
 import { limparMarcaIcone } from '../../core/utils/marca-icone';
 import { VideoChatsComponent } from './video-chats/video-chats.component';
+import { DetalheConversaComponent } from './detalhe-conversa/detalhe-conversa.component';
 import { BottomSheetComponent } from '../../shared/components/bottom-sheet/bottom-sheet.component';
 import {
   AcaoPedidoConversa,
@@ -38,10 +39,16 @@ type AbaChats = 'aguardando' | 'andamento';
     CarregandoComponent,
     BottomSheetComponent,
     AcaoPedidoConversaComponent,
+    DetalheConversaComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './chats-page.component.html',
-  styleUrls: ['../../shared/estilos-listagem.css', '../../shared/estilos-topo-azul.css', './chats-page.component.css'],
+  styleUrls: [
+    '../../shared/estilos-listagem.css',
+    '../../shared/estilos-topo-azul.css',
+    './chats-page.component.css',
+    './chats-pc.css',
+  ],
 })
 export class ChatsPageComponent implements OnInit {
   private readonly conversaService = inject(ConversaService);
@@ -67,6 +74,8 @@ export class ChatsPageComponent implements OnInit {
   protected readonly carregando = this.conversaService.carregando;
   /** Conversa sendo marcada como resolvida (mostra o carregando no botão). */
   protected readonly resolvendoId = signal<string | null>(null);
+  /** Em andamento: a conversa aberta no modal (quem é, as últimas mensagens e assumir/devolver). */
+  protected readonly conversaAberta = signal<Conversa | null>(null);
   /** Ação de pedido aberta no modal (confirmar, entregar ou recusar). */
   protected readonly acaoPedido = signal<{ conversa: Conversa; acao: AcaoPedidoConversa } | null>(null);
   protected readonly titulosAcaoPedido: Record<AcaoPedidoConversa, string> = {

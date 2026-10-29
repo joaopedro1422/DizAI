@@ -1,171 +1,251 @@
-<div class="tela-app">
-  <app-cabecalho-pagina
-    titulo="Conectar WhatsApp"
-    subtitulo="Ligue o número da sua loja ao DizAI para o assistente começar a responder os seus clientes."
-    [comDivisor]="true"
-  />
-
-  <main class="conteudo-tela conteudo">
-    @if (perfil().whatsappConectado) {
-      <div class="conectado" role="status">
-        <span class="conectado__icone">
-          <app-icone nome="check" [tamanho]="22" [espessura]="2.4" />
-        </span>
-        <div class="conectado__textos">
-          <strong>Seu WhatsApp está conectado</strong>
-          <span>O assistente já responde no número {{ perfil().whatsapp }}.</span>
-        </div>
+<div class="tela-app tela-conectar">
+  <!-- topo azul (o mesmo da Agenda e dos Pedidos); no celular a trilha dos passos fica aqui -->
+  <header class="topo-azul topo-conectar">
+    <div class="topo-conectar__conteudo">
+      <div class="topo-azul__linha">
+        <a class="topo-azul__voltar" [routerLink]="caminhoPainel()" aria-label="Voltar para o painel">
+          <app-icone nome="voltar" [tamanho]="22" />
+          <span class="topo-azul__voltar-texto" aria-hidden="true">Voltar</span>
+        </a>
       </div>
-    } @else {
-      <div class="progresso">
-        <div class="progresso__textos">
-          <span>Passo {{ numeroPasso() }} de {{ totalPassos() }}</span>
+      <div class="topo-azul__textos">
+        <h1 class="topo-azul__titulo">Conectar WhatsApp</h1>
+        <p class="topo-conectar__subtitulo">
+          Ligue o número da sua loja ao DizAI para o assistente começar a responder os seus clientes.
+        </p>
+      </div>
+
+      @if (!perfil().whatsappConectado) {
+        <div class="trilha">
+          <span class="trilha__passo">
+            @if (situacao()) {
+              Passo {{ numeroPasso() }} de {{ totalPassos() }}
+            } @else {
+              Para começar
+            }
+          </span>
           @if (situacao()) {
-            <button type="button" class="progresso__voltar" [disabled]="conectando()" (click)="voltar()">
-              <app-icone nome="voltar" [tamanho]="16" [espessura]="2" />
-              Voltar
-            </button>
+            <div class="trilha__segmentos" aria-hidden="true">
+              @for (passo of passos(); track $index; let i = $index) {
+                <span class="trilha__segmento" [class.trilha__segmento--feito]="i < numeroPasso()"></span>
+              }
+            </div>
+            @if (proximoPasso(); as proximo) {
+              <span class="trilha__proximo">A seguir: {{ proximo }}</span>
+            }
           }
         </div>
-        <div class="progresso__trilho" aria-hidden="true"><span class="progresso__barra" [style.width.%]="progresso()"></span></div>
-      </div>
+      }
+    </div>
+  </header>
 
-      @if (!situacao()) {
-        <section class="etapa" aria-labelledby="pergunta-titulo">
-          <h2 id="pergunta-titulo" class="etapa__titulo">Você já usa o WhatsApp Business no número da loja?</h2>
-          <p class="etapa__texto">
-            Número da loja: <strong>{{ perfil().whatsapp }}</strong>. Depois de conectar, você continua usando o app no celular normalmente.
-          </p>
-          <div class="opcoes">
-            @for (opcao of opcoesSituacao; track opcao.situacao) {
-              <button type="button" class="opcao" (click)="escolherSituacao(opcao.situacao)">
-                <span class="opcao__icone"><app-icone [nome]="opcao.icone" [tamanho]="22" [espessura]="2" /></span>
-                <span class="opcao__textos">
-                  <strong class="opcao__titulo">{{ opcao.titulo }}</strong>
-                  <span class="opcao__descricao">{{ opcao.descricao }}</span>
+  <main class="conteudo" [class.conteudo--conectado]="perfil().whatsappConectado">
+    @if (perfil().whatsappConectado) {
+      <section class="conectado" role="status">
+        <span class="conectado__icone">
+          <app-icone nome="check" [tamanho]="30" [espessura]="2.6" />
+        </span>
+        <h2 class="conectado__titulo">Seu WhatsApp está conectado</h2>
+        <p class="conectado__texto">O assistente já responde no número <strong>{{ perfil().whatsapp }}</strong>.</p>
+        <a class="btn btn--primario btn--grande" [routerLink]="caminhoPainel()">Ir para o painel</a>
+      </section>
+    } @else {
+      <!-- computador: a lista de todos os passos, à esquerda -->
+      <aside class="lateral" aria-label="Passos da conexão">
+        <ol class="passos">
+          @for (passo of passos(); track $index; let i = $index) {
+            <li
+              class="passo"
+              [class.passo--feito]="i < numeroPasso() - 1"
+              [class.passo--atual]="i === numeroPasso() - 1"
+              [attr.aria-current]="i === numeroPasso() - 1 ? 'step' : null"
+            >
+              @if (i < numeroPasso() - 1) {
+                <button type="button" class="passo__conteudo" [disabled]="conectando()" (click)="irParaPasso(i)">
+                  <span class="passo__marca"><app-icone nome="check" [tamanho]="14" [espessura]="3" /></span>
+                  <span class="passo__rotulo">{{ passo }}</span>
+                </button>
+              } @else {
+                <span class="passo__conteudo">
+                  <span class="passo__marca">{{ i + 1 }}</span>
+                  <span class="passo__rotulo">{{ passo }}</span>
                 </span>
-                <app-icone class="opcao__seta" nome="avancar" [tamanho]="18" [espessura]="2" />
-              </button>
-            }
-          </div>
-        </section>
-      } @else {
-        @if (etapaAtual(); as etapa) {
-          <section class="etapa" aria-live="polite" aria-labelledby="etapa-titulo">
-            <span class="etapa__numero">{{ numeroPasso() }}</span>
-            <h2 id="etapa-titulo" class="etapa__titulo">{{ etapa.titulo }}</h2>
-            <p class="etapa__texto">{{ etapa.texto }}</p>
-
-            @if (etapa.tipo === 'INSTRUCAO') {
-              @if (etapa.atencao) {
-                <p class="etapa__atencao">
-                  <app-icone nome="alerta" [tamanho]="16" [espessura]="2" />
-                  <span>{{ etapa.atencao }}</span>
-                </p>
               }
-              <button type="button" class="btn btn--primario btn--grande btn--bloco" (click)="avancar()">
-                {{ etapa.botaoAvancar }}
-                <app-icone nome="avancar" [tamanho]="18" [espessura]="2" />
-              </button>
-            } @else if (etapa.tipo === 'CHECKLIST') {
-              <ul class="checklist">
-                @for (item of etapa.itens; track item.texto) {
-                  <li class="checklist__item">
-                    <span class="checklist__icone"><app-icone [nome]="item.icone" [tamanho]="18" [espessura]="2" /></span>
-                    <span>{{ item.texto }}</span>
-                  </li>
-                }
-              </ul>
-              <button type="button" class="btn btn--primario btn--grande btn--bloco" (click)="avancar()">
-                {{ etapa.botaoAvancar }}
-                <app-icone nome="avancar" [tamanho]="18" [espessura]="2" />
-              </button>
-            } @else {
-              <button
-                type="button"
-                class="btn btn--primario btn--grande btn--bloco botao-meta"
-                [disabled]="conectando()"
-                [attr.aria-busy]="conectando()"
-                (click)="conectarComFacebook()"
-              >
-                @if (conectando()) {
-                  <app-carregando modo="inline" variante="claro" [tamanho]="22" />
-                  Siga na janela da Meta…
-                } @else {
-                  Conectar com o Facebook
-                }
-              </button>
+            </li>
+          }
+        </ol>
+        @if (!situacao()) {
+          <p class="lateral__nota">Os próximos passos dependem da sua resposta.</p>
+        }
+      </aside>
 
-              <div class="janela-meta">
-                <h3 class="janela-meta__titulo">O que você vai fazer na janela da Meta</h3>
-                <ol class="janela-meta__passos">
-                  @for (passo of passosJanelaMeta; track passo.titulo; let i = $index) {
-                    <li class="janela-meta__passo">
-                      <span class="janela-meta__numero">{{ i + 1 }}</span>
-                      <span class="janela-meta__textos">
-                        <strong>{{ passo.titulo }}</strong>
-                        <span>{{ passo.texto }}</span>
-                      </span>
+      <div class="principal">
+        @if (!situacao()) {
+          <section class="etapa" aria-labelledby="pergunta-titulo">
+            <span class="etapa__sobretitulo">Passo 1</span>
+            <h2 id="pergunta-titulo" class="etapa__titulo">Você já usa o WhatsApp Business no número da loja?</h2>
+            <p class="etapa__texto">
+              Número da loja: <strong>{{ perfil().whatsapp }}</strong>. Depois de conectar, você continua usando o app no celular normalmente.
+            </p>
+            <div class="opcoes">
+              @for (opcao of opcoesSituacao; track opcao.situacao) {
+                <button type="button" class="opcao" (click)="escolherSituacao(opcao.situacao)">
+                  <!-- ícone do app, para reconhecer: o Business tem o "B" no balão -->
+                  <span class="opcao__app" [class.opcao__app--comum]="opcao.situacao === 'NAO_USA_BUSINESS'" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="26" height="26" focusable="false">
+                      <path d="M12 2.6a9.4 9.4 0 0 0-8.1 14.1L2.6 21.4l4.8-1.3A9.4 9.4 0 1 0 12 2.6z" fill="#ffffff" />
+                      @if (opcao.situacao === 'JA_USA_BUSINESS') {
+                        <text x="12" y="16" text-anchor="middle" font-size="11" font-weight="800" fill="currentColor">B</text>
+                      }
+                    </svg>
+                  </span>
+                  <span class="opcao__textos">
+                    <strong class="opcao__titulo">{{ opcao.titulo }}</strong>
+                    <span class="opcao__descricao">{{ opcao.descricao }}</span>
+                  </span>
+                  <app-icone class="opcao__seta" nome="avancar" [tamanho]="18" [espessura]="2" />
+                </button>
+              }
+            </div>
+          </section>
+        } @else {
+          @for (etapa of etapaVisivel(); track etapa.titulo) {
+            <section class="etapa" aria-live="polite" aria-labelledby="etapa-titulo">
+              <span class="etapa__sobretitulo">Passo {{ numeroPasso() }} de {{ totalPassos() }}</span>
+              <h2 id="etapa-titulo" class="etapa__titulo">{{ etapa.titulo }}</h2>
+              <p class="etapa__texto">{{ etapa.texto }}</p>
+
+              @if (etapa.tipo === 'INSTRUCAO') {
+                @if (etapa.atencao) {
+                  <p class="etapa__atencao">
+                    <app-icone nome="alerta" [tamanho]="18" [espessura]="2" />
+                    <span>{{ etapa.atencao }}</span>
+                  </p>
+                }
+              } @else if (etapa.tipo === 'CHECKLIST') {
+                <ul class="checklist">
+                  @for (item of etapa.itens; track item.texto) {
+                    <li class="checklist__item">
+                      <span class="checklist__icone"><app-icone [nome]="item.icone" [tamanho]="18" [espessura]="2" /></span>
+                      <span>{{ item.texto }}</span>
                     </li>
                   }
-                </ol>
-              </div>
-
-              <details class="problemas">
-                <summary class="problemas__titulo">Se algo der errado</summary>
-                <ul class="problemas__lista">
-                  @for (problema of problemasComuns; track problema) {
-                    <li>{{ problema }}</li>
-                  }
                 </ul>
-              </details>
-            }
-          </section>
-        }
-      }
-    }
+              } @else {
+                <button
+                  type="button"
+                  class="btn btn--grande btn--bloco botao-meta"
+                  [disabled]="conectando()"
+                  [attr.aria-busy]="conectando()"
+                  (click)="conectarComFacebook()"
+                >
+                  @if (conectando()) {
+                    <app-carregando modo="inline" variante="claro" [tamanho]="22" />
+                    Siga na janela da Meta…
+                  } @else {
+                    <svg class="botao-meta__f" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+                      <circle cx="12" cy="12" r="11" fill="#ffffff" />
+                      <path d="M13.3 23v-8h2.7l.4-3.2h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V5.4a22 22 0 0 0-2.5-.1c-2.5 0-4.1 1.5-4.1 4.2v2.3H7.2V15H10v8z" fill="#1877F2" />
+                    </svg>
+                    Conectar com o Facebook
+                  }
+                </button>
 
-    @if (modoDesenvolvimento) {
-      <details class="dev">
-        <summary class="dev__titulo">Desenvolvimento: conectar o número de teste da Meta</summary>
-        <p class="dev__texto">
-          Copie os dados de <strong>WhatsApp › Configuração da API</strong> no painel da Meta.
-          O token fica criptografado no banco e não aparece de novo.
-        </p>
-        <form class="dev__formulario" [formGroup]="formularioManual" (ngSubmit)="conectarManualmente()" novalidate>
-          <label class="campo">
-            <span class="campo__rotulo">ID do número de telefone</span>
-            <input class="campo__entrada" formControlName="phoneNumberId" inputmode="numeric" autocomplete="off" placeholder="Ex.: 1234567890123456">
-          </label>
-          <label class="campo">
-            <span class="campo__rotulo">ID da conta do WhatsApp Business</span>
-            <input class="campo__entrada" formControlName="wabaId" inputmode="numeric" autocomplete="off" placeholder="Ex.: 12345678901234567">
-          </label>
-          <label class="campo">
-            <span class="campo__rotulo">Token de acesso</span>
-            <input class="campo__entrada" formControlName="token" type="password" autocomplete="off" placeholder="EAA…">
-          </label>
-          <button type="submit" class="btn btn--secundario btn--bloco" [disabled]="conectandoManualmente()" [attr.aria-busy]="conectandoManualmente()">
-            @if (conectandoManualmente()) {
-              <app-carregando modo="inline" [tamanho]="20" />
-              Conectando…
-            } @else {
-              Conectar número de teste
-            }
-          </button>
-        </form>
-      </details>
+                <div class="janela-meta">
+                  <h3 class="janela-meta__titulo">O que você vai fazer na janela da Meta</h3>
+                  <ol class="janela-meta__passos">
+                    @for (passo of passosJanelaMeta; track passo.titulo; let i = $index) {
+                      <li class="janela-meta__passo">
+                        <span class="janela-meta__numero">{{ i + 1 }}</span>
+                        <span class="janela-meta__textos">
+                          <strong>{{ passo.titulo }}</strong>
+                          <span>{{ passo.texto }}</span>
+                        </span>
+                      </li>
+                    }
+                  </ol>
+                </div>
+
+                <details class="problemas">
+                  <summary class="problemas__titulo">
+                    <app-icone nome="pergunta" [tamanho]="18" [espessura]="2" />
+                    Se algo der errado
+                    <app-icone class="problemas__seta" nome="setaBaixo" [tamanho]="18" [espessura]="2" />
+                  </summary>
+                  <ul class="problemas__lista">
+                    @for (problema of problemasComuns; track problema) {
+                      <li>{{ problema }}</li>
+                    }
+                  </ul>
+                </details>
+              }
+
+              @if (etapa.tipo !== 'CONECTAR') {
+                <div class="etapa__acoes">
+                  <button type="button" class="btn btn--secundario btn--grande etapa__voltar" (click)="voltar()">
+                    <app-icone nome="voltar" [tamanho]="18" [espessura]="2" />
+                    Voltar
+                  </button>
+                  <button type="button" class="btn btn--primario btn--grande etapa__avancar" (click)="avancar()">
+                    {{ etapa.botaoAvancar }}
+                    <app-icone nome="avancar" [tamanho]="18" [espessura]="2" />
+                  </button>
+                </div>
+              } @else {
+                <button type="button" class="etapa__voltar-texto" [disabled]="conectando()" (click)="voltar()">
+                  <app-icone nome="voltar" [tamanho]="16" [espessura]="2" />
+                  Voltar ao passo anterior
+                </button>
+              }
+            </section>
+          }
+        }
+
+        @if (modoDesenvolvimento) {
+          <details class="dev">
+            <summary class="dev__titulo">Desenvolvimento: conectar o número de teste da Meta</summary>
+            <p class="dev__texto">
+              Copie os dados de <strong>WhatsApp › Configuração da API</strong> no painel da Meta.
+              O token fica criptografado no banco e não aparece de novo.
+            </p>
+            <form class="dev__formulario" [formGroup]="formularioManual" (ngSubmit)="conectarManualmente()" novalidate>
+              <label class="campo">
+                <span class="campo__rotulo">ID do número de telefone</span>
+                <input class="campo__entrada" formControlName="phoneNumberId" inputmode="numeric" autocomplete="off" placeholder="Ex.: 1234567890123456">
+              </label>
+              <label class="campo">
+                <span class="campo__rotulo">ID da conta do WhatsApp Business</span>
+                <input class="campo__entrada" formControlName="wabaId" inputmode="numeric" autocomplete="off" placeholder="Ex.: 12345678901234567">
+              </label>
+              <label class="campo">
+                <span class="campo__rotulo">Token de acesso</span>
+                <input class="campo__entrada" formControlName="token" type="password" autocomplete="off" placeholder="EAA…">
+              </label>
+              <button type="submit" class="btn btn--secundario btn--bloco" [disabled]="conectandoManualmente()" [attr.aria-busy]="conectandoManualmente()">
+                @if (conectandoManualmente()) {
+                  <app-carregando modo="inline" [tamanho]="20" />
+                  Conectando…
+                } @else {
+                  Conectar número de teste
+                }
+              </button>
+            </form>
+          </details>
+        }
+      </div>
     }
 
     <section class="ajuda" aria-labelledby="ajuda-titulo">
-      <span class="ajuda__icone"><app-icone nome="pessoa" [tamanho]="22" [espessura]="1.8" /></span>
-      <h2 id="ajuda-titulo" class="ajuda__titulo">Prefere que a gente faça junto com você?</h2>
+      <div class="ajuda__cabecalho">
+        <span class="ajuda__icone"><app-icone nome="headset" [tamanho]="20" [espessura]="1.9" /></span>
+        <h2 id="ajuda-titulo" class="ajuda__titulo">Prefere que a gente faça junto com você?</h2>
+      </div>
       <p class="ajuda__texto">
         Peça um atendimento individual: marcamos um horário e fazemos a conexão com você, passo a passo.
       </p>
       <a class="btn btn--secundario btn--bloco" [href]="linkPedidoAjuda()">
         <app-icone nome="email" [tamanho]="18" [espessura]="1.8" />
-        Solicitar atendimento individual
+        Solicitar atendimento
       </a>
       <span class="ajuda__email">ou escreva para <strong>{{ emailSuporte }}</strong></span>
     </section>

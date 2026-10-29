@@ -1,4 +1,4 @@
-<div class="tela-app">
+<div class="tela-app tela-pc">
   <app-cabecalho-pagina titulo="Perguntas frequentes" [subtitulo]="subtitulo()" [comDivisor]="true">
     <app-botao-video acoesTopo (abrir)="mostrarVideo.set(true)" />
     <button type="button" class="btn btn--primario btn--bloco btn--acao-principal" (click)="abrirModal()">
@@ -7,7 +7,7 @@
     </button>
   </app-cabecalho-pagina>
 
-  <main class="perguntas">
+  <main class="perguntas corpo-pc">
     @if (carregando()) {
       <app-carregando texto="Carregando suas perguntas…" />
     } @else {
@@ -30,6 +30,7 @@
         </section>
       }
 
+      <div class="perguntas__lista">
       @for (item of perguntas(); track item.id) {
         <article class="pergunta">
           <div class="pergunta__textos">
@@ -50,6 +51,7 @@
           descricao="Escreva as dúvidas que seus clientes sempre mandam, como horário, pagamento e prazo."
         />
       }
+      </div>
 
       @if (ideiasPerguntas().length > 0) {
         <app-ideias-ramo

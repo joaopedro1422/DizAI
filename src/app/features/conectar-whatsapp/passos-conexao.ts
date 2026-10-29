@@ -31,16 +31,23 @@ export interface ItemChecklist {
   texto: string;
 }
 
-/** Uma etapa do assistente: só texto, a lista "tenha em mãos" ou o botão da Meta. */
+/** Nome curto da pergunta inicial na lista de passos (ao lado, no computador). */
+export const ROTULO_PERGUNTA = 'Seu WhatsApp hoje';
+
+/**
+ * Uma etapa do assistente: só texto, a lista "tenha em mãos" ou o botão da Meta.
+ * `rotulo` é o nome curto da etapa na lista de passos.
+ */
 export type EtapaConexao =
-  | { tipo: 'INSTRUCAO'; titulo: string; texto: string; atencao?: string; botaoAvancar: string }
-  | { tipo: 'CHECKLIST'; titulo: string; texto: string; itens: ItemChecklist[]; botaoAvancar: string }
-  | { tipo: 'CONECTAR'; titulo: string; texto: string };
+  | { tipo: 'INSTRUCAO'; rotulo: string; titulo: string; texto: string; atencao?: string; botaoAvancar: string }
+  | { tipo: 'CHECKLIST'; rotulo: string; titulo: string; texto: string; itens: ItemChecklist[]; botaoAvancar: string }
+  | { tipo: 'CONECTAR'; rotulo: string; titulo: string; texto: string };
 
 /** Quem ainda usa o WhatsApp comum passa primeiro para o WhatsApp Business. */
 const ETAPAS_PREPARAR_BUSINESS: EtapaConexao[] = [
   {
     tipo: 'INSTRUCAO',
+    rotulo: 'Backup das conversas',
     titulo: 'Faça o backup das suas conversas',
     texto: 'No WhatsApp que você usa hoje, abra Configurações › Conversas › Backup de conversas e toque em "Fazer backup".',
     atencao: 'Espere terminar antes de seguir. Assim nenhuma conversa se perde.',
@@ -48,18 +55,21 @@ const ETAPAS_PREPARAR_BUSINESS: EtapaConexao[] = [
   },
   {
     tipo: 'INSTRUCAO',
+    rotulo: 'Baixar o WhatsApp Business',
     titulo: 'Baixe o WhatsApp Business',
     texto: 'No celular da loja, instale o app "WhatsApp Business" pela Play Store ou App Store. É gratuito e feito pela própria Meta.',
     botaoAvancar: 'Já instalei',
   },
   {
     tipo: 'INSTRUCAO',
+    rotulo: 'Entrar com o número da loja',
     titulo: 'Entre com o número da loja',
     texto: 'Abra o WhatsApp Business e use o mesmo número que seus clientes já conhecem. Quando o app perguntar, aceite usar esse número e trazer suas conversas.',
     botaoAvancar: 'Entrei com o meu número',
   },
   {
     tipo: 'INSTRUCAO',
+    rotulo: 'Perfil da loja',
     titulo: 'Preencha o perfil da loja',
     texto: 'Coloque o nome da loja, a categoria e uma foto. Pronto: daqui pra frente você usa o WhatsApp Business no lugar do comum.',
     botaoAvancar: 'Perfil preenchido',
@@ -70,6 +80,7 @@ const ETAPAS_PREPARAR_BUSINESS: EtapaConexao[] = [
 const ETAPAS_CONECTAR: EtapaConexao[] = [
   {
     tipo: 'CHECKLIST',
+    rotulo: 'O que ter em mãos',
     titulo: 'Antes de conectar, tenha em mãos',
     texto: 'Leva uns 10 minutos.',
     itens: [
@@ -81,6 +92,7 @@ const ETAPAS_CONECTAR: EtapaConexao[] = [
   },
   {
     tipo: 'CONECTAR',
+    rotulo: 'Conectar pela Meta',
     titulo: 'Agora, clique no botão abaixo',
     texto: 'Vai abrir a janela oficial da Meta, a empresa dona do WhatsApp. O DizAI não vê a sua senha.',
   },

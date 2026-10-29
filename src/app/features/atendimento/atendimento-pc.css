@@ -1,0 +1,109 @@
+/*
+ * Computador: o topo azul na largura toda, os atalhos viram um índice fixo à esquerda e as configurações ficam numa
+ * coluna de leitura confortável à direita. No celular nada muda (tudo aqui fica dentro do @media).
+ */
+@media (min-width: 1024px) {
+  .tela-atendimento {
+    display: grid;
+    grid-template-columns:
+      max(40px, calc((100% - 1120px) / 2))
+      220px
+      minmax(0, 1fr)
+      max(40px, calc((100% - 1120px) / 2));
+    grid-template-rows: auto 1fr;
+    align-content: start;
+  }
+
+  .tela-atendimento > app-carregando {
+    grid-column: 2 / 4;
+  }
+
+  .topo {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px 32px;
+    padding: 18px max(40px, calc((100% - 1120px) / 2)) 30px;
+  }
+
+  .topo__voltar {
+    grid-column: 1 / -1;
+    justify-self: start;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px 6px 6px;
+    border-radius: var(--raio-pilula);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .topo__voltar-texto {
+    display: inline;
+  }
+
+  .topo__icone {
+    width: 60px;
+    height: 60px;
+  }
+
+  .topo__titulo {
+    font-size: 32px;
+  }
+
+  .topo__descricao {
+    font-size: 15px;
+  }
+
+  .topo__testar {
+    padding: 0 24px;
+  }
+
+  /* índice das configurações, preso ao rolar */
+  .atalhos {
+    grid-column: 2;
+    grid-row: 2;
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    flex-direction: column;
+    gap: 2px;
+    overflow: visible;
+    margin-top: 32px;
+    padding: 0 28px 0 0;
+    border-bottom: none;
+    background: transparent;
+  }
+
+  .atalho {
+    padding: 9px 14px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  .atalho:hover {
+    background: var(--cor-fundo);
+    color: var(--cor-primaria);
+  }
+
+  .conteudo {
+    grid-column: 3;
+    grid-row: 2;
+    max-width: 800px;
+    padding: 32px 0 64px;
+  }
+
+  .conteudo--com-barra {
+    padding-bottom: 120px;
+  }
+
+  .conteudo > app-secao-configuracao {
+    padding: 28px 32px;
+    scroll-margin-top: 24px;
+    box-shadow: var(--sombra-card);
+  }
+}

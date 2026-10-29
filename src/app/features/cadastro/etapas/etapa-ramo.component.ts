@@ -2,7 +2,7 @@ import { Component, input } from '@angular/core';
 
 import { RAMOS_NEGOCIO } from '../../../core/constants/opcoes-perfil';
 import { RamoNegocio } from '../../../core/models/perfil.model';
-import { OpcaoCardComponent } from '../../../shared/components/opcao-card/opcao-card.component';
+import { EtiquetaOpcao, OpcaoCardComponent } from '../../../shared/components/opcao-card/opcao-card.component';
 import { ControleRamo } from '../cadastro-formulario';
 
 /** Passo 3: o ramo que mais se parece com o negócio. */
@@ -23,6 +23,7 @@ import { ControleRamo } from '../cadastro-formulario';
         <app-opcao-card
           [titulo]="ramo.rotulo"
           [descricao]="ramo.descricao"
+          [etiqueta]="etiquetas[ramo.valor] ?? null"
           [selecionado]="controle().value === ramo.valor"
           (selecionar)="selecionar(ramo.valor)"
         />
@@ -35,6 +36,12 @@ export class EtapaRamoComponent {
   readonly controle = input.required<ControleRamo>();
 
   protected readonly ramos = RAMOS_NEGOCIO;
+  /** Recurso que vem junto com o ramo: a agenda nos serviços presenciais, os pedidos nos produtos. */
+  protected readonly etiquetas: Partial<Record<RamoNegocio, EtiquetaOpcao>> = {
+    SERVICOS_PRESENCIAIS: { texto: 'Agenda', icone: 'calendario' },
+    DOCES_SALGADOS: { texto: 'Pedidos', icone: 'caixa' },
+    PRODUTOS_PERSONALIZADOS: { texto: 'Pedidos', icone: 'caixa' },
+  };
 
   protected selecionar(ramo: RamoNegocio): void {
     this.controle().setValue(ramo);

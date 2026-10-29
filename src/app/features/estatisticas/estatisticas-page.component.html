@@ -1,4 +1,4 @@
-<div class="tela-app">
+<div class="tela-app tela-pc">
   <app-cabecalho-pagina titulo="Estatísticas" subtitulo="O que o seu assistente fez por você.">
     <div class="periodos" role="radiogroup" aria-label="Período">
       @for (periodo of periodos; track periodo.dias) {
@@ -16,7 +16,7 @@
     </div>
   </app-cabecalho-pagina>
 
-  <main class="conteudo-tela estatisticas">
+  <main class="conteudo-tela estatisticas corpo-pc">
     @if (carregando() && !numeros()) {
       <app-carregando texto="Somando os números…" />
     }

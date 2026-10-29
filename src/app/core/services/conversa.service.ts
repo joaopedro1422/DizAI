@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { urlDoPerfil } from '../api/api-url';
 import { SessaoService } from '../auth/sessao.service';
-import { Conversa } from '../models/conversa.model';
+import { Conversa, MensagemConversa } from '../models/conversa.model';
 import { CarregamentoUnico } from '../utils/carregamento-unico';
 
 /** A API manda a data como texto ISO; na tela ela vira Date. */
@@ -67,6 +67,26 @@ export class ConversaService {
     this.listaConversas.update((conversas) =>
       conversas.map((conversa) => (conversa.id === conversaId ? resolvida : conversa)),
     );
+  }
+
+  /** "Assumir conversa": o assistente para de responder este cliente (volta com o marcarComoResolvida). */
+  async assumir(conversaId: string): Promise<Conversa> {
+    const assumida = paraConversa(
+      await firstValueFrom(this.http.patch<ConversaApi>(this.url(`/${conversaId}/assumir`), null)),
+    );
+    this.listaConversas.update((conversas) => conversas.map((c) => (c.id === conversaId ? assumida : c)));
+    return assumida;
+  }
+
+  /** As últimas mensagens da conversa, da mais antiga para a mais nova. */
+  async ultimasMensagens(conversaId: string, quantidade = 2): Promise<MensagemConversa[]> {
+    const mensagens = await firstValueFrom(
+      this.http.get<(Omit<MensagemConversa, 'criadoEm'> & { criadoEm: string })[]>(
+        this.url(`/${conversaId}/mensagens`),
+        { params: { quantidade } },
+      ),
+    );
+    return mensagens.map((m) => ({ ...m, criadoEm: new Date(m.criadoEm) }));
   }
 
   /** Uma ação de pedido mudou a conversa (ex.: saiu de "Aguardando você"): troca na lista sem recarregar. */

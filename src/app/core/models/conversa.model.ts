@@ -17,6 +17,13 @@ export interface ItemResumoPedido {
   valor: string;
 }
 
+/** Uma mensagem da conversa (GET .../conversas/{id}/mensagens). DONO = respondida pelo celular da loja. */
+export interface MensagemConversa {
+  origem: 'CLIENTE' | 'BOT' | 'DONO';
+  texto: string;
+  criadoEm: Date;
+}
+
 export interface Conversa {
   /** UUID da conversa no backend. */
   id: string;

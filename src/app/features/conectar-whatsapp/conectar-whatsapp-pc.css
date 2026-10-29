@@ -1,0 +1,267 @@
+/*
+ * Computador: a tela usa a largura toda sobre o fundo cinza claro. À esquerda, a lista de todos os passos
+ * (os feitos voltam com um clique) e o atendimento individual; à direita, o passo atual num cartão branco.
+ */
+@media (min-width: 1024px) {
+  .tela-conectar {
+    --largura-tela-app: none;
+    border-left: none;
+    border-right: none;
+    background: var(--cor-fundo-suave);
+  }
+
+  .topo-conectar {
+    padding: 28px 40px 32px;
+  }
+
+  .topo-conectar__conteudo {
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .topo-azul__titulo {
+    font-size: 30px;
+  }
+
+  .topo-conectar__subtitulo {
+    max-width: 560px;
+    font-size: 15px;
+  }
+
+  /* a lista ao lado faz o papel da trilha */
+  .trilha {
+    display: none;
+  }
+
+  .conteudo {
+    display: grid;
+    grid-template-columns: 290px minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    gap: 24px 32px;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 32px 40px 56px;
+  }
+
+  .lateral {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    grid-column: 1;
+    grid-row: 1;
+    padding: 20px 16px;
+    border: 1px solid var(--cor-borda-suave);
+    border-radius: var(--raio-grande);
+    background: var(--cor-fundo);
+  }
+
+  .principal {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .ajuda {
+    grid-column: 1;
+    grid-row: 2;
+    border: 1px solid var(--cor-borda-suave);
+    background: var(--cor-fundo);
+  }
+
+  .ajuda .btn {
+    padding-inline: 12px;
+    background: var(--cor-fundo);
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .ajuda__icone {
+    background: var(--cor-primaria-clara);
+  }
+
+  /* já conectado: um cartão só, no centro */
+  .conteudo--conectado {
+    display: flex;
+    max-width: 640px;
+  }
+
+  .conectado {
+    padding: 40px 32px;
+    border: 1px solid var(--cor-borda-suave);
+    border-radius: var(--raio-grande);
+    background: var(--cor-fundo);
+  }
+
+  /* Lista de passos */
+  .passos {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .passo__conteudo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 9px 10px;
+    border: none;
+    border-radius: 12px;
+    background: none;
+    color: var(--cor-texto-suave);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  /* fio entre as marcas */
+  .passo:not(:last-child) .passo__conteudo::after {
+    content: '';
+    position: absolute;
+    top: calc(50% + 15px);
+    left: 23px;
+    width: 2px;
+    height: calc(100% - 30px);
+    border-radius: 2px;
+    background: var(--cor-borda-suave);
+  }
+
+  .passo--feito:not(:last-child) .passo__conteudo::after {
+    background: var(--cor-primaria);
+    opacity: 0.35;
+  }
+
+  button.passo__conteudo:hover:not(:disabled) {
+    background: var(--cor-fundo-suave);
+    color: var(--cor-texto);
+  }
+
+  .passo__marca {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border: 1.5px solid var(--cor-borda);
+    border-radius: 50%;
+    background: var(--cor-fundo);
+    font-size: 12.5px;
+    font-weight: 800;
+  }
+
+  .passo--feito .passo__marca {
+    border-color: var(--cor-primaria);
+    background: var(--cor-primaria);
+    color: #ffffff;
+  }
+
+  .passo--feito .passo__conteudo {
+    color: var(--cor-texto-secundario);
+  }
+
+  .passo--atual .passo__conteudo {
+    background: var(--cor-selecionado);
+    color: var(--cor-primaria);
+    font-weight: 800;
+  }
+
+  .passo--atual .passo__marca {
+    border: 2px solid var(--cor-primaria);
+    color: var(--cor-primaria);
+  }
+
+  .lateral__nota {
+    padding: 0 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--cor-texto-suave);
+  }
+
+  /* O passo atual num cartão */
+  .etapa {
+    gap: 14px;
+    padding: 36px 40px 32px;
+    border: 1px solid var(--cor-borda-suave);
+    border-radius: var(--raio-grande);
+    background: var(--cor-fundo);
+  }
+
+  .etapa__sobretitulo {
+    display: block;
+  }
+
+  .etapa__titulo {
+    max-width: 620px;
+    font-size: 28px;
+  }
+
+  .etapa__texto {
+    max-width: 620px;
+    font-size: 16px;
+  }
+
+  .opcoes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .opcao {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 22px;
+  }
+
+  .opcao:hover {
+    transform: translateY(-2px);
+  }
+
+  .opcao__seta {
+    display: none;
+  }
+
+  .etapa__acoes {
+    justify-content: space-between;
+    margin-top: 20px;
+    padding-top: 24px;
+    border-top: 1px solid var(--cor-borda-suave);
+  }
+
+  .etapa__avancar {
+    flex: none;
+    min-width: 220px;
+  }
+
+  .botao-meta {
+    width: auto;
+    align-self: flex-start;
+    padding-inline: 28px;
+  }
+
+  .janela-meta {
+    margin-top: 16px;
+    padding: 22px 24px;
+    border-radius: var(--raio-medio);
+    background: var(--cor-fundo-suave);
+  }
+
+  .janela-meta__numero {
+    background: var(--cor-fundo);
+  }
+
+  .janela-meta__passo:not(:last-child)::before {
+    background: #D5DAE3;
+  }
+
+  .etapa__voltar-texto {
+    align-self: flex-start;
+    margin-left: -10px;
+  }
+
+  .dev {
+    background: var(--cor-fundo);
+  }
+}

@@ -1,8 +1,9 @@
-<div class="tela-app tela-clientes">
+<div class="tela-app tela-clientes tela-pc">
   <header class="topo-azul">
     <div class="topo-azul__linha">
       <a class="topo-azul__voltar" [routerLink]="rotaChats()" aria-label="Voltar para os chats">
         <app-icone nome="voltar" [tamanho]="22" />
+        <span class="topo-azul__voltar-texto" aria-hidden="true">Voltar</span>
       </a>
     </div>
     <div class="topo-azul__textos">
@@ -43,7 +44,7 @@
     </span>
   </div>
 
-  <main class="lista conteudo-tela">
+  <main class="lista conteudo-tela corpo-pc">
     @if (carregando()) {
       <app-carregando texto="Carregando clientes…" />
     } @else {

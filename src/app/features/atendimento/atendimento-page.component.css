@@ -28,6 +28,11 @@
   background: rgba(255, 255, 255, 0.12);
 }
 
+/* "Voltar" ao lado da seta: só no computador (atendimento-pc.css) */
+.topo__voltar-texto {
+  display: none;
+}
+
 .topo__identidade {
   display: flex;
   align-items: center;

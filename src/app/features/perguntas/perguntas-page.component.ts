@@ -38,7 +38,7 @@ import { TipoVideoPerguntas, VideoPerguntasComponent } from './video-perguntas/v
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './perguntas-page.component.html',
-  styleUrls: ['../../shared/estilos-listagem.css', './perguntas-page.component.css'],
+  styleUrls: ['../../shared/estilos-listagem.css', './perguntas-page.component.css', './perguntas-pc.css'],
 })
 export class PerguntasPageComponent implements OnInit {
   private readonly perguntaService = inject(PerguntaFrequenteService);

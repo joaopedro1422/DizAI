@@ -42,7 +42,7 @@ type ModalGaleria = 'topico' | 'fotos' | 'vitrine' | 'excluir' | null;
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './galeria-page.component.html',
-  styleUrls: ['../../shared/estilos-listagem.css', './galeria-page.component.css'],
+  styleUrls: ['../../shared/estilos-listagem.css', './galeria-page.component.css', './galeria-pc.css'],
 })
 export class GaleriaPageComponent implements OnInit {
   private readonly galeriaService = inject(GaleriaService);

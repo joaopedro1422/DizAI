@@ -1,0 +1,45 @@
+/*
+ * Computador: o tempo economizado ao lado dos indicadores; os avisos e a explicação embaixo, na largura toda.
+ * No celular nada muda (tudo aqui fica dentro do @media).
+ */
+@media (min-width: 1024px) {
+  .estatisticas {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr);
+    gap: 20px;
+  }
+
+  .estatisticas > * {
+    grid-column: 1 / -1;
+  }
+
+  .estatisticas > .economia {
+    grid-column: 1;
+  }
+
+  .estatisticas > .indicadores {
+    grid-column: 2;
+  }
+
+  .economia {
+    justify-content: center;
+    padding: 32px;
+  }
+
+  .economia__valor {
+    font-size: 56px;
+  }
+
+  .indicadores {
+    gap: 16px;
+  }
+
+  .indicador {
+    padding: 20px;
+    box-shadow: var(--sombra-card);
+  }
+
+  .como-calculamos {
+    max-width: 760px;
+  }
+}

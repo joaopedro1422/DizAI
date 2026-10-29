@@ -19,6 +19,7 @@ import { NomeIcone } from '../icone/icones';
       <div class="cabecalho__topo">
         <a class="btn-icone btn-icone--sem-borda cabecalho__voltar" [routerLink]="destinoVoltar()" [attr.aria-label]="rotuloVoltar()">
           <app-icone nome="voltar" [tamanho]="22" />
+          <span class="cabecalho__voltar-texto" aria-hidden="true">Voltar</span>
         </a>
         <ng-content select="[acoesTopo]" />
       </div>
@@ -94,6 +95,88 @@ import { NomeIcone } from '../icone/icones';
       font-size: 14px;
       line-height: 1.5;
       color: var(--cor-texto-suave);
+    }
+
+    .cabecalho__voltar-texto {
+      display: none;
+    }
+
+    /*
+     * Computador: faixa branca na largura toda, com o conteúdo alinhado à coluna central da tela (--margem-pc, de
+     * styles.css). Título à esquerda e as ações da tela (o conteúdo livre) à direita, na mesma linha.
+     */
+    @media (min-width: 1024px) {
+      :host {
+        display: block;
+        border-bottom: 1px solid var(--cor-borda-suave);
+        background: var(--cor-fundo);
+      }
+
+      .cabecalho {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: end;
+        gap: 10px 40px;
+        padding: 18px var(--margem-pc, 40px) 28px;
+      }
+
+      .cabecalho--com-divisor {
+        border-bottom: none;
+      }
+
+      .cabecalho__topo {
+        grid-column: 1 / -1;
+        min-height: 36px;
+      }
+
+      .cabecalho__voltar {
+        width: auto;
+        height: 36px;
+        gap: 6px;
+        margin-left: -8px;
+        padding: 0 14px 0 8px;
+        border-radius: var(--raio-pilula);
+        color: var(--cor-texto-suave);
+        font-size: 14px;
+        font-weight: 700;
+        transition: background-color 0.15s ease, color 0.15s ease;
+      }
+
+      .cabecalho__voltar:hover {
+        background: var(--cor-fundo-suave);
+        color: var(--cor-texto);
+      }
+
+      .cabecalho__voltar-texto {
+        display: inline;
+      }
+
+      .cabecalho__textos {
+        grid-column: 1;
+        gap: 8px;
+      }
+
+      .cabecalho__linha-titulo {
+        justify-content: flex-start;
+        gap: 18px;
+      }
+
+      .cabecalho__titulo {
+        font-size: 34px;
+        line-height: 1.1;
+      }
+
+      .cabecalho__subtitulo {
+        max-width: 640px;
+        font-size: 15px;
+      }
+
+      /* as ações da tela (botões de adicionar, períodos...) ficam à direita do título */
+      .cabecalho > ::ng-deep :not(.cabecalho__topo):not(.cabecalho__textos) {
+        grid-column: 2;
+        grid-row: 2;
+        justify-self: end;
+      }
     }
   `,
 })

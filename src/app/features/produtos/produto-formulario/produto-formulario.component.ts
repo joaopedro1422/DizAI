@@ -44,6 +44,8 @@ type GrupoAtributo = FormGroup<{ nome: FormControl<string>; opcoes: FormControl<
 export class ProdutoFormularioComponent implements OnInit {
   readonly categoriasExistentes = input<string[]>([]);
   readonly produto = input<Produto | null>(null);
+  /** "Duplicar": cadastro novo que já abre com os dados deste item (o nome ganha "(cópia)"). */
+  readonly modelo = input<Produto | null>(null);
   /** Negócios de serviço: cadastro de um produto à venda (pelo atalho "Adicionar produto"). Na edição vale o do item. */
   readonly produtoAVenda = input(false);
   /** A tela avisa enquanto o produto está sendo salvo. */
@@ -121,13 +123,13 @@ export class ProdutoFormularioComponent implements OnInit {
     if (this.ehProdutoAVenda()) {
       this.formulario.controls.preco.addValidators(Validators.required);
     }
-    const produto = this.produto();
+    const produto = this.produto() ?? this.modelo();
     this.foto.set(produto?.fotoUrl ?? null);
     if (produto) {
       this.formulario.patchValue({
         duracao: produto.duracaoMinutos ? String(produto.duracaoMinutos) : '',
         ...antecedenciaNoFormulario(produto.antecedenciaMinutos),
-        nome: produto.nome,
+        nome: this.produto() ? produto.nome : nomeDaCopia(produto.nome),
         categoria: produto.categoria,
         descricao: produto.descricao ?? '',
         preco: produto.preco === null ? '' : String(produto.preco),
@@ -354,6 +356,12 @@ export class ProdutoFormularioComponent implements OnInit {
         .filter((atributo) => atributo.nome && atributo.opcoes.length > 0),
     };
   }
+}
+
+/** "Esmaltação em gel" -> "Esmaltação em gel (cópia)", sem passar do limite de 80 letras do nome. */
+function nomeDaCopia(nome: string): string {
+  const sufixo = ' (cópia)';
+  return nome.slice(0, 80 - sufixo.length) + sufixo;
 }
 
 /** Minutos salvos -> número + unidade do formulário (horas quando é hora cheia). Vazio = a da loja. */

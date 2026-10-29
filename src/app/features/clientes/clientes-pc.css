@@ -1,0 +1,72 @@
+/*
+ * Computador: a tela na largura toda; busca à direita do título, filtros e ordem na mesma linha e os clientes em
+ * duas colunas. No celular (e no tablet, com 760 px) nada muda.
+ */
+@media (min-width: 1024px) {
+  /* flex (e não grid): as margens em % de --margem-pc continuam medidas pela largura da tela */
+  .tela-clientes {
+    --largura-tela-app: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+  }
+
+  .tela-clientes > .topo-azul,
+  .tela-clientes > .lista {
+    flex: 0 0 100%;
+  }
+
+  .topo-azul {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 400px;
+    align-items: end;
+    gap: 12px 32px;
+    padding: 18px var(--margem-pc) 26px;
+  }
+
+  .topo-azul__linha {
+    grid-column: 1 / -1;
+  }
+
+  .topo-azul__titulo {
+    font-size: 32px;
+  }
+
+  .topo__sub {
+    font-size: 15px;
+  }
+
+  .busca {
+    grid-column: 2;
+  }
+
+  .filtros {
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    overflow: visible;
+    margin-left: var(--margem-pc);
+    padding: 24px 0 0;
+  }
+
+  .ordem {
+    flex: none;
+    margin-right: var(--margem-pc);
+    padding: 24px 0 0;
+  }
+
+  .lista {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+    gap: 12px 16px;
+    padding-top: 20px;
+  }
+
+  .lista > :not(.cliente) {
+    grid-column: 1 / -1;
+  }
+
+  .cliente {
+    padding: 14px 18px;
+  }
+}

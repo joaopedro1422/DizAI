@@ -99,6 +99,10 @@ export interface Perfil {
   linkPortfolioExterno: string;
   /** Serviços no modo "Agendo por outro app": o link de agendamento de lá (AppBarber, Trinks, Booksy...). */
   linkAgendamentoExterno: string;
+  /** O que o cliente recebe quando a conversa passa para o dono ("" = a de sempre: "1 Minuto!" / "Vou confirmar, 1 minuto"). */
+  mensagemRepasseNaHora?: string;
+  mensagemRepassePedido?: string;
+  mensagemSemResposta?: string;
   saudacaoPersonalizada: string;
   instrucoesObrigatorias: string;
   modoCatalogo: ModoCatalogo;
@@ -153,6 +157,9 @@ export type ConfiguracoesAtendimento = Pick<
   | 'catalogos'
   | 'confirmaQualquerHora'
   | 'linkAgendamentoExterno'
+  | 'mensagemRepasseNaHora'
+  | 'mensagemRepassePedido'
+  | 'mensagemSemResposta'
 >;
 
 /** Dados editados no modal "Dados da loja" do painel. */

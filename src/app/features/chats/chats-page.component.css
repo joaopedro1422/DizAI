@@ -49,12 +49,29 @@
   padding-top: 4px;
 }
 
+/* cada conversa abre o modal com as últimas mensagens e o "Assumir conversa" */
 .conversa {
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
   padding: 14px 0;
+  border: none;
   border-bottom: 1px solid var(--cor-borda-suave);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.conversa:hover .conversa__nome {
+  color: var(--cor-primaria);
+}
+
+.conversa__seta {
+  flex: none;
+  color: var(--cor-borda-forte);
 }
 
 .conversa__textos {

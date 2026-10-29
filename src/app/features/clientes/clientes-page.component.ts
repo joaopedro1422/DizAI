@@ -40,7 +40,7 @@ const MES_ANO = new Intl.DateTimeFormat('pt-BR', { month: 'short', year: 'numeri
   imports: [RouterLink, IconeComponent, AvatarComponent, BottomSheetComponent, CarregandoComponent, EstadoVazioComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './clientes-page.component.html',
-  styleUrls: ['../../shared/estilos-topo-azul.css', './clientes-page.component.css'],
+  styleUrls: ['../../shared/estilos-topo-azul.css', './clientes-page.component.css', './clientes-pc.css'],
 })
 export class ClientesPageComponent implements OnInit {
   private readonly clienteService = inject(ClienteService);

@@ -41,7 +41,7 @@ const ROTULO_ORIGEM: Record<OrigemContatoIgnorado, string> = {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './contatos-ignorados-page.component.html',
-  styleUrls: ['../../shared/estilos-listagem.css', './contatos-ignorados-page.component.css'],
+  styleUrls: ['../../shared/estilos-listagem.css', './contatos-ignorados-page.component.css', './contatos-ignorados-pc.css'],
 })
 export class ContatosIgnoradosPageComponent implements OnInit {
   private readonly contatoIgnoradoService = inject(ContatoIgnoradoService);

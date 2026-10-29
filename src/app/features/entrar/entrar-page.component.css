@@ -82,3 +82,68 @@
   font-weight: 700;
   cursor: pointer;
 }
+
+/* "Página inicial" ao lado da seta: aparece no computador */
+.topo__texto {
+  display: none;
+}
+
+/* Computador: a marca (azul) à esquerda e o formulário centralizado à direita. No celular nada muda. */
+@media (min-width: 1024px) {
+  .tela-entrar {
+    --largura-tela-app: none;
+    display: grid;
+    grid-template-columns: minmax(460px, 46%) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    border-left: none;
+    border-right: none;
+  }
+
+  .tela-entrar > app-painel-marca {
+    grid-column: 1;
+    grid-row: 1 / -1;
+  }
+
+  .topo {
+    grid-column: 2;
+    padding: 28px 40px 0;
+  }
+
+  .topo__voltar {
+    width: auto;
+    gap: 6px;
+    margin-left: 0;
+    padding: 0 14px 0 8px;
+    border-radius: var(--raio-pilula);
+    color: var(--cor-texto-suave);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .topo__voltar:hover {
+    background: var(--cor-fundo-suave);
+    color: var(--cor-texto);
+  }
+
+  .topo__texto {
+    display: inline;
+  }
+
+  .conteudo {
+    grid-column: 2;
+    align-self: center;
+    justify-self: center;
+    width: min(100% - 80px, 420px);
+    padding: 24px 0 72px;
+  }
+
+  /* a logo já está no lado azul */
+  .conteudo > app-logo {
+    display: none;
+  }
+
+  .titulo {
+    font-size: 32px;
+  }
+}

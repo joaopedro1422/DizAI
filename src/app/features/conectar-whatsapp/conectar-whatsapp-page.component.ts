@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { environment } from '../../../environments/environment';
 
@@ -10,10 +10,16 @@ import { EMAIL_SUPORTE } from '../../core/constants/contato';
 import { PerfilService } from '../../core/services/perfil.service';
 import { ToastService } from '../../core/services/toast.service';
 import { CadastroIncorporadoMetaService, ErroCadastroMeta } from '../../core/whatsapp/cadastro-incorporado-meta.service';
-import { CabecalhoPaginaComponent } from '../../shared/components/cabecalho-pagina/cabecalho-pagina.component';
 import { CarregandoComponent } from '../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../shared/components/icone/icone.component';
-import { OPCOES_SITUACAO, PASSOS_JANELA_META, PROBLEMAS_COMUNS, SituacaoWhatsapp, etapasDaSituacao } from './passos-conexao';
+import {
+  OPCOES_SITUACAO,
+  PASSOS_JANELA_META,
+  PROBLEMAS_COMUNS,
+  ROTULO_PERGUNTA,
+  SituacaoWhatsapp,
+  etapasDaSituacao,
+} from './passos-conexao';
 
 /**
  * Assistente de conexão do número da loja com o WhatsApp oficial:
@@ -21,10 +27,10 @@ import { OPCOES_SITUACAO, PASSOS_JANELA_META, PROBLEMAS_COMUNS, SituacaoWhatsapp
  */
 @Component({
   selector: 'app-conectar-whatsapp-page',
-  imports: [ReactiveFormsModule, CabecalhoPaginaComponent, IconeComponent, CarregandoComponent],
+  imports: [ReactiveFormsModule, RouterLink, IconeComponent, CarregandoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './conectar-whatsapp-page.component.html',
-  styleUrl: './conectar-whatsapp-page.component.css',
+  styleUrls: ['../../shared/estilos-topo-azul.css', './conectar-whatsapp-page.component.css', './conectar-whatsapp-pc.css'],
 })
 export class ConectarWhatsappPageComponent implements OnInit {
   private readonly perfilService = inject(PerfilService);
@@ -34,6 +40,7 @@ export class ConectarWhatsappPageComponent implements OnInit {
   private readonly cadastroMeta = inject(CadastroIncorporadoMetaService);
 
   protected readonly perfil = this.perfilService.perfil;
+  protected readonly caminhoPainel = this.sessao.caminhoPainel;
   protected readonly opcoesSituacao = OPCOES_SITUACAO;
   protected readonly passosJanelaMeta = PASSOS_JANELA_META;
 
@@ -45,10 +52,17 @@ export class ConectarWhatsappPageComponent implements OnInit {
     return situacao ? etapasDaSituacao(situacao) : [];
   });
   protected readonly etapaAtual = computed(() => this.etapas()[this.indiceEtapa()] ?? null);
+  /** A etapa atual numa lista de um item: o @for recria o bloco a cada etapa, e ela entra com a animação. */
+  protected readonly etapaVisivel = computed(() => {
+    const etapa = this.etapaAtual();
+    return etapa ? [etapa] : [];
+  });
   /** Pergunta inicial + etapas: a barra de progresso conta a pergunta como o passo 1. */
   protected readonly totalPassos = computed(() => this.etapas().length + 1);
   protected readonly numeroPasso = computed(() => (this.situacao() ? this.indiceEtapa() + 2 : 1));
-  protected readonly progresso = computed(() => Math.round((this.numeroPasso() / this.totalPassos()) * 100));
+  /** Nomes curtos de todos os passos, na ordem (a pergunta é o primeiro). */
+  protected readonly passos = computed(() => [ROTULO_PERGUNTA, ...this.etapas().map((etapa) => etapa.rotulo)]);
+  protected readonly proximoPasso = computed(() => this.passos()[this.numeroPasso()] ?? null);
 
   protected readonly problemasComuns = PROBLEMAS_COMUNS;
   protected readonly emailSuporte = EMAIL_SUPORTE;
@@ -86,6 +100,19 @@ export class ConectarWhatsappPageComponent implements OnInit {
 
   protected avancar(): void {
     this.indiceEtapa.update((indice) => Math.min(indice + 1, this.etapas().length - 1));
+    rolarParaOTopo();
+  }
+
+  /** Volta para um passo já feito, pela lista de passos (0 = a pergunta inicial). */
+  protected irParaPasso(indice: number): void {
+    if (this.conectando() || indice >= this.numeroPasso() - 1) {
+      return;
+    }
+    if (indice === 0) {
+      this.situacao.set(null);
+    } else {
+      this.indiceEtapa.set(indice - 1);
+    }
     rolarParaOTopo();
   }
 

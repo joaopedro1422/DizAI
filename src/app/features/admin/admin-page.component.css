@@ -3,6 +3,13 @@
   max-width: 1040px;
 }
 
+/* computador: a largura toda, como as outras telas do painel (tela-pc em styles.css) */
+@media (min-width: 1024px) {
+  .tela-admin {
+    max-width: none;
+  }
+}
+
 .admin {
   display: flex;
   flex-direction: column;

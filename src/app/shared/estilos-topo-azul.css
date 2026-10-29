@@ -31,6 +31,27 @@
   background: rgba(255, 255, 255, 0.12);
 }
 
+/* "Voltar" ao lado da seta: só no computador (o mesmo do cabeçalho das outras telas) */
+.topo-azul__voltar-texto {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .topo-azul__voltar {
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px 6px 6px;
+    border-radius: var(--raio-pilula);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .topo-azul__voltar-texto {
+    display: inline;
+  }
+}
+
 .topo-azul__identidade {
   display: flex;
   align-items: center;

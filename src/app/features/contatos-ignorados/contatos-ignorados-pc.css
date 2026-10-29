@@ -1,0 +1,53 @@
+/*
+ * Computador: os botões ao lado do título; a lista num painel branco à esquerda e a explicação à direita.
+ * No celular nada muda (tudo aqui fica dentro do @media).
+ */
+@media (min-width: 1024px) {
+  .acoes {
+    display: flex;
+  }
+
+  .acoes .btn {
+    width: auto;
+    min-height: 46px;
+    padding-inline: 20px;
+  }
+
+  .contatos-ignorados {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    gap: 20px 32px;
+  }
+
+  .contatos-ignorados > app-carregando {
+    grid-column: 1 / -1;
+  }
+
+  .contatos-ignorados__lista {
+    display: block;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    padding: 4px 24px;
+    border: 1px solid var(--cor-borda-suave);
+    border-radius: var(--raio-grande);
+    background: var(--cor-fundo);
+  }
+
+  .contatos-ignorados__lista > .contato:last-of-type {
+    border-bottom: none;
+  }
+
+  .explicacao {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+  }
+
+  .contatos-ignorados__nota {
+    grid-column: 2;
+    grid-row: 2;
+    margin-top: 0;
+  }
+}
