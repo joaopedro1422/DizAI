@@ -19,7 +19,7 @@
           (click)="escolherCor(cor.valor)"
         >
           @if (selecionada) {
-            <app-icone nome="check" [tamanho]="16" [espessura]="3" />
+            <app-icone nome="check" [tamanho]="14" [espessura]="3" />
           }
         </button>
       }
@@ -99,7 +99,9 @@
     <app-seletor-fundo [valor]="fundoAtual()" (escolher)="fundoAtual.set($event)" />
     <p class="aviso-fundo">
       <app-icone nome="informacao" [tamanho]="15" [espessura]="2" />
-      @if (fundoEscolhido().cor) {
+      @if (fundoAtual() === 'ESCURO') {
+        Tema escuro: a vitrine fica preta, com os textos e detalhes em branco e os botões na sua cor de destaque.
+      } @else if (fundoEscolhido().cor) {
         Esta janela está com essa cor, para você ver como fica.
       } @else {
         Sem cor de fundo: a vitrine fica no branco padrão, como esta janela.

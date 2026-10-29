@@ -17,11 +17,21 @@
 .vitrine--escura {
   --vitrine-texto: #f4f1ee;
   --vitrine-suave: #b4aca6;
-  --vitrine-borda: #3a3532;
+  --vitrine-borda: #57504b;
   --vitrine-fundo-suave: #24211f;
   --vitrine-cartao: #1c1a19;
   --vitrine-pagina: #0f0e0d;
+  --vitrine-barra: rgba(44, 41, 39, 0.92);
   color-scheme: dark;
+}
+
+/* tema escuro: a linha embaixo do cabeçalho em cinza, sem sombra */
+.vitrine--escura .categorias {
+  border-bottom-color: var(--vitrine-borda);
+}
+
+.vitrine--escura .container-topo {
+  box-shadow: none;
 }
 
 .vitrine--fundo-pagina {

@@ -11,9 +11,8 @@ export interface OpcaoCorMarca {
 }
 
 /**
- * Cores que o lojista pode escolher para a página pública.
- * Só tons escuros: todas têm contraste de pelo menos 4,5:1 com texto branco (WCAG AA),
- * então botões e etiquetas continuam legíveis com qualquer escolha.
+ * Cores que o lojista pode escolher para a página pública: os tons escuros (contraste de 4,5:1 com texto branco) e,
+ * no fim, as vibrantes (verde-limão, laranja, vermelho...), mais chamativas, com o texto branco em negrito por cima.
  * Cada uma tem um fundo claro com nome próprio (tons diferentes entre si, para dar para ver a diferença no seletor).
  */
 export const CORES_MARCA: OpcaoCorMarca[] = [
@@ -29,6 +28,14 @@ export const CORES_MARCA: OpcaoCorMarca[] = [
   { valor: 'ROSA_ESCURO', nome: 'Rosa-escuro', hex: '#A12A63', fundo: '#fcedf4ec', nomeFundo: 'Rosa-bebê' },
   { valor: 'ROXO', nome: 'Roxo', hex: '#5B2A86', fundo: '#f3edfbec', nomeFundo: 'Lilás' },
   { valor: 'MARROM', nome: 'Marrom', hex: '#5C3A21', fundo: '#f6f0e8ec', nomeFundo: 'Areia' },
+  { valor: 'VERDE_LIMAO', nome: 'Verde-limão', hex: '#5FA80A', fundo: '#f2fae3ec', nomeFundo: 'Limão-claro' },
+  { valor: 'VERDE_VIVO', nome: 'Verde-vivo', hex: '#16A34A', fundo: '#e8f8eeec', nomeFundo: 'Verde-claro' },
+  { valor: 'TURQUESA', nome: 'Turquesa', hex: '#0891B2', fundo: '#e5f6faec', nomeFundo: 'Turquesa-claro' },
+  { valor: 'AZUL_ROYAL', nome: 'Azul-royal', hex: '#2563EB', fundo: '#eaf1feec', nomeFundo: 'Azul-claro' },
+  { valor: 'ROXO_VIVO', nome: 'Roxo-vivo', hex: '#7C3AED', fundo: '#f2ecfeec', nomeFundo: 'Lavanda' },
+  { valor: 'PINK', nome: 'Pink', hex: '#E11D74', fundo: '#fdeaf3ec', nomeFundo: 'Pink-claro' },
+  { valor: 'VERMELHO', nome: 'Vermelho', hex: '#DC2626', fundo: '#fdececec', nomeFundo: 'Vermelho-claro' },
+  { valor: 'LARANJA', nome: 'Laranja', hex: '#F2690D', fundo: '#fff1e6ec', nomeFundo: 'Laranja-claro' },
 ];
 
 export const COR_MARCA_PADRAO: CorMarca = 'PRETO';

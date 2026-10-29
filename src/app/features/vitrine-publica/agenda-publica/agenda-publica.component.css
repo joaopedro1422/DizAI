@@ -4,7 +4,8 @@
  */
 :host {
   display: block;
-  --faixa-destaque: var(--vitrine-destaque, #1c1a19);
+  --faixa-destaque: var(--vitrine-selecao, var(--vitrine-destaque, #1c1a19));
+  --faixa-fundo: var(--vitrine-cartao, #ffffff);
   --faixa-borda: var(--vitrine-borda, #e2dcd9);
   --faixa-suave: var(--vitrine-suave, #6b6461);
   --faixa-texto: var(--vitrine-texto, #1c1a19);
@@ -140,7 +141,7 @@
 }
 
 .servico--escolhido {
-  border-color: var(--vitrine-destaque);
+  border-color: var(--vitrine-selecao, var(--vitrine-destaque));
   background: var(--tinta);
   box-shadow: 0 8px 22px color-mix(in srgb, var(--vitrine-destaque) 14%, transparent);
 }
@@ -252,7 +253,7 @@
 }
 
 .pessoa--escolhida {
-  border-color: var(--vitrine-destaque);
+  border-color: var(--vitrine-selecao, var(--vitrine-destaque));
   background: var(--tinta);
   box-shadow: 0 8px 22px color-mix(in srgb, var(--vitrine-destaque) 14%, transparent);
 }
@@ -308,7 +309,7 @@
 }
 
 .pessoa--escolhida .pessoa__marca {
-  border-color: var(--vitrine-destaque);
+  border-color: var(--vitrine-selecao, var(--vitrine-destaque));
   background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
 }
 
@@ -356,11 +357,11 @@
 }
 
 .hora:hover {
-  border-color: var(--vitrine-destaque);
+  border-color: var(--vitrine-selecao, var(--vitrine-destaque));
 }
 
 .hora--escolhida {
-  border-color: var(--vitrine-destaque);
+  border-color: var(--vitrine-selecao, var(--vitrine-destaque));
   background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
   color: #ffffff;
   transform: translateY(-1px);
@@ -382,7 +383,7 @@
 }
 
 .campo-nome:focus {
-  border-color: var(--vitrine-destaque);
+  border-color: var(--vitrine-selecao, var(--vitrine-destaque));
   outline: none;
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--vitrine-destaque) 14%, transparent);
 }
@@ -488,7 +489,8 @@
   padding: 10px;
   border: 1px solid color-mix(in srgb, var(--vitrine-borda) 70%, transparent);
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.86);
+  /* no tema escuro, um cinza translúcido (--vitrine-barra); no claro, o branco de sempre */
+  background: var(--vitrine-barra, rgba(255, 255, 255, 0.86));
   box-shadow: 0 12px 34px rgba(20, 16, 14, 0.16);
   transform: translateX(-50%);
   -webkit-backdrop-filter: blur(14px);
@@ -629,7 +631,7 @@
 }
 
 .produto--reservado {
-  border-color: var(--vitrine-destaque);
+  border-color: var(--vitrine-selecao, var(--vitrine-destaque));
   box-shadow: 0 0 0 1px var(--vitrine-destaque);
 }
 

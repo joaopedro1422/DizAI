@@ -115,6 +115,18 @@ export class VitrinePublicaPageComponent implements OnInit {
     return fundoDoDestaque(corNoTema, this.loja()?.estiloCor);
   });
 
+  /**
+   * Tema escuro: bordas do que está selecionado (serviço, dia, horário) e o dia escolhido na cor de destaque da loja.
+   * Preto e grafite sumiriam no fundo: viram um cinza claro. No tema claro fica null (vale --vitrine-destaque).
+   */
+  protected readonly corSelecao = computed(() => {
+    const cor = this.corDaMarca();
+    if (!this.temaEscuro() || !cor) {
+      return null;
+    }
+    return cor === '#151515' || cor === '#3F4652' ? '#8a837d' : cor;
+  });
+
   /** A cor escolhida pelo lojista (os preenchimentos usam ela também no tema escuro). */
   private readonly corDaMarca = computed(() => {
     const corMarca = this.loja()?.corMarca;

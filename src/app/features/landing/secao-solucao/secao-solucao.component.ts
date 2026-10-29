@@ -8,7 +8,7 @@ type DetalheGanho =
   | 'resposta'
   | 'conversa'
   | 'catalogo'
-  | 'portfolio'
+  | 'audio'
   | 'jeito'
   | 'assumir'
   | 'relatorios'
@@ -45,10 +45,10 @@ const GANHOS: Ganho[] = [
     detalhe: 'catalogo',
   },
   {
-    icone: 'imagem',
-    titulo: 'Vitrine e portfólio com as suas fotos',
-    texto: 'Uma página exclusiva da sua loja, com os seus trabalhos por tema, que o assistente envia na conversa.',
-    detalhe: 'portfolio',
+    icone: 'microfone',
+    titulo: 'Entende os áudios dos clientes',
+    texto: 'O cliente prefere falar? O assistente entende a mensagem de voz e responde por escrito, sem você precisar ouvir.',
+    detalhe: 'audio',
   },
   {
     icone: 'grafico',
@@ -86,6 +86,17 @@ const GANHOS: Ganho[] = [
 /** Barras da miniatura do relatório (altura em %). */
 const BARRAS = [36, 52, 44, 70, 58, 100, 30];
 
+/** Ondas da nota de voz na miniatura do áudio (altura em %). */
+const ONDAS = [30, 55, 80, 45, 95, 60, 35, 70, 50, 85, 40, 65, 30, 50, 75, 40, 25];
+
+/** O que a vitrine pública reúne (o último card, na largura toda). */
+const RECURSOS_VITRINE: { icone: NomeIcone; texto: string }[] = [
+  { icone: 'imagem', texto: 'Portfólio com as fotos dos seus trabalhos, separadas por tema' },
+  { icone: 'estrela', texto: 'Feedbacks dos clientes, com as estrelas de cada um' },
+  { icone: 'local', texto: '"Como chegar": o seu endereço com mapa e rota' },
+  { icone: 'calendario', texto: 'Para serviços, é também a sua página de agendamento online' },
+];
+
 /**
  * "A solução": o que o DizAI faz por qualquer negócio. O cartão azul abre com o tempo de volta; os outros, um
  * ganho cada, com uma miniatura da tela no pé.
@@ -95,9 +106,31 @@ const BARRAS = [36, 52, 44, 70, 58, 100, 30];
   imports: [IconeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './secao-solucao.component.html',
-  styleUrls: ['../secao-landing.css', './secao-solucao.component.css'],
+  styleUrls: ['../secao-landing.css', './secao-solucao.component.css', './ganho-vitrine.css'],
 })
 export class SecaoSolucaoComponent {
   protected readonly ganhos = GANHOS;
   protected readonly barras = BARRAS;
+  protected readonly ondas = ONDAS;
+  protected readonly recursosVitrine = RECURSOS_VITRINE;
+
+  /** "Ver": desce até a seção da vitrine pública, logo abaixo na landing. */
+  protected verVitrine(): void {
+    const galeria = document.getElementById('galeria');
+    if (!galeria) {
+      return;
+    }
+    galeria.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // as seções do meio carregam imagens enquanto a página rola e empurram a vitrine para baixo: no fim, acerta
+    const acertar = () => {
+      if (Math.abs(galeria.getBoundingClientRect().top) > 4) {
+        galeria.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+    if ('onscrollend' in window) {
+      window.addEventListener('scrollend', acertar, { once: true });
+    } else {
+      setTimeout(acertar, 1200);   // Safari sem o evento scrollend
+    }
+  }
 }

@@ -76,21 +76,42 @@
   </div>
 
   <form class="entrada" (ngSubmit)="enviar()">
-    <label class="somente-leitor-tela" for="teste-campo">Mensagem como cliente</label>
-    <textarea
-      #campo
-      id="teste-campo"
-      name="texto"
-      class="entrada__campo"
-      rows="1"
-      maxlength="1000"
-      placeholder="Escreva como se fosse um cliente…"
-      [ngModel]="texto()"
-      (ngModelChange)="texto.set($event)"
-      (keydown)="aoTeclar($event)"
-    ></textarea>
-    <button type="submit" class="entrada__enviar" [disabled]="!texto().trim() || respondendo()" aria-label="Enviar">
-      <app-icone nome="seta" [tamanho]="20" [espessura]="2.4" />
-    </button>
+    @if (gravando()) {
+      <div class="gravacao" role="status">
+        <button type="button" class="gravacao__cancelar" aria-label="Descartar o áudio" (click)="cancelarGravacao()">
+          <app-icone nome="lixeira" [tamanho]="20" [espessura]="2" />
+        </button>
+        <span class="gravacao__ponto" aria-hidden="true"></span>
+        <span class="gravacao__tempo">{{ tempoGravado() }}</span>
+        <span class="gravacao__dica">Gravando… toque em enviar</span>
+      </div>
+      <button type="button" class="entrada__enviar" aria-label="Enviar o áudio" (click)="pararGravacao()">
+        <app-icone nome="seta" [tamanho]="20" [espessura]="2.4" />
+      </button>
+    } @else {
+      <label class="somente-leitor-tela" for="teste-campo">Mensagem como cliente</label>
+      <textarea
+        #campo
+        id="teste-campo"
+        name="texto"
+        class="entrada__campo"
+        rows="1"
+        maxlength="1000"
+        placeholder="Escreva como se fosse um cliente…"
+        [ngModel]="texto()"
+        (ngModelChange)="texto.set($event)"
+        (keydown)="aoTeclar($event)"
+      ></textarea>
+      @if (texto().trim() || !podeGravar) {
+        <button type="submit" class="entrada__enviar" [disabled]="!texto().trim() || respondendo()" aria-label="Enviar">
+          <app-icone nome="seta" [tamanho]="20" [espessura]="2.4" />
+        </button>
+      } @else {
+        <!-- campo vazio: o botão vira o microfone, como no WhatsApp -->
+        <button type="button" class="entrada__enviar" [disabled]="respondendo()" aria-label="Gravar um áudio como cliente" (click)="gravar()">
+          <app-icone nome="microfone" [tamanho]="20" [espessura]="2.2" />
+        </button>
+      }
+    }
   </form>
 </section>

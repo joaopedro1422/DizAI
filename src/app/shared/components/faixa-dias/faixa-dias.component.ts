@@ -178,7 +178,7 @@ export interface ItemFaixaDia {
 
     :host(.faixa-dias--limpa) .dia:hover:not(.dia--desativado):not(.dia--escolhido) {
       border-color: transparent;
-      background: var(--cor-fundo-suave);
+      background: var(--faixa-hover, var(--cor-fundo-suave));
     }
 
     /* Grade de mês em tela grande (tablet e computador): 7 colunas, segunda primeiro */
@@ -194,7 +194,7 @@ export interface ItemFaixaDia {
         font-size: 11px;
         font-weight: 700;
         text-align: center;
-        color: var(--cor-texto-suave);
+        color: var(--faixa-suave, var(--cor-texto-suave));
       }
 
       :host(.faixa-dias--grade) .faixa {

@@ -302,3 +302,48 @@
     animation: none;
   }
 }
+
+/* Gravando um áudio: lixeira, ponto vermelho piscando e o tempo, no lugar do campo de texto */
+.gravacao {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 14px 0 6px;
+  border-radius: 22px;
+  background: #ffffff;
+  color: #111B21;
+}
+
+.gravacao__cancelar {
+  display: inline-flex;
+  padding: 6px;
+  border: none;
+  background: none;
+  color: #8696A0;
+  cursor: pointer;
+}
+
+.gravacao__ponto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #EA0038;
+  animation: piscar-gravacao 1s ease-in-out infinite;
+}
+
+.gravacao__tempo {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.gravacao__dica {
+  margin-left: auto;
+  font-size: 12.5px;
+  color: #8696A0;
+}
+
+@keyframes piscar-gravacao {
+  50% { opacity: 0.25; }
+}

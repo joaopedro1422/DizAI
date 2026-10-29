@@ -29,6 +29,14 @@ export type FormaRecebimento = 'ENTREGA' | 'RETIRADA' | 'ATENDIMENTO_LOCAL';
 
 /** Cor da página pública da loja (sempre um tom escuro, ver CORES_MARCA). */
 export type CorMarca =
+  | 'VERDE_LIMAO'
+  | 'VERDE_VIVO'
+  | 'TURQUESA'
+  | 'AZUL_ROYAL'
+  | 'ROXO_VIVO'
+  | 'PINK'
+  | 'VERMELHO'
+  | 'LARANJA'
   | 'PRETO'
   | 'GRAFITE'
   | 'AZUL_MARINHO'

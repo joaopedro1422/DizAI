@@ -53,13 +53,17 @@
                 <span class="arquivo__nome"><strong>Cardápio de outubro.pdf</strong><small>2 páginas · enviado na conversa</small></span>
               </span>
             }
-            @case ('portfolio') {
-              <span class="fotos">
-                <span class="fotos__item fotos__item--1"></span>
-                <span class="fotos__item fotos__item--2"></span>
-                <span class="fotos__item fotos__item--3"></span>
-                <span class="fotos__item fotos__item--mais">+24</span>
+            @case ('audio') {
+              <span class="nota-voz">
+                <span class="nota-voz__play"><app-icone nome="reproduzir" [tamanho]="12" [espessura]="2.4" /></span>
+                <span class="nota-voz__ondas">
+                  @for (altura of ondas; track $index) {
+                    <span [style.height.%]="altura"></span>
+                  }
+                </span>
+                <span class="nota-voz__tempo">0:12</span>
               </span>
+              <span class="mini-balao">Temos sim! Amanhã às 14h ou às 16h30. Qual prefere?</span>
             }
             @case ('relatorios') {
               <span class="relatorio">
@@ -99,5 +103,66 @@
         </div>
       </article>
     }
+
+    <!-- o último, na largura toda: a vitrine pública com tudo o que ela reúne -->
+    <article class="ganho ganho--vitrine">
+      <div class="vitrine-card__textos">
+        <span class="vitrine-card__selo"><app-icone nome="imagem" [tamanho]="15" [espessura]="2.2" />Vitrine pública</span>
+        <h3 class="vitrine-card__titulo">Uma página exclusiva da sua loja, pronta para enviar.</h3>
+        <p class="ganho__texto">
+          Com a sua logo, as suas cores e a sua fonte. O assistente envia o link na conversa e você divulga no
+          Instagram, no status ou onde quiser.
+        </p>
+        <ul class="vitrine-card__lista">
+          @for (recurso of recursosVitrine; track recurso.texto) {
+            <li>
+              <span class="vitrine-card__icone"><app-icone [nome]="recurso.icone" [tamanho]="16" [espessura]="2" /></span>
+              {{ recurso.texto }}
+            </li>
+          }
+        </ul>
+        <button type="button" class="btn btn--primario vitrine-card__ver" (click)="verVitrine()">
+          Ver
+          <app-icone nome="setaBaixo" [tamanho]="18" [espessura]="2.2" />
+        </button>
+      </div>
+
+      <!-- miniatura da vitrine: capa, loja, abas e os blocos (fotos, feedback, mapa, agenda) -->
+      <div class="mini-vitrine" aria-hidden="true">
+        <span class="mini-vitrine__capa"></span>
+        <span class="mini-vitrine__loja">
+          <span class="mini-vitrine__logo">S</span>
+          <span><strong>Sálvia Studio</strong><small>dizai.com/l/salvia-studio</small></span>
+        </span>
+        <span class="mini-vitrine__abas">
+          <span class="mini-vitrine__aba--ativa">Trabalhos</span>
+          <span>Agendar horário</span>
+        </span>
+        <span class="mini-vitrine__blocos">
+          <span class="bloco bloco--fotos">
+            <small>Unhas em gel</small>
+            <span class="fotos">
+              <span class="fotos__item fotos__item--1"></span>
+              <span class="fotos__item fotos__item--2"></span>
+              <span class="fotos__item fotos__item--3"></span>
+              <span class="fotos__item fotos__item--mais">+24</span>
+            </span>
+          </span>
+          <span class="bloco">
+            <span class="bloco__estrelas">★★★★★</span>
+            <span class="bloco__citacao">"Atendimento impecável, saí apaixonada pelas unhas!"</span>
+            <small>Marina</small>
+          </span>
+          <span class="bloco bloco--mapa">
+            <span class="bloco__pino"><app-icone nome="local" [tamanho]="16" [espessura]="2.2" /></span>
+            <span><strong>Como chegar</strong><small>Rua das Flores, 120 · Traçar rota</small></span>
+          </span>
+          <span class="bloco">
+            <strong>Agendar horário</strong>
+            <span class="bloco__horarios"><span>09:00</span><span class="bloco__horario--ativo">10:30</span><span>14:00</span></span>
+          </span>
+        </span>
+      </div>
+    </article>
   </div>
 </section>

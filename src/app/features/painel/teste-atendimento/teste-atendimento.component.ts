@@ -16,7 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { mensagemDoErro } from '../../../core/api/erro-api';
 import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
 import { PerfilService } from '../../../core/services/perfil.service';
-import { AcaoTeste, MensagemTeste, TesteAtendimentoService } from '../../../core/services/teste-atendimento.service';
+import { AcaoTeste, MensagemTeste, RespostaTeste, TesteAtendimentoService } from '../../../core/services/teste-atendimento.service';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { LinhaFormatada, formatarWhatsapp } from './formatacao-whatsapp';
 
@@ -30,6 +30,9 @@ type ItemConversa =
 
 /** De quanto em quanto tempo a tela busca as mensagens enquanto o assistente responde. */
 const ACOMPANHAR_A_CADA_MS = 700;
+
+/** Limite da gravação no teste: passou disso, envia o que já gravou. */
+const DURACAO_MAXIMA_AUDIO_S = 120;
 
 const AVISOS: Partial<Record<AcaoTeste, string>> = {
   TRANSFERIR_HUMANO: 'Aqui o assistente passaria a conversa para você e te avisaria no celular.',
@@ -69,6 +72,19 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
   protected readonly erro = signal<string | null>(null);
   protected readonly texto = signal('');
 
+  /** Gravação de áudio (como a nota de voz do WhatsApp): o backend transcreve e o assistente responde o que foi dito. */
+  protected readonly podeGravar = typeof MediaRecorder !== 'undefined' && !!navigator.mediaDevices?.getUserMedia;
+  protected readonly gravando = signal(false);
+  protected readonly segundosGravados = signal(0);
+  protected readonly tempoGravado = computed(() => {
+    const total = this.segundosGravados();
+    return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
+  });
+  private gravador: MediaRecorder | null = null;
+  private pedacos: Blob[] = [];
+  private relogioGravacao: number | undefined;
+  private gravacaoCancelada = false;
+
   protected readonly inicial = computed(() => this.perfil().nomeLoja.trim().charAt(0).toUpperCase() || '?');
 
   protected readonly itens = computed<ItemConversa[]>(() =>
@@ -95,6 +111,7 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
 
   ngOnDestroy(): void {
     document.body.style.overflow = this.overflowAnteriorDoBody;
+    this.cancelarGravacao();   // fechou gravando: descarta e libera o microfone
   }
 
   private async carregar(): Promise<void> {
@@ -123,23 +140,90 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
       return;
     }
     this.texto.set('');
+    // em caso de erro, devolve o texto para não precisar escrever de novo
+    await this.conversar(texto, () => this.servico.enviar(texto), () => this.texto.set(texto));
+  }
+
+  /** Começa a gravar (pede o microfone na primeira vez). Tocar de novo no botão envia; a lixeira descarta. */
+  protected async gravar(): Promise<void> {
+    if (this.respondendo() || this.gravando()) {
+      return;
+    }
+    this.erro.set(null);
+    let microfone: MediaStream;
+    try {
+      microfone = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch {
+      this.erro.set('Libere o microfone no navegador para gravar um áudio.');
+      return;
+    }
+    const tipo = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus'].find((t) => MediaRecorder.isTypeSupported(t));
+    const gravador = new MediaRecorder(microfone, tipo ? { mimeType: tipo } : undefined);
+    this.gravador = gravador;
+    this.pedacos = [];
+    this.gravacaoCancelada = false;
+    gravador.ondataavailable = (evento) => {
+      if (evento.data.size > 0) {
+        this.pedacos.push(evento.data);
+      }
+    };
+    gravador.onstop = () => {
+      microfone.getTracks().forEach((faixa) => faixa.stop());
+      window.clearInterval(this.relogioGravacao);
+      this.gravando.set(false);
+      if (!this.gravacaoCancelada) {
+        void this.enviarAudio(new Blob(this.pedacos, { type: gravador.mimeType }));
+      }
+    };
+    gravador.start();
+    this.gravando.set(true);
+    this.segundosGravados.set(0);
+    this.relogioGravacao = window.setInterval(() => {
+      this.segundosGravados.update((s) => s + 1);
+      if (this.segundosGravados() >= DURACAO_MAXIMA_AUDIO_S) {
+        this.pararGravacao();   // limite: envia o que já gravou
+      }
+    }, 1000);
+  }
+
+  protected pararGravacao(): void {
+    if (this.gravador?.state === 'recording') {
+      this.gravador.stop();
+    }
+  }
+
+  protected cancelarGravacao(): void {
+    this.gravacaoCancelada = true;
+    this.pararGravacao();
+  }
+
+  private async enviarAudio(audio: Blob): Promise<void> {
+    if (this.segundosGravados() < 1 || audio.size < 1000) {
+      this.erro.set('Áudio muito curto. Toque no microfone, fale e toque em enviar.');
+      return;
+    }
+    await this.conversar('🎤 Transcrevendo o áudio…', () => this.servico.enviarAudio(audio));
+  }
+
+  /** Mostra a mensagem do cliente pendente, acompanha a saudação e põe a resposta do assistente na tela. */
+  private async conversar(pendente: string, enviar: () => Promise<RespostaTeste>, aoFalhar?: () => void): Promise<void> {
     this.aviso.set(null);
     this.erro.set(null);
-    this.pendente.set(texto);
+    this.pendente.set(pendente);
     this.respondendo.set(true);
     this.rolarParaOFim();
     // como no WhatsApp: a saudação é gravada antes da IA responder, então aparece primeiro
     let terminou = false;
     const acompanhar = window.setInterval(() => void this.acompanhar(() => terminou), ACOMPANHAR_A_CADA_MS);
     try {
-      const resposta = await this.servico.enviar(texto);
+      const resposta = await enviar();
       terminou = true;
       this.mensagens.set(resposta.mensagens);
       this.aviso.set(resposta.acao ? (AVISOS[resposta.acao] ?? null) : null);
     } catch (erro) {
       terminou = true;
       this.erro.set(mensagemDoErro(erro, 'O assistente não respondeu agora. Tente de novo.'));
-      this.texto.set(texto);   // devolve o texto para não precisar escrever de novo
+      aoFalhar?.();
     } finally {
       window.clearInterval(acompanhar);
       this.pendente.set(null);

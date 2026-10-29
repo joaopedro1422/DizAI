@@ -93,7 +93,8 @@ export class SeletorCorMarcaComponent {
   constructor() {
     // os fundos têm um pouco de transparência: sobre o branco, o que está atrás do modal não aparece
     effect(() => {
-      const cor = this.fundoEscolhido().cor;
+      // tema escuro: a janela continua clara (o texto do painel é escuro); o aviso embaixo explica como fica
+      const cor = this.fundoAtual() === 'ESCURO' ? null : this.fundoEscolhido().cor;
       this.corFundo.emit(cor ? `linear-gradient(${cor}, ${cor}), #ffffff` : null);
     });
   }

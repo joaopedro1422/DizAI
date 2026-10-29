@@ -63,10 +63,11 @@ const INTERVALOS = [
 
 const ANTECEDENCIAS = [
   { minutos: 0, rotulo: 'Sem' },
+  { minutos: 10, rotulo: '10 min' },
+  { minutos: 30, rotulo: '30 min' },
   { minutos: 60, rotulo: '1 hora' },
   { minutos: 120, rotulo: '2 horas' },
   { minutos: 240, rotulo: '4 horas' },
-  { minutos: 720, rotulo: '12 horas' },
   { minutos: 1440, rotulo: '1 dia' },
 ];
 

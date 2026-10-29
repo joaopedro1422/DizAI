@@ -38,6 +38,14 @@ export class TesteAtendimentoService {
     return firstValueFrom(this.http.post<RespostaTeste>(this.url('/mensagens'), { texto }));
   }
 
+  /** Áudio gravado no navegador: o backend transcreve e segue como uma nota de voz do cliente. */
+  enviarAudio(audio: Blob): Promise<RespostaTeste> {
+    const extensao = audio.type.includes('mp4') ? 'm4a' : audio.type.includes('ogg') ? 'ogg' : 'webm';
+    const formulario = new FormData();
+    formulario.append('audio', audio, `gravacao.${extensao}`);
+    return firstValueFrom(this.http.post<RespostaTeste>(this.url('/audio'), formulario));
+  }
+
   recomecar(): Promise<void> {
     return firstValueFrom(this.http.delete<void>(this.url()));
   }
