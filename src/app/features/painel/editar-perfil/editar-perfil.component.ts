@@ -5,6 +5,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RAMOS_NEGOCIO } from '../../../core/constants/opcoes-perfil';
 import { PeriodoAtendimento } from '../../../core/models/agenda.model';
 import { DadosLoja, RamoNegocio, UnidadeAntecedencia, ramoUsaAgenda } from '../../../core/models/perfil.model';
+import { SegmentoNegocio, segmentoDoPerfil, segmentosDoRamo } from '../../../core/constants/segmentos';
 import { mensagemDoErro } from '../../../core/api/erro-api';
 import { AgendaService } from '../../../core/services/agenda.service';
 import { PerfilService } from '../../../core/services/perfil.service';
@@ -59,6 +60,12 @@ export class EditarPerfilComponent {
   });
   /** Serviço presencial: pode copiar os horários da agenda. */
   protected readonly usaAgenda = computed(() => ramoUsaAgenda(this.ramoEscolhido()));
+  protected readonly ramoAtual = computed(() => this.ramoEscolhido());
+
+  /** O tipo do negócio dentro do ramo (só exemplos e tutoriais); trocar o ramo deixa sem tipo até escolher outro. */
+  protected readonly segmento = signal<SegmentoNegocio | null>(this.perfilService.perfil().segmento ?? null);
+  protected readonly segmentos = computed(() => segmentosDoRamo(this.ramoEscolhido()));
+  protected readonly segmentoDoRamo = computed(() => segmentoDoPerfil(this.ramoEscolhido(), this.segmento())?.valor ?? null);
   /** Serviço com agendamento automático: quem manda é a agenda; o horário daqui só confundiria. */
   protected readonly mostrarHorario = computed(
     () => !(this.usaAgenda() && this.perfilService.perfil().modoPedido === 'AGENDAMENTO_AUTOMATICO'),
@@ -110,6 +117,7 @@ export class EditarPerfilComponent {
       // escondido (agendamento automático): não mexe no horário salvo
       horariosFuncionamento: this.mostrarHorario() ? this.horarios() : undefined,
       horarioLivre: this.mostrarHorario() ? this.horarioLivre() : undefined,
+      segmento: this.segmentoDoRamo(),
     };
   }
 

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
 
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { mensagemDoErro } from '../../../core/api/erro-api';
 import { SessaoService } from '../../../core/auth/sessao.service';
@@ -32,10 +32,10 @@ const ITEM_SAIR: ItemMenuAcoes<AcaoPerfil> = { id: 'sair', rotulo: 'Sair da cont
 /** Topo do painel: saudação, identidade da loja, status do assistente e link público. */
 @Component({
   selector: 'app-resumo-loja',
-  imports: [IconeComponent, MenuAcoesComponent, AlvoTourDirective, CarregandoComponent, InterruptorComponent, UrlImagemPipe],
+  imports: [IconeComponent, MenuAcoesComponent, AlvoTourDirective, CarregandoComponent, InterruptorComponent, UrlImagemPipe, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './resumo-loja.component.html',
-  styleUrl: './resumo-loja.component.css',
+  styleUrls: ['./resumo-loja.component.css', './conectar-whatsapp.css'],
   host: {
     '[style.--brilho-topo]': 'brilhoTopo()',
   },
@@ -56,6 +56,7 @@ export class ResumoLojaComponent {
   private readonly instalacaoApp = inject(InstalacaoAppService);
   private readonly router = inject(Router);
   private readonly rotas = inject(SessaoService).rotasDoPainel;
+  protected readonly rotaConectar = computed(() => this.rotas().conectarWhatsapp);
   /** "Baixar atalho" enquanto o DizAI ainda não está instalado neste aparelho; depois, "Notificações". */
   protected readonly itensMenu = computed(() => [
     ITEM_EDITAR,

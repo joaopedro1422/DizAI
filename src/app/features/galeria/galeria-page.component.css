@@ -1,6 +1,48 @@
+/* Link da vitrine no topo: clicável, com o botão de copiar (o mesmo da Agenda) */
 .link-publico {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 100%;
+  border-radius: var(--raio-pilula);
   background: var(--cor-primaria-clara);
   color: var(--cor-primaria);
+}
+
+.link-publico__url {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 7px 4px 7px 12px;
+  color: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.link-publico__texto {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link-publico__copiar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 34px;
+  height: 32px;
+  border: none;
+  border-left: 1px solid rgba(30, 58, 114, 0.15);
+  border-radius: 0 var(--raio-pilula) var(--raio-pilula) 0;
+  background: transparent;
+  color: inherit;
+}
+
+.link-publico__copiar:hover {
+  background: rgba(30, 58, 114, 0.08);
 }
 
 .acoes {

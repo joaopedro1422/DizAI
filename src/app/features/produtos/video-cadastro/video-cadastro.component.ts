@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+
+import { exemplosDeProdutos, exemplosDeServicos, listaEmTexto } from '../../../core/constants/segmentos';
+import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.service';
 
 import { CenaVideo, VideoTutorialComponent } from '../../../shared/components/video-tutorial/video-tutorial.component';
 
@@ -45,4 +48,11 @@ export class VideoCadastroComponent {
   readonly fechar = output<void>();
 
   protected readonly cenas = computed(() => ROTEIROS[this.tipo()]);
+
+  /** Os exemplos das cenas, do segmento da loja (barbearia, bolos...). */
+  protected readonly exemplos = inject(ConteudoRamoService).exemplos;
+  protected readonly produtos = computed(() => exemplosDeProdutos(this.exemplos()));
+  protected readonly servicos = computed(() => exemplosDeServicos(this.exemplos()));
+  protected readonly inicial = computed(() => this.exemplos().loja.charAt(0));
+  protected readonly listaDeValores = listaEmTexto;
 }

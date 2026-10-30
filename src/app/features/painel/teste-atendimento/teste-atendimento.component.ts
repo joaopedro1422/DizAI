@@ -7,6 +7,7 @@ import {
   OnInit,
   computed,
   inject,
+  input,
   output,
   signal,
   viewChild,
@@ -19,6 +20,9 @@ import { PerfilService } from '../../../core/services/perfil.service';
 import { AcaoTeste, MensagemTeste, RespostaTeste, TesteAtendimentoService } from '../../../core/services/teste-atendimento.service';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { LinhaFormatada, formatarWhatsapp } from './formatacao-whatsapp';
+import { marcarTesteFeito } from '../onboarding/progresso-onboarding';
+import { ramoDeServico } from '../../../core/models/perfil.model';
+import { DicaSobrepostaComponent } from '../../../shared/components/dica-sobreposta/dica-sobreposta.component';
 
 /** Marcador que o backend grava quando o catálogo (PDF/imagens) seria enviado. */
 const MARCADOR_CATALOGO = '[Catálogo enviado ao cliente]';
@@ -56,6 +60,9 @@ const ACOMPANHAR_A_CADA_MS = 700;
 /** Texto da mensagem pendente enquanto o áudio é transcrito (a tela desenha a nota de voz). */
 const TRANSCREVENDO = '🎤 Transcrevendo o áudio…';
 
+/** Quanto a janela do próximo passo espera depois da resposta (para dar tempo de ler). */
+const ESPERA_PROXIMO_PASSO_MS = 2500;
+
 /** Limite da gravação no teste: passou disso, envia o que já gravou. */
 const DURACAO_MAXIMA_AUDIO_S = 120;
 
@@ -70,7 +77,7 @@ const AVISOS: Partial<Record<AcaoTeste, string>> = {
  */
 @Component({
   selector: 'app-teste-atendimento',
-  imports: [FormsModule, IconeComponent, UrlImagemPipe],
+  imports: [DicaSobrepostaComponent, FormsModule, IconeComponent, UrlImagemPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './teste-atendimento.component.html',
   styleUrls: ['./teste-atendimento.component.css', './nota-voz-teste.css'],
@@ -80,6 +87,15 @@ const AVISOS: Partial<Record<AcaoTeste, string>> = {
 })
 export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly fechar = output<void>();
+  /** Mensagem do primeiro teste (vinda do onboarding): é enviada sozinha assim que a conversa abre. */
+  readonly textoInicial = input('');
+  /** Primeiro teste do onboarding: depois da resposta (nos serviços, do horário marcado) abre o próximo passo. */
+  readonly primeiroTeste = input(false);
+  /** "Voltar ao painel" da janela do próximo passo. */
+  readonly voltarAoPainel = output<void>();
+  /** Janela depois do primeiro teste: produtos = voltar ao painel; serviços = conhecer a agenda online. */
+  protected readonly proximoPasso = signal<'produtos' | 'servicos' | null>(null);
+  private proximoPassoMostrado = false;
 
   private readonly servico = inject(TesteAtendimentoService);
   protected readonly perfil = inject(PerfilService).perfil;
@@ -136,7 +152,33 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
   );
 
   ngOnInit(): void {
-    void this.carregar();
+    // a mensagem pronta sai sozinha (sem o lojista precisar acertar o texto)
+    void this.carregar().then(() => {
+      if (this.textoInicial().trim()) {
+        this.texto.set(this.textoInicial());
+        void this.enviar();
+      }
+    });
+  }
+
+  /** Serviços: abre a agenda online em outra aba e volta ao painel para continuar a configuração. */
+  protected conhecerAgendaOnline(): void {
+    window.open(`/l/${this.perfil().slug}/agenda`, '_blank', 'noopener');
+    this.voltarAoPainel.emit();
+  }
+
+  /** No primeiro teste: produtos, logo depois da primeira resposta; serviços, quando o horário é marcado. */
+  private conferirProximoPasso(acao: AcaoTeste | null | undefined): void {
+    if (!this.primeiroTeste() || this.proximoPassoMostrado) {
+      return;
+    }
+    const servico = ramoDeServico(this.perfil().ramo);
+    if (servico && acao !== 'AGENDAR') {
+      return;
+    }
+    this.proximoPassoMostrado = true;
+    // um respiro para o lojista ler a resposta antes da janela
+    window.setTimeout(() => this.proximoPasso.set(servico ? 'servicos' : 'produtos'), ESPERA_PROXIMO_PASSO_MS);
   }
 
   ngAfterViewInit(): void {
@@ -264,6 +306,8 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
       const resposta = await enviar();
       terminou = true;
       this.mensagens.set(resposta.mensagens);
+      marcarTesteFeito(this.perfil().id);
+      this.conferirProximoPasso(resposta.acao);
       this.aviso.set(resposta.acao ? (AVISOS[resposta.acao] ?? null) : null);
     } catch (erro) {
       terminou = true;

@@ -2,21 +2,6 @@
   <div class="bloqueio" aria-hidden="true"></div>
 }
 
-@if (fase() === 'boas-vindas') {
-  <div class="aviso-inicial" role="status">
-    <span class="aviso-inicial__linha">
-      <span class="aviso-inicial__icone">
-        <app-icone nome="check" [tamanho]="18" [espessura]="2.2" />
-      </span>
-      <span class="aviso-inicial__textos">
-        <span class="aviso-inicial__titulo">Sua loja foi criada!</span>
-        <span class="aviso-inicial__subtitulo">Vamos te mostrar o seu painel...</span>
-      </span>
-    </span>
-    <span class="aviso-inicial__barra" aria-hidden="true"><span class="aviso-inicial__preenchimento"></span></span>
-  </div>
-}
-
 @if (fase() === 'passo') {
   @if (destaque(); as recorte) {
     <div
@@ -52,16 +37,8 @@
       ></span>
 
       <div class="balao__topo">
-        <span class="balao__contador">Passo {{ indicePasso() + 1 }} de {{ passos.length }}</span>
-        <span class="balao__pontos" aria-hidden="true">
-          @for (passo of passos; track passo.alvo; let indice = $index) {
-            <span
-              class="balao__ponto"
-              [class.balao__ponto--atual]="indice === indicePasso()"
-              [class.balao__ponto--visto]="indice <= indicePasso()"
-            ></span>
-          }
-        </span>
+        <span class="balao__contador">{{ indicePasso() + 1 }} de {{ passos().length }}</span>
+        <span class="balao__barra" aria-hidden="true"><span [style.width.%]="progresso()"></span></span>
       </div>
 
       <div class="balao__textos">
@@ -69,8 +46,13 @@
         <p id="tour-texto" class="balao__texto">{{ passoAtual().texto }}</p>
       </div>
 
+      <!-- o efeito daquele card no WhatsApp -->
+      @if (passoAtual().previa.length > 0) {
+        <app-previa-whatsapp [linhas]="passoAtual().previa" aria-hidden="true" />
+      }
+
       <div class="balao__acoes">
-        <button type="button" class="btn btn--texto" (click)="encerrar()">Pular tour</button>
+        <button type="button" class="btn btn--texto" (click)="encerrar()">Pular</button>
         <span class="balao__navegacao">
           @if (indicePasso() > 0) {
             <button type="button" class="btn-icone" aria-label="Passo anterior" (click)="voltar()">

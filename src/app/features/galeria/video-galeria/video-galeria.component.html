@@ -1,3 +1,4 @@
+@let ex = exemplos();
 <app-video-tutorial
   titulo="Como usar a sua galeria"
   [cenas]="cenas"
@@ -49,54 +50,61 @@
     }
   </ng-template>
 
+  <!-- as fotos do segmento ou, sem fotos de exemplo, quadrinhos com o emoji do negócio -->
+  <ng-template #grade let-quantos let-inicio="inicio" let-passo="passo">
+    <div class="fotos">
+      @if (fotos().length > 0) {
+        @for (foto of fotos().slice(0, quantos); track foto; let i = $index) {
+          <img class="surge" [src]="foto" alt="" [style.--atraso]="inicio + i * passo + 's'">
+        }
+      } @else {
+        @for (n of quadrinhos.slice(0, quantos); track n; let i = $index) {
+          <span class="quadrinho surge" [class.quadrinho--b]="i % 3 === 1" [class.quadrinho--c]="i % 3 === 2" [style.--atraso]="inicio + i * passo + 's'">{{ ex.emoji }}</span>
+        }
+      }
+    </div>
+  </ng-template>
+
   <ng-template #tela let-cena>
     @switch (cena) {
       @case (0) {
         <div class="vitrine">
-          <div class="vitrine__barra">🔒 dizai.com/l/pedacinho-do-ceu</div>
-          <div class="vitrine__capa" [style.background-image]="'url(' + pasta + '/bolos/02.webp)'"></div>
+          <div class="vitrine__barra">🔒 dizai.com/l/{{ ex.slug }}</div>
+          <div class="vitrine__capa" [class.vitrine__capa--cor]="!fotos().length" [style.background-image]="fotos().length ? 'url(' + fotos()[1] + ')' : null"></div>
           <div class="vitrine__identidade">
-            <span class="vitrine__logo" [style.background-image]="'url(' + pasta + '/logos/pedacinho-do-ceu.jpg)'"></span>
-            <span class="vitrine__nome">Pedacinho do Céu</span>
-            <span class="vitrine__descricao">Bolos e doces feitos para celebrar</span>
+            <span class="vitrine__logo vitrine__logo--inicial">{{ inicial() }}</span>
+            <span class="vitrine__nome">{{ ex.loja }}</span>
+            <span class="vitrine__descricao">{{ ex.descricaoLoja }}</span>
           </div>
           <div class="vitrine__conteudo">
-            <span class="album-mini surge" style="--atraso: 0.8s">Bolos e tortas <small>12 fotos</small></span>
-            <div class="fotos">
-              @for (foto of bolos; track foto; let i = $index) {
-                <img class="surge" [src]="foto" alt="" [style.--atraso]="1.1 + i * 0.25 + 's'">
-              }
-            </div>
+            <span class="album-mini surge" style="--atraso: 0.8s">{{ ex.galeria.portfolio[0] }} <small>{{ ex.galeria.portfolio[1] }} fotos</small></span>
+            <ng-container [ngTemplateOutlet]="grade" [ngTemplateOutletContext]="{ $implicit: 6, inicio: 1.1, passo: 0.25 }" />
           </div>
         </div>
       }
       @case (1) {
         <div class="vitrine">
-          <div class="vitrine__barra">🔒 dizai.com/l/bella-studio</div>
-          <div class="vitrine__capa" [style.background-image]="'url(' + pasta + '/unhas/01.webp)'"></div>
-          <div class="vitrine__identidade">
-            <span class="vitrine__logo vitrine__logo--claro" [style.background-image]="'url(' + pasta + '/logos/bella-studio.svg)'"></span>
-            <span class="vitrine__nome">Bella Studio</span>
-            <span class="vitrine__descricao">Unhas em gel e nail art</span>
-          </div>
-          <div class="vitrine__conteudo">
-            <span class="album-mini surge" style="--atraso: 0.8s">Unhas em gel <small>18 fotos</small></span>
-            <div class="fotos">
-              @for (foto of unhas; track foto; let i = $index) {
-                <img class="surge" [src]="foto" alt="" [style.--atraso]="1.1 + i * 0.3 + 's'">
-              }
-            </div>
+          <div class="vitrine__barra">🔒 dizai.com/l/{{ ex.slug }}</div>
+          <div class="vitrine__conteudo vitrine__conteudo--topo">
+            <span class="album-mini surge" style="--atraso: 0.6s">{{ ex.galeria.portfolio[0] }} <small>{{ ex.galeria.portfolio[1] }} fotos</small></span>
+            <ng-container [ngTemplateOutlet]="grade" [ngTemplateOutletContext]="{ $implicit: 6, inicio: 1, passo: 0.3 }" />
+            <span class="album-mini surge" style="--atraso: 3.4s">Antes e depois <small>8 fotos</small></span>
           </div>
         </div>
       }
       @case (2) {
         <div class="vitrine">
-          <div class="vitrine__barra">🔒 dizai.com/l/pedacinho-do-ceu</div>
+          <div class="vitrine__barra">🔒 dizai.com/l/{{ ex.slug }}</div>
           <div class="vitrine__conteudo vitrine__conteudo--topo">
-            <span class="album-mini surge" style="--atraso: 0.6s">Cardápio <small>2 fotos</small></span>
+            <span class="album-mini surge" style="--atraso: 0.6s">{{ ex.galeria.catalogo[0] }} <small>{{ ex.galeria.catalogo[1] }} {{ ex.galeria.catalogo[1] === 1 ? 'foto' : 'fotos' }}</small></span>
             <div class="fotos fotos--duas">
-              <img class="surge" [src]="pasta + '/cardapio1.png'" alt="" style="--atraso: 1s">
-              <img class="surge" [src]="pasta + '/cardapio2.png'" alt="" style="--atraso: 1.5s">
+              @if (temCardapio()) {
+                <img class="surge" [src]="pasta + '/cardapio1.png'" alt="" style="--atraso: 1s">
+                <img class="surge" [src]="pasta + '/cardapio2.png'" alt="" style="--atraso: 1.5s">
+              } @else {
+                <span class="quadrinho quadrinho--folha surge" style="--atraso: 1s">📄</span>
+                <span class="quadrinho quadrinho--folha quadrinho--b surge" style="--atraso: 1.5s">📄</span>
+              }
             </div>
             <span class="album-mini surge" style="--atraso: 2.4s">Tabela de preços <small>1 foto</small></span>
           </div>
@@ -104,69 +112,61 @@
       }
       @case (3) {
         <div class="vitrine vitrine--madeira">
-          <div class="vitrine__barra">🔒 dizai.com/l/arte-em-madeira</div>
-          <div class="vitrine__capa" [style.background-image]="'url(' + pasta + '/moveis/01.webp)'"></div>
+          <div class="vitrine__barra">🔒 dizai.com/l/{{ ex.slug }}</div>
+          <div class="vitrine__capa" [class.vitrine__capa--cor]="!fotos().length" [style.background-image]="fotos().length ? 'url(' + fotos()[2] + ')' : null"></div>
           <div class="vitrine__identidade">
-            <span class="vitrine__logo vitrine__logo--claro" [style.background-image]="'url(' + pasta + '/logos/arte-em-madeira.svg)'"></span>
-            <span class="vitrine__nome">Arte em Madeira</span>
-            <span class="vitrine__descricao">Móveis planejados sob medida</span>
+            <span class="vitrine__logo vitrine__logo--inicial">{{ inicial() }}</span>
+            <span class="vitrine__nome">{{ ex.loja }}</span>
+            <span class="vitrine__descricao">{{ ex.descricaoLoja }}</span>
           </div>
           <div class="vitrine__conteudo">
-            <span class="album-mini surge" style="--atraso: 0.8s">Nosso ateliê <small>9 fotos</small></span>
-            <div class="fotos">
-              @for (foto of moveis; track foto; let i = $index) {
-                <img class="surge" [src]="foto" alt="" [style.--atraso]="1.1 + i * 0.3 + 's'">
-              }
-            </div>
+            <span class="album-mini surge" style="--atraso: 0.8s">{{ ex.galeria.espaco[0] }} <small>{{ ex.galeria.espaco[1] }} fotos</small></span>
+            <ng-container [ngTemplateOutlet]="grade" [ngTemplateOutletContext]="{ $implicit: 6, inicio: 1.1, passo: 0.3 }" />
           </div>
         </div>
       }
       @case (4) {
         <div class="zap">
           <div class="zap__barra">
-            <span class="zap__avatar">P</span>
-            <span class="zap__nome"><b>Pedacinho do Céu</b><small>online</small></span>
+            <span class="zap__avatar">{{ inicial() }}</span>
+            <span class="zap__nome"><b>{{ ex.loja }}</b><small>online</small></span>
           </div>
           <div class="zap__corpo">
-            <span class="balao balao--cliente surge" style="--atraso: 0.6s">Tem fotos de bolos de aniversário? 🎂</span>
+            <span class="balao balao--cliente surge" style="--atraso: 0.6s">{{ ex.galeria.pedidoFotos }}</span>
             <span class="digitando digitando--1"><i></i><i></i><i></i></span>
             <span class="balao surge" style="--atraso: 3s">Tenho sim! Olha só 👇</span>
             <span class="balao link-previa surge" style="--atraso: 3.6s">
-              <span class="link-previa__capa" [style.background-image]="'url(' + pasta + '/bolos/02.webp)'"></span>
-              <b>Pedacinho do Céu</b>
-              <small>Bolos e doces feitos para celebrar</small>
-              <span class="link-previa__url">dizai.com/l/pedacinho-do-ceu</span>
+              <span class="link-previa__capa" [class.vitrine__capa--cor]="!fotos().length" [style.background-image]="fotos().length ? 'url(' + fotos()[1] + ')' : null"></span>
+              <b>{{ ex.loja }}</b>
+              <small>{{ ex.descricaoLoja }}</small>
+              <span class="link-previa__url">dizai.com/l/{{ ex.slug }}</span>
             </span>
-            <span class="balao balao--cliente surge" style="--atraso: 6.8s">Que lindos! Quero o de morango 😍</span>
+            <span class="balao balao--cliente surge" style="--atraso: 6.8s">{{ ex.galeria.reacao }}</span>
           </div>
         </div>
       }
       @case (5) {
         <div class="vitrine troca-fundo" style="--atraso: 1s">
-          <div class="vitrine__barra">🔒 dizai.com/l/pedacinho-do-ceu</div>
+          <div class="vitrine__barra">🔒 dizai.com/l/{{ ex.slug }}</div>
           <div class="vitrine__capa troca-cor" style="--atraso: 1s"></div>
           <div class="vitrine__identidade">
-            <span class="vitrine__logo" [style.background-image]="'url(' + pasta + '/logos/pedacinho-do-ceu.jpg)'"></span>
-            <span class="vitrine__nome">Pedacinho do Céu</span>
-            <span class="vitrine__descricao">Bolos e doces feitos para celebrar</span>
+            <span class="vitrine__logo vitrine__logo--inicial">{{ inicial() }}</span>
+            <span class="vitrine__nome">{{ ex.loja }}</span>
+            <span class="vitrine__descricao">{{ ex.descricaoLoja }}</span>
           </div>
           <div class="vitrine__conteudo">
             <div class="paleta surge" style="--atraso: 0.6s"><i></i><i></i><i></i><i></i></div>
-            <span class="album-mini">Bolos e tortas <small>12 fotos</small></span>
-            <div class="fotos">
-              @for (foto of bolos.slice(0, 3); track foto) {
-                <img [src]="foto" alt="">
-              }
-            </div>
+            <span class="album-mini">{{ ex.galeria.portfolio[0] }} <small>{{ ex.galeria.portfolio[1] }} fotos</small></span>
+            <ng-container [ngTemplateOutlet]="grade" [ngTemplateOutletContext]="{ $implicit: 3, inicio: 0, passo: 0 }" />
             <span class="vitrine__botao troca-cor" style="--atraso: 1s">Falar pelo WhatsApp</span>
           </div>
         </div>
       }
       @case (6) {
         <div class="insta">
-          <div class="insta__usuario">pedacinhodoceu</div>
+          <div class="insta__usuario">{{ ex.instagram.usuario }}</div>
           <div class="insta__topo">
-            <span class="insta__avatar"><img [src]="pasta + '/logos/pedacinho-do-ceu.jpg'" alt=""></span>
+            <span class="insta__avatar insta__avatar--inicial">{{ inicial() }}</span>
             <span class="insta__numeros">
               <span><b>128</b><small>posts</small></span>
               <span><b>2.340</b><small>seguidores</small></span>
@@ -174,12 +174,12 @@
             </span>
           </div>
           <div class="insta__bio">
-            <b>Pedacinho do Céu</b>
-            <span>🎂 Bolos e doces para festas</span>
-            <span>📍 Entregamos em toda a cidade</span>
+            <b>{{ ex.loja }}</b>
+            <span>{{ ex.instagram.bio[0] }}</span>
+            <span>{{ ex.instagram.bio[1] }}</span>
             <span class="surge" style="--atraso: 1.4s">
               <span class="tocado" style="--atraso: 4.8s">
-                <span class="insta__link destaca" style="--atraso: 2.4s">🔗 dizai.com/l/pedacinho-do-ceu</span>
+                <span class="insta__link destaca" style="--atraso: 2.4s">🔗 dizai.com/l/{{ ex.slug }}</span>
               </span>
             </span>
           </div>
@@ -187,10 +187,8 @@
             <span class="botao-mini botao-mini--primario">Seguir</span>
             <span class="botao-mini">Mensagem</span>
           </div>
-          <div class="fotos insta__fotos">
-            @for (foto of bolos; track foto) {
-              <img [src]="foto" alt="">
-            }
+          <div class="insta__fotos">
+            <ng-container [ngTemplateOutlet]="grade" [ngTemplateOutletContext]="{ $implicit: 6, inicio: 0, passo: 0 }" />
           </div>
         </div>
       }

@@ -1,3 +1,5 @@
+@let s = servicos();
+@let p = produtos();
 <app-video-tutorial
   [titulo]="'Como cadastrar seus ' + termoItens()"
   [cenas]="cenas()"
@@ -30,12 +32,12 @@
         @case (4) {
           <span class="legenda__selo legenda__selo--dica surge">Dica 1</span>
           <p class="legenda__titulo surge" style="--atraso: 0.3s">O preço muda conforme o tipo?</p>
-          <p class="legenda__texto surge" style="--atraso: 1.2s">Coloque as variações e os valores na descrição e deixe o preço em branco.</p>
+          <p class="legenda__texto surge" style="--atraso: 1.2s">Coloque os tipos e os valores na descrição e deixe o preço em branco.</p>
         }
         @case (5) {
           <span class="legenda__selo legenda__selo--dica surge">Dica 2</span>
           <p class="legenda__titulo surge" style="--atraso: 0.3s">O cliente precisa escolher algo?</p>
-          <p class="legenda__texto surge" style="--atraso: 1.2s">Crie uma opção, como “Formato da unha”, e a IA pergunta antes de marcar.</p>
+          <p class="legenda__texto surge" style="--atraso: 1.2s">Crie uma opção, como “{{ s.escolhas.opcao }}”, e a IA pergunta antes de marcar.</p>
         }
         @case (6) {
           <p class="legenda__titulo surge">São só sugestões ✨</p>
@@ -56,17 +58,17 @@
         @case (2) {
           <span class="legenda__selo legenda__selo--dica surge">Dica 1</span>
           <p class="legenda__titulo surge" style="--atraso: 0.3s">O preço depende do tamanho?</p>
-          <p class="legenda__texto surge" style="--atraso: 1.2s">Use as variações de preço: cada tamanho com o seu valor. O cliente escolhe um.</p>
+          <p class="legenda__texto surge" style="--atraso: 1.2s">Use as variações de preço: cada uma com o seu valor. O cliente escolhe uma.</p>
         }
         @case (3) {
           <span class="legenda__selo legenda__selo--dica surge">Dica 2</span>
-          <p class="legenda__titulo surge" style="--atraso: 0.3s">Mesmo preço, vários sabores?</p>
-          <p class="legenda__texto surge" style="--atraso: 1.2s">Cadastre um produto genérico e crie a opção “Sabores” com tudo o que você tem.</p>
+          <p class="legenda__titulo surge" style="--atraso: 0.3s">Mesmo preço, várias opções?</p>
+          <p class="legenda__texto surge" style="--atraso: 1.2s">Cadastre um produto só, com o preço de 1 {{ p.generico.unidade }}, e crie a opção “{{ p.generico.opcao }}” com tudo o que você tem.</p>
         }
         @case (4) {
           <span class="legenda__selo legenda__selo--dica surge">Dica 3</span>
           <p class="legenda__titulo surge" style="--atraso: 0.3s">E se forem os 2 juntos? Não tem problema</p>
-          <p class="legenda__texto surge" style="--atraso: 1.2s">Os tamanhos nas variações de preço e os recheios nas opções.</p>
+          <p class="legenda__texto surge" style="--atraso: 1.2s">Os tamanhos nas variações de preço e “{{ p.combinado.opcao }}” nas opções.</p>
         }
         @case (5) {
           <span class="legenda__selo surge">Descrição × opções</span>
@@ -93,21 +95,13 @@
           <div class="app">
             <div class="app__barra">Serviços</div>
             <div class="app__corpo">
-              <div class="item surge" style="--atraso: 0.8s">
-                <span class="item__foto item__foto--rosa">💅</span>
-                <span class="item__textos"><b>Esmaltação em gel</b><small>Manicure · 1h</small></span>
-                <span class="item__preco">R$ 60</span>
-              </div>
-              <div class="item surge" style="--atraso: 1.3s">
-                <span class="item__foto">💈</span>
-                <span class="item__textos"><b>Corte masculino</b><small>Barbearia · 40 min</small></span>
-                <span class="item__preco item__preco--suave">ver tipos</span>
-              </div>
-              <div class="item surge" style="--atraso: 1.8s">
-                <span class="item__foto item__foto--ambar">🧔</span>
-                <span class="item__textos"><b>Barba completa</b><small>Barbearia · 30 min</small></span>
-                <span class="item__preco">R$ 35</span>
-              </div>
+              @for (item of s.itens; track item.nome; let i = $index) {
+                <div class="item surge" [style.--atraso]="0.8 + i * 0.5 + 's'">
+                  <span class="item__foto" [class.item__foto--rosa]="i === 0" [class.item__foto--ambar]="i === 2">{{ item.emoji }}</span>
+                  <span class="item__textos"><b>{{ item.nome }}</b><small>{{ item.detalhe }}</small></span>
+                  <span class="item__preco" [class.item__preco--suave]="item.preco.startsWith('ver') || item.preco.startsWith('sob')">{{ item.preco }}</span>
+                </div>
+              }
               <div class="app__botao surge" style="--atraso: 2.6s">+ Adicionar serviço</div>
             </div>
           </div>
@@ -118,7 +112,7 @@
             <div class="app__corpo rola" style="--atraso: 4.4s">
               <div class="campo destaca" style="--atraso: 1.2s">
                 <span class="campo__rotulo">Nome do serviço</span>
-                <span class="campo__caixa campo__caixa--vazia">Ex.: Esmaltação em gel</span>
+                <span class="campo__caixa campo__caixa--vazia">Ex.: {{ s.placeholderNome }}</span>
               </div>
               <div class="campo destaca" style="--atraso: 2.2s">
                 <span class="campo__rotulo">Descrição</span>
@@ -131,10 +125,9 @@
               <div class="campo destaca" style="--atraso: 5.2s">
                 <span class="campo__rotulo">Duração do atendimento</span>
                 <span class="opcao__chips">
-                  <span class="chip-mini">30 min</span>
-                  <span class="chip-mini">1h</span>
-                  <span class="chip-mini">1h30</span>
-                  <span class="chip-mini">2h</span>
+                  @for (chip of s.duracao.chips; track chip) {
+                    <span class="chip-mini">{{ chip }}</span>
+                  }
                 </span>
               </div>
               <div class="campo destaca" style="--atraso: 6.8s">
@@ -150,25 +143,24 @@
             <div class="app__corpo rola" style="--atraso: 4.2s">
               <div class="campo">
                 <span class="campo__rotulo">Nome do serviço</span>
-                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">Esmaltação em gel</span></span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">{{ s.duracao.item }}</span></span>
               </div>
               <div class="campo destaca" style="--atraso: 2s">
                 <span class="campo__rotulo">Duração do atendimento</span>
                 <span class="opcao__chips">
-                  <span class="chip-mini">30 min</span>
-                  <span class="chip-mini">45 min</span>
-                  <span class="chip-mini ativa" style="--atraso: 3s">1h</span>
-                  <span class="chip-mini">1h30</span>
+                  @for (chip of s.duracao.chips; track chip) {
+                    <span class="chip-mini" [class.ativa]="chip === s.duracao.escolhida" [style.--atraso]="chip === s.duracao.escolhida ? '3s' : null">{{ chip }}</span>
+                  }
                 </span>
                 <span class="campo__caixa campo__caixa--com-selo">
-                  <span class="surge" style="--atraso: 3.2s">60 min</span>
-                  <span class="selo-ok surge" style="--atraso: 3.4s">= 1 hora</span>
+                  <span class="surge" style="--atraso: 3.2s">{{ s.duracao.minutos }}</span>
+                  <span class="selo-ok surge" style="--atraso: 3.4s">{{ s.duracao.equivale }}</span>
                 </span>
               </div>
               <div class="campo">
                 <span class="campo__rotulo surge" style="--atraso: 4.6s">Na agenda de amanhã</span>
-                <span class="horario horario--ocupado surge" style="--atraso: 5s"><b>9:00</b> Esmaltação em gel · até 10:00</span>
-                <span class="horario surge" style="--atraso: 5.6s"><b>10:00</b> Livre para o próximo cliente</span>
+                <span class="horario horario--ocupado surge" style="--atraso: 5s"><b>{{ s.duracao.inicio }}</b> {{ s.duracao.item }} · até {{ s.duracao.fim }}</span>
+                <span class="horario surge" style="--atraso: 5.6s"><b>{{ s.duracao.fim }}</b> Livre para o próximo cliente</span>
               </div>
             </div>
           </div>
@@ -176,19 +168,18 @@
         @case (3) {
           <div class="zap">
             <div class="zap__barra">
-              <span class="zap__avatar">B</span>
-              <span class="zap__nome"><b>Studio Bela Unha</b><small>online</small></span>
+              <span class="zap__avatar">{{ inicial() }}</span>
+              <span class="zap__nome"><b>{{ exemplos().loja }}</b><small>online</small></span>
             </div>
             <div class="zap__corpo">
-              <span class="balao balao--cliente surge" style="--atraso: 0.6s">Oi! Queria fazer esmaltação em gel amanhã</span>
+              <span class="balao balao--cliente surge" style="--atraso: 0.6s">{{ s.conversaAgenda.cliente }}</span>
               <span class="digitando digitando--1"><i></i><i></i><i></i></span>
               <span class="balao surge" style="--atraso: 3s">
-                Claro! 💅 Leva <mark class="marca" style="--atraso: 3.8s">1 hora</mark>. Amanhã tenho 9h, 13h ou 15h30.
-                Qual fica melhor?
+                {{ s.conversaAgenda.antes }} <mark class="marca" style="--atraso: 3.8s">{{ s.conversaAgenda.duracao }}</mark>{{ s.conversaAgenda.depois }}
               </span>
-              <span class="balao balao--cliente surge" style="--atraso: 5.8s">13h</span>
+              <span class="balao balao--cliente surge" style="--atraso: 5.8s">{{ s.conversaAgenda.escolha }}</span>
               <span class="digitando digitando--2"><i></i><i></i><i></i></span>
-              <span class="balao surge" style="--atraso: 8.2s">Agendado! ✅ Esmaltação em gel amanhã às 13h.</span>
+              <span class="balao surge" style="--atraso: 8.2s">{{ s.conversaAgenda.confirmacao }}</span>
             </div>
           </div>
         }
@@ -198,14 +189,14 @@
             <div class="app__corpo">
               <div class="campo">
                 <span class="campo__rotulo">Nome do serviço</span>
-                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">Corte masculino</span></span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">{{ s.tipos.item }}</span></span>
               </div>
               <div class="campo destaca" style="--atraso: 1.8s">
                 <span class="campo__rotulo">Descrição</span>
                 <span class="campo__caixa campo__caixa--alta campo__caixa--linhas">
-                  <span class="surge" style="--atraso: 2.2s">Na máquina: R$ 30</span>
-                  <span class="surge" style="--atraso: 2.8s">Na tesoura: R$ 40</span>
-                  <span class="surge" style="--atraso: 3.4s">Degradê: R$ 45</span>
+                  @for (linha of s.tipos.linhas; track linha; let i = $index) {
+                    <span class="surge" [style.--atraso]="2.2 + i * 0.6 + 's'">{{ linha }}</span>
+                  }
                 </span>
               </div>
               <div class="campo destaca" style="--atraso: 4.4s">
@@ -217,7 +208,7 @@
               </div>
               <div class="campo">
                 <span class="campo__rotulo">Duração do atendimento</span>
-                <span class="campo__caixa">40 min</span>
+                <span class="campo__caixa">{{ s.tipos.duracao }}</span>
               </div>
             </div>
           </div>
@@ -228,25 +219,24 @@
             <div class="app__corpo rola" style="--atraso: 3.6s">
               <div class="campo">
                 <span class="campo__rotulo">Nome do serviço</span>
-                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">Pé e mão</span></span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">{{ s.escolhas.item }}</span></span>
               </div>
               <div class="campo">
                 <span class="campo__rotulo">Preço</span>
-                <span class="campo__caixa"><span class="digita" style="--atraso: 1.6s">R$ 50,00</span></span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 1.6s">{{ s.escolhas.preco }}</span></span>
               </div>
               <div class="campo">
                 <span class="campo__rotulo">Duração do atendimento</span>
-                <span class="campo__caixa"><span class="digita" style="--atraso: 2.4s">1h30</span></span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 2.4s">{{ s.escolhas.duracao }}</span></span>
               </div>
               <div class="campo destaca" style="--atraso: 4.4s">
                 <span class="campo__rotulo">Opções que o cliente escolhe</span>
                 <span class="opcao">
-                  <span class="campo__caixa"><span class="digita" style="--atraso: 4.7s">Formato da unha</span></span>
+                  <span class="campo__caixa"><span class="digita" style="--atraso: 4.7s">{{ s.escolhas.opcao }}</span></span>
                   <span class="opcao__chips">
-                    <span class="chip-mini surge" style="--atraso: 5.6s">Quadrada</span>
-                    <span class="chip-mini surge" style="--atraso: 6s">Redonda</span>
-                    <span class="chip-mini surge" style="--atraso: 6.4s">Amendoada</span>
-                    <span class="chip-mini surge" style="--atraso: 6.8s">Bailarina</span>
+                    @for (valor of s.escolhas.valores; track valor; let i = $index) {
+                      <span class="chip-mini surge" [style.--atraso]="5.6 + i * 0.4 + 's'">{{ valor }}</span>
+                    }
                   </span>
                 </span>
               </div>
@@ -267,21 +257,13 @@
           <div class="app">
             <div class="app__barra">Produtos</div>
             <div class="app__corpo">
-              <div class="item surge" style="--atraso: 0.8s">
-                <span class="item__foto">🥟</span>
-                <span class="item__textos"><b>Coxinha grande</b><small>Salgados</small></span>
-                <span class="item__preco">R$ 7,00</span>
-              </div>
-              <div class="item surge" style="--atraso: 1.3s">
-                <span class="item__foto item__foto--rosa">🍰</span>
-                <span class="item__textos"><b>Bolo de pote</b><small>Doces</small></span>
-                <span class="item__preco item__preco--suave">ver tamanhos</span>
-              </div>
-              <div class="item surge" style="--atraso: 1.8s">
-                <span class="item__foto item__foto--ambar">🥐</span>
-                <span class="item__textos"><b>Mini salgados</b><small>Salgados</small></span>
-                <span class="item__preco">R$ 90,00</span>
-              </div>
+              @for (item of p.itens; track item.nome; let i = $index) {
+                <div class="item surge" [style.--atraso]="0.8 + i * 0.5 + 's'">
+                  <span class="item__foto" [class.item__foto--rosa]="i === 1" [class.item__foto--ambar]="i === 2">{{ item.emoji }}</span>
+                  <span class="item__textos"><b>{{ item.nome }}</b><small>{{ item.detalhe }}</small></span>
+                  <span class="item__preco" [class.item__preco--suave]="item.preco.startsWith('ver')">{{ item.preco }}</span>
+                </div>
+              }
               <div class="app__botao surge" style="--atraso: 2.6s">+ Adicionar produto</div>
             </div>
           </div>
@@ -292,7 +274,7 @@
             <div class="app__corpo">
               <div class="campo destaca" style="--atraso: 1.4s">
                 <span class="campo__rotulo">Nome do produto</span>
-                <span class="campo__caixa campo__caixa--vazia">Ex.: Coxinha grande</span>
+                <span class="campo__caixa campo__caixa--vazia">Ex.: {{ p.placeholderNome }}</span>
               </div>
               <div class="campo destaca" style="--atraso: 2.8s">
                 <span class="campo__rotulo">Descrição</span>
@@ -315,7 +297,7 @@
             <div class="app__corpo">
               <div class="campo">
                 <span class="campo__rotulo">Nome do produto</span>
-                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">Bolo de pote</span></span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">{{ p.variacao.item }}</span></span>
               </div>
               <div class="campo">
                 <span class="campo__rotulo">Preço</span>
@@ -324,9 +306,9 @@
               <div class="campo destaca" style="--atraso: 2s">
                 <span class="campo__rotulo">Variações de preço</span>
                 <span class="campo__caixa campo__caixa--alta campo__caixa--linhas">
-                  <span class="surge" style="--atraso: 2.4s">Tamanho P (150 ml) · R$ 10</span>
-                  <span class="surge" style="--atraso: 3.2s">Tamanho M (250 ml) · R$ 15</span>
-                  <span class="surge" style="--atraso: 4s">Tamanho G (400 ml) · R$ 22</span>
+                  @for (opcao of p.variacao.opcoes; track opcao[0]; let i = $index) {
+                    <span class="surge" [style.--atraso]="2.4 + i * 0.8 + 's'">{{ opcao[0] }} · {{ opcao[1] }}</span>
+                  }
                 </span>
               </div>
               <div class="campo surge" style="--atraso: 5.6s">
@@ -344,22 +326,20 @@
             <div class="app__corpo">
               <div class="campo">
                 <span class="campo__rotulo">Nome do produto</span>
-                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">Mini salgados</span></span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">{{ p.generico.item }}</span></span>
               </div>
               <div class="campo">
                 <span class="campo__rotulo">Preço</span>
-                <span class="campo__caixa"><span class="digita" style="--atraso: 1.8s">R$ 90,00 o cento</span></span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 1.8s">{{ p.generico.precoUnidade }} a {{ p.generico.unidade }}</span></span>
               </div>
               <div class="campo destaca" style="--atraso: 3s">
                 <span class="campo__rotulo">Opções que o cliente escolhe</span>
                 <span class="opcao">
-                  <span class="campo__caixa"><span class="digita" style="--atraso: 3.4s">Sabores</span></span>
+                  <span class="campo__caixa"><span class="digita" style="--atraso: 3.4s">{{ p.generico.opcao }}</span></span>
                   <span class="opcao__chips">
-                    <span class="chip-mini surge" style="--atraso: 4.4s">Coxinha</span>
-                    <span class="chip-mini surge" style="--atraso: 4.8s">Kibe</span>
-                    <span class="chip-mini surge" style="--atraso: 5.2s">Risole</span>
-                    <span class="chip-mini surge" style="--atraso: 5.6s">Bolinha de queijo</span>
-                    <span class="chip-mini surge" style="--atraso: 6s">Enroladinho</span>
+                    @for (valor of p.generico.valores; track valor; let i = $index) {
+                      <span class="chip-mini surge" [style.--atraso]="4.4 + i * 0.4 + 's'">{{ valor }}</span>
+                    }
                   </span>
                 </span>
               </div>
@@ -372,14 +352,14 @@
             <div class="app__corpo rola" style="--atraso: 5.4s">
               <div class="campo">
                 <span class="campo__rotulo">Nome do produto</span>
-                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">Torta doce</span></span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">{{ p.combinado.item }}</span></span>
               </div>
               <div class="campo destaca" style="--atraso: 1.6s">
                 <span class="campo__rotulo">Variações de preço</span>
                 <span class="campo__caixa campo__caixa--alta campo__caixa--linhas">
-                  <span class="surge" style="--atraso: 2s">Pequena (15 cm) · R$ 60</span>
-                  <span class="surge" style="--atraso: 2.6s">Média (20 cm) · R$ 85</span>
-                  <span class="surge" style="--atraso: 3.2s">Grande (25 cm) · R$ 120</span>
+                  @for (variacao of p.combinado.variacoes; track variacao[0]; let i = $index) {
+                    <span class="surge" [style.--atraso]="2 + i * 0.6 + 's'">{{ variacao[0] }} · {{ variacao[1] }}</span>
+                  }
                 </span>
               </div>
               <div class="campo destaca" style="--atraso: 4s">
@@ -392,12 +372,11 @@
               <div class="campo destaca" style="--atraso: 6.2s">
                 <span class="campo__rotulo">Opções que o cliente escolhe</span>
                 <span class="opcao">
-                  <span class="campo__caixa"><span class="digita" style="--atraso: 6.5s">Recheios</span></span>
+                  <span class="campo__caixa"><span class="digita" style="--atraso: 6.5s">{{ p.combinado.opcao }}</span></span>
                   <span class="opcao__chips">
-                    <span class="chip-mini surge" style="--atraso: 7.4s">Morango</span>
-                    <span class="chip-mini surge" style="--atraso: 7.8s">Limão</span>
-                    <span class="chip-mini surge" style="--atraso: 8.2s">Chocolate</span>
-                    <span class="chip-mini surge" style="--atraso: 8.6s">Maracujá</span>
+                    @for (valor of p.combinado.valores; track valor; let i = $index) {
+                      <span class="chip-mini surge" [style.--atraso]="7.4 + i * 0.4 + 's'">{{ valor }}</span>
+                    }
                   </span>
                 </span>
               </div>
@@ -407,19 +386,19 @@
         @case (5) {
           <div class="zap">
             <div class="zap__barra">
-              <span class="zap__avatar">S</span>
-              <span class="zap__nome"><b>Sabor da Vó</b><small>online</small></span>
+              <span class="zap__avatar">{{ inicial() }}</span>
+              <span class="zap__nome"><b>{{ exemplos().loja }}</b><small>online</small></span>
             </div>
             <div class="zap__corpo">
-              <span class="balao balao--cliente surge" style="--atraso: 0.6s">Oi! Quero um cento de mini salgados</span>
+              <span class="balao balao--cliente surge" style="--atraso: 0.6s">{{ p.generico.pedido }}</span>
               <span class="digitando digitando--1"><i></i><i></i><i></i></span>
               <span class="balao surge" style="--atraso: 3s">
-                Claro! 😊 Quais <mark class="marca" style="--atraso: 3.8s">sabores</mark> você quer? Temos coxinha, kibe,
-                risole, bolinha de queijo e enroladinho.
+                Claro! 😊 Quais <mark class="marca" style="--atraso: 3.8s">{{ p.generico.opcao.toLowerCase() }}</mark> você quer? Temos
+                {{ listaDeValores(p.generico.valores) }}.
               </span>
-              <span class="balao balao--cliente surge" style="--atraso: 5.8s">Metade coxinha e metade kibe</span>
+              <span class="balao balao--cliente surge" style="--atraso: 5.8s">{{ p.generico.escolha }}</span>
               <span class="digitando digitando--2"><i></i><i></i><i></i></span>
-              <span class="balao surge" style="--atraso: 8.2s">Anotado! 50 coxinhas e 50 kibes ✅</span>
+              <span class="balao surge" style="--atraso: 8.2s">Anotado! {{ p.generico.total }} ✅</span>
             </div>
           </div>
         }
@@ -429,22 +408,22 @@
             <div class="app__corpo">
               <div class="campo">
                 <span class="campo__rotulo">Nome do produto</span>
-                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">Torta de frango</span></span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 0.8s">{{ p.antecedencia.item }}</span></span>
               </div>
               <div class="campo">
                 <span class="campo__rotulo">Preço</span>
-                <span class="campo__caixa"><span class="digita" style="--atraso: 1.8s">R$ 90,00</span></span>
+                <span class="campo__caixa"><span class="digita" style="--atraso: 1.8s">{{ p.antecedencia.preco }}</span></span>
               </div>
               <div class="campo destaca" style="--atraso: 3s">
                 <span class="campo__rotulo">Antecedência própria (opcional)</span>
                 <span class="campo__caixa campo__caixa--com-selo">
-                  <span class="digita" style="--atraso: 3.4s">24 horas</span>
+                  <span class="digita" style="--atraso: 3.4s">{{ p.antecedencia.prazo }}</span>
                   <span class="selo-ok surge" style="--atraso: 4.6s">✓ só neste</span>
                 </span>
               </div>
               <div class="campo surge" style="--atraso: 5.8s">
-                <span class="campo__rotulo">Mini salgados</span>
-                <span class="campo__caixa campo__caixa--vazia">Em branco: segue a da loja (30 min)</span>
+                <span class="campo__rotulo">{{ p.antecedencia.outro }}</span>
+                <span class="campo__caixa campo__caixa--vazia">Em branco: segue a da loja ({{ p.antecedencia.prazoLoja }})</span>
               </div>
             </div>
           </div>

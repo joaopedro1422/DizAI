@@ -1,0 +1,20 @@
+/* Peças deste tutorial; a base comum está em shared/components/video-tutorial/cenas-video.css */
+
+/* Uma linha das variações de preço: nome à esquerda, valor à direita */
+.variacao {
+  display: flex;
+  justify-content: space-between;
+  gap: 2cqw;
+  padding: 1.8cqw 2.2cqw;
+  border: 0.25cqw solid var(--cor-borda-suave);
+  border-radius: 2cqw;
+  background: #ffffff;
+}
+
+/* "escolhe exatamente 1", "quantos quiser"... ao lado do nome da opção */
+.regra-escolha {
+  margin-left: 1cqw;
+  color: var(--cor-texto-suave);
+  font-size: 2.2cqw;
+  font-weight: 600;
+}

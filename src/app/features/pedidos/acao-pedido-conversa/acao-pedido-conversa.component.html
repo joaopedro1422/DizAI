@@ -85,7 +85,7 @@
           }
           <input class="somente-leitor-tela" type="file" accept="image/*" [disabled]="enviandoAnexo()" (change)="aoEscolherAnexo($event)">
         </label>
-        <span class="campo__dica">Ex.: a foto do bolo que o cliente mandou. Ela fica no pedido, na tela Pedidos.</span>
+        <span class="campo__dica">Ex.: {{ conteudo().anexoPedido }}. Ela fica no pedido, na tela Pedidos.</span>
       }
     </div>
   }

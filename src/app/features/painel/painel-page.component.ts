@@ -13,9 +13,8 @@ import { ProdutoService } from '../../core/services/produto.service';
 import { ToastService } from '../../core/services/toast.service';
 import { BottomSheetComponent } from '../../shared/components/bottom-sheet/bottom-sheet.component';
 import { CarregandoComponent } from '../../shared/components/carregando/carregando.component';
-import { DicaSobrepostaComponent } from '../../shared/components/dica-sobreposta/dica-sobreposta.component';
+import { DicaSobrepostaComponent, ItemDica } from '../../shared/components/dica-sobreposta/dica-sobreposta.component';
 import { IconeComponent } from '../../shared/components/icone/icone.component';
-import { AlertaConexaoWhatsappComponent } from './alerta-conexao-whatsapp/alerta-conexao-whatsapp.component';
 import { AlterarSenhaComponent } from './alterar-senha/alterar-senha.component';
 import { InstalacaoAppService } from '../../core/pwa/instalacao-app.service';
 import { NotificacoesPushService } from '../../core/pwa/notificacoes-push.service';
@@ -26,6 +25,12 @@ import { EditarPerfilComponent } from './editar-perfil/editar-perfil.component';
 import { AlvoTourDirective } from './onboarding/alvo-tour.directive';
 import { OnboardingTourComponent } from './onboarding/onboarding-tour.component';
 import { OnboardingTourService } from './onboarding/onboarding-tour.service';
+import { EscolhaSegmentoComponent } from './onboarding/escolha-segmento.component';
+import { SegmentoNegocio } from '../../core/constants/segmentos';
+import { PrimeirosPassosComponent } from './onboarding/primeiros-passos.component';
+import { ConteudoRamoService } from '../../core/services/conteudo-ramo.service';
+import { ramoDeServico, ramoUsaAgenda } from '../../core/models/perfil.model';
+import { perguntaDoPrimeiroTeste } from './onboarding/progresso-onboarding';
 import { ResumoLojaComponent } from './resumo-loja/resumo-loja.component';
 
 /** Tempo que o painel fica à mostra antes da janela de boas-vindas abrir. */
@@ -41,13 +46,14 @@ const ESPERA_BOAS_VINDAS_MS = 2500;
     AtalhosSecoesComponent,
     CartaoChatsComponent,
     AppNoCelularComponent,
-    AlertaConexaoWhatsappComponent,
     BottomSheetComponent,
     EditarPerfilComponent,
     DicaSobrepostaComponent,
     CarregandoComponent,
     AlvoTourDirective,
     OnboardingTourComponent,
+    EscolhaSegmentoComponent,
+    PrimeirosPassosComponent,
     AlterarSenhaComponent,
   ],
   providers: [OnboardingTourService],
@@ -89,6 +95,47 @@ export class PainelPageComponent implements OnInit {
 
   /** Conta nova: primeiro a janela de boas-vindas, depois o tour em passos. */
   protected readonly mostrarBoasVindas = signal(false);
+  protected readonly tituloBoasVindas = computed(() => {
+    const perfil = this.perfilService.perfil();
+    const nome = perfil.nomeResponsavel?.trim().split(/\s+/)[0];
+    return nome ? `${nome}, qual é o seu negócio?` : 'Qual é o seu negócio?';
+  });
+  /** As opções do ramo (barbearia, salão...) e a escolhida nas boas-vindas (undefined = nenhuma ainda). */
+  protected readonly segmentosDoRamo = inject(ConteudoRamoService).segmentosDoRamo;
+  protected readonly segmentoEscolhido = signal<SegmentoNegocio | null | undefined>(undefined);
+
+  /** Fim do tour: convite para cadastrar o primeiro item e testar o assistente como cliente. */
+  protected readonly mostrarConviteTeste = signal(false);
+  private readonly conteudoRamo = inject(ConteudoRamoService).conteudo;
+  protected readonly conviteTeste = computed(() => {
+    const termo = this.conteudoRamo().termoItem;
+    const temItem = this.produtoService.produtos().length > 0;
+    const testar: ItemDica = {
+      icone: 'conversa',
+      titulo: 'Teste como se fosse cliente',
+      texto: 'Mande uma mensagem e veja a resposta antes de ligar no WhatsApp.',
+    };
+    if (temItem) {
+      return {
+        descricao: 'Você já tem o que ele precisa para responder. Veja como ele atende os seus clientes.',
+        itens: [testar],
+        botao: 'Testar o atendimento',
+      };
+    }
+    const itens: ItemDica[] = [
+      { icone: 'caixa', titulo: `1. Cadastre o primeiro ${termo}`, texto: 'Nome, preço e as opções. Leva 1 minuto.' },
+    ];
+    // serviços com agenda: o teste só mostra horários depois que os dias de atendimento estão cadastrados
+    if (ramoUsaAgenda(this.perfilService.perfil().ramo)) {
+      itens.push({ icone: 'calendario', titulo: '2. Cadastre os seus horários', texto: 'Os dias e horários em que você atende.' });
+    }
+    itens.push({ ...testar, titulo: `${itens.length + 1}. Teste como se fosse cliente` });
+    return {
+      descricao: 'Ele responde com o que você cadastrar. Comece por um item e veja a resposta na hora.',
+      itens,
+      botao: `Cadastrar o primeiro ${termo}`,
+    };
+  });
 
   ngOnInit(): void {
     void this.carregarPainel();
@@ -118,8 +165,17 @@ export class PainelPageComponent implements OnInit {
     }
   }
 
-  protected iniciarTourAposBoasVindas(): void {
+  /** Grava o tipo do negócio (se escolheu) e começa o tour, já com os exemplos dele. */
+  protected async iniciarTourAposBoasVindas(): Promise<void> {
     this.mostrarBoasVindas.set(false);
+    const segmento = this.segmentoEscolhido();
+    if (segmento !== undefined && segmento !== (this.perfilService.perfil().segmento ?? null)) {
+      try {
+        await this.perfilService.definirSegmento(segmento);
+      } catch (erro) {
+        this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível salvar o tipo do negócio. Mude depois em Dados da loja.'));
+      }
+    }
     this.tour().iniciar();
   }
 
@@ -146,11 +202,36 @@ export class PainelPageComponent implements OnInit {
     void this.router.navigate(['/entrar']);
   }
 
-  /** Fim do tour (até o fim ou pulado): fica no painel; a tela do assistente tem o próprio vídeo na primeira visita. */
-  protected aoEncerrarTour(): void {
+  /** "Agora não" nas boas-vindas: sem tour; o card "Primeiros passos" continua mostrando o caminho. */
+  protected pularOnboarding(): void {
+    this.mostrarBoasVindas.set(false);
+    this.perfilService.marcarOnboardingConcluido();
+  }
+
+  /** Fim do tour: até o fim, convida para o teste; pulado, fica no painel com os "Primeiros passos". */
+  protected aoEncerrarTour(concluido: boolean): void {
     this.perfilService.marcarOnboardingConcluido();
     this.router.navigate([], { relativeTo: this.rotaAtual, queryParams: {}, replaceUrl: true });
-    this.toastService.mostrar('Tudo pronto! Comece cadastrando seus produtos.');
+    if (concluido) {
+      this.mostrarConviteTeste.set(true);
+    }
+  }
+
+  /** Sem item cadastrado, vai ao cadastro (o vídeo da tela já abre o formulário); com item, direto ao teste. */
+  protected aceitarConviteTeste(): void {
+    this.mostrarConviteTeste.set(false);
+    const rotas = this.rotasPainel();
+    if (this.produtoService.produtos().length > 0) {
+      const item = this.produtoService.produtos().find((produto) => !produto.produtoAVenda);
+      const pergunta = perguntaDoPrimeiroTeste(ramoDeServico(this.perfilService.perfil().ramo), item?.nome);
+      void this.router.navigate([rotas.atendimento], { queryParams: { testar: 1, pergunta } });
+    } else {
+      void this.router.navigate([rotas.produtos], { queryParams: { novo: 1 } });
+    }
+  }
+
+  protected adiarConviteTeste(): void {
+    this.mostrarConviteTeste.set(false);
     if (this.instalacaoApp.podeInstalar() || this.avisosPush.estado() === 'desativado') {
       this.mostrarConviteApp.set(true);
     }

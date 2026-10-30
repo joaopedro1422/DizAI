@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
+import { DicaSobrepostaComponent } from '../../../shared/components/dica-sobreposta/dica-sobreposta.component';
+import { perguntaDoPrimeiroTeste, testeFeito } from '../../painel/onboarding/progresso-onboarding';
 import { mensagemDoErro } from '../../../core/api/erro-api';
 import { SessaoService } from '../../../core/auth/sessao.service';
 import { ConfiguracaoAgenda, DiaSemana, PeriodoAtendimento } from '../../../core/models/agenda.model';
@@ -64,6 +66,7 @@ const INTERVALOS = [
 const ANTECEDENCIAS = [
   { minutos: 0, rotulo: 'Sem' },
   { minutos: 10, rotulo: '10 min' },
+  { minutos: 15, rotulo: '15 min' },
   { minutos: 30, rotulo: '30 min' },
   { minutos: 60, rotulo: '1 hora' },
   { minutos: 120, rotulo: '2 horas' },
@@ -95,7 +98,7 @@ const MAXIMO_PERIODOS_POR_DIA = 4;
  * Aba "Horários" da agenda: em quais dias e horários o negócio atende (vários períodos por dia, para o almoço),
  * de quanto em quanto tempo os horários começam, a antecedência mínima, o lembrete e, no fim, as mensagens
  * (agendamento, lembrete e agradecimento), cada uma num card que abre e fecha.
- * A agenda não tem chave própria: fica ativa com "Agendamento automático" em "Quando o cliente quiser fechar".
+ * A agenda não tem chave própria: fica ativa com "Agendamento automático" em "Quando o cliente quiser agendar".
  */
 @Component({
   selector: 'app-horarios-atendimento',
@@ -107,6 +110,7 @@ const MAXIMO_PERIODOS_POR_DIA = 4;
     CarregandoComponent,
     MensagemConfirmacaoComponent,
     ProfissionaisAgendaComponent,
+    DicaSobrepostaComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './horarios-atendimento.component.html',
@@ -122,8 +126,11 @@ export class HorariosAtendimentoComponent {
   private readonly perfilService = inject(PerfilService);
   private readonly toastService = inject(ToastService);
   private readonly rotas = inject(SessaoService).rotasDoPainel;
+  private readonly router = inject(Router);
+  /** Primeiros horários salvos (e o assistente ainda não foi testado): convite para testar um agendamento. */
+  protected readonly convidarTeste = signal(false);
   protected readonly rotaProdutos = computed(() => this.rotas().produtos);
-  /** "Quando o cliente quiser fechar" fica na tela do assistente. */
+  /** "Quando o cliente quiser agendar" fica na tela do assistente. */
   protected readonly rotaAtendimento = computed(() => this.rotas().atendimento);
   /** "Agendamento automático" escolhido = agenda ativa (página pública e o assistente marcando sozinho). */
   protected readonly modoAutomatico = computed(() => this.perfilService.perfil().modoPedido === 'AGENDAMENTO_AUTOMATICO');
@@ -318,14 +325,26 @@ export class HorariosAtendimentoComponent {
     this.rascunho.set(paraRascunho(this.configuracao()));
   }
 
+  /** "Testar agora": o teste abre com a pergunta de um cliente que quer marcar. */
+  protected testarAgendamento(): void {
+    this.convidarTeste.set(false);
+    const servico = this.produtoService.produtos().find((produto) => !produto.produtoAVenda);
+    const pergunta = perguntaDoPrimeiroTeste(true, servico?.nome);
+    void this.router.navigate([this.rotas().atendimento], { queryParams: { testar: 1, pergunta } });
+  }
+
   protected async salvar(): Promise<void> {
     if (this.salvando() || this.temErro()) {
       return;
     }
     const rascunho = this.rascunho();
+    const primeirosHorarios = this.configuracao().periodos.length === 0 && this.algumDiaAberto();
     this.salvando.set(true);
     try {
       await this.agendaService.salvarConfiguracao(paraConfiguracao(rascunho, this.configuracao()));
+      if (primeirosHorarios && !testeFeito(this.perfilService.perfil().id)) {
+        this.convidarTeste.set(true);
+      }
       this.toastService.mostrar(
         this.modoAutomatico() && !this.algumDiaAberto()
           ? 'Salvo. Sem nenhum dia de atendimento, o assistente não oferece horários.'

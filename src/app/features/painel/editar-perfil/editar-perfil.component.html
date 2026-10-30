@@ -1,7 +1,7 @@
 <form class="formulario" [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
   <section class="bloco" aria-labelledby="perfil-sobre">
     <h3 id="perfil-sobre" class="rotulo-maiusculo">Sobre você e o negócio</h3>
-    <app-etapa-dados-negocio [grupo]="formulario.controls.dadosNegocio" [exibirCabecalho]="false" />
+    <app-etapa-dados-negocio [grupo]="formulario.controls.dadosNegocio" [exibirCabecalho]="false" [ramo]="ramoAtual()" />
     <div class="campo">
       <label for="perfil-whatsapp" class="campo__rotulo">WhatsApp do negócio</label>
       <input
@@ -30,6 +30,21 @@
         </button>
       }
     </div>
+
+    <!-- o tipo dentro do ramo: só muda os exemplos, sugestões e tutoriais do painel -->
+    <h3 id="perfil-segmento" class="rotulo-maiusculo segmento__titulo">Qual é o seu negócio?</h3>
+    <div class="grupo-chips" role="radiogroup" aria-labelledby="perfil-segmento">
+      @for (opcao of segmentos(); track opcao.valor) {
+        @let selecionado = segmentoDoRamo() === opcao.valor;
+        <button type="button" role="radio" class="chip" [class.chip--ativo]="selecionado" [attr.aria-checked]="selecionado" (click)="segmento.set(opcao.valor)">
+          {{ opcao.emoji }} {{ opcao.rotulo }}
+        </button>
+      }
+      <button type="button" role="radio" class="chip" [class.chip--ativo]="segmentoDoRamo() === null" [attr.aria-checked]="segmentoDoRamo() === null" (click)="segmento.set(null)">
+        Outro tipo
+      </button>
+    </div>
+    <p class="bloco__dica">Serve só para os exemplos e as sugestões do painel: você pode cadastrar qualquer produto ou serviço.</p>
   </section>
 
   <section class="bloco" aria-labelledby="perfil-pagamento">

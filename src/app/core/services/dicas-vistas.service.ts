@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 
-export type Dica = 'cadastro-produtos' | 'video-perguntas' | 'video-agenda' | 'video-chats' | 'video-atendimento';
+export type Dica =
+  | 'cadastro-produtos'
+  | 'guia-cadastro-produto'
+  | 'video-perguntas'
+  | 'video-agenda'
+  | 'video-chats'
+  | 'video-atendimento';
 
 const PREFIXO_CHAVE = 'dizai:dica-vista:';
 

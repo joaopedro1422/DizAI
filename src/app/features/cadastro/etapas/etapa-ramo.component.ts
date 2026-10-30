@@ -5,7 +5,7 @@ import { RamoNegocio } from '../../../core/models/perfil.model';
 import { EtiquetaOpcao, OpcaoCardComponent } from '../../../shared/components/opcao-card/opcao-card.component';
 import { ControleRamo } from '../cadastro-formulario';
 
-/** Passo 3: o ramo que mais se parece com o negócio. */
+/** Passo 1: o ramo que mais se parece com o negócio (os exemplos dos passos seguintes seguem ele). */
 @Component({
   selector: 'app-etapa-ramo',
   imports: [OpcaoCardComponent],

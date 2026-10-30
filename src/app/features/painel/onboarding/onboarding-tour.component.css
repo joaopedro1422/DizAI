@@ -30,8 +30,8 @@
   z-index: 202;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 20px;
+  gap: 14px;
+  padding: 18px;
   border-radius: 18px;
   background: var(--cor-fundo);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
@@ -65,7 +65,7 @@
 .balao__topo {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 12px;
 }
 
 .balao__contador {
@@ -74,25 +74,21 @@
   color: var(--cor-texto-suave);
 }
 
-.balao__pontos {
-  display: flex;
-  gap: 5px;
-}
-
-.balao__ponto {
-  width: 6px;
-  height: 6px;
+/* progresso do tour: uma barra que enche a cada passo */
+.balao__barra {
+  flex: 1;
+  height: 4px;
+  overflow: hidden;
   border-radius: var(--raio-pilula);
-  background: #d5dbe6;
-  transition: width 0.3s ease, background-color 0.3s ease;
+  background: #E3E7EF;
 }
 
-.balao__ponto--visto {
+.balao__barra span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
   background: var(--cor-primaria);
-}
-
-.balao__ponto--atual {
-  width: 18px;
+  transition: width 0.4s ease;
 }
 
 .balao__textos {
@@ -104,7 +100,7 @@
 .balao__titulo {
   font-family: var(--fonte-titulo);
   font-weight: 500;
-  font-size: 22px;
+  font-size: 21px;
   letter-spacing: -0.01em;
 }
 
@@ -130,82 +126,8 @@
   border-radius: 12px;
 }
 
-/* Aviso "Sua loja foi criada!" */
-.aviso-inicial {
-  position: fixed;
-  left: 50%;
-  bottom: 24px;
-  z-index: 202;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: min(448px, calc(100vw - 32px));
-  padding: 16px 18px 14px;
-  border-radius: 18px;
-  background: var(--cor-primaria);
-  color: #ffffff;
-  box-shadow: var(--sombra-flutuante);
-  transform: translateX(-50%);
-  animation: surgir-centralizado 0.35s ease-out both;
-}
-
-.aviso-inicial__linha {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.aviso-inicial__icone {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
-}
-
-.aviso-inicial__textos {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.aviso-inicial__titulo {
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.aviso-inicial__subtitulo {
-  font-size: 13px;
-  color: var(--cor-texto-sobre-escuro);
-}
-
-.aviso-inicial__barra {
-  height: 3px;
-  overflow: hidden;
-  border-radius: var(--raio-pilula);
-  background: rgba(255, 255, 255, 0.18);
-}
-
-.aviso-inicial__preenchimento {
-  display: block;
-  height: 3px;
-  background: #ffffff;
-  animation: encher 2.5s linear forwards;
-}
-
 @keyframes aparecer {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes surgir-centralizado {
-  from { opacity: 0; transform: translate(-50%, 12px); }
-  to { opacity: 1; transform: translate(-50%, 0); }
-}
-
-@keyframes encher {
-  from { width: 0; }
-  to { width: 100%; }
-}

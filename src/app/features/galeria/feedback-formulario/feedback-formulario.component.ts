@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { Feedback, NovoFeedback } from '../../../core/models/galeria.model';
 import { campoComErro } from '../../../core/utils/validadores';
+import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.service';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 
 /** Cadastro rápido de um feedback de cliente: estrelas (5 por padrão), texto, nome e data (opcional). */
@@ -37,7 +38,7 @@ import { CarregandoComponent } from '../../../shared/components/carregando/carre
           rows="4"
           maxlength="500"
           formControlName="texto"
-          placeholder="Ex.: Amei o resultado, durou 3 semanas perfeitas!"
+          [placeholder]="'Ex.: ' + conteudo().feedback"
         ></textarea>
         @if (temErro('texto')) {
           <span class="campo__erro" role="alert">Escreva o feedback do cliente.</span>
@@ -112,6 +113,8 @@ export class FeedbackFormularioComponent implements OnInit {
   readonly salvando = input(false);
   readonly salvo = output<NovoFeedback>();
 
+  /** Exemplo do feedback com a cara do negócio. */
+  protected readonly conteudo = inject(ConteudoRamoService).conteudo;
   protected readonly formulario = inject(FormBuilder).nonNullable.group({
     estrelas: [5],
     texto: ['', [Validators.required, Validators.maxLength(500)]],

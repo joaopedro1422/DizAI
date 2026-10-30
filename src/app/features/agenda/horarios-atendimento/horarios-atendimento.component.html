@@ -1,7 +1,7 @@
 <div class="horarios" [class.horarios--com-barra]="alterado()">
   <!-- tablet e computador: agenda online e dias à esquerda, as opções à direita (no celular, "display: contents") -->
   <div class="horarios__coluna">
-    <!-- sem chave: a agenda segue o "Quando o cliente quiser fechar" da tela do assistente -->
+    <!-- sem chave: a agenda segue o "Quando o cliente quiser agendar" da tela do assistente -->
     <section class="cartao chave" [class.chave--ligada]="modoAutomatico()">
       <div class="chave__linha">
         <span class="chave__icone">
@@ -20,7 +20,7 @@
         <a class="chave__modo" [routerLink]="rotaAtendimento()">
           <app-icone nome="brilho" [tamanho]="18" [espessura]="2" />
           <span>
-            A agenda fica ativa quando você escolhe "Agendamento automático" em "Quando o cliente quiser fechar".
+            A agenda fica ativa quando você escolhe "Agendamento automático" em "Quando o cliente quiser agendar".
             <strong>Escolher agendamento automático</strong>
           </span>
         </a>
@@ -352,4 +352,18 @@
       </button>
     </div>
   </app-bottom-sheet>
+}
+
+@if (convidarTeste()) {
+  <!-- primeiros horários: agora dá para testar o assistente marcando um horário de verdade -->
+  <app-dica-sobreposta
+    icone="calendario"
+    sobretitulo="Horários salvos"
+    titulo="Agora, teste um agendamento"
+    descricao="Converse com o assistente como se fosse um cliente querendo marcar. Você vê os horários que ele oferece antes de ligar no WhatsApp."
+    rotuloBotao="Testar agora"
+    rotuloSecundario="Depois"
+    (confirmar)="testarAgendamento()"
+    (secundario)="convidarTeste.set(false)"
+  />
 }

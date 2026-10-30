@@ -5,10 +5,16 @@
       Personalizar vitrine
     </button>
 
-    <a acoesTopo [routerLink]="caminhoPaginaPublica()" class="btn btn--pequeno link-publico">
-      <app-icone nome="externo" [tamanho]="15" [espessura]="2" />
-      Ver página pública
-    </a>
+    <!-- o link da vitrine (abre em outra aba) e o copiar ao lado, como na Agenda -->
+    <span acoesTopo class="link-publico">
+      <a class="link-publico__url" [href]="linkPaginaPublica()" target="_blank" rel="noopener" aria-label="Abrir a vitrine">
+        <app-icone nome="link" [tamanho]="15" [espessura]="2" />
+        <span class="link-publico__texto">{{ linkPaginaPublicaExibicao() }}</span>
+      </a>
+      <button type="button" class="link-publico__copiar" aria-label="Copiar o link da vitrine" (click)="copiarLinkPublico()">
+        <app-icone nome="copiar" [tamanho]="15" [espessura]="2" />
+      </button>
+    </span>
 
     <div class="acoes">
       <button type="button" class="btn btn--primario btn--acao-principal" (click)="abrirNovoTopico()">

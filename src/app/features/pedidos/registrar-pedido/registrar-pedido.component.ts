@@ -4,6 +4,7 @@ import { mensagemDoErro } from '../../../core/api/erro-api';
 import { Cliente } from '../../../core/models/cliente.model';
 import { ClienteService } from '../../../core/services/cliente.service';
 import { PedidoService } from '../../../core/services/pedido.service';
+import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.service';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { SeletorProdutoComponent } from '../seletor-produto/seletor-produto.component';
@@ -49,7 +50,7 @@ function chaveDoNumero(texto: string): string {
           class="campo__entrada"
           rows="3"
           maxlength="500"
-          placeholder="Ex.: 50 coxinhas, 50 pastéis e 50 churros"
+          [placeholder]="conteudo().itensPedidoManual"
           [value]="itens()"
           (input)="itens.set($any($event.target).value)"
         ></textarea>
@@ -175,6 +176,8 @@ function chaveDoNumero(texto: string): string {
 })
 export class RegistrarPedidoComponent implements OnInit {
   private readonly pedidoService = inject(PedidoService);
+  /** Exemplo dos itens com a cara do negócio. */
+  protected readonly conteudo = inject(ConteudoRamoService).conteudo;
   private readonly clienteService = inject(ClienteService);
 
   readonly registrado = output<{ entregue: boolean }>();

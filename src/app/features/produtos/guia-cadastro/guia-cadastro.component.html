@@ -1,0 +1,203 @@
+@let p = produtos();
+@let ad = p.guia.adicional;
+<app-video-tutorial
+  titulo="Como cadastrar um produto"
+  [cenas]="cenas"
+  rotuloBotao="Cadastrar meu produto"
+  (confirmar)="confirmar.emit()"
+  (fechar)="fechar.emit()"
+>
+  <ng-template #legenda let-cena>
+    @switch (cena) {
+      @case (0) {
+        <span class="legenda__selo surge">Novo produto</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">O assistente responde com o que estiver aqui</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Nome e preço, e duas ferramentas que fazem diferença: as variações de preço e as opções.</p>
+      }
+      @case (1) {
+        <span class="legenda__selo legenda__selo--dica surge">Variações de preço</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">O preço muda com o tamanho ou o tipo?</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Cadastre cada um com o seu valor. O cliente escolhe uma, e o valor dela vale no lugar do preço.</p>
+      }
+      @case (2) {
+        <span class="legenda__selo legenda__selo--dica surge">Opções que o cliente escolhe</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Viram perguntas na conversa</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">
+          {{ p.guia.opcoes[0].nome }}, {{ p.guia.opcoes[1].nome.toLowerCase() }}: diga quantas ele escolhe. Marque como adicional o que é opcional.
+        </p>
+      }
+      @case (3) {
+        <span class="legenda__selo surge">Na conversa</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">O assistente pergunta o que falta</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Cada escolha, antes de montar o resumo do pedido.</p>
+      }
+      @case (4) {
+        <span class="legenda__selo legenda__selo--dica surge">Adicional que muda com o tamanho</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Um produto para cada tamanho</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">
+          Se “{{ ad.nome }}” custa {{ ad.tamanhos[0][2] }} em “{{ ad.tamanhos[0][0] }}” e {{ ad.tamanhos[1][2] }} em
+          “{{ ad.tamanhos[1][0] }}”, cadastre os dois separados, cada um com os seus adicionais.
+        </p>
+      }
+      @case (5) {
+        <span class="legenda__selo legenda__selo--dica surge">Várias opções, mesmo preço</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Um produto só, com o preço de 1 {{ p.generico.unidade }}</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">
+          Coloque o valor de 1 {{ p.generico.unidade }} e crie a opção “{{ p.generico.opcao }}”. Não precisa cadastrar cada um separado.
+        </p>
+      }
+      @case (6) {
+        <span class="legenda__selo surge">Na conversa</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Ele pergunta as escolhas e faz a conta</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Pela quantidade e o preço de cada {{ p.generico.unidade }}.</p>
+      }
+      @case (7) {
+        <p class="legenda__titulo surge">Agora é com você ✨</p>
+        <p class="legenda__texto surge" style="--atraso: 0.8s">Comece pelo produto que mais vende. Dá para editar quando quiser.</p>
+      }
+    }
+  </ng-template>
+
+  <ng-template #tela let-cena>
+    @switch (cena) {
+      @case (0) {
+        <div class="app">
+          <div class="app__barra">Novo produto</div>
+          <div class="app__corpo">
+            <div class="campo destaca" style="--atraso: 0.8s">
+              <span class="campo__rotulo">Nome</span>
+              <span class="campo__caixa campo__caixa--vazia">Ex.: {{ p.variacao.item }}</span>
+            </div>
+            <div class="campo destaca" style="--atraso: 1.8s">
+              <span class="campo__rotulo">Preço</span>
+              <span class="campo__caixa campo__caixa--vazia">R$ 0,00</span>
+            </div>
+            <div class="campo destaca" style="--atraso: 2.8s">
+              <span class="campo__rotulo">Variações de preço</span>
+              <span class="campo__caixa campo__caixa--tracejada">+ Adicionar variação</span>
+            </div>
+            <div class="campo destaca" style="--atraso: 3.8s">
+              <span class="campo__rotulo">Opções que o cliente escolhe</span>
+              <span class="campo__caixa campo__caixa--tracejada">+ Adicionar opção</span>
+            </div>
+          </div>
+        </div>
+      }
+      @case (1) {
+        <div class="app">
+          <div class="app__barra">Novo produto</div>
+          <div class="app__corpo">
+            <div class="campo">
+              <span class="campo__rotulo">Nome</span>
+              <span class="campo__caixa"><span class="digita" style="--atraso: 0.6s">{{ p.variacao.item }}</span></span>
+            </div>
+            <div class="campo destaca" style="--atraso: 1.8s">
+              <span class="campo__rotulo">Variações de preço</span>
+              @for (opcao of p.variacao.opcoes; track opcao[0]; let i = $index) {
+                <span class="variacao surge" [style.--atraso]="2.4 + i * 0.8 + 's'"><span>{{ opcao[0] }}</span><b>{{ opcao[1] }}</b></span>
+              }
+            </div>
+            <span class="aviso-mini surge" style="--atraso: 5.4s">✓ O cliente escolhe 1</span>
+          </div>
+        </div>
+      }
+      @case (2) {
+        <div class="app">
+          <div class="app__barra">Opções que o cliente escolhe</div>
+          <div class="app__corpo">
+            @for (opcao of p.guia.opcoes; track opcao.nome; let i = $index) {
+              <div class="opcao surge" [style.--atraso]="0.6 + i * 1.8 + 's'">
+                <b>{{ opcao.nome }} <small class="regra-escolha">{{ opcao.regra }}</small></b>
+                <span class="opcao__chips">
+                  @for (valor of opcao.valores; track valor) {
+                    <span class="chip-mini">{{ valor }}</span>
+                  }
+                </span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+      @case (3) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar">{{ inicial() }}</span>
+            <span class="zap__nome"><b>{{ exemplos().loja }}</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            <span class="balao balao--cliente surge" style="--atraso: 0.6s">{{ p.guia.conversa[0] }}</span>
+            <span class="digitando digitando--1"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 3s">{{ p.guia.conversa[1] }}</span>
+            <span class="balao balao--cliente surge" style="--atraso: 5s">{{ p.guia.conversa[2] }}</span>
+            <span class="digitando digitando--2"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 7.2s">{{ p.guia.conversa[3] }}</span>
+          </div>
+        </div>
+      }
+      @case (4) {
+        <div class="app">
+          <div class="app__barra">Produtos</div>
+          <div class="app__corpo">
+            @for (tamanho of ad.tamanhos; track tamanho[0]; let i = $index) {
+              <div class="item surge" [style.--atraso]="0.6 + i * 1.2 + 's'">
+                <span class="item__foto item__foto--rosa">{{ exemplos().emoji }}</span>
+                <span class="item__textos"><b>{{ tamanho[0] }}</b><small>Adicional: {{ ad.nome.toLowerCase() }} {{ tamanho[2] }}</small></span>
+                <span class="item__preco">{{ tamanho[1] }}</span>
+              </div>
+            }
+            <span class="aviso-mini surge" style="--atraso: 3.6s">✓ Cada um com os seus adicionais</span>
+          </div>
+        </div>
+      }
+      @case (5) {
+        <div class="app">
+          <div class="app__barra">Novo produto</div>
+          <div class="app__corpo">
+            <div class="campo">
+              <span class="campo__rotulo">Nome</span>
+              <span class="campo__caixa"><span class="digita" style="--atraso: 0.6s">{{ p.generico.item }}</span></span>
+            </div>
+            <div class="campo destaca" style="--atraso: 1.8s">
+              <span class="campo__rotulo">Preço</span>
+              <span class="campo__caixa campo__caixa--com-selo">
+                {{ p.generico.precoUnidade }}
+                <span class="selo-ok surge" style="--atraso: 2.4s">valor de 1 {{ p.generico.unidade }}</span>
+              </span>
+            </div>
+            <div class="opcao surge" style="--atraso: 3.4s">
+              <b>{{ p.generico.opcao }} <small class="regra-escolha">quantos quiser</small></b>
+              <span class="opcao__chips">
+                @for (valor of p.generico.valores.slice(0, 4); track valor; let i = $index) {
+                  <span class="chip-mini surge" [style.--atraso]="4 + i * 0.4 + 's'">{{ valor }}</span>
+                }
+              </span>
+            </div>
+          </div>
+        </div>
+      }
+      @case (6) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar">{{ inicial() }}</span>
+            <span class="zap__nome"><b>{{ exemplos().loja }}</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            <span class="balao balao--cliente surge" style="--atraso: 0.6s">{{ p.generico.pedido }}</span>
+            <span class="digitando digitando--1"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 3s">Ótimo! Quais {{ p.generico.opcao.toLowerCase() }}? Temos {{ listaDeValores(p.generico.valores.slice(0, 4)) }}.</span>
+            <span class="balao balao--cliente surge" style="--atraso: 5s">{{ p.generico.escolha }}</span>
+            <span class="digitando digitando--2"><i></i><i></i><i></i></span>
+            <span class="balao surge" style="--atraso: 7.2s">Anotei! <mark class="marca" style="--atraso: 8s">{{ p.generico.total }}</mark>.</span>
+          </div>
+        </div>
+      }
+      @case (7) {
+        <div class="final">
+          <span class="final__check surge" style="--atraso: 0.4s">✓</span>
+          <b class="surge" style="--atraso: 1s">Pronto para cadastrar?</b>
+          <small class="surge" style="--atraso: 1.6s">Depois, teste como se fosse cliente.</small>
+        </div>
+      }
+    }
+  </ng-template>
+</app-video-tutorial>

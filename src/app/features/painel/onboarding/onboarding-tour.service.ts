@@ -1,6 +1,14 @@
 import { Injectable } from '@angular/core';
 
-export type AlvoTour = 'perfil' | 'produtos' | 'perguntas' | 'galeria' | 'contatos' | 'modo-pedido';
+export type AlvoTour =
+  | 'perfil'
+  | 'produtos'
+  | 'perguntas'
+  | 'galeria'
+  | 'contatos'
+  | 'modo-pedido'
+  | 'chats'
+  | 'agenda-pedidos';
 
 /**
  * Guarda os elementos da tela que o tour destaca.

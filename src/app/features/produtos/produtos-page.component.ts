@@ -1,8 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 
+import { ActivatedRoute, Router } from '@angular/router';
+
 import { ERRO_AO_CARREGAR, mensagemDoErro } from '../../core/api/erro-api';
+import { SessaoService } from '../../core/auth/sessao.service';
 import { NovoProduto, Produto, ProdutoAtualizacao } from '../../core/models/produto.model';
-import { ramoDeServico } from '../../core/models/perfil.model';
+import { ramoDeServico, ramoUsaAgenda } from '../../core/models/perfil.model';
+import { AgendaService } from '../../core/services/agenda.service';
 import { ConteudoRamoService } from '../../core/services/conteudo-ramo.service';
 import { DicasVistasService } from '../../core/services/dicas-vistas.service';
 import { PerfilService } from '../../core/services/perfil.service';
@@ -12,12 +16,15 @@ import { pluralizar } from '../../core/utils/colecao.utils';
 import { BotaoVideoComponent } from '../../shared/components/video-tutorial/botao-video.component';
 import { BottomSheetComponent } from '../../shared/components/bottom-sheet/bottom-sheet.component';
 import { CarregandoComponent } from '../../shared/components/carregando/carregando.component';
+import { DicaSobrepostaComponent } from '../../shared/components/dica-sobreposta/dica-sobreposta.component';
+import { perguntaDoPrimeiroTeste, testeFeito } from '../painel/onboarding/progresso-onboarding';
 import { CabecalhoPaginaComponent } from '../../shared/components/cabecalho-pagina/cabecalho-pagina.component';
 import { EstadoVazioComponent } from '../../shared/components/estado-vazio/estado-vazio.component';
 import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { ProdutoCardComponent } from './produto-card/produto-card.component';
 import { ProdutoFormularioComponent } from './produto-formulario/produto-formulario.component';
 import { TipoVideoCadastro, VideoCadastroComponent } from './video-cadastro/video-cadastro.component';
+import { GuiaCadastroComponent } from './guia-cadastro/guia-cadastro.component';
 
 const TODAS_AS_CATEGORIAS = 'Todos';
 
@@ -25,6 +32,8 @@ const TODAS_AS_CATEGORIAS = 'Todos';
 @Component({
   selector: 'app-produtos-page',
   imports: [
+    GuiaCadastroComponent,
+    DicaSobrepostaComponent,
     BotaoVideoComponent,
     CabecalhoPaginaComponent,
     IconeComponent,
@@ -101,7 +110,7 @@ export class ProdutosPageComponent implements OnInit {
   });
 
   protected readonly rotuloBotaoVideo = computed(() =>
-    this.produtoService.produtos().length === 0 ? 'Cadastrar meu primeiro produto' : 'Entendi',
+    this.produtoService.produtos().length === 0 ? `Cadastrar meu primeiro ${this.conteudo().termoItem}` : 'Entendi',
   );
 
   /** Fecha o vídeo; pelo botão principal, se a loja ainda não tem produtos, já abre o cadastro. */
@@ -113,10 +122,47 @@ export class ProdutosPageComponent implements OnInit {
     }
   }
 
+  /** Primeiro item cadastrado: convite para ver o assistente respondendo sobre ele (o nome do item). */
+  protected readonly convidarTeste = signal<string | null>(null);
+  private readonly router = inject(Router);
+  private readonly rotaAtual = inject(ActivatedRoute);
+  private readonly rotasPainel = inject(SessaoService).rotasDoPainel;
+
   ngOnInit(): void {
+    const abrirCadastro = this.rotaAtual.snapshot.queryParamMap.has('novo');
     this.produtoService
       .carregar()
+      .then(() => {
+        // vindo do onboarding: o vídeo da primeira visita já leva ao cadastro; sem ele, abre o formulário
+        if (abrirCadastro && !this.mostrarVideo()) {
+          this.abrirModal();
+        }
+      })
       .catch((erro: unknown) => this.toastService.mostrar(mensagemDoErro(erro, ERRO_AO_CARREGAR)));
+    if (abrirCadastro) {
+      void this.router.navigate([], { relativeTo: this.rotaAtual, queryParams: {}, replaceUrl: true });
+    }
+  }
+
+  /**
+   * Serviços com agenda e sem horários: o convite leva primeiro aos horários (a agenda abre direto em Configure),
+   * senão o teste não tem horário para oferecer.
+   */
+  protected readonly faltamHorarios = computed(
+    () => ramoUsaAgenda(this.perfil().ramo) && (this.agendaService.configuracao()?.periodos.length ?? 0) === 0,
+  );
+  private readonly agendaService = inject(AgendaService);
+
+  /** "Testar agora": abre o teste com uma pergunta sobre o item já escrita (ou os horários, quando faltam). */
+  protected testarPrimeiroItem(): void {
+    const nome = this.convidarTeste() ?? '';
+    this.convidarTeste.set(null);
+    if (this.faltamHorarios()) {
+      void this.router.navigate([this.rotasPainel().agenda]);
+      return;
+    }
+    const pergunta = perguntaDoPrimeiroTeste(ramoDeServico(this.perfil().ramo), nome);
+    void this.router.navigate([this.rotasPainel().atendimento], { queryParams: { testar: 1, pergunta } });
   }
 
   protected filtrar(categoria: string): void {
@@ -128,11 +174,23 @@ export class ProdutosPageComponent implements OnInit {
     this.filtroAtual.set(TODAS_AS_CATEGORIAS);
   }
 
+  /** Tutorial do formulário (lojas de produtos): na primeira vez que o lojista abre "Novo produto", ou pelo link do modal. */
+  protected readonly mostrarGuia = signal(false);
+  protected readonly lojaDeProdutos = computed(() => !ramoDeServico(this.perfil().ramo));
+
   protected abrirModal(produtoAVenda = false): void {
     this.produtoEmEdicao.set(null);
     this.produtoModelo.set(null);
     this.novoProdutoAVenda.set(produtoAVenda);
     this.modalAberto.set(true);
+    if (this.lojaDeProdutos() && !produtoAVenda && this.dicasVistas.deveMostrarVideo('guia-cadastro-produto')) {
+      this.mostrarGuia.set(true);
+    }
+  }
+
+  protected fecharGuia(): void {
+    this.dicasVistas.marcarComoVista('guia-cadastro-produto');
+    this.mostrarGuia.set(false);
   }
 
   protected fecharModal(): void {
@@ -199,10 +257,17 @@ export class ProdutosPageComponent implements OnInit {
         };
         await this.produtoService.atualizar(produto.id, atualizacao);
       } else {
+        const primeiroItem = this.produtoService.produtos().length === 0 && !novoProduto.produtoAVenda;
         // a cópia leva a foto do original (o formulário só manda a foto do produto à venda)
         await this.produtoService.adicionar(
           modelo && novoProduto.fotoUrl === undefined ? { ...novoProduto, fotoUrl: modelo.fotoUrl ?? null } : novoProduto,
         );
+        if (primeiroItem && !testeFeito(this.perfil().id)) {
+          if (ramoUsaAgenda(this.perfil().ramo) && !this.agendaService.configuracao()) {
+            await this.agendaService.carregarConfiguracao().catch(() => undefined);
+          }
+          this.convidarTeste.set(novoProduto.nome);
+        }
       }
       this.filtroAtual.set(TODAS_AS_CATEGORIAS);
       // mostra a aba do item salvo (Serviços ou Produtos)

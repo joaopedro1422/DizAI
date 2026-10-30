@@ -74,6 +74,8 @@ export class CatalogoConversaComponent {
   protected readonly avisoFechado = signal(true);
   protected readonly ligado = computed(() => this.modo() !== 'NAO');
   protected readonly tituloItens = computed(() => this.conteudo().tituloItens);
+  /** Exemplos dos catálogos por assunto, do segmento da loja. */
+  protected readonly exemploCatalogo = computed(() => this.conteudo().catalogo);
   protected readonly totalProdutos = computed(() => this.produtoService.produtos().length);
   protected readonly resumoProdutos = computed(() =>
     pluralizar(this.totalProdutos(), 'cadastrado', 'cadastrados'),

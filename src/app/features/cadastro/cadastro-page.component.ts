@@ -82,11 +82,11 @@ export class CadastroPageComponent {
     const { dadosNegocio, acesso, ramo } = this.formulario.controls;
     switch (this.etapaAtual()) {
       case 1:
-        return dadosNegocio;
-      case 2:
-        return acesso;
-      default:
         return ramo;
+      case 2:
+        return dadosNegocio;
+      default:
+        return acesso;
     }
   }
 }

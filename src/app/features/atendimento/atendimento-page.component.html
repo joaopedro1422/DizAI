@@ -54,7 +54,7 @@
       <app-secao-configuracao
         id="secao-fechamento"
         #secaoPedido
-        titulo="Quando o cliente quiser fechar"
+        [titulo]="tituloFechamento()"
         descricao="Escolha até onde o assistente vai antes de passar a conversa para você."
       >
         <div class="lista-opcoes" role="radiogroup" [attr.aria-labelledby]="secaoPedido.idTitulo">
@@ -260,11 +260,16 @@
 </div>
 
 @if (testando()) {
-  <app-teste-atendimento (fechar)="testando.set(false)" />
+  <app-teste-atendimento
+    [textoInicial]="perguntaTeste()"
+    [primeiroTeste]="primeiroTeste()"
+    (fechar)="testando.set(false); perguntaTeste.set(''); primeiroTeste.set(false)"
+    (voltarAoPainel)="voltarAoPainel()"
+  />
 }
 
 @if (mostrarVideo()) {
-  <app-video-atendimento [tipo]="tipoVideo()" (confirmar)="fecharVideo()" (fechar)="fecharVideo()" />
+  <app-video-atendimento [tipo]="tipoVideo()" [comAgenda]="comAgenda()" (confirmar)="fecharVideo()" (fechar)="fecharVideo()" />
 }
 
 @if (editandoDadosLoja()) {

@@ -156,3 +156,28 @@
     }
   </form>
 </section>
+
+<!-- primeiro teste do onboarding: o próximo passo, para o tutorial não parar aqui -->
+@if (proximoPasso() === 'servicos') {
+  <app-dica-sobreposta
+    icone="calendario"
+    sobretitulo="Horário marcado"
+    titulo="Você também tem uma página de agendamento"
+    descricao="Nela os seus clientes veem os serviços e os horários livres e já pedem o horário pelo WhatsApp. O assistente envia o link na conversa."
+    rotuloBotao="Conhecer"
+    rotuloSecundario="Voltar ao painel"
+    (confirmar)="conhecerAgendaOnline()"
+    (secundario)="voltarAoPainel.emit()"
+  />
+} @else if (proximoPasso() === 'produtos') {
+  <app-dica-sobreposta
+    icone="check"
+    sobretitulo="Esse é o seu assistente"
+    titulo="Agora, volte ao painel e termine de configurar"
+    descricao="Cadastre os outros produtos e as perguntas frequentes e conecte o WhatsApp. Você pode testar de novo quando quiser."
+    rotuloBotao="Voltar ao painel"
+    rotuloSecundario="Continuar testando"
+    (confirmar)="voltarAoPainel.emit()"
+    (secundario)="proximoPasso.set(null)"
+  />
+}

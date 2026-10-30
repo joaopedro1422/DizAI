@@ -114,6 +114,11 @@
   color: var(--cor-borda-forte);
 }
 
+/* "Primeiros passos" oculto ou concluído: o elemento vazio não ocupa espaço (nem o gap da coluna) */
+.conteudo > app-primeiros-passos:not(:has(> .passos)) {
+  display: none;
+}
+
 /* Computador: a tela usa a largura toda; "Seu Negócio" à esquerda e "Seu assistente" à direita.
    No celular nada muda (tudo aqui fica dentro do @media). */
 @media (min-width: 1024px) {
@@ -141,12 +146,6 @@
     grid-row: 1;
   }
 
-  /* o aviso do WhatsApp desconectado fica na coluna da direita, logo abaixo do card dos chats */
-  .conteudo > app-alerta-conexao-whatsapp {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
   /* o aviso da senha temporária fica em cima, nas duas colunas */
   .conteudo > .aviso-senha {
     grid-column: 1 / -1;
@@ -161,25 +160,39 @@
     grid-row: 2;
   }
 
-  .conteudo:has(> .aviso-senha) > app-alerta-conexao-whatsapp {
-    grid-row: 3;
-  }
-
-  /* o convite do app fica na coluna da direita, logo abaixo do aviso do WhatsApp (sem o aviso, no lugar dele) */
+  /* o convite do app fica na coluna da direita, logo abaixo do card dos chats */
   .conteudo > app-no-celular {
     grid-column: 2;
-    grid-row: 3;
-  }
-
-  .conteudo:not(:has(> app-alerta-conexao-whatsapp)) > app-no-celular {
     grid-row: 2;
   }
 
   .conteudo:has(> .aviso-senha) > app-no-celular {
-    grid-row: 4;
+    grid-row: 3;
   }
 
-  .conteudo:has(> .aviso-senha):not(:has(> app-alerta-conexao-whatsapp)) > app-no-celular {
+  /* "Primeiros passos" na coluna da direita, logo abaixo de "Seu assistente" (o convite do app desce uma linha) */
+  .conteudo:has(> app-primeiros-passos > .passos) > app-primeiros-passos {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .conteudo:has(> app-primeiros-passos > .passos) > .grupo--negocio {
+    grid-row: 1 / span 3;
+  }
+
+  .conteudo:has(> app-primeiros-passos > .passos) > app-no-celular {
     grid-row: 3;
+  }
+
+  .conteudo:has(> .aviso-senha):has(> app-primeiros-passos > .passos) > app-primeiros-passos {
+    grid-row: 3;
+  }
+
+  .conteudo:has(> .aviso-senha):has(> app-primeiros-passos > .passos) > .grupo--negocio {
+    grid-row: 2 / span 3;
+  }
+
+  .conteudo:has(> .aviso-senha):has(> app-primeiros-passos > .passos) > app-no-celular {
+    grid-row: 4;
   }
 }

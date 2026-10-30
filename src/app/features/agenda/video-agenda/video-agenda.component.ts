@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 
+import { exemplosDaAgenda } from '../../../core/constants/segmentos';
+import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.service';
 import { CenaVideo, VideoTutorialComponent } from '../../../shared/components/video-tutorial/video-tutorial.component';
 
 const CENAS: CenaVideo[] = [
@@ -26,4 +28,9 @@ export class VideoAgendaComponent {
   readonly fechar = output<void>();
 
   protected readonly cenas = CENAS;
+
+  /** A loja, os horários e as conversas de exemplo, do segmento da loja (barbearia, salão...). */
+  protected readonly exemplos = inject(ConteudoRamoService).exemplos;
+  protected readonly agenda = computed(() => exemplosDaAgenda(this.exemplos()));
+  protected readonly inicial = computed(() => this.exemplos().loja.charAt(0));
 }

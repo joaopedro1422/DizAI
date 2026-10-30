@@ -1,6 +1,6 @@
 <nav class="atalhos" aria-label="Seções da loja">
   @if (usaAgenda()) {
-    <a [routerLink]="rotas().agenda" class="atalho-agenda" [class.atalho-agenda--desligada]="!agendaAtiva()">
+    <a [routerLink]="rotas().agenda" class="atalho-agenda" [class.atalho-agenda--desligada]="!agendaAtiva()" appAlvoTour="agenda-pedidos">
       <span class="atalho-agenda__topo">
         <span class="icone-atalho icone-atalho--verde">
           <app-icone nome="calendario" [tamanho]="22" />
@@ -33,7 +33,7 @@
   }
 
   @if (usaPedidos()) {
-    <a [routerLink]="rotas().pedidos" class="atalho-agenda">
+    <a [routerLink]="rotas().pedidos" class="atalho-agenda" appAlvoTour="agenda-pedidos">
       <span class="atalho-agenda__topo">
         <span class="icone-atalho icone-atalho--azul">
           <app-icone nome="caixa" [tamanho]="22" />

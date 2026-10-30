@@ -25,3 +25,8 @@
 .horario__agenda {
   align-self: flex-start;
 }
+
+/* "Qual é o seu negócio?" logo abaixo do ramo */
+.segmento__titulo {
+  margin-top: 8px;
+}

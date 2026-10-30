@@ -73,6 +73,13 @@
     [titulo]="produtoEmEdicao() ? 'Editar ' + termoModal : produtoModelo() ? 'Duplicar ' + termoModal : editandoProduto ? 'Novo produto' : conteudo().tituloNovoItem"
     (fechar)="fecharModal()"
   >
+    @if (lojaDeProdutos() && !editandoProduto) {
+      <!-- reabre o tutorial: variações, opções, adicional por tamanho e sabores com o mesmo preço -->
+      <button type="button" class="btn btn--texto btn--pequeno link-guia" (click)="mostrarGuia.set(true)">
+        <app-icone nome="reproduzir" [tamanho]="14" />
+        Como cadastrar um produto
+      </button>
+    }
     <app-produto-formulario
       [categoriasExistentes]="categorias()"
       [produto]="produtoEmEdicao()"
@@ -119,4 +126,24 @@
     (confirmar)="fecharVideo(true)"
     (fechar)="fecharVideo(false)"
   />
+}
+
+@if (convidarTeste(); as nome) {
+  <!-- primeiro item: o melhor momento para ver o assistente respondendo -->
+  <app-dica-sobreposta
+    icone="conversa"
+    [sobretitulo]="nome + ' cadastrado'"
+    [titulo]="faltamHorarios() ? 'Agora, cadastre os seus horários' : 'Agora, veja o assistente respondendo'"
+    [descricao]="faltamHorarios()
+      ? 'Diga em quais dias e horários você atende. Assim o assistente já oferece horários de verdade no teste.'
+      : 'Mande uma mensagem como se fosse cliente. A pergunta já vai escrita, é só enviar.'"
+    [rotuloBotao]="faltamHorarios() ? 'Cadastrar horários' : 'Testar agora'"
+    rotuloSecundario="Depois"
+    (confirmar)="testarPrimeiroItem()"
+    (secundario)="convidarTeste.set(null)"
+  />
+}
+
+@if (mostrarGuia()) {
+  <app-guia-cadastro (confirmar)="fecharGuia()" (fechar)="fecharGuia()" />
 }

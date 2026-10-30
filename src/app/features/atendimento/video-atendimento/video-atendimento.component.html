@@ -1,4 +1,5 @@
-@let ex = exemplo();
+@let ex = exemplos();
+@let fe = fechamento();
 <app-video-tutorial
   titulo="Como configurar o seu assistente"
   [cenas]="cenas"
@@ -11,7 +12,7 @@
       @case (0) {
         <span class="legenda__selo surge">Seu assistente</span>
         <p class="legenda__titulo surge" style="--atraso: 0.3s">Aqui ele ganha a cara do seu negócio</p>
-        <p class="legenda__texto surge" style="--atraso: 1.4s">Saudação, instruções e catálogo: veja como cada um ajuda no atendimento.</p>
+        <p class="legenda__texto surge" style="--atraso: 1.4s">Cada card é uma decisão sobre como ele atende. Veja o que cada um faz.</p>
       }
       @case (1) {
         <span class="legenda__selo surge">Saudação inicial</span>
@@ -24,21 +25,36 @@
         <p class="legenda__texto surge" style="--atraso: 1.2s">Assim o cliente já sabe o principal sem precisar perguntar.</p>
       }
       @case (3) {
-        <span class="legenda__selo legenda__selo--dica surge">Instruções</span>
-        <p class="legenda__titulo surge" style="--atraso: 0.3s">Regras extras que ele sempre segue</p>
-        <p class="legenda__texto surge" style="--atraso: 1.2s">Podem ser sobre qualquer coisa: jeito de falar, emojis que pode usar, regras do seu negócio.</p>
+        <span class="legenda__selo legenda__selo--dica surge">{{ fe.titulo }}</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Até onde ele vai sozinho</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">{{ fe.legenda }}</p>
       }
       @case (4) {
+        <span class="legenda__selo surge">Na conversa</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">{{ fe.tituloConversa }}</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">{{ fe.legendaConversa }}</p>
+      }
+      @case (5) {
+        <span class="legenda__selo surge">Quando o cliente pedir fotos</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Ele envia os seus trabalhos</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Pela galeria do DizAI (o tópico certo, como “{{ ex.galeria.portfolio[0] }}”) ou por um link seu, como o Instagram.</p>
+      }
+      @case (6) {
+        <span class="legenda__selo legenda__selo--dica surge">Instruções obrigatórias</span>
+        <p class="legenda__titulo surge" style="--atraso: 0.3s">Regras extras que ele sempre segue</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Jeito de falar, emojis que pode usar, regras do seu negócio. Valem acima de tudo.</p>
+      }
+      @case (7) {
         <span class="legenda__selo surge">Na conversa</span>
         <p class="legenda__titulo surge" style="--atraso: 0.3s">E ele aplica no atendimento</p>
         <p class="legenda__texto surge" style="--atraso: 1.2s">Você escreve uma vez e não precisa repetir para cada cliente.</p>
       }
-      @case (5) {
+      @case (8) {
         <span class="legenda__selo surge">Catálogo</span>
         <p class="legenda__titulo surge" style="--atraso: 0.3s">Seu catálogo em PDF ou imagem</p>
-        <p class="legenda__texto surge" style="--atraso: 1.2s">Ele envia na saudação ou quando o cliente perguntar, no máximo uma vez por conversa.</p>
+        <p class="legenda__texto surge" style="--atraso: 1.2s">Escolha: na saudação, só quando perguntarem ou não enviar. No máximo uma vez por conversa.</p>
       }
-      @case (6) {
+      @case (9) {
         <p class="legenda__titulo surge">Teste antes de ligar ✨</p>
         <p class="legenda__texto surge" style="--atraso: 0.8s">Toque em “Testar atendimento” e converse com ele como se fosse um cliente.</p>
       }
@@ -55,9 +71,10 @@
           </div>
           <div class="app__corpo">
             <div class="config-item surge" style="--atraso: 0.8s"><b>Saudação inicial</b><small>A primeira mensagem</small></div>
-            <div class="config-item surge" style="--atraso: 1.2s"><b>Quando o cliente quiser fechar</b><small>Até onde ele vai</small></div>
-            <div class="config-item surge" style="--atraso: 1.6s"><b>Catálogo</b><small>PDF ou imagem</small></div>
-            <div class="config-item surge" style="--atraso: 2s"><b>Instruções</b><small>Regras que ele sempre segue</small></div>
+            <div class="config-item surge" style="--atraso: 1.2s"><b>{{ fe.titulo }}</b><small>Até onde ele vai</small></div>
+            <div class="config-item surge" style="--atraso: 1.6s"><b>Quando o cliente pedir fotos</b><small>Galeria ou link</small></div>
+            <div class="config-item surge" style="--atraso: 2s"><b>Catálogo</b><small>PDF ou imagem</small></div>
+            <div class="config-item surge" style="--atraso: 2.4s"><b>Instruções</b><small>Regras que ele sempre segue</small></div>
           </div>
         </div>
       }
@@ -80,7 +97,7 @@
       @case (2) {
         <div class="zap">
           <div class="zap__barra">
-            <span class="zap__avatar">{{ ex.inicial }}</span>
+            <span class="zap__avatar">{{ inicial() }}</span>
             <span class="zap__nome"><b>{{ ex.loja }}</b><small>online</small></span>
           </div>
           <div class="zap__corpo">
@@ -95,6 +112,72 @@
         </div>
       }
       @case (3) {
+        <!-- as opções do card, com a recomendada sendo escolhida -->
+        <div class="app">
+          <div class="app__barra">{{ fe.titulo }}</div>
+          <div class="app__corpo">
+            @for (modo of fe.modos; track modo.titulo; let i = $index) {
+              <div
+                class="modo surge"
+                [class.modo--escolhida]="modo.escolhida"
+                [class.tocado]="modo.escolhida"
+                [style.--atraso]="0.6 + i * 0.6 + 's'"
+              >
+                <span class="modo__radio"></span>
+                <span class="modo__textos">
+                  <b>{{ modo.titulo }}</b>
+                  @if (modo.recomendada) {
+                    <span class="modo__selo">Recomendado</span>
+                  }
+                  <small>{{ modo.texto }}</small>
+                </span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+      @case (4) {
+        <div class="zap">
+          <div class="zap__barra">
+            <span class="zap__avatar">{{ inicial() }}</span>
+            <span class="zap__nome"><b>{{ ex.loja }}</b><small>online</small></span>
+          </div>
+          <div class="zap__corpo">
+            @for (mensagem of ex.fechamento.mensagens; track $index; let i = $index) {
+              <span class="balao surge" [class.balao--cliente]="mensagem.cliente" [style.--atraso]="0.6 + i * 1.6 + 's'">
+                {{ mensagem.texto }}
+              </span>
+            }
+          </div>
+          <div class="notificacao" style="--atraso: 7.6s">
+            <span class="notificacao__icone">🔔</span>
+            <span class="notificacao__textos">
+              <b>{{ ex.fechamento.aviso.titulo }}</b>
+              <small>{{ ex.fechamento.aviso.texto }}</small>
+            </span>
+          </div>
+        </div>
+      }
+      @case (5) {
+        <div class="app">
+          <div class="app__barra">Quando o cliente pedir fotos</div>
+          <div class="app__corpo">
+            <div class="modo modo--escolhida tocado surge" style="--atraso: 0.6s">
+              <span class="modo__radio"></span>
+              <span class="modo__textos"><b>Galeria do DizAI</b><small>Envia o tópico certo da sua vitrine.</small></span>
+            </div>
+            <div class="modo surge" style="--atraso: 1.2s">
+              <span class="modo__radio"></span>
+              <span class="modo__textos"><b>Link externo</b><small>Instagram, Drive ou Canva.</small></span>
+            </div>
+            <div class="zap__corpo modo__conversa">
+              <span class="balao balao--cliente surge" style="--atraso: 3s">{{ ex.galeria.pedidoFotos }}</span>
+              <span class="balao surge" style="--atraso: 4.6s">{{ respostaFotos() }}</span>
+            </div>
+          </div>
+        </div>
+      }
+      @case (6) {
         <div class="app">
           <div class="app__barra">Instruções</div>
           <div class="app__corpo">
@@ -105,10 +188,10 @@
           </div>
         </div>
       }
-      @case (4) {
+      @case (7) {
         <div class="zap">
           <div class="zap__barra">
-            <span class="zap__avatar">{{ ex.inicial }}</span>
+            <span class="zap__avatar">{{ inicial() }}</span>
             <span class="zap__nome"><b>{{ ex.loja }}</b><small>online</small></span>
           </div>
           <div class="zap__corpo">
@@ -118,10 +201,10 @@
           </div>
         </div>
       }
-      @case (5) {
+      @case (8) {
         <div class="zap">
           <div class="zap__barra">
-            <span class="zap__avatar">{{ ex.inicial }}</span>
+            <span class="zap__avatar">{{ inicial() }}</span>
             <span class="zap__nome"><b>{{ ex.loja }}</b><small>online</small></span>
           </div>
           <div class="zap__corpo">
@@ -135,7 +218,7 @@
           </div>
         </div>
       }
-      @case (6) {
+      @case (9) {
         <div class="final">
           <span class="final__check surge" style="--atraso: 0.4s">✓</span>
           <b class="surge" style="--atraso: 1s">Pronto para configurar?</b>

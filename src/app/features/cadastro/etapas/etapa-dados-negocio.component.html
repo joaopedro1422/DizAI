@@ -16,7 +16,7 @@
 
   <div class="campo">
     <label for="nome-loja" class="campo__rotulo">Nome do negócio</label>
-    <input id="nome-loja" class="campo__entrada" type="text" autocomplete="organization" formControlName="nomeLoja" placeholder="Ex.: Bella Studio">
+    <input id="nome-loja" class="campo__entrada" type="text" autocomplete="organization" formControlName="nomeLoja" [placeholder]="exemplos().exemploNomeLoja">
     @if (temErro('nomeLoja')) {
       <span class="campo__erro" role="alert">Informe o nome do seu negócio.</span>
     }
@@ -24,7 +24,7 @@
 
   <div class="campo">
     <label for="descricao" class="campo__rotulo">O que o seu negócio faz?</label>
-    <textarea id="descricao" class="campo__entrada" rows="3" formControlName="descricao" placeholder="Ex.: Estúdio de unhas com esmaltação em gel, alongamento e nail art."></textarea>
+    <textarea id="descricao" class="campo__entrada" rows="3" formControlName="descricao" [placeholder]="exemplos().exemploDescricaoLoja"></textarea>
     @if (temErro('descricao')) {
       <span class="campo__erro" role="alert">Conte em poucas palavras o que você faz.</span>
     } @else {

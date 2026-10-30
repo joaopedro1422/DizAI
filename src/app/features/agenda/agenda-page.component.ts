@@ -165,7 +165,7 @@ export class AgendaPageComponent implements OnInit {
   protected readonly configuracao = this.agendaService.configuracao;
   /** "Agendamento automático" = agenda ativa: o assistente marca sozinho e a página mostra os horários. */
   protected readonly modoAutomatico = computed(() => this.perfil().modoPedido === 'AGENDAMENTO_AUTOMATICO');
-  /** "Quando o cliente quiser fechar" fica na tela do assistente. */
+  /** "Quando o cliente quiser agendar" fica na tela do assistente. */
   protected readonly rotaAtendimento = computed(() => `/painel/${this.perfil().id}/atendimento`);
   protected readonly rotaInicio = computed(() => `/painel/${this.perfil().id}`);
   protected readonly temHorarios = computed(() => (this.configuracao()?.periodos.length ?? 0) > 0);

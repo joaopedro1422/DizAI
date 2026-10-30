@@ -1,3 +1,4 @@
+import type { SegmentoNegocio } from '../constants/segmentos/tipos-segmento';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Observable, firstValueFrom } from 'rxjs';
@@ -93,7 +94,7 @@ export class PerfilService {
    * Dados do modal "Dados da loja".
    * O slug não muda, para o link público já compartilhado continuar funcionando.
    */
-  atualizarDadosLoja({ dadosNegocio, ramo, pagamentoEntrega, horariosFuncionamento, horarioLivre }: DadosLoja): Promise<void> {
+  atualizarDadosLoja({ dadosNegocio, ramo, pagamentoEntrega, horariosFuncionamento, horarioLivre, segmento }: DadosLoja): Promise<void> {
     return this.enviar(
       this.http.put<Perfil>(this.url('/dados-loja'), {
         ...dadosNegocio,
@@ -101,8 +102,14 @@ export class PerfilService {
         ...pagamentoEntrega,
         horariosFuncionamento,
         horarioLivre,
+        segmento: segmento ?? null,
       }),
     );
+  }
+
+  /** Primeiro passo do onboarding: o tipo do negócio dentro do ramo (só muda exemplos e tutoriais). */
+  definirSegmento(segmento: SegmentoNegocio | null): Promise<void> {
+    return this.enviar(this.http.patch<Perfil>(this.url('/segmento'), { segmento }));
   }
 
   /** "Facilitador de orçamentos" da tela de produtos: a aba Orçamento da página pública. */

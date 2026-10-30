@@ -10,16 +10,12 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { ConteudoRamo } from '../../../core/constants/conteudo-por-ramo';
 import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.service';
+import { PerfilService } from '../../../core/services/perfil.service';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
-import { AlvoTour, OnboardingTourService } from './onboarding-tour.service';
-
-interface PassoTour {
-  alvo: AlvoTour;
-  titulo: string;
-  texto: string;
-}
+import { OnboardingTourService } from './onboarding-tour.service';
+import { PassoTour, passosDoTour } from './previas-onboarding';
+import { PreviaWhatsappComponent } from './previa-whatsapp.component';
 
 interface Retangulo {
   top: number;
@@ -34,78 +30,8 @@ interface Medidas {
   alturaJanela: number;
 }
 
-type FaseTour = 'inativo' | 'boas-vindas' | 'passo';
+type FaseTour = 'inativo' | 'passo';
 
-const PASSOS_TOUR: PassoTour[] = [
-  {
-    alvo: 'perfil',
-    titulo: 'Dados da loja e estatísticas',
-    texto: 'Comece por aqui, nos três pontinhos. Em "Editar dados da loja", preencha as formas de pagamento, como o cliente recebe e a antecedência dos pedidos: o assistente usa essas informações para responder. Em "Estatísticas", acompanhe quantos clientes ele atendeu e quanto tempo você economizou.',
-  },
-  {
-    alvo: 'produtos',
-    titulo: 'Seus produtos e serviços',
-    texto: 'Cadastre o que você vende ou faz, com descrição, preço e opções. O assistente só responde com o que estiver aqui.',
-  },
-  {
-    alvo: 'perguntas',
-    titulo: 'Perguntas frequentes',
-    texto: 'Escreva as dúvidas que seus clientes sempre mandam, como horário, pagamento e prazo. O assistente usa as suas respostas.',
-  },
-  {
-    alvo: 'galeria',
-    titulo: 'Galeria de trabalhos',
-    texto: 'Organize fotos por serviço. Quando o cliente pedir para ver, o assistente envia o link do álbum certo.',
-  },
-  {
-    alvo: 'contatos',
-    titulo: 'Contatos a ignorar',
-    texto: 'Se você usa o mesmo número para a vida pessoal e o trabalho, adicione aqui família e amigos. O assistente não responde esses contatos, e as conversas com eles continuam só com você.',
-  },
-  {
-    alvo: 'modo-pedido',
-    titulo: 'Configure o seu assistente',
-    texto: 'É aqui que você deixa o assistente com a cara do seu negócio: a saudação, as fotos dos seus trabalhos, o envio do catálogo, como ele fecha os pedidos e as instruções que ele sempre segue. Dá para mudar quando quiser.',
-  },
-];
-
-/** Troca os textos genéricos do tour por exemplos do ramo da loja. */
-function adaptarPassoAoRamo(passo: PassoTour, conteudo: ConteudoRamo): PassoTour {
-  switch (passo.alvo) {
-    case 'produtos': {
-      const exemplo = conteudo.exemploProduto;
-      return {
-        ...passo,
-        titulo: `Seus ${conteudo.tituloItens.toLowerCase()}`,
-        texto: `Cadastre o que você ${conteudo.termoItem === 'serviço' ? 'faz' : 'vende ou faz'}${exemplo ? `, como "${exemplo}"` : ''}, com descrição, preço e opções. O assistente só responde com o que estiver aqui.`,
-      };
-    }
-    case 'perguntas': {
-      const exemplo = conteudo.perguntasSugeridas[0]?.pergunta;
-      return exemplo
-        ? { ...passo, texto: `Escreva as dúvidas que seus clientes sempre mandam, como "${exemplo}". O assistente usa as suas respostas.` }
-        : passo;
-    }
-    case 'galeria': {
-      const exemplo = conteudo.topicosSugeridos[0];
-      return exemplo
-        ? { ...passo, texto: `Organize as fotos em tópicos, como "${exemplo}". Quando o cliente pedir para ver, o assistente envia o link do tópico certo.` }
-        : passo;
-    }
-    case 'modo-pedido':
-      // serviço fala em atendimento e horário, não em pedido
-      return conteudo.termoItem === 'serviço'
-        ? {
-            ...passo,
-            texto: 'É aqui que você deixa o assistente com a cara do seu negócio: a saudação, as fotos dos seus trabalhos, o envio do catálogo, como ele fecha os atendimentos e marca os horários, e as instruções que ele sempre segue. Dá para mudar quando quiser.',
-          }
-        : passo;
-    default:
-      return passo;
-  }
-}
-
-const ESPERA_BOAS_VINDAS_MS = 2500;
 /** Mesma duração da transição do recorte no CSS. */
 const DURACAO_TRANSICAO_MS = 650;
 const TEMPO_MAXIMO_ROLAGEM_MS = 1500;
@@ -124,7 +50,7 @@ const MARGEM_LATERAL_PX = 16;
  */
 @Component({
   selector: 'app-onboarding-tour',
-  imports: [IconeComponent],
+  imports: [IconeComponent, PreviaWhatsappComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './onboarding-tour.component.html',
   styleUrl: './onboarding-tour.component.css',
@@ -141,7 +67,8 @@ export class OnboardingTourComponent implements OnDestroy {
   private readonly tourService = inject(OnboardingTourService);
   private readonly botaoAvancar = viewChild<ElementRef<HTMLButtonElement>>('botaoAvancar');
 
-  protected readonly passos = PASSOS_TOUR;
+  /** Os passos desta loja (pelo ramo), só com os cards que estão na tela. */
+  protected readonly passos = signal<PassoTour[]>([]);
   protected readonly fase = signal<FaseTour>('inativo');
   protected readonly indicePasso = signal(0);
   /** Falso enquanto a tela está rolando para o próximo passo. */
@@ -156,8 +83,11 @@ export class OnboardingTourComponent implements OnDestroy {
   private destruido = false;
 
   private readonly conteudoRamo = inject(ConteudoRamoService).conteudo;
-  protected readonly passoAtual = computed(() => adaptarPassoAoRamo(PASSOS_TOUR[this.indicePasso()], this.conteudoRamo()));
-  protected readonly ehUltimoPasso = computed(() => this.indicePasso() === PASSOS_TOUR.length - 1);
+  private readonly exemplos = inject(ConteudoRamoService).exemplos;
+  private readonly perfil = inject(PerfilService).perfil;
+  protected readonly passoAtual = computed(() => this.passos()[this.indicePasso()]);
+  protected readonly ehUltimoPasso = computed(() => this.indicePasso() === this.passos().length - 1);
+  protected readonly progresso = computed(() => ((this.indicePasso() + 1) / Math.max(this.passos().length, 1)) * 100);
 
   /** Posição do recorte iluminado em volta da seção. */
   protected readonly destaque = computed(() => {
@@ -200,8 +130,18 @@ export class OnboardingTourComponent implements OnDestroy {
 
   iniciar(): void {
     this.limparTemporizadores();
-    this.agendar(() => this.fase.set('boas-vindas'), 0);
-    this.agendar(() => void this.irParaPasso(0), ESPERA_BOAS_VINDAS_MS);
+    const perfil = this.perfil();
+    const linkVitrine = `${location.host}/l/${perfil.slug}`;
+    this.passos.set(
+      passosDoTour(perfil.ramo, this.conteudoRamo(), this.exemplos(), linkVitrine).filter((passo) =>
+        this.tourService.obterElemento(passo.alvo),
+      ),
+    );
+    if (this.passos().length === 0) {
+      this.encerrar(true);
+      return;
+    }
+    void this.irParaPasso(0);
   }
 
   ngOnDestroy(): void {
@@ -246,7 +186,7 @@ export class OnboardingTourComponent implements OnDestroy {
   }
 
   private async irParaPasso(indice: number): Promise<void> {
-    const elemento = this.tourService.obterElemento(PASSOS_TOUR[indice].alvo);
+    const elemento = this.tourService.obterElemento(this.passos()[indice].alvo);
     if (!elemento) {
       return;
     }
@@ -281,7 +221,8 @@ export class OnboardingTourComponent implements OnDestroy {
   }
 
   private medirAlvoAgora(): void {
-    const elemento = this.tourService.obterElemento(this.passoAtual().alvo);
+    const passo = this.passoAtual();
+    const elemento = passo && this.tourService.obterElemento(passo.alvo);
     if (elemento) {
       this.medidas.set(this.medirComRolagem(elemento, 0));
     }

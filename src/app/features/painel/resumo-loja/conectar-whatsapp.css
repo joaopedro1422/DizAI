@@ -1,0 +1,20 @@
+/* WhatsApp desconectado: "Configurar agora" no lugar do link da loja */
+.conectar {
+  padding: 8px;
+}
+
+.conectar__botao {
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+@media (min-width: 1024px) {
+  .conectar {
+    display: flex;
+    align-items: center;
+    width: clamp(200px, 20vw, 280px);
+  }
+}

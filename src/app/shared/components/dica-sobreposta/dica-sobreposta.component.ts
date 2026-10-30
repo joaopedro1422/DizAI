@@ -31,7 +31,7 @@ let proximoIdDica = 0;
   templateUrl: './dica-sobreposta.component.html',
   styleUrl: './dica-sobreposta.component.css',
   host: {
-    '(document:keydown.escape)': 'confirmar.emit()',
+    '(document:keydown.escape)': 'aoPressionarEsc()',
   },
 })
 export class DicaSobrepostaComponent implements AfterViewInit, OnDestroy {
@@ -42,7 +42,10 @@ export class DicaSobrepostaComponent implements AfterViewInit, OnDestroy {
   readonly descricao = input('');
   readonly itens = input<ItemDica[]>([]);
   readonly rotuloBotao = input('Entendi');
+  /** Segundo botão, só texto (ex.: "Agora não"). Vazio = sem o botão. */
+  readonly rotuloSecundario = input('');
   readonly confirmar = output<void>();
+  readonly secundario = output<void>();
 
   protected readonly idTitulo = `dica-titulo-${++proximoIdDica}`;
   private readonly botao = viewChild.required<ElementRef<HTMLButtonElement>>('botao');
@@ -52,6 +55,15 @@ export class DicaSobrepostaComponent implements AfterViewInit, OnDestroy {
     this.overflowAnteriorDoBody = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     this.botao().nativeElement.focus({ preventScroll: true });
+  }
+
+  /** Esc fecha pelo caminho mais leve: o botão secundário, quando existe. */
+  protected aoPressionarEsc(): void {
+    if (this.rotuloSecundario()) {
+      this.secundario.emit();
+    } else {
+      this.confirmar.emit();
+    }
   }
 
   ngOnDestroy(): void {

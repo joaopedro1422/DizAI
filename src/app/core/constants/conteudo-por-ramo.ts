@@ -24,6 +24,10 @@ export interface ConteudoRamo {
     valoresOpcao: string;
     /** Exemplo curto na dica do campo de opções, ex.: "Recheio → brigadeiro, ninho". */
     exemploOpcoes: string;
+    /** Placeholder do nome da variação de preço, ex.: "Ex.: Tamanho P". */
+    nomeVariacao: string;
+    /** Exemplo na dica das variações, ex.: "Tamanho P e Tamanho M". */
+    exemploVariacoes: string;
   };
   /** Exemplo de item do ramo, citado no tour do painel. */
   exemploProduto: string;
@@ -42,6 +46,20 @@ export interface ConteudoRamo {
 
   topico: { nome: string; descricao: string };
   topicosSugeridos: string[];
+
+  /** Exemplo da antecedência própria do produto, ex.: "tortas com 1 dia de antecedência". */
+  exemploAntecedencia: string;
+  /** Catálogos por assunto: o assunto, do que ele fala e o exemplo de quem vende mais de um tipo. */
+  catalogo: { assunto: string; contexto: string; varios: string };
+  /** Placeholder do texto de um feedback na vitrine. */
+  feedback: string;
+  /** Placeholder dos itens em "Registrar pedido". */
+  itensPedidoManual: string;
+  /** Exemplo do anexo ao confirmar um pedido, ex.: "a foto do bolo que o cliente mandou". */
+  anexoPedido: string;
+  /** Cadastro (antes de existir a loja): exemplos do nome e da descrição do negócio. */
+  exemploNomeLoja: string;
+  exemploDescricaoLoja: string;
 }
 
 export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
@@ -56,6 +74,8 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
       nomeOpcao: 'Nome (ex.: Formato)',
       valoresOpcao: 'Ex.: Amendoado, quadrado, bailarina',
       exemploOpcoes: 'Formato → amendoado, quadrado, bailarina',
+      nomeVariacao: 'Ex.: Cabelo curto',
+      exemploVariacoes: 'Cabelo curto e Cabelo longo',
     },
     exemploProduto: 'Esmaltação em gel',
     dicasProdutos: {
@@ -70,6 +90,10 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
       {
         pergunta: 'Qual o horário de atendimento?',
         resposta: 'Atendemos [de terça a sábado, das 9h às 18h], sempre com horário marcado.',
+      },
+      {
+        pergunta: 'Qual é o endereço?',
+        resposta: 'Estamos na [rua, número e bairro]. [Ponto de referência ou estacionamento].',
       },
       {
         pergunta: 'Quanto tempo dura o atendimento?',
@@ -97,6 +121,13 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
     ],
     topico: { nome: 'Ex.: Unhas em gel', descricao: 'Ex.: Acabamento natural, duração de até 21 dias.' },
     topicosSugeridos: ['Unhas em gel', 'Antes e depois', 'Trabalhos recentes'],
+    exemploAntecedencia: 'serviços que precisam de avaliação antes',
+    catalogo: { assunto: 'Serviços', contexto: 'cabelo, unhas, sobrancelha', varios: 'cabelo e unhas' },
+    feedback: 'Amei o resultado, durou 3 semanas perfeitas!',
+    itensPedidoManual: 'Ex.: Esmaltação em gel e design de sobrancelha',
+    anexoPedido: 'a foto de referência que o cliente mandou',
+    exemploNomeLoja: 'Ex.: Bella Studio',
+    exemploDescricaoLoja: 'Ex.: Estúdio de unhas com esmaltação em gel, alongamento e nail art.',
   },
 
   SERVICOS_PERSONALIZADOS: {
@@ -110,6 +141,8 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
       nomeOpcao: 'Nome (ex.: Ambiente)',
       valoresOpcao: 'Ex.: Sala, quarto, área externa',
       exemploOpcoes: 'Ambiente → sala, quarto, área externa',
+      nomeVariacao: 'Ex.: Até 30 m²',
+      exemploVariacoes: 'Até 30 m² e Até 60 m²',
     },
     exemploProduto: 'Projeto de iluminação personalizada',
     dicasProdutos: {
@@ -124,6 +157,10 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
       {
         pergunta: 'Vocês fazem visita para orçamento?',
         resposta: 'Fazemos sim! A visita é agendada e [é gratuita / custa R$ __]. Depois dela enviamos o orçamento completo.',
+      },
+      {
+        pergunta: 'Qual é o endereço?',
+        resposta: 'Estamos na [rua, número e bairro]. [Ponto de referência ou estacionamento].',
       },
       {
         pergunta: 'Quais bairros vocês atendem?',
@@ -151,6 +188,13 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
     ],
     topico: { nome: 'Ex.: Projetos de iluminação', descricao: 'Ex.: Salas e áreas externas com LED embutido.' },
     topicosSugeridos: ['Projetos entregues', 'Antes e depois', 'Em andamento'],
+    exemploAntecedencia: 'projetos que pedem visita antes',
+    catalogo: { assunto: 'Serviços', contexto: 'pintura, elétrica, montagem', varios: 'reformas e manutenção' },
+    feedback: 'Serviço caprichado e entregue no prazo. Recomendo!',
+    itensPedidoManual: 'Ex.: Pintura de 2 quartos e troca de 4 tomadas',
+    anexoPedido: 'a foto do local que o cliente mandou',
+    exemploNomeLoja: 'Ex.: Casa em Ordem Reparos',
+    exemploDescricaoLoja: 'Ex.: Pintura, pequenos reparos e montagem de móveis com visita para orçamento.',
   },
 
   DOCES_SALGADOS: {
@@ -164,6 +208,8 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
       nomeOpcao: 'Nome (ex.: Recheio)',
       valoresOpcao: 'Ex.: Brigadeiro, ninho com morango, doce de leite',
       exemploOpcoes: 'Recheio → brigadeiro, ninho com morango, doce de leite',
+      nomeVariacao: 'Ex.: Para 10 pessoas',
+      exemploVariacoes: 'Para 10 pessoas e Para 20 pessoas',
     },
     exemploProduto: 'Torta de aniversário',
     dicasProdutos: {
@@ -178,6 +224,10 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
       {
         pergunta: 'Com quantos dias de antecedência preciso encomendar?',
         resposta: 'Pedimos [2 dias] de antecedência. Para festas grandes, o ideal é [1 semana].',
+      },
+      {
+        pergunta: 'Qual é o endereço?',
+        resposta: 'Estamos na [rua, número e bairro]. [Ponto de referência ou estacionamento].',
       },
       {
         pergunta: 'Vocês entregam?',
@@ -206,6 +256,13 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
     ],
     topico: { nome: 'Ex.: Tortas de aniversário', descricao: 'Ex.: Decoradas com chantininho e topo personalizado.' },
     topicosSugeridos: ['Tortas de aniversário', 'Docinhos de festa', 'Salgados'],
+    exemploAntecedencia: 'tortas com 1 dia de antecedência',
+    catalogo: { assunto: 'Salgados', contexto: 'coxinha, kibe, kits para festa', varios: 'salgados e doces' },
+    feedback: 'A torta estava maravilhosa, todo mundo amou!',
+    itensPedidoManual: 'Ex.: 50 coxinhas, 50 pastéis e 50 churros',
+    anexoPedido: 'a foto do bolo que o cliente mandou',
+    exemploNomeLoja: 'Ex.: Doces da Ana',
+    exemploDescricaoLoja: 'Ex.: Bolos, tortas e docinhos de festa feitos sob encomenda.',
   },
 
   PRODUTOS_PERSONALIZADOS: {
@@ -219,6 +276,8 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
       nomeOpcao: 'Nome (ex.: Tamanho)',
       valoresOpcao: 'Ex.: Pequena, média, grande',
       exemploOpcoes: 'Tamanho → pequena, média, grande',
+      nomeVariacao: 'Ex.: Cesta pequena',
+      exemploVariacoes: 'Cesta pequena e Cesta grande',
     },
     exemploProduto: 'Cesta romântica café da manhã',
     dicasProdutos: {
@@ -233,6 +292,10 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
       {
         pergunta: 'Qual o prazo de produção?',
         resposta: 'Em média [3 dias úteis] depois da aprovação. Para datas especiais, peça com antecedência!',
+      },
+      {
+        pergunta: 'Qual é o endereço?',
+        resposta: 'Estamos na [rua, número e bairro]. [Ponto de referência ou estacionamento].',
       },
       {
         pergunta: 'Dá para personalizar com nome ou foto?',
@@ -259,6 +322,13 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
     ],
     topico: { nome: 'Ex.: Cestas românticas', descricao: 'Ex.: Café da manhã e kits para datas especiais.' },
     topicosSugeridos: ['Cestas românticas', 'Cortinas', 'Estampas', 'Presentes'],
+    exemploAntecedencia: 'cestas montadas com 2 dias de antecedência',
+    catalogo: { assunto: 'Cestas', contexto: 'café da manhã, datas especiais', varios: 'cestas e presentes' },
+    feedback: 'A cesta chegou linda e no horário certinho!',
+    itensPedidoManual: 'Ex.: 1 cesta romântica média com cartão',
+    anexoPedido: 'a foto do modelo que o cliente mandou',
+    exemploNomeLoja: 'Ex.: Ateliê Presente Bom',
+    exemploDescricaoLoja: 'Ex.: Cestas e presentes personalizados para datas especiais.',
   },
 
   PRODUTOS_GERAIS: {
@@ -272,6 +342,8 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
       nomeOpcao: 'Nome (ex.: Tamanho)',
       valoresOpcao: 'Ex.: P, M, G',
       exemploOpcoes: 'Tamanho → P, M, G',
+      nomeVariacao: 'Ex.: Tamanho P',
+      exemploVariacoes: 'Tamanho P e Tamanho GG',
     },
     exemploProduto: 'Vestido midi canelado',
     dicasProdutos: {
@@ -286,6 +358,10 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
       {
         pergunta: 'Tem no meu tamanho?',
         resposta: 'Trabalhamos do [P ao GG]. Me diga o seu tamanho que eu confiro o estoque.',
+      },
+      {
+        pergunta: 'Qual é o endereço?',
+        resposta: 'Estamos na [rua, número e bairro]. [Ponto de referência ou estacionamento].',
       },
       {
         pergunta: 'Vocês fazem troca?',
@@ -312,6 +388,13 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
     ],
     topico: { nome: 'Ex.: Coleção de verão', descricao: 'Ex.: Vestidos e conjuntos leves.' },
     topicosSugeridos: ['Novidades', 'Mais vendidos', 'Promoções'],
+    exemploAntecedencia: 'peças sob encomenda com 5 dias',
+    catalogo: { assunto: 'Coleção', contexto: 'vestidos, conjuntos, acessórios', varios: 'roupas e acessórios' },
+    feedback: 'Peças lindas e o atendimento foi ótimo!',
+    itensPedidoManual: 'Ex.: 2 vestidos midi M e 1 blusa básica P',
+    anexoPedido: 'a foto da peça que o cliente mandou',
+    exemploNomeLoja: 'Ex.: Loja Flor de Lis',
+    exemploDescricaoLoja: 'Ex.: Moda feminina com vestidos, conjuntos e acessórios.',
   },
 
   OUTRO: {
@@ -325,6 +408,8 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
       nomeOpcao: 'Nome (ex.: Horário)',
       valoresOpcao: 'Ex.: Manhã, tarde, noite',
       exemploOpcoes: 'Horário → manhã, tarde, noite',
+      nomeVariacao: 'Ex.: Pacote com 4 encontros',
+      exemploVariacoes: 'Pacote com 4 e Pacote com 8 encontros',
     },
     exemploProduto: 'Atendimento inicial',
     dicasProdutos: {
@@ -337,8 +422,8 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
     },
     perguntasSugeridas: [
       { pergunta: 'Qual o horário de atendimento?', resposta: 'Atendemos [de segunda a sexta, das 8h às 18h].' },
+      { pergunta: 'Qual é o endereço?', resposta: 'Estamos na [rua, número e bairro]. [Também atendemos online].' },
       { pergunta: 'Quais as formas de pagamento?', resposta: 'Aceitamos [Pix, cartão e dinheiro].' },
-      { pergunta: 'Onde vocês ficam?', resposta: 'Estamos em [endereço]. [Também atendemos online].' },
       { pergunta: 'Como faço para agendar?', resposta: 'É só me dizer o melhor dia e horário que eu confirmo para você.' },
     ],
     emojiSaudacao: '😊',
@@ -353,5 +438,12 @@ export const CONTEUDO_POR_RAMO: Record<RamoNegocio, ConteudoRamo> = {
     ],
     topico: { nome: 'Ex.: Trabalhos recentes', descricao: 'Ex.: O que fizemos nos últimos meses.' },
     topicosSugeridos: ['Trabalhos recentes', 'Antes e depois'],
+    exemploAntecedencia: 'itens que precisam de preparo',
+    catalogo: { assunto: 'Serviços', contexto: 'o que você oferece', varios: 'serviços e produtos' },
+    feedback: 'Atendimento excelente, super recomendo!',
+    itensPedidoManual: 'Ex.: 1 atendimento inicial e 1 retorno',
+    anexoPedido: 'a foto que o cliente mandou',
+    exemploNomeLoja: 'Ex.: Espaço Viver Bem',
+    exemploDescricaoLoja: 'Ex.: Atendimentos com hora marcada e acompanhamento.',
   },
 };

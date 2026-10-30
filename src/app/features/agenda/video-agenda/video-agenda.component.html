@@ -1,3 +1,5 @@
+@let ex = exemplos();
+@let ag = agenda();
 <app-video-tutorial
   titulo="Como funciona a sua agenda"
   [cenas]="cenas"
@@ -58,18 +60,22 @@
               <span class="dia-mini">Sex<b>24</b></span>
             </div>
             <span class="campo__rotulo surge" style="--atraso: 1s">Terça, 21 de outubro</span>
-            <div class="agendamento-mini surge" style="--atraso: 1.4s">
-              <b>9:00</b>
-              <span>Esmaltação em gel<small>Mariana · 1h</small></span>
-            </div>
-            <div class="agendamento-mini agendamento-mini--rosa surge" style="--atraso: 1.9s">
-              <b>10:30</b>
-              <span>Pé e mão<small>Júlia · 1h30</small><em class="selo-presenca">✓ Presença confirmada</em></span>
-            </div>
-            <div class="agendamento-mini agendamento-mini--ambar surge" style="--atraso: 2.4s">
-              <b>14:00</b>
-              <span>Alongamento em fibra<small>Bruna · 2h</small></span>
-            </div>
+            @for (horario of ag.dia; track horario.hora; let i = $index) {
+              <div
+                class="agendamento-mini surge"
+                [class.agendamento-mini--rosa]="i === 1"
+                [class.agendamento-mini--ambar]="i === 2"
+                [style.--atraso]="1.4 + i * 0.5 + 's'"
+              >
+                <b>{{ horario.hora }}</b>
+                <span>
+                  {{ horario.servico }}<small>{{ horario.cliente }} · {{ horario.duracao }}</small>
+                  @if (i === 1) {
+                    <em class="selo-presenca">✓ Presença confirmada</em>
+                  }
+                </span>
+              </div>
+            }
           </div>
         </div>
       }
@@ -81,7 +87,7 @@
               <span><b>Agenda online</b><small>Clientes marcam pela sua página</small></span>
               <span class="chave" style="--atraso: 1.6s"></span>
             </div>
-            <span class="campo__rotulo surge" style="--atraso: 2.6s">Quando o cliente quiser fechar</span>
+            <span class="campo__rotulo surge" style="--atraso: 2.6s">Quando o cliente quiser agendar</span>
             <div class="escolha escolha--sai" style="--atraso: 4s">
               <i></i>
               <span><b>Me chamar para confirmar</b><small>Você confirma o horário pelo WhatsApp</small></span>
@@ -97,53 +103,53 @@
       @case (2) {
         <div class="zap">
           <div class="zap__barra">
-            <span class="zap__avatar zap__avatar--salvia">S</span>
-            <span class="zap__nome"><b>Sálvia Unhas</b><small>online</small></span>
+            <span class="zap__avatar zap__avatar--salvia">{{ inicial() }}</span>
+            <span class="zap__nome"><b>{{ ex.loja }}</b><small>online</small></span>
           </div>
           <div class="zap__corpo">
-            <span class="balao balao--cliente surge" style="--atraso: 0.6s">Oi! Tem horário sexta à tarde pra pé e mão?</span>
+            <span class="balao balao--cliente surge" style="--atraso: 0.6s">{{ ag.agendar[0] }}</span>
             <span class="digitando digitando--1"><i></i><i></i><i></i></span>
-            <span class="balao surge" style="--atraso: 3s">Tenho sim! 💅 Sexta: 14h, 15h30 ou 17h. Qual prefere?</span>
-            <span class="balao balao--cliente surge" style="--atraso: 5.8s">15h30</span>
+            <span class="balao surge" style="--atraso: 3s">{{ ag.agendar[1] }}</span>
+            <span class="balao balao--cliente surge" style="--atraso: 5.8s">{{ ag.agendar[2] }}</span>
             <span class="digitando digitando--2"><i></i><i></i><i></i></span>
-            <span class="balao surge" style="--atraso: 8.2s">Agendado! ✅ Pé e mão, sexta às 15h30. Até lá!</span>
+            <span class="balao surge" style="--atraso: 8.2s">{{ ag.agendar[3] }}</span>
           </div>
         </div>
       }
       @case (3) {
         <div class="zap">
           <div class="zap__barra">
-            <span class="zap__avatar zap__avatar--salvia">S</span>
-            <span class="zap__nome"><b>Sálvia Unhas</b><small>online</small></span>
+            <span class="zap__avatar zap__avatar--salvia">{{ inicial() }}</span>
+            <span class="zap__nome"><b>{{ ex.loja }}</b><small>online</small></span>
           </div>
           <div class="zap__corpo">
-            <span class="balao balao--cliente surge" style="--atraso: 0.6s">Oi, não vou conseguir ir sexta 😕 dá pra passar pra sábado?</span>
+            <span class="balao balao--cliente surge" style="--atraso: 0.6s">{{ ag.remarcar[0] }}</span>
             <span class="digitando digitando--1"><i></i><i></i><i></i></span>
-            <span class="balao surge" style="--atraso: 3s">Sem problema! Sábado tenho 9h ou 11h. Qual fica melhor?</span>
-            <span class="balao balao--cliente surge" style="--atraso: 5.8s">11h</span>
+            <span class="balao surge" style="--atraso: 3s">{{ ag.remarcar[1] }}</span>
+            <span class="balao balao--cliente surge" style="--atraso: 5.8s">{{ ag.remarcar[2] }}</span>
             <span class="digitando digitando--2"><i></i><i></i><i></i></span>
-            <span class="balao surge" style="--atraso: 8.2s">Prontinho! ✅ Remarquei para sábado às 11h.</span>
+            <span class="balao surge" style="--atraso: 8.2s">{{ ag.remarcar[3] }}</span>
           </div>
         </div>
       }
       @case (4) {
         <div class="zap">
           <div class="zap__barra">
-            <span class="zap__avatar zap__avatar--salvia">S</span>
-            <span class="zap__nome"><b>Sálvia Unhas</b><small>online</small></span>
+            <span class="zap__avatar zap__avatar--salvia">{{ inicial() }}</span>
+            <span class="zap__nome"><b>{{ ex.loja }}</b><small>online</small></span>
           </div>
           <div class="zap__corpo">
-            <span class="balao surge" style="--atraso: 0.6s">Oi, Júlia! Passando para lembrar: amanhã às 11h, pé e mão 💅 Podemos confirmar?</span>
-            <span class="balao balao--cliente surge" style="--atraso: 2.8s">Confirmado! Estarei aí 😊</span>
+            <span class="balao surge" style="--atraso: 0.6s">{{ ag.lembrete[0] }}</span>
+            <span class="balao balao--cliente surge" style="--atraso: 2.8s">{{ ag.lembrete[1] }}</span>
             <span class="digitando" style="animation-delay: 3.8s"><i></i><i></i><i></i></span>
-            <span class="balao surge" style="--atraso: 5.2s">Ótimo, te esperamos! 💚</span>
+            <span class="balao surge" style="--atraso: 5.2s">{{ ag.lembrete[2] }}</span>
           </div>
         </div>
         <div class="notificacao" style="--atraso: 6.6s">
           <span class="notificacao__icone notificacao__icone--ok">✓</span>
           <span class="notificacao__textos">
             <b>Presença confirmada</b>
-            <small>Júlia · sábado, 11h · Pé e mão</small>
+            <small>{{ ag.presenca }}</small>
           </span>
         </div>
       }
@@ -151,16 +157,18 @@
         <div class="ap">
           <div class="ap__cabeca">
             <div class="ap__topo">
-              <span class="ap__logo">S</span>
-              <span><b>Sálvia Unhas</b><small>Unhas em gel, fibra e nail art</small></span>
+              <span class="ap__logo">{{ inicial() }}</span>
+              <span><b>{{ ex.loja }}</b><small>{{ ex.descricaoLoja }}</small></span>
             </div>
             <div class="ap__abas"><span>Fotos</span><span class="ap__aba-ativa">Agendar horário</span></div>
           </div>
           <div class="ap__corpo rola" style="--atraso: 4.4s">
             <span class="ap__passo"><i>1</i> Escolha o serviço</span>
-            <span class="ap__servico"><i></i><span>Esmaltação em gel</span><small>1h</small></span>
-            <span class="ap__servico escolhe" style="--atraso: 1.2s"><i></i><span>Pé e mão</span><small>1h30</small></span>
-            <span class="ap__servico"><i></i><span>Alongamento em fibra</span><small>2h</small></span>
+            @for (servico of ag.servicos; track servico.nome; let i = $index) {
+              <span class="ap__servico" [class.escolhe]="i === 1" [style.--atraso]="i === 1 ? '1.2s' : null">
+                <i></i><span>{{ servico.nome }}</span><small>{{ servico.duracao }}</small>
+              </span>
+            }
             <span class="ap__passo"><i>2</i> Escolha o dia</span>
             <div class="ap__opcoes">
               <span class="ap__opcao"><small>Sex</small>24</span>

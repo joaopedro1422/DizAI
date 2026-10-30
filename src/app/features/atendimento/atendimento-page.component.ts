@@ -1,7 +1,7 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 
 import { mensagemDoErro } from '../../core/api/erro-api';
@@ -24,6 +24,7 @@ import { EditarPerfilComponent } from '../painel/editar-perfil/editar-perfil.com
 import { RegrasNegocioComponent } from './regras-negocio/regras-negocio.component';
 import { TipoVideoAtendimento, VideoAtendimentoComponent } from './video-atendimento/video-atendimento.component';
 import { DicasVistasService } from '../../core/services/dicas-vistas.service';
+import { testeFeito } from '../painel/onboarding/progresso-onboarding';
 import { TesteAtendimentoComponent } from '../painel/teste-atendimento/teste-atendimento.component';
 import { MensagensRepasseComponent } from './mensagens-repasse/mensagens-repasse.component';
 import { catalogosIniciais, criarFormularioConfiguracoes } from '../painel/painel-formulario';
@@ -65,6 +66,17 @@ export class AtendimentoPageComponent implements OnInit {
   protected readonly salvandoConfiguracoes = signal(false);
   /** Conversa de teste com o próprio assistente (botão "Testar atendimento" do topo). */
   protected readonly testando = signal(false);
+  /** Nos serviços o cliente agenda; nos produtos, fecha o pedido. */
+  protected readonly tituloFechamento = computed(() =>
+    ramoDeServico(this.perfilService.perfil().ramo) ? 'Quando o cliente quiser agendar' : 'Quando o cliente quiser fechar',
+  );
+  /** Pergunta já escrita no teste (convite depois do primeiro produto). */
+  protected readonly perguntaTeste = signal('');
+  /** Aberto pelo onboarding antes de qualquer teste: o teste mostra o próximo passo depois da resposta. */
+  protected readonly primeiroTeste = signal(false);
+  private readonly sessao = inject(SessaoService);
+  private readonly router = inject(Router);
+  private readonly rotaAtual = inject(ActivatedRoute);
 
   /**
    * "Agendamento automático" só aparece para os ramos com agenda (serviços presenciais). Nos serviços, "Agendo por
@@ -127,6 +139,8 @@ export class AtendimentoPageComponent implements OnInit {
     ].filter((atalho) => atalho.id !== 'secao-confirmacao' || this.mostrarConfirmacao()),
   );
   protected readonly modosFotos = MODOS_FOTOS;
+  /** Serviços com agenda: o vídeo mostra o agendamento automático no fechamento. */
+  protected readonly comAgenda = computed(() => ramoUsaAgenda(this.perfilService.perfil().ramo));
   protected readonly tipoVideo = computed<TipoVideoAtendimento>(() =>
     ramoDeServico(this.perfilService.perfil().ramo) ? 'servicos' : 'produtos',
   );
@@ -188,8 +202,28 @@ export class AtendimentoPageComponent implements OnInit {
     return linkFoiTocado && (controleLink.invalid || this.formulario.hasError('linkPortfolioObrigatorio'));
   }
 
+  /** Janela do próximo passo (primeiro teste): volta ao painel, onde estão os "Primeiros passos". */
+  protected voltarAoPainel(): void {
+    this.testando.set(false);
+    void this.router.navigateByUrl(this.rotasPainel().inicio);
+  }
+
   ngOnInit(): void {
+    this.abrirTesteDoLink();
     void this.carregar();
+  }
+
+  /** Vindo do onboarding (?testar=1): abre o teste na hora; o vídeo da tela fica para a próxima visita. */
+  private abrirTesteDoLink(): void {
+    const parametros = this.rotaAtual.snapshot.queryParamMap;
+    if (!parametros.has('testar')) {
+      return;
+    }
+    this.perguntaTeste.set(parametros.get('pergunta') ?? '');
+    this.primeiroTeste.set(!testeFeito(this.perfilService.perfil().id || this.sessao.perfilIdObrigatorio()));
+    this.mostrarVideo.set(false);
+    this.testando.set(true);
+    void this.router.navigate([], { relativeTo: this.rotaAtual, queryParams: {}, replaceUrl: true });
   }
 
   /** Aberta direto pelo link (ou depois de recarregar), a tela busca o perfil antes de preencher o formulário. */

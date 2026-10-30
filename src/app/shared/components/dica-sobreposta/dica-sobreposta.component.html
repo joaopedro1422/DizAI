@@ -14,6 +14,9 @@
     }
   </div>
 
+  <!-- conteúdo extra do pai (ex.: a prévia do WhatsApp nas boas-vindas) -->
+  <ng-content />
+
   @if (itens().length > 0) {
     <ul class="dicas">
       @for (item of itens(); track item.titulo) {
@@ -33,4 +36,9 @@
   <button #botao type="button" class="btn btn--primario btn--grande btn--bloco" (click)="confirmar.emit()">
     {{ rotuloBotao() }}
   </button>
+  @if (rotuloSecundario()) {
+    <button type="button" class="btn btn--texto btn--bloco janela__secundario" (click)="secundario.emit()">
+      {{ rotuloSecundario() }}
+    </button>
+  }
 </section>

@@ -8,6 +8,7 @@ import { ArmazenamentoFotosService } from '../../../core/services/armazenamento-
 import { ConversaService } from '../../../core/services/conversa.service';
 import { PedidoService } from '../../../core/services/pedido.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.service';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { AvisoClienteComponent } from '../aviso-cliente/aviso-cliente.component';
@@ -32,6 +33,8 @@ const TAMANHO_MAXIMO_ANEXO_BYTES = 5 * 1024 * 1024;
   styleUrl: './acao-pedido-conversa.component.css',
 })
 export class AcaoPedidoConversaComponent {
+  /** Exemplo do anexo com a cara do negócio. */
+  protected readonly conteudo = inject(ConteudoRamoService).conteudo;
   readonly conversa = input.required<Conversa>();
   readonly acao = input.required<AcaoPedidoConversa>();
   readonly concluido = output<void>();

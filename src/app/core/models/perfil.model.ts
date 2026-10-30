@@ -1,3 +1,5 @@
+import type { SegmentoNegocio } from '../constants/segmentos/tipos-segmento';
+
 import { PeriodoAtendimento } from './agenda.model';
 import { AreaCorFundoVitrine, CorFundoVitrine, EstiloCor, EstiloMenu, FonteVitrine, LayoutFotos } from './vitrine.model';
 
@@ -112,6 +114,8 @@ export interface Perfil {
   mensagemRepasseNaHora?: string;
   mensagemRepassePedido?: string;
   mensagemSemResposta?: string;
+  /** Tipo do negócio dentro do ramo (barbearia, bolos...): só para exemplos e tutoriais. null = os gerais do ramo. */
+  segmento?: SegmentoNegocio | null;
   saudacaoPersonalizada: string;
   instrucoesObrigatorias: string;
   modoCatalogo: ModoCatalogo;
@@ -183,4 +187,6 @@ export interface DadosLoja {
   horariosFuncionamento?: PeriodoAtendimento[];
   /** "Sempre": sem horário fixo. */
   horarioLivre?: boolean;
+  /** Tipo do negócio dentro do ramo (só exemplos e tutoriais); null = nenhum. */
+  segmento?: SegmentoNegocio | null;
 }

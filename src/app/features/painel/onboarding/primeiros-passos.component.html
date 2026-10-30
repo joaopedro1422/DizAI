@@ -1,0 +1,48 @@
+@if (visivel()) {
+  <section class="passos" aria-labelledby="primeiros-passos-titulo">
+    <div class="passos__topo">
+      <h2 id="primeiros-passos-titulo" class="passos__titulo">Primeiros passos</h2>
+      <span class="passos__contagem">{{ feitos() }} de {{ passos().length }}</span>
+      <button type="button" class="passos__ocultar" (click)="ocultar()">Ocultar</button>
+    </div>
+    <span class="passos__barra" aria-hidden="true"><span [style.width.%]="progresso()"></span></span>
+
+    <ol class="passos__lista">
+      @for (passo of passos(); track passo.titulo; let indice = $index) {
+        @let proximo = indice === indiceProximo();
+        <li class="passo" [class.passo--feito]="passo.feito" [class.passo--proximo]="proximo">
+          <span class="passo__marca" aria-hidden="true">
+            @if (passo.feito) {
+              <app-icone nome="check" [tamanho]="13" [espessura]="3" />
+            }
+          </span>
+          <span class="passo__textos">
+            <span class="passo__titulo">
+              {{ passo.titulo }}
+              @if (passo.feito) {
+                <span class="somente-leitor-tela">(feito)</span>
+              }
+            </span>
+            @if (proximo && passo.detalhe) {
+              <span class="passo__detalhe">{{ passo.detalhe }}</span>
+            }
+          </span>
+          @if (!passo.feito && passo.rota) {
+            <a
+              class="passo__ir"
+              [class.passo__ir--destaque]="proximo"
+              [routerLink]="passo.rota"
+              [queryParams]="passo.parametros"
+              [attr.aria-label]="passo.titulo"
+            >
+              @if (proximo) {
+                Fazer
+              }
+              <app-icone nome="avancar" [tamanho]="16" [espessura]="2.2" />
+            </a>
+          }
+        </li>
+      }
+    </ol>
+  </section>
+}

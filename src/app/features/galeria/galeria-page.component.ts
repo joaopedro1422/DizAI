@@ -54,6 +54,17 @@ export class GaleriaPageComponent implements OnInit {
   private readonly perfilService = inject(PerfilService);
   private readonly perfil = this.perfilService.perfil;
   protected readonly caminhoPaginaPublica = inject(PerfilService).caminhoPaginaPublica;
+  protected readonly linkPaginaPublica = inject(PerfilService).linkPaginaPublica;
+  protected readonly linkPaginaPublicaExibicao = inject(PerfilService).linkPaginaPublicaExibicao;
+
+  protected async copiarLinkPublico(): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(this.linkPaginaPublica());
+      this.toastService.mostrar('Link da vitrine copiado');
+    } catch {
+      this.toastService.mostrar('Não foi possível copiar. Segure o link para copiar.');
+    }
+  }
   /** Amostra da cor atual no botão "Cor da página". */
   protected readonly corPagina = computed(() => buscarCorMarca(this.perfil().corMarca).hex);
   protected readonly albuns = this.galeriaService.albuns;

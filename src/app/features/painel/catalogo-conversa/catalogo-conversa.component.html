@@ -50,7 +50,7 @@
               [id]="'catalogo-assunto-' + i"
               type="text"
               maxlength="40"
-              placeholder="Assunto, ex.: Salgados"
+              [placeholder]="'Assunto, ex.: ' + exemploCatalogo().assunto"
               aria-label="Assunto do catálogo"
               [class.campo__entrada--erro]="mostrarErro() && !cartao.assunto.trim()"
               [value]="cartao.assunto"
@@ -64,7 +64,7 @@
             class="campo__entrada"
             rows="2"
             maxlength="300"
-            placeholder="Do que ele fala? Ex.: coxinha, kibe, kits para festa"
+            [placeholder]="'Do que ele fala? Ex.: ' + exemploCatalogo().contexto"
             aria-label="Do que este catálogo fala"
             [class.campo__entrada--erro]="mostrarErro() && !cartao.contexto.trim()"
             [value]="cartao.contexto"
@@ -137,7 +137,7 @@
           <span>
             <strong>{{ varios() ? 'Adicionar outro catálogo' : 'Separar por assunto' }}</strong>
             <span class="catalogo-adicionar__dica">
-              {{ varios() ? 'Até 3' : 'Vende mais de um tipo (ex.: salgados e doces)? O assistente envia o certo' }}
+              {{ varios() ? 'Até 3' : 'Vende mais de um tipo (ex.: ' + exemploCatalogo().varios + ')? O assistente envia o certo' }}
             </span>
           </span>
         </button>

@@ -66,9 +66,19 @@
     </div>
   }
 
-  <div class="link-publico">
-    <app-icone nome="link" [tamanho]="16" class="link-publico__icone" />
-    <span class="link-publico__endereco">{{ linkPublicoExibicao() }}</span>
-    <button type="button" class="link-publico__copiar" (click)="copiarLinkPublico()">Copiar</button>
-  </div>
+  @if (perfil().whatsappConectado) {
+    <div class="link-publico">
+      <app-icone nome="link" [tamanho]="16" class="link-publico__icone" />
+      <span class="link-publico__endereco">{{ linkPublicoExibicao() }}</span>
+      <button type="button" class="link-publico__copiar" (click)="copiarLinkPublico()">Copiar</button>
+    </div>
+  } @else {
+    <!-- sem WhatsApp o assistente não responde ninguém: o lugar do link vira o atalho para conectar -->
+    <div class="conectar">
+      <a class="btn btn--primario conectar__botao" [routerLink]="rotaConectar()">
+        Configurar agora
+        <app-icone nome="seta" [tamanho]="16" [espessura]="2.2" />
+      </a>
+    </div>
+  }
 </div>

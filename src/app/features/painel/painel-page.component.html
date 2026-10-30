@@ -18,9 +18,8 @@
         </div>
       }
 
-      @if (!whatsappConectado()) {
-        <app-alerta-conexao-whatsapp />
-      }
+      <!-- o que falta para o assistente atender de verdade (some quando tudo está feito) -->
+      <app-primeiros-passos />
 
       <section class="grupo grupo--negocio" aria-labelledby="titulo-sua-loja">
         <h2 id="titulo-sua-loja" class="grupo__titulo">Seu Negócio</h2>
@@ -39,7 +38,7 @@
           </span>
           <app-icone nome="avancar" [tamanho]="18" [espessura]="2" class="cartao-atendimento__seta" />
         </a>
-        <app-cartao-chats />
+        <app-cartao-chats appAlvoTour="chats" />
       </section>
 
       <!-- último item do painel: instalar o app e ativar os avisos (some quando não há nada a fazer) -->
@@ -49,16 +48,40 @@
   }
 </div>
 
-<app-onboarding-tour (encerrado)="aoEncerrarTour()" />
+<app-onboarding-tour (encerrado)="aoEncerrarTour($event)" />
 
 @if (mostrarBoasVindas()) {
+  <!-- conta nova: primeiro o tipo do negócio, para os exemplos e tutoriais terem a cara dele -->
+  <app-dica-sobreposta
+    icone="brilho"
+    sobretitulo="Boas-vindas ao DizAI"
+    [titulo]="tituloBoasVindas()"
+    descricao="Escolha o que mais combina com você. Assim os exemplos, as sugestões e os tutoriais do painel ficam com a cara do seu negócio."
+    rotuloBotao="Conhecer o painel"
+    rotuloSecundario="Agora não"
+    (confirmar)="iniciarTourAposBoasVindas()"
+    (secundario)="pularOnboarding()"
+  >
+    <app-escolha-segmento
+      [segmentos]="segmentosDoRamo()"
+      [escolhido]="segmentoEscolhido()"
+      (escolher)="segmentoEscolhido.set($event)"
+    />
+  </app-dica-sobreposta>
+}
+
+@if (mostrarConviteTeste()) {
+  <!-- fim do tour: leva ao momento em que o lojista vê o assistente respondendo -->
   <app-dica-sobreposta
     icone="conversa"
-    sobretitulo="Boas-vindas ao DizAI"
-    titulo="Este é o painel do seu negócio"
-    descricao="Aqui você cadastra seus produtos e serviços, as perguntas frequentes e as regras do seu negócio. Defina comportamentos especificos e deixe o seu assistente com a sua cara. Cadastre tambem a sua galeria pública para atrair clientes pelo instagram."
-    rotuloBotao="Vamos começar"
-    (confirmar)="iniciarTourAposBoasVindas()"
+    sobretitulo="Último passo"
+    titulo="Agora, converse com o seu assistente"
+    [descricao]="conviteTeste().descricao"
+    [itens]="conviteTeste().itens"
+    [rotuloBotao]="conviteTeste().botao"
+    rotuloSecundario="Faço depois"
+    (confirmar)="aceitarConviteTeste()"
+    (secundario)="adiarConviteTeste()"
   />
 }
 

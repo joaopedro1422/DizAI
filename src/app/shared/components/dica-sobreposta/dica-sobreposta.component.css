@@ -127,3 +127,8 @@
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: none; }
 }
+
+/* "Agora não": colado no botão principal */
+.janela__secundario {
+  margin-top: -14px;
+}

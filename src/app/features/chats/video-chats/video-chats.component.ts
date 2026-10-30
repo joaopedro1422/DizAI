@@ -1,6 +1,9 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 
+import { ramoDeServico } from '../../../core/models/perfil.model';
+import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.service';
+import { PerfilService } from '../../../core/services/perfil.service';
 import { CenaVideo, VideoTutorialComponent } from '../../../shared/components/video-tutorial/video-tutorial.component';
 
 const CENAS: CenaVideo[] = [
@@ -13,15 +16,7 @@ const CENAS: CenaVideo[] = [
   { nome: 'Cada um na sua parte', duracao: 6000 },
 ];
 
-/** Resumo do pedido de exemplo (o mesmo da conversa da cena 2). */
-const RESUMO = [
-  { campo: 'Produto', valor: 'Bolo de chocolate com morango' },
-  { campo: 'Tamanho', valor: '20 pessoas' },
-  { campo: 'Data', valor: 'Sábado, 25/10' },
-  { campo: 'Entrega', valor: 'Centro' },
-];
-
-/** Vídeo explicativo dos chats, para os ramos de produtos (cenas no template). */
+/** Vídeo explicativo dos chats (cenas no template); a conversa e o resumo seguem o segmento da loja. */
 @Component({
   selector: 'app-video-chats',
   imports: [VideoTutorialComponent, NgTemplateOutlet],
@@ -35,5 +30,11 @@ export class VideoChatsComponent {
   readonly fechar = output<void>();
 
   protected readonly cenas = CENAS;
-  protected readonly resumo = RESUMO;
+  protected readonly exemplos = inject(ConteudoRamoService).exemplos;
+  private readonly perfil = inject(PerfilService).perfil;
+  protected readonly servico = computed(() => ramoDeServico(this.perfil().ramo));
+  /** Quando cada mensagem aparece (s): a conversa da cena 2, a confirmação e o acompanhamento. */
+  protected readonly atrasosPedido = [0.6, 3, 4.8, 6.4, 8, 9.4];
+  protected readonly atrasosConfirmacao = [0.8, 2.4, 4.4, 5.6, 7];
+  protected readonly atrasosAcompanhamento = [0.8, 2.6, 5, 6.8];
 }
