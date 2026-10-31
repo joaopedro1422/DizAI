@@ -163,7 +163,8 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
 
   /** Serviços: abre a agenda online em outra aba e volta ao painel para continuar a configuração. */
   protected conhecerAgendaOnline(): void {
-    window.open(`/l/${this.perfil().slug}/agenda`, '_blank', 'noopener');
+    // ?conhecer=1: a página pública convida o lojista a personalizá-la (só nesta vez, vinda do primeiro teste)
+    window.open(`/l/${this.perfil().slug}/agenda?conhecer=1`, '_blank', 'noopener');
     this.voltarAoPainel.emit();
   }
 

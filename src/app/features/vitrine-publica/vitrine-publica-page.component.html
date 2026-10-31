@@ -69,7 +69,7 @@
       </header>
 
       @if (temAgenda() || temOrcamento()) {
-        <div class="alternar animacao-entrada animacao-entrada--2" [class.alternar--unica]="soAgenda()" role="tablist" aria-label="O que ver">
+        <div class="alternar animacao-entrada animacao-entrada--2" [class.alternar--unica]="soAgenda()" [attr.data-abas]="estiloAbas()" role="tablist" aria-label="O que ver">
           @if (!soAgenda()) {
           <button
             type="button"
@@ -223,5 +223,16 @@
     [whatsappLoja]="numeroWhatsapp()"
     [slugLoja]="slug()"
     (fechar)="fecharFoto()"
+  />
+}
+
+<!-- vinda do primeiro teste do painel: convite para dar a cara da loja à página (só nessa vez) -->
+@if (convidarPersonalizar()) {
+  <app-dica-sobreposta
+    [marca]="true"
+    titulo="Parece feia?"
+    descricao="Dê a sua cara para esta página com as suas cores, sua logo e capa, tipo de letra e diversas outras personalizações."
+    rotuloBotao="Voltar ao painel"
+    (confirmar)="voltarAoPainel()"
   />
 }

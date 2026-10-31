@@ -1,0 +1,62 @@
+/*
+ * Estilos das abas Vitrine | Agendar horário (Personalizar vitrine → "Abas da página", Perfil.estiloAbas).
+ * PILULA é o desenho padrão do .alternar (vitrine-publica-page.component.css); aqui só os outros dois.
+ */
+
+/* Sublinhado: só o texto, a linha fina embaixo de tudo e a barra na cor de destaque na escolhida */
+.alternar[data-abas='SUBLINHADO'] {
+  gap: 0;
+  padding: 0;
+  border: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--vitrine-texto) 12%, transparent);
+  border-radius: 0;
+  background: none;
+}
+
+.alternar[data-abas='SUBLINHADO'] .alternar__opcao {
+  position: relative;
+  border-radius: 0;
+  color: var(--vitrine-suave);
+  font-weight: 600;
+}
+
+.alternar[data-abas='SUBLINHADO'] .alternar__opcao--ativa {
+  background: none;
+  color: var(--vitrine-texto);
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.alternar[data-abas='SUBLINHADO'] .alternar__opcao--ativa::after {
+  content: '';
+  position: absolute;
+  right: 18px;
+  bottom: -1px;
+  left: 18px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--vitrine-destaque-fundo, var(--vitrine-destaque));
+}
+
+/* Contorno: dois botões separados; a escolhida com a borda e o texto na cor de destaque */
+.alternar[data-abas='CONTORNO'] {
+  gap: 10px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+}
+
+.alternar[data-abas='CONTORNO'] .alternar__opcao {
+  border: 1.5px solid color-mix(in srgb, var(--vitrine-texto) 14%, transparent);
+  border-radius: 14px;
+  background: var(--vitrine-cartao, #ffffff);
+  color: var(--vitrine-suave);
+}
+
+.alternar[data-abas='CONTORNO'] .alternar__opcao--ativa {
+  border-color: var(--vitrine-destaque);
+  background: color-mix(in srgb, var(--vitrine-destaque) 8%, var(--vitrine-cartao, #ffffff));
+  color: var(--vitrine-destaque);
+  box-shadow: none;
+}

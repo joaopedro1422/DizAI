@@ -1,0 +1,78 @@
+/* "Abas da página" em Personalizar vitrine: a prévia de cada estilo (o mesmo desenho das abas da vitrine) */
+.abas-estilos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.abas-previa {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 3px;
+  min-height: 44px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--previa-fundo);
+}
+
+.abas-previa__aba {
+  overflow: hidden;
+  padding: 6px 2px;
+  border-radius: 999px;
+  color: #1c1a19;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Pílula: a faixa clara com a escolhida preenchida */
+.abas-previa[data-abas='PILULA'] {
+  background: color-mix(in srgb, var(--previa-cor) 9%, var(--previa-fundo));
+  border-radius: 999px;
+}
+
+.abas-previa[data-abas='PILULA'] .abas-previa__aba--ativa {
+  background: var(--previa-destaque);
+  color: #ffffff;
+}
+
+/* Sublinhado: só o texto e a linha na cor */
+.abas-previa[data-abas='SUBLINHADO'] .abas-previa__aba {
+  position: relative;
+  border-radius: 0;
+  color: #6b6461;
+}
+
+.abas-previa[data-abas='SUBLINHADO'] .abas-previa__aba--ativa {
+  color: #1c1a19;
+}
+
+.abas-previa[data-abas='SUBLINHADO'] .abas-previa__aba--ativa::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+  height: 2.5px;
+  border-radius: 2px;
+  background: var(--previa-destaque);
+}
+
+/* Contorno: dois botões, a escolhida com a borda na cor */
+.abas-previa[data-abas='CONTORNO'] {
+  gap: 5px;
+}
+
+.abas-previa[data-abas='CONTORNO'] .abas-previa__aba {
+  border: 1.5px solid #e3dedb;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #6b6461;
+}
+
+.abas-previa[data-abas='CONTORNO'] .abas-previa__aba--ativa {
+  border-color: var(--previa-cor);
+  color: var(--previa-cor);
+}

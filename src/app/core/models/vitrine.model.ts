@@ -61,6 +61,8 @@ export type AreaCorFundoVitrine = 'PAGINA' | 'CABECALHO';
 export type EstiloCor = 'NORMAL' | 'METALICO' | 'DEGRADE' | 'VIDRO';
 /** Menu de categorias da vitrine (null no perfil = ARREDONDADO). */
 export type EstiloMenu = 'ARREDONDADO' | 'MINIMALISTA';
+/** Abas da página pública, Vitrine | Agendar horário (null no perfil = PILULA). */
+export type EstiloAbas = 'PILULA' | 'SUBLINHADO' | 'CONTORNO';
 /** Como as fotos de cada tópico aparecem na vitrine (null no perfil = GRADE). */
 export type LayoutFotos = 'GRADE' | 'MOSAICO' | 'DESTAQUE' | 'CARROSSEL';
 
@@ -71,6 +73,7 @@ export interface ConfiguracaoVitrine {
   areaCorFundoGaleria: AreaCorFundoVitrine;
   estiloCor: EstiloCor;
   estiloMenu: EstiloMenu;
+  estiloAbas: EstiloAbas;
   layoutFotos: LayoutFotos;
   capaUrl: string | null;
 }

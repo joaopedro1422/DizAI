@@ -71,6 +71,40 @@
     </div>
   </div>
 
+  @if (temAbas()) {
+    <div class="campo">
+      <span class="campo__titulo" id="titulo-abas">Abas da página</span>
+      <div class="abas-estilos" role="radiogroup" aria-labelledby="titulo-abas">
+        @for (estilo of estilosAbas; track estilo.valor) {
+          @let marcado = estilo.valor === abasAtual();
+          <button
+            type="button"
+            role="radio"
+            class="menu-opcao"
+            [class.menu-opcao--marcada]="marcado"
+            [attr.aria-checked]="marcado"
+            (click)="abasAtual.set(estilo.valor)"
+          >
+            <!-- prévia de Vitrine | Agendar com a fonte, a cor e o fundo escolhidos -->
+            <span
+              class="abas-previa"
+              [attr.data-abas]="estilo.valor"
+              [style.font-family]="fonteCss()"
+              [style.--previa-destaque]="pintura(hexAtual())"
+              [style.--previa-cor]="hexAtual()"
+              [style.--previa-fundo]="fundoEscolhido().cor ?? '#ffffff'"
+              aria-hidden="true"
+            >
+              <span class="abas-previa__aba abas-previa__aba--ativa">Vitrine</span>
+              <span class="abas-previa__aba">Agendar</span>
+            </span>
+            <span class="menu-opcao__nome">{{ estilo.nome }}</span>
+          </button>
+        }
+      </div>
+    </div>
+  }
+
   <div class="campo">
     <span class="campo__titulo" id="titulo-layout">Fotos dos tópicos</span>
     <div class="layouts" role="radiogroup" aria-labelledby="titulo-layout">

@@ -2,12 +2,13 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, output, s
 
 import { mensagemDoErro } from '../../../core/api/erro-api';
 import { CORES_MARCA, buscarCorMarca } from '../../../core/constants/cores-marca';
-import { CorMarca } from '../../../core/models/perfil.model';
+import { CorMarca, ramoUsaAgenda } from '../../../core/models/perfil.model';
 import {
   AreaCorFundoVitrine,
   ConfiguracaoVitrine,
   CorFundoVitrine,
   EstiloCor,
+  EstiloAbas,
   EstiloMenu,
   LayoutFotos,
   FONTES_VITRINE,
@@ -35,7 +36,7 @@ const TAMANHO_MAXIMO_CAPA_BYTES = 5 * 1024 * 1024;
   imports: [IconeComponent, UrlImagemPipe, SeletorFundoComponent, SeletorEstiloCorComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './seletor-cor-marca.component.html',
-  styleUrls: ['./seletor-cor-marca.component.css', './layout-fotos.css'],
+  styleUrls: ['./seletor-cor-marca.component.css', './layout-fotos.css', './abas-previa.css'],
 })
 export class SeletorCorMarcaComponent {
   private readonly perfilService = inject(PerfilService);
@@ -61,6 +62,14 @@ export class SeletorCorMarcaComponent {
     { valor: 'ARREDONDADO', nome: 'Arredondado' },
     { valor: 'MINIMALISTA', nome: 'Minimalista' },
   ];
+  /** Abas da página pública (Vitrine | Agendar horário): só aparecem nas lojas com agenda. */
+  protected readonly abasAtual = signal<EstiloAbas>(this.perfilService.perfil().estiloAbas ?? 'PILULA');
+  protected readonly estilosAbas: { valor: EstiloAbas; nome: string }[] = [
+    { valor: 'PILULA', nome: 'Pílula' },
+    { valor: 'SUBLINHADO', nome: 'Sublinhado' },
+    { valor: 'CONTORNO', nome: 'Contorno' },
+  ];
+  protected readonly temAbas = computed(() => ramoUsaAgenda(this.perfilService.perfil().ramo));
   /** Como as fotos de cada tópico aparecem na vitrine. */
   protected readonly layoutAtual = signal<LayoutFotos>(this.perfilService.perfil().layoutFotos ?? 'GRADE');
   protected readonly layoutsFotos: { valor: LayoutFotos; nome: string; descricao: string }[] = [
@@ -182,6 +191,7 @@ export class SeletorCorMarcaComponent {
         areaCorFundoGaleria: this.areaFundoAtual(),
         estiloCor: this.estiloAtual(),
         estiloMenu: this.menuAtual(),
+        estiloAbas: this.abasAtual(),
         layoutFotos: this.layoutAtual(),
         capaUrl,
       };

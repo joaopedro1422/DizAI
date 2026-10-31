@@ -4,7 +4,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '@angular/common';
 import { Meta } from '@angular/platform-browser';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, linkedSignal, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { DicaSobrepostaComponent } from '../../shared/components/dica-sobreposta/dica-sobreposta.component';
 
 import { SessaoService } from '../../core/auth/sessao.service';
 import { fundoDoDestaque } from '../../core/constants/estilos-cor';
@@ -38,10 +39,10 @@ type AbaVitrine = 'galeria' | 'agenda' | 'orcamento';
 /** Página pública com os trabalhos da loja, aberta pelo cliente a partir do link enviado no WhatsApp. */
 @Component({
   selector: 'app-vitrine-publica-page',
-  imports: [RouterLink, IconeComponent, LogoComponent, VisualizadorFotoComponent, CarregandoComponent, UrlImagemPipe, AgendaPublicaComponent, OrcamentoPublicoComponent, CarrosselFeedbacksComponent, MapaLojaComponent],
+  imports: [RouterLink, IconeComponent, LogoComponent, VisualizadorFotoComponent, CarregandoComponent, UrlImagemPipe, AgendaPublicaComponent, OrcamentoPublicoComponent, CarrosselFeedbacksComponent, MapaLojaComponent, DicaSobrepostaComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './vitrine-publica-page.component.html',
-  styleUrls: ['./vitrine-publica-page.component.css', './layout-fotos-vitrine.css'],
+  styleUrls: ['./vitrine-publica-page.component.css', './layout-fotos-vitrine.css', './abas-vitrine.css'],
 })
 export class VitrinePublicaPageComponent implements OnInit {
   /** Vem da rota /l/:slug */
@@ -53,6 +54,9 @@ export class VitrinePublicaPageComponent implements OnInit {
   private readonly lojaPublicaService = inject(LojaPublicaService);
   private readonly sessao = inject(SessaoService);
   private readonly toastService = inject(ToastService);
+  private readonly router = inject(Router);
+  /** Vinda do primeiro teste do painel (?conhecer=1): depois de 4 s, o convite para personalizar a página. */
+  protected readonly convidarPersonalizar = signal(false);
 
   protected readonly situacao = signal<SituacaoPagina>('carregando');
   protected readonly introducaoAtiva = signal(false);
@@ -162,6 +166,22 @@ export class VitrinePublicaPageComponent implements OnInit {
     }
   }
 
+  /** Só para o dono logado e só nesta abertura: o ?conhecer=1 sai do endereço na hora. */
+  private convidarSeVeioDoTeste(): void {
+    if (new URLSearchParams(window.location.search).get('conhecer') !== '1') {
+      return;
+    }
+    this.location.replaceState(this.caminho(this.aba()));
+    if (this.sessao.estaAutenticado()) {
+      setTimeout(() => this.convidarPersonalizar.set(true), 4000);
+    }
+  }
+
+  protected voltarAoPainel(): void {
+    this.convidarPersonalizar.set(false);
+    void this.router.navigateByUrl(this.sessao.rotasDoPainel().inicio);
+  }
+
   private async carregarLoja(): Promise<void> {
     try {
       const loja = await this.lojaPublicaService.buscarLoja(this.slug());
@@ -171,6 +191,7 @@ export class VitrinePublicaPageComponent implements OnInit {
       this.iniciarIntroducao();
       this.situacao.set('pronta');
       this.contarVisita(loja.slug);
+      this.convidarSeVeioDoTeste();
       // link antigo (a loja mudou de nome): o endereço passa a ser o do nome novo
       if (loja.slug !== this.slug()) {
         this.location.replaceState(this.caminho(this.aba()));
@@ -318,6 +339,8 @@ export class VitrinePublicaPageComponent implements OnInit {
 
   /** Menu das categorias: arredondado (padrão) ou minimalista (texto com a barra de destaque embaixo). */
   protected readonly menuMinimalista = computed(() => this.loja()?.estiloMenu === 'MINIMALISTA');
+  /** Abas Vitrine | Agendar horário: pílula (o padrão), sublinhado ou contorno (abas-vitrine.css). */
+  protected readonly estiloAbas = computed(() => this.loja()?.estiloAbas ?? 'PILULA');
 
   /** A categoria tocada fica marcada no menu (null = a primeira). */
   protected readonly albumAtivo = signal<string | null>(null);
