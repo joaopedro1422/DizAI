@@ -2,24 +2,21 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 import { RouterLink } from '@angular/router';
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
+import { MenuLateralComponent } from '../../../shared/components/menu-lateral/menu-lateral.component';
 import { AlvoTourDirective } from '../../painel/onboarding/alvo-tour.directive';
 import { SECOES_DA_AGENDA, SECOES_DE_CONFIGURACAO, SecaoAgenda } from '../secoes-agenda';
 
 /**
  * Menu da agenda: as páginas (Agendamentos, Números e as configurações) e o link da agenda online (copiar e
  * "Personalizar", que leva à tela da vitrine).
- * No celular é uma gaveta que abre pelo botão do topo; no computador (1024 px+) fica fixo à esquerda.
+ * O desenho e a gaveta são do MenuLateralComponent (compartilhado com os Pedidos).
  */
 @Component({
   selector: 'app-menu-agenda',
-  imports: [RouterLink, IconeComponent, AlvoTourDirective],
+  imports: [RouterLink, IconeComponent, AlvoTourDirective, MenuLateralComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './menu-agenda.component.html',
   styleUrl: './menu-agenda.component.css',
-  host: {
-    '[class.menu-agenda--aberto]': 'aberto()',
-    '(document:keydown.escape)': 'aberto() && fechar.emit()',
-  },
 })
 export class MenuAgendaComponent {
   readonly secao = input.required<SecaoAgenda>();
@@ -37,7 +34,9 @@ export class MenuAgendaComponent {
   /** Como usar a agenda: o tour de novo. */
   readonly tour = output<void>();
 
-  protected readonly secoesDaAgenda = SECOES_DA_AGENDA;
-  protected readonly secoesDeConfiguracao = SECOES_DE_CONFIGURACAO;
+  protected readonly grupos = [
+    { itens: SECOES_DA_AGENDA, alvoTour: 'agenda-secoes' as const },
+    { titulo: 'Configurações', itens: SECOES_DE_CONFIGURACAO, alvoTour: 'agenda-configuracoes' as const },
+  ];
   protected readonly linkSemProtocolo = computed(() => this.linkAgenda().replace(/^https?:\/\//, ''));
 }

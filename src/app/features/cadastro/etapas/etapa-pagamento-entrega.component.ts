@@ -22,6 +22,8 @@ export class EtapaPagamentoEntregaComponent {
   readonly grupo = input.required<GrupoPagamentoEntrega>();
   /** Falso quando os campos são usados fora do cadastro (ex.: modal de dados da loja). */
   readonly exibirCabecalho = input(true);
+  /** Antecedência mínima para pedidos: só nos ramos de produtos (nos serviços não aparece). */
+  readonly exibirAntecedencia = input(true);
 
   protected readonly formasPagamento = FORMAS_PAGAMENTO;
   protected readonly formasRecebimento = FORMAS_RECEBIMENTO;

@@ -237,3 +237,39 @@
     opacity: 0;
   }
 }
+
+/* Setas flutuantes na linha dos nomes (muitos profissionais): por cima das colunas, nas pontas */
+.colunas-area {
+  position: relative;
+}
+
+.colunas__seta {
+  position: absolute;
+  top: 12px;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 50%;
+  background: var(--cor-fundo);
+  color: var(--cor-primaria);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.16);
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.colunas__seta:hover {
+  border-color: var(--cor-primaria);
+  transform: scale(1.06);
+}
+
+.colunas__seta--direita {
+  right: 4px;
+}
+
+/* a da esquerda fica logo depois da régua de horas (50 px) */
+.colunas__seta--esquerda {
+  left: 56px;
+}

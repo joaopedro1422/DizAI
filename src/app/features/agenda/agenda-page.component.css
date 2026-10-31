@@ -740,38 +740,7 @@ a.faixa-aviso {
   }
 }
 
-@media (min-width: 1024px) {
-  .agendamentos {
-    /* coluna da esquerda um pouco menor (o zoom abaixo encolhe o calendário e os botões na mesma proporção):
-       sobra mais espaço para os agendamentos */
-    grid-template-columns: 285px minmax(0, 1fr);
-    gap: 24px;
-    border-radius: 0px !important;
-  }
-  .agendamentos{
-    padding-right: 0px !important;
-        padding-top: 0px !important;
-  }
-  .agenda-lateral {
-    position: sticky;
-
-    top: 16px;
-    align-self: start;   /* sem esticar: assim ela fica presa no topo ao rolar a página */
-    zoom: 0.84;          /* 340 px de desenho em 285 px de coluna: tudo menor, na mesma proporção */
-  }
-
-  /* os agendamentos ocupam a altura inteira da tela, abaixo do título, até o fim */
-  .agenda-corpo > .agendamentos {
-    flex: 1;
-    padding-bottom: 0;
-  }
-
-  .agenda-corpo > .agendamentos > .agenda-principal {
-    align-self: stretch;   /* a grade usa align-items: start; aqui a área da direita vai até o fim da tela */
-    border-left-color: #DCE0E7;   /* o limite entre a coluna da esquerda e os agendamentos, um pouco mais cinza */
-  }
-}
-
+/* Computador (1024 px+): agenda-pc.css */
 
 /* Filtro por profissional (só com 2+) */
 .filtro-profissional {

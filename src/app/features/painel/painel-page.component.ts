@@ -35,6 +35,11 @@ import { ResumoLojaComponent } from './resumo-loja/resumo-loja.component';
 
 /** Tempo que o painel fica à mostra antes da janela de boas-vindas abrir. */
 const ESPERA_BOAS_VINDAS_MS = 2500;
+/**
+ * TESTE: com true, as boas-vindas e o tour do painel abrem toda vez que o painel abre (mesmo com o onboarding
+ * concluído), para revisar os passos. Para voltar ao normal (só na conta nova), troque para false.
+ */
+const TOUR_SEMPRE_ABERTO = false;
 
 /** Tela inicial do painel do lojista. */
 @Component({
@@ -159,7 +164,7 @@ export class PainelPageComponent implements OnInit {
     // Conta nova: depois de carregar, primeiro a janela de boas-vindas e depois o tour.
     // Deixa o lojista ver o painel por alguns segundos antes de abrir a janela.
     const perfil = this.perfilService.perfil();
-    if (perfil.id && !perfil.onboardingConcluido) {
+    if (perfil.id && (!perfil.onboardingConcluido || TOUR_SEMPRE_ABERTO)) {
       const temporizador = setTimeout(() => this.mostrarBoasVindas.set(true), ESPERA_BOAS_VINDAS_MS);
       this.destroyRef.onDestroy(() => clearTimeout(temporizador));
     }

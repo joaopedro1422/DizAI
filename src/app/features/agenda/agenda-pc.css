@@ -1,0 +1,96 @@
+/*
+ * Agenda no computador (1024 px+): sem a coluna do calendário. O dia ocupa toda a área branca ao lado do menu; o
+ * calendário abre num modal pelo botão ao lado do dia e as ações do dia ficam no topo, compactas.
+ */
+.dia__titulo-linha {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.dia__calendario {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 12px;
+  background: var(--cor-fundo);
+  color: var(--cor-primaria);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.dia__calendario:hover {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria-clara);
+}
+
+.topo-botoes {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  align-self: center;
+}
+
+@media (min-width: 1024px) {
+  /* Números e configurações: tudo num cinza bem claro (os cartões brancos se destacam) */
+  .tela-agenda.tela-com-menu,
+  .tela-agenda .corpo-com-menu {
+    background: color-mix(in srgb, var(--cor-fundo) 55%, var(--cor-fundo-suave));
+  }
+
+  /* Agendamentos: a agenda branca na largura toda; só a faixa do topo (título e botões) fica no cinza */
+  .tela-agenda--dia .corpo-com-menu {
+    background: var(--cor-fundo);
+  }
+
+  .tela-agenda--dia .topo-menu {
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--cor-borda-suave);
+    background: color-mix(in srgb, var(--cor-fundo) 55%, var(--cor-fundo-suave));
+  }
+
+  .tela-agenda--dia .agenda-corpo > .agendamentos {
+    padding-top: 20px;
+  }
+
+  .agenda-corpo > .agendamentos {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding-top: 8px;
+    padding-bottom: 0;
+  }
+
+  /* só os avisos (agenda desativada, sem horários) continuam aqui, em cima do dia */
+  .agenda-lateral {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .agenda-lateral:not(:has(> *)) {
+    display: none;
+  }
+
+  .agenda-corpo > .agendamentos > .agenda-principal {
+    flex: 1;
+    min-height: 0;
+    padding: 0 0 28px;
+    border: none;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .agenda-principal > .acoes-dia {
+    display: none;
+  }
+}

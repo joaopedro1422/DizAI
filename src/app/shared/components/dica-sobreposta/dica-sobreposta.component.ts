@@ -9,6 +9,7 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { LogoComponent } from '../logo/logo.component';
 import { IconeComponent } from '../icone/icone.component';
 import { NomeIcone } from '../icone/icones';
 
@@ -26,7 +27,7 @@ let proximoIdDica = 0;
  */
 @Component({
   selector: 'app-dica-sobreposta',
-  imports: [IconeComponent],
+  imports: [IconeComponent, LogoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dica-sobreposta.component.html',
   styleUrl: './dica-sobreposta.component.css',
@@ -44,6 +45,8 @@ export class DicaSobrepostaComponent implements AfterViewInit, OnDestroy {
   readonly rotuloBotao = input('Entendi');
   /** Segundo botão, só texto (ex.: "Agora não"). Vazio = sem o botão. */
   readonly rotuloSecundario = input('');
+  /** No lugar do ícone, o símbolo do DizAI no quadrado azul (ex.: boas-vindas). */
+  readonly marca = input(false);
   /** Os botões (e o Esc) só funcionam depois de uma escolha obrigatória no conteúdo, ex.: o tipo do negócio. */
   readonly bloqueada = input(false);
   readonly confirmar = output<void>();

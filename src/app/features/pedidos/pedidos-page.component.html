@@ -1,150 +1,151 @@
-<div class="tela-app tela-pedidos">
-  <!-- topo azul (o mesmo da agenda). No computador as abas ficam na linha do título, à direita -->
-  <header class="topo-azul">
-    <div class="topo-azul__linha">
-      <a class="topo-azul__voltar" [routerLink]="rotaInicio()" aria-label="Voltar para o painel">
-        <app-icone nome="voltar" [tamanho]="22" />
-        <span class="topo-azul__voltar-texto" aria-hidden="true">Voltar</span>
-      </a>
-    </div>
-    <div class="topo-azul__identidade topo-pedidos">
-      <div class="topo-azul__textos">
-        <h1 class="topo-azul__titulo">Pedidos</h1>
-      </div>
-      <div class="abas" role="tablist" aria-label="Pedidos">
-        <button
-          type="button"
-          role="tab"
-          id="aba-andamento"
-          aria-controls="painel-andamento"
-          class="aba"
-          [class.aba--ativa]="aba() === 'andamento'"
-          [attr.aria-selected]="aba() === 'andamento'"
-          (click)="aba.set('andamento')"
-        >
-          <app-icone nome="caixa" [tamanho]="16" />
-          Em andamento
-          @if (pedidos().length > 0) {
-            <span class="aba__contador">{{ pedidos().length }}</span>
-          }
-        </button>
-        <button
-          type="button"
-          role="tab"
-          id="aba-numeros"
-          aria-controls="painel-numeros"
-          class="aba"
-          [class.aba--ativa]="aba() === 'numeros'"
-          [attr.aria-selected]="aba() === 'numeros'"
-          (click)="aba.set('numeros')"
-        >
-          <app-icone nome="grafico" [tamanho]="16" />
-          Números
-        </button>
-      </div>
-    </div>
-  </header>
+<div class="tela-app tela-pedidos tela-com-menu">
+  <!-- menu dos pedidos: gaveta no celular, coluna fixa à esquerda no computador -->
+  <app-menu-lateral
+    titulo="Pedidos"
+    icone="caixa"
+    rotuloAjuda="Como usar os pedidos"
+    [subtitulo]="nomeLoja()"
+    [grupos]="grupos"
+    [ativo]="secao()"
+    [aberto]="menuAberto()"
+    [rotaInicio]="rotaInicio()"
+    (escolher)="irPara($any($event))"
+    (fechar)="menuAberto.set(false)"
+    (ajuda)="comecarTour()"
+  >
+    <!-- de onde vêm os pedidos: o assistente passa no Chats e o lojista confirma lá -->
+    <a class="chats-card" appAlvoTour="pedidos-chats" [routerLink]="rotaChats()">
+      <span class="chats-card__icone"><app-icone nome="conversa" [tamanho]="18" [espessura]="2" /></span>
+      <span class="chats-card__textos">
+        <b>Pedidos esperando no Chats</b>
+        <small>Confirme lá e eles vêm para cá</small>
+      </span>
+      <app-icone class="chats-card__seta" nome="avancar" [tamanho]="16" [espessura]="2" />
+    </a>
+  </app-menu-lateral>
 
-  @if (aba() === 'andamento') {
-    <main id="painel-andamento" role="tabpanel" aria-labelledby="aba-andamento" class="conteudo-tela pedidos">
-      <!-- pedido que chegou fora do assistente (balcão, ligação, Instagram) -->
-      <div class="acoes-pedidos">
-        <button type="button" class="btn btn--secundario btn--pequeno" (click)="registrando.set(true)">
+  <div class="corpo-com-menu">
+    <header class="topo-menu">
+      <button
+        type="button"
+        class="topo-menu__menu"
+        appAlvoTour="pedidos-menu"
+        aria-label="Abrir o menu dos pedidos"
+        [attr.aria-expanded]="menuAberto()"
+        (click)="menuAberto.set(true)"
+      >
+        <app-icone nome="menu" [tamanho]="22" [espessura]="2" />
+      </button>
+      <div class="topo-menu__textos">
+        <span class="topo-menu__sobre">Pedidos</span>
+        <h1 class="topo-menu__titulo">{{ infoSecao().titulo }}</h1>
+        <p class="topo-menu__descricao">{{ infoSecao().descricao }}</p>
+      </div>
+      @if (secao() === 'pedidos') {
+        <!-- pedido que chegou fora do assistente (balcão, ligação, Instagram): "+" no celular, botão no computador -->
+        <button type="button" class="topo-menu__acao" appAlvoTour="pedidos-registrar" aria-label="Registrar pedido" (click)="registrando.set(true)">
+          <app-icone nome="mais" [tamanho]="20" [espessura]="2.2" />
+        </button>
+        <button type="button" class="btn btn--primario btn--pequeno topo-registrar" appAlvoTour="pedidos-registrar-pc" (click)="registrando.set(true)">
           <app-icone nome="mais" [tamanho]="16" [espessura]="2.2" />
           Registrar pedido
         </button>
-      </div>
-      @if (carregando()) {
-        <app-carregando texto="Carregando seus pedidos…" />
-      } @else if (pedidos().length === 0) {
-        <app-estado-vazio
-          icone="caixa"
-          titulo="Nenhum pedido em andamento"
-          descricao="Quando o assistente fechar um pedido, ele aparece no Chats. Depois de confirmar com o cliente, toque em “Pedido confirmado” e ele vem para cá."
-        />
-      } @else if (quadro()) {
-        <!-- computador (ex.: na cozinha): um quadro com o que falta fazer e o que já está pronto, sem filtro -->
-        <div class="quadro">
-          <section class="quadro__coluna quadro__coluna--preparo" aria-labelledby="coluna-preparo">
-            <h2 class="quadro__titulo" id="coluna-preparo">
-              <span class="quadro__ponto" aria-hidden="true"></span>
-              Em preparo
-              <span class="quadro__contador">{{ emPreparo().length }}</span>
-            </h2>
-            <div class="quadro__cards">
-              @for (pedido of emPreparo(); track pedido.id) {
-                <app-pedido-card [pedido]="pedido" (acao)="acaoAberta.set({ pedido, acao: $event })" />
-              } @empty {
-                <p class="quadro__vazio">Nada em preparo agora.</p>
-              }
-            </div>
-          </section>
-          <section class="quadro__coluna quadro__coluna--prontos" aria-labelledby="coluna-prontos">
-            <h2 class="quadro__titulo" id="coluna-prontos">
-              <span class="quadro__ponto" aria-hidden="true"></span>
-              Prontos para entregar
-              <span class="quadro__contador">{{ prontos().length }}</span>
-            </h2>
-            <div class="quadro__cards">
-              @for (pedido of prontos(); track pedido.id) {
-                <app-pedido-card [pedido]="pedido" (acao)="acaoAberta.set({ pedido, acao: $event })" />
-              } @empty {
-                <p class="quadro__vazio">Quando um pedido ficar pronto, ele passa para cá.</p>
-              }
-            </div>
-          </section>
-        </div>
-      } @else {
-        <div class="grupo-chips" role="radiogroup" aria-label="Filtrar pedidos">
-          <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="filtro() === 'todos'" [attr.aria-checked]="filtro() === 'todos'" (click)="filtro.set('todos')">
-            Todos · {{ pedidos().length }}
-          </button>
-          <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="filtro() === 'preparo'" [attr.aria-checked]="filtro() === 'preparo'" (click)="filtro.set('preparo')">
-            Em preparo · {{ emPreparo().length }}
-          </button>
-          <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="filtro() === 'prontos'" [attr.aria-checked]="filtro() === 'prontos'" (click)="filtro.set('prontos')">
-            Prontos · {{ prontos().length }}
-          </button>
-        </div>
-
-        <div class="pedidos__lista">
-          @for (pedido of pedidosFiltrados(); track pedido.id) {
-            <app-pedido-card [pedido]="pedido" (acao)="acaoAberta.set({ pedido, acao: $event })" />
-          } @empty {
-            <app-estado-vazio icone="caixa" titulo="Nenhum pedido aqui" />
-          }
-        </div>
       }
+    </header>
 
-      @if (!carregando()) {
-        <div class="pedidos__rodape">
-          <a class="btn btn--secundario pedidos__chats" [routerLink]="rotaChats()">
-            <app-icone nome="conversa" [tamanho]="16" />
-            Pedidos esperando no Chats
-          </a>
-          <button type="button" class="btn btn--texto btn--pequeno" (click)="abrirMensagens()">
-            <app-icone nome="conversa" [tamanho]="16" />
-            Mensagens prontas
-          </button>
-        </div>
-      }
-    </main>
-  } @else {
-    <main id="painel-numeros" role="tabpanel" aria-labelledby="aba-numeros" class="conteudo-tela pedidos">
-      <app-numeros-pedidos />
-    </main>
-  }
+    @if (secao() === 'pedidos') {
+      <main id="painel-andamento" class="conteudo-tela pedidos">
+        @if (carregando() && !exemplo()) {
+          <app-carregando texto="Carregando seus pedidos…" />
+        } @else if (pedidosNaTela().length === 0) {
+          <app-estado-vazio
+            icone="caixa"
+            titulo="Nenhum pedido em andamento"
+            descricao="Quando o assistente fechar um pedido, ele aparece no Chats. Depois de confirmar com o cliente, toque em “Pedido confirmado” e ele vem para cá."
+          />
+        } @else if (quadro()) {
+          <!-- computador (ex.: na cozinha): um quadro com o que falta fazer e o que já está pronto, sem filtro -->
+          <div class="quadro">
+            <section class="quadro__coluna quadro__coluna--preparo" aria-labelledby="coluna-preparo">
+              <h2 class="quadro__titulo" id="coluna-preparo">
+                <span class="quadro__ponto" aria-hidden="true"></span>
+                Em preparo
+                <span class="quadro__contador">{{ emPreparoNaTela().length }}</span>
+              </h2>
+              <div class="quadro__cards">
+                @for (pedido of emPreparoNaTela(); track pedido.id) {
+                  <ng-container [ngTemplateOutlet]="cartao" [ngTemplateOutletContext]="{ $implicit: pedido }" />
+                } @empty {
+                  <p class="quadro__vazio">Nada em preparo agora.</p>
+                }
+              </div>
+            </section>
+            <section class="quadro__coluna quadro__coluna--prontos" aria-labelledby="coluna-prontos">
+              <h2 class="quadro__titulo" id="coluna-prontos">
+                <span class="quadro__ponto" aria-hidden="true"></span>
+                Prontos para entregar
+                <span class="quadro__contador">{{ prontosNaTela().length }}</span>
+              </h2>
+              <div class="quadro__cards">
+                @for (pedido of prontosNaTela(); track pedido.id) {
+                  <ng-container [ngTemplateOutlet]="cartao" [ngTemplateOutletContext]="{ $implicit: pedido }" />
+                } @empty {
+                  <p class="quadro__vazio">Quando um pedido ficar pronto, ele passa para cá.</p>
+                }
+              </div>
+            </section>
+          </div>
+        } @else {
+          <div class="grupo-chips" role="radiogroup" aria-label="Filtrar pedidos">
+            <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="filtro() === 'todos'" [attr.aria-checked]="filtro() === 'todos'" (click)="filtro.set('todos')">
+              Todos · {{ pedidosNaTela().length }}
+            </button>
+            <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="filtro() === 'preparo'" [attr.aria-checked]="filtro() === 'preparo'" (click)="filtro.set('preparo')">
+              Em preparo · {{ emPreparoNaTela().length }}
+            </button>
+            <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="filtro() === 'prontos'" [attr.aria-checked]="filtro() === 'prontos'" (click)="filtro.set('prontos')">
+              Prontos · {{ prontosNaTela().length }}
+            </button>
+          </div>
+
+          <div class="pedidos__lista">
+            @for (pedido of pedidosFiltrados(); track pedido.id) {
+              <ng-container [ngTemplateOutlet]="cartao" [ngTemplateOutletContext]="{ $implicit: pedido }" />
+            } @empty {
+              <app-estado-vazio icone="caixa" titulo="Nenhum pedido aqui" />
+            }
+          </div>
+        }
+      </main>
+    } @else if (secao() === 'numeros') {
+      <main id="painel-numeros" class="conteudo-tela pedidos">
+        <app-numeros-pedidos />
+      </main>
+    } @else {
+      <main id="painel-mensagens" class="conteudo-tela pedidos">
+        <app-mensagens-pedidos [config]="configMensagens" [clienteExemplo]="exemplos().chats.cliente" />
+      </main>
+    }
+  </div>
 </div>
+
+<!-- o card de um pedido; o de exemplo do tour é marcado para o destaque -->
+<ng-template #cartao let-pedido>
+  @if (pedido.id === idExemplo) {
+    <app-pedido-card appAlvoTour="pedidos-exemplo" [pedido]="pedido" (acao)="aoAcaoDoExemplo($event)" />
+  } @else {
+    <app-pedido-card [pedido]="pedido" (acao)="acaoAberta.set({ pedido, acao: $event })" />
+  }
+</ng-template>
+
+<!-- tour: a mensagem que acabou de sair para o cliente (a chave recria o cartão e a animação toca de novo) -->
+@for (mensagem of envioAoVivo(); track mensagem.texto) {
+  <app-envio-ao-vivo appAlvoTour="pedidos-envio" [mensagem]="mensagem" />
+}
 
 @if (acaoAberta(); as aberta) {
   <app-bottom-sheet [titulo]="titulosAcao[aberta.acao]" (fechar)="acaoAberta.set(null)">
     <app-acao-pedido [pedido]="aberta.pedido" [acao]="aberta.acao" (concluido)="acaoAberta.set(null)" />
-  </app-bottom-sheet>
-}
-
-@if (gerenciandoMensagens()) {
-  <app-bottom-sheet titulo="Mensagens prontas" (fechar)="gerenciandoMensagens.set(false)">
-    <app-mensagens-prontas [config]="configMensagens" />
   </app-bottom-sheet>
 }
 
@@ -153,3 +154,19 @@
     <app-registrar-pedido (registrado)="pedidoRegistrado($event.entregue)" />
   </app-bottom-sheet>
 }
+
+<!-- primeira visita: convite para o tour (com um pedido de exemplo que o lojista leva até a entrega) -->
+@if (convidarTour()) {
+  <app-dica-sobreposta
+    icone="caixa"
+    sobretitulo="Seus pedidos"
+    titulo="Conheça a tela de pedidos"
+    descricao="Um tour rápido com um pedido de exemplo: você marca como pronto, depois como entregue, e vê a mensagem que o cliente recebe."
+    rotuloBotao="Fazer o tour"
+    rotuloSecundario="Agora não"
+    (confirmar)="comecarTour()"
+    (secundario)="dispensarTour()"
+  />
+}
+
+<app-onboarding-tour [margemTopo]="quadro() ? 0 : 64" (encerrado)="aoEncerrarTour()" />

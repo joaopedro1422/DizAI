@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal, viewChild } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 import { ERRO_AO_CARREGAR, mensagemDoErro } from '../../core/api/erro-api';
@@ -12,17 +13,24 @@ import { BottomSheetComponent } from '../../shared/components/bottom-sheet/botto
 import { CarregandoComponent } from '../../shared/components/carregando/carregando.component';
 import { EstadoVazioComponent } from '../../shared/components/estado-vazio/estado-vazio.component';
 import { IconeComponent } from '../../shared/components/icone/icone.component';
-import {
-  ConfigMensagensProntas,
-  MensagensProntasComponent,
-} from '../agenda/mensagens-prontas/mensagens-prontas.component';
+import { ConfigMensagensProntas } from '../agenda/mensagens-prontas/mensagens-prontas.component';
 import { AcaoPedidoComponent } from './acao-pedido/acao-pedido.component';
 import { NumerosPedidosComponent } from './numeros-pedidos/numeros-pedidos.component';
 import { RegistrarPedidoComponent } from './registrar-pedido/registrar-pedido.component';
 import { AcaoPedido, PedidoCardComponent } from './pedido-card/pedido-card.component';
-import { SUGESTOES_PEDIDO, VARIAVEIS_PEDIDO } from './textos-pedido';
-
-type AbaPedidos = 'andamento' | 'numeros';
+import { AGRADECIMENTO_PADRAO, AVISO_PRONTO_PADRAO, SUGESTOES_PEDIDO, VARIAVEIS_PEDIDO, preencherAviso } from './textos-pedido';
+import { EnvioAoVivoComponent, MensagemAoVivo } from './envio-ao-vivo/envio-ao-vivo.component';
+import { MensagensPedidosComponent } from './mensagens-pedidos/mensagens-pedidos.component';
+import { SECOES_DOS_PEDIDOS, SecaoPedidos, infoDaSecaoDosPedidos } from './secoes-pedidos';
+import { ID_PEDIDO_EXEMPLO, passosDoTourDosPedidos, pedidoDeExemplo } from './tour-pedidos';
+import { MenuLateralComponent } from '../../shared/components/menu-lateral/menu-lateral.component';
+import { DicaSobrepostaComponent } from '../../shared/components/dica-sobreposta/dica-sobreposta.component';
+import { AlvoTourDirective } from '../painel/onboarding/alvo-tour.directive';
+import { OnboardingTourComponent } from '../painel/onboarding/onboarding-tour.component';
+import { OnboardingTourService } from '../painel/onboarding/onboarding-tour.service';
+import { ConteudoRamoService } from '../../core/services/conteudo-ramo.service';
+import { DicasVistasService } from '../../core/services/dicas-vistas.service';
+import { PerfilService } from '../../core/services/perfil.service';
 
 /** Pedido confirmado em outro aparelho (ex.: no celular) aparece no computador em até 15 s. */
 const ATUALIZAR_A_CADA_MS = 15_000;
@@ -36,9 +44,10 @@ const TITULOS_ACAO: Record<AcaoPedido, string> = {
 };
 
 /**
- * Tela "Pedidos" (só lojas de produtos): os pedidos que o lojista confirmou no Chats, até serem entregues, e os
- * números (faturamento, entregues, valor médio). É um caderno de pedidos simples: o fluxo não é obrigatório, dá para
- * marcar como entregue direto, sem passar por "pronto".
+ * Tela "Pedidos" (só lojas de produtos), com o menu lateral (MenuLateralComponent): Pedidos (os confirmados no Chats,
+ * até serem entregues), Números (faturamento, entregues, valor médio) e Mensagens (os avisos e as mensagens prontas).
+ * É um caderno de pedidos simples: o fluxo não é obrigatório, dá para marcar como entregue direto.
+ * Tour (tour-pedidos.ts): um pedido de exemplo do segmento, só na tela, que o lojista leva até a entrega.
  */
 @Component({
   selector: 'app-pedidos-page',
@@ -52,11 +61,19 @@ const TITULOS_ACAO: Record<AcaoPedido, string> = {
     PedidoCardComponent,
     AcaoPedidoComponent,
     NumerosPedidosComponent,
-    MensagensProntasComponent,
+    MensagensPedidosComponent,
+    MenuLateralComponent,
+    EnvioAoVivoComponent,
+    DicaSobrepostaComponent,
+    OnboardingTourComponent,
+    AlvoTourDirective,
+    NgTemplateOutlet,
   ],
+  // o tour dos pedidos guarda os próprios alvos (menu, pedido de exemplo, mensagem enviada)
+  providers: [OnboardingTourService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './pedidos-page.component.html',
-  styleUrls: ['../../shared/estilos-topo-azul.css', './pedidos-page.component.css'],
+  styleUrls: ['../../shared/estilos-tela-com-menu.css', './pedidos-page.component.css'],
 })
 export class PedidosPageComponent implements OnInit {
   private readonly pedidoService = inject(PedidoService);
@@ -70,22 +87,48 @@ export class PedidosPageComponent implements OnInit {
   protected readonly emPreparo = this.pedidoService.emPreparo;
   protected readonly prontos = this.pedidoService.prontos;
 
-  protected readonly aba = signal<AbaPedidos>('andamento');
+  private readonly dicasVistas = inject(DicasVistasService);
+  protected readonly exemplos = inject(ConteudoRamoService).exemplos;
+  private readonly perfil = inject(PerfilService).perfil;
+  protected readonly nomeLoja = computed(() => this.perfil().nomeLoja ?? '');
+
+  /** Menu lateral: as páginas da tela (o grupo inteiro é o destaque de um passo do tour). */
+  protected readonly grupos = [{ itens: SECOES_DOS_PEDIDOS, alvoTour: 'pedidos-secoes' as const }];
+  protected readonly secao = signal<SecaoPedidos>('pedidos');
+  protected readonly infoSecao = computed(() => infoDaSecaoDosPedidos(this.secao()));
+  /** Gaveta do menu aberta (celular). */
+  protected readonly menuAberto = signal(false);
+
+  // ---------------------------------------------------------------- pedido de exemplo do tour (só na tela)
+  protected readonly idExemplo = ID_PEDIDO_EXEMPLO;
+  protected readonly exemplo = signal<Pedido | null>(null);
+  /** A mensagem que acabou de "sair" para o cliente do exemplo (lista de uma, para a animação tocar de novo). */
+  protected readonly envioAoVivo = signal<MensagemAoVivo[]>([]);
+  protected readonly convidarTour = signal(false);
+  private readonly tour = viewChild.required(OnboardingTourComponent);
+
+  /** Os pedidos de verdade e, durante o tour, o de exemplo na frente. */
+  protected readonly pedidosNaTela = computed(() => {
+    const exemplo = this.exemplo();
+    return exemplo ? [exemplo, ...this.pedidos()] : this.pedidos();
+  });
+  protected readonly emPreparoNaTela = computed(() => this.pedidosNaTela().filter((pedido) => pedido.status !== 'PRONTO'));
+  protected readonly prontosNaTela = computed(() => this.pedidosNaTela().filter((pedido) => pedido.status === 'PRONTO'));
+
   protected readonly filtro = signal<FiltroPedidos>('todos');
   protected readonly pedidosFiltrados = computed(() => {
     switch (this.filtro()) {
       case 'preparo':
-        return this.emPreparo();
+        return this.emPreparoNaTela();
       case 'prontos':
-        return this.prontos();
+        return this.prontosNaTela();
       default:
-        return this.pedidos();
+        return this.pedidosNaTela();
     }
   });
 
   protected readonly acaoAberta = signal<{ pedido: Pedido; acao: AcaoPedido } | null>(null);
   protected readonly titulosAcao = TITULOS_ACAO;
-  protected readonly gerenciandoMensagens = signal(false);
 
   /** As mensagens prontas dos pedidos usam o mesmo gerenciador da agenda, com as variáveis do pedido. */
   protected readonly configMensagens: ConfigMensagensProntas = {
@@ -147,13 +190,73 @@ export class PedidosPageComponent implements OnInit {
 
   ngOnInit(): void {
     void limparMarcaIcone('pedido');
-    this.pedidoService.abrir().catch((erro: unknown) => this.toastService.mostrar(mensagemDoErro(erro, ERRO_AO_CARREGAR)));
+    this.pedidoService
+      .abrir()
+      .then(() => this.convidarTour.set(this.dicasVistas.deveMostrarVideo('tour-pedidos')))
+      .catch((erro: unknown) => this.toastService.mostrar(mensagemDoErro(erro, ERRO_AO_CARREGAR)));
   }
 
-  protected abrirMensagens(): void {
-    this.gerenciandoMensagens.set(true);
-    this.pedidoService.carregarMensagensProntas().catch((erro: unknown) =>
-      this.toastService.mostrar(mensagemDoErro(erro, ERRO_AO_CARREGAR)),
+  /** Página escolhida no menu: fecha a gaveta e volta ao topo. */
+  protected irPara(secao: SecaoPedidos): void {
+    this.secao.set(secao);
+    this.menuAberto.set(false);
+    window.scrollTo({ top: 0 });
+  }
+
+  // ---------------------------------------------------------------- tour dos pedidos
+
+  protected comecarTour(): void {
+    this.convidarTour.set(false);
+    this.dicasVistas.marcarComoVista('tour-pedidos');
+    this.filtro.set('todos');
+    this.tour().iniciarCom(
+      passosDoTourDosPedidos({
+        abrirMenu: () => this.menuAberto.set(true),
+        fecharMenu: () => this.menuAberto.set(false),
+        irPara: (secao) => this.irPara(secao),
+        mostrarExemplo: () => {
+          if (!this.exemplo()) {
+            this.envioAoVivo.set([]);
+            this.exemplo.set(pedidoDeExemplo(this.exemplos()));
+          }
+        },
+        esconderEnvio: () => this.envioAoVivo.set([]),
+      }),
     );
+  }
+
+  protected dispensarTour(): void {
+    this.convidarTour.set(false);
+    this.dicasVistas.marcarComoVista('tour-pedidos');
+  }
+
+  /** Fim do tour (ou "Pular"): o exemplo some e a tela volta aos pedidos. */
+  protected aoEncerrarTour(): void {
+    this.exemplo.set(null);
+    this.envioAoVivo.set([]);
+    this.irPara('pedidos');
+  }
+
+  /**
+   * Os botões do pedido de exemplo: nada vai ao servidor. "Pedido pronto" passa o card para os prontos e mostra o
+   * aviso saindo; "Entregue" (depois do pronto) tira o card e mostra o agradecimento. O tour segue sozinho.
+   */
+  protected aoAcaoDoExemplo(acao: AcaoPedido): void {
+    const exemplo = this.exemplo();
+    if (!exemplo) {
+      return;
+    }
+    const nome = exemplo.nomeCliente;
+    if (acao === 'pronto' && exemplo.status !== 'PRONTO') {
+      this.exemplo.set({ ...exemplo, status: 'PRONTO', prontoEm: new Date() });
+      this.envioAoVivo.set([{ cliente: nome, texto: preencherAviso(AVISO_PRONTO_PADRAO, nome, exemplo.valor) }]);
+    } else if (acao === 'entregue' && exemplo.status === 'PRONTO') {
+      this.exemplo.set(null);
+      this.envioAoVivo.set([{ cliente: nome, texto: preencherAviso(AGRADECIMENTO_PADRAO, nome, exemplo.valor) }]);
+    } else {
+      return;
+    }
+    // espera o cartão da mensagem entrar na tela antes de destacar
+    setTimeout(() => this.tour().proximoPasso(), 450);
   }
 }

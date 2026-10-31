@@ -62,6 +62,8 @@
   }
 </fieldset>
 
+<!-- só lojas de produtos: serviços com agenda têm a própria antecedência (Agenda → Horários) -->
+@if (exibirAntecedencia()) {
 <fieldset class="etapa__grupo">
   <legend class="etapa__legenda">Antecedência mínima para pedidos</legend>
   <div class="campo">
@@ -95,3 +97,4 @@
     }
   </div>
 </fieldset>
+}

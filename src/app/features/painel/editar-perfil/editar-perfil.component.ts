@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { RAMOS_NEGOCIO, RAMOS_PARA_ESCOLHER } from '../../../core/constants/opcoes-perfil';
 import { PeriodoAtendimento } from '../../../core/models/agenda.model';
-import { DadosLoja, RamoNegocio, UnidadeAntecedencia, ramoUsaAgenda } from '../../../core/models/perfil.model';
+import { DadosLoja, RamoNegocio, UnidadeAntecedencia, ramoDeServico, ramoUsaAgenda } from '../../../core/models/perfil.model';
 import { SegmentoNegocio, segmentoDoPerfil, segmentosDoRamo } from '../../../core/constants/segmentos';
 import { mensagemDoErro } from '../../../core/api/erro-api';
 import { AgendaService } from '../../../core/services/agenda.service';
@@ -61,6 +61,7 @@ export class EditarPerfilComponent {
   });
   /** Serviço presencial: pode copiar os horários da agenda. */
   protected readonly usaAgenda = computed(() => ramoUsaAgenda(this.ramoEscolhido()));
+  protected readonly ramoServico = computed(() => ramoDeServico(this.ramoEscolhido()));
   protected readonly ramoAtual = computed(() => this.ramoEscolhido());
 
   /** O tipo do negócio dentro do ramo (só exemplos e tutoriais); trocar o ramo deixa sem tipo até escolher outro. */

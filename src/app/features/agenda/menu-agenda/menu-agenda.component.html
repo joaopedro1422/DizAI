@@ -1,67 +1,17 @@
-<div class="fundo" aria-hidden="true" (click)="fechar.emit()"></div>
-
-<nav class="menu" aria-label="Menu da agenda">
-  <div class="menu__topo">
-    <a class="menu__voltar" [routerLink]="rotaInicio()">
-      <app-icone nome="voltar" [tamanho]="18" [espessura]="2" />
-      Painel
-    </a>
-    <button type="button" class="btn-icone btn-icone--sem-borda menu__fechar" aria-label="Fechar o menu" (click)="fechar.emit()">
-      <app-icone nome="fechar" [tamanho]="20" />
-    </button>
-  </div>
-
-  <div class="menu__marca">
-    <span class="menu__marca-icone"><app-icone nome="calendario" [tamanho]="20" [espessura]="2" /></span>
-    <span class="menu__marca-textos">
-      <b>Minha Agenda</b>
-      @if (nomeLoja()) {
-        <small>{{ nomeLoja() }}</small>
-      }
-    </span>
-  </div>
-
-  <ul class="menu__lista" appAlvoTour="agenda-secoes">
-    @for (item of secoesDaAgenda; track item.valor) {
-      <li>
-        <button
-          type="button"
-          class="menu__item"
-          [class.menu__item--ativo]="secao() === item.valor"
-          [attr.aria-current]="secao() === item.valor ? 'page' : null"
-          (click)="escolher.emit(item.valor)"
-        >
-          <app-icone [nome]="item.icone" [tamanho]="19" />
-          {{ item.titulo }}
-        </button>
-      </li>
-    }
-  </ul>
-
-  <span class="menu__grupo">Configurações</span>
-  <ul class="menu__lista" appAlvoTour="agenda-configuracoes">
-    @for (item of secoesDeConfiguracao; track item.valor) {
-      <li>
-        <button
-          type="button"
-          class="menu__item"
-          [class.menu__item--ativo]="secao() === item.valor"
-          [attr.aria-current]="secao() === item.valor ? 'page' : null"
-          (click)="escolher.emit(item.valor)"
-        >
-          <app-icone [nome]="item.icone" [tamanho]="19" />
-          {{ item.titulo }}
-        </button>
-      </li>
-    }
-  </ul>
-
-  <button type="button" class="menu__item menu__ajuda" (click)="tour.emit()">
-    <app-icone nome="pergunta" [tamanho]="19" />
-    Como usar a agenda
-  </button>
-
-  <!-- link da agenda online para divulgar: abre a página pública ou copia -->
+<app-menu-lateral
+  titulo="Minha Agenda"
+  icone="calendario"
+  rotuloAjuda="Como usar a agenda"
+  [subtitulo]="nomeLoja()"
+  [grupos]="grupos"
+  [ativo]="secao()"
+  [aberto]="aberto()"
+  [rotaInicio]="rotaInicio()"
+  (escolher)="escolher.emit($any($event))"
+  (fechar)="fechar.emit()"
+  (ajuda)="tour.emit()"
+>
+  <!-- link da agenda online para divulgar: abre a página pública, copia ou leva à vitrine -->
   <div class="online" appAlvoTour="agenda-online">
     <div class="online__topo">
       <span class="online__titulo">Agenda online</span>
@@ -83,4 +33,4 @@
       </a>
     </div>
   </div>
-</nav>
+</app-menu-lateral>

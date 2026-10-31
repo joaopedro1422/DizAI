@@ -19,6 +19,11 @@ export interface PassoTour {
   antes?: () => void;
   /** Quanto esperar depois do "antes" para a tela terminar de mudar (ex.: a gaveta abrindo). */
   esperaMs?: number;
+  /**
+   * Passo interativo: em vez do "Próximo", a dica (ex.: 'Toque em "Pedido pronto"') e o destaque fica tocável.
+   * Quem avança é a tela, com OnboardingTourComponent.proximoPasso(), quando o lojista faz o que foi pedido.
+   */
+  aguardar?: string;
 }
 
 const conversa = ([cliente, resposta]: [string, string]): LinhaPrevia[] => [

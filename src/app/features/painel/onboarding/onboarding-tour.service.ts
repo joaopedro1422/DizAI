@@ -15,11 +15,21 @@ export type AlvoTour =
   | 'agenda-configuracoes'
   | 'agenda-online'
   | 'agenda-dias'
+  | 'agenda-dias-pc'
   | 'agenda-dia'
   | 'agenda-agendar'
   | 'agenda-agendar-pc'
   | 'agenda-semana'
-  | 'agenda-mensagens';
+  | 'agenda-mensagens'
+  // tour dos pedidos
+  | 'pedidos-menu'
+  | 'pedidos-secoes'
+  | 'pedidos-chats'
+  | 'pedidos-exemplo'
+  | 'pedidos-envio'
+  | 'pedidos-registrar'
+  | 'pedidos-registrar-pc'
+  | 'pedidos-mensagens';
 
 /**
  * Guarda os elementos da tela que o tour destaca.
@@ -33,8 +43,11 @@ export class OnboardingTourService {
     this.alvos.set(alvo, elemento);
   }
 
-  remover(alvo: AlvoTour): void {
-    this.alvos.delete(alvo);
+  /** Só tira se ainda é o mesmo elemento (um card que muda de coluna registra o novo antes de o antigo sair). */
+  remover(alvo: AlvoTour, elemento: HTMLElement): void {
+    if (this.alvos.get(alvo) === elemento) {
+      this.alvos.delete(alvo);
+    }
   }
 
   obterElemento(alvo: AlvoTour): HTMLElement | undefined {

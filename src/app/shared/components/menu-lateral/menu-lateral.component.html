@@ -1,0 +1,54 @@
+<div class="fundo" aria-hidden="true" (click)="fechar.emit()"></div>
+
+<nav class="menu" [attr.aria-label]="'Menu: ' + titulo()">
+  <div class="menu__topo">
+    <a class="menu__voltar" [routerLink]="rotaInicio()">
+      <app-icone nome="voltar" [tamanho]="18" [espessura]="2" />
+      Painel
+    </a>
+    <button type="button" class="btn-icone btn-icone--sem-borda menu__fechar" aria-label="Fechar o menu" (click)="fechar.emit()">
+      <app-icone nome="fechar" [tamanho]="20" />
+    </button>
+  </div>
+
+  <div class="menu__marca">
+    <span class="menu__marca-icone"><app-icone [nome]="icone()" [tamanho]="20" [espessura]="2" /></span>
+    <span class="menu__marca-textos">
+      <b>{{ titulo() }}</b>
+      @if (subtitulo()) {
+        <small>{{ subtitulo() }}</small>
+      }
+    </span>
+  </div>
+
+  @for (grupo of grupos(); track $index) {
+    @if (grupo.titulo) {
+      <span class="menu__grupo">{{ grupo.titulo }}</span>
+    }
+    <ul class="menu__lista" [appAlvoTour]="grupo.alvoTour">
+      @for (item of grupo.itens; track item.valor) {
+        <li>
+          <button
+            type="button"
+            class="menu__item"
+            [class.menu__item--ativo]="ativo() === item.valor"
+            [attr.aria-current]="ativo() === item.valor ? 'page' : null"
+            (click)="escolher.emit(item.valor)"
+          >
+            <app-icone [nome]="item.icone" [tamanho]="19" />
+            {{ item.titulo }}
+          </button>
+        </li>
+      }
+    </ul>
+  }
+
+  @if (rotuloAjuda()) {
+    <button type="button" class="menu__item menu__ajuda" (click)="ajuda.emit()">
+      <app-icone nome="pergunta" [tamanho]="19" />
+      {{ rotuloAjuda() }}
+    </button>
+  }
+
+  <div class="menu__rodape"><ng-content /></div>
+</nav>

@@ -1,5 +1,5 @@
 @if (fase() !== 'inativo') {
-  <div class="bloqueio" aria-hidden="true"></div>
+  <div class="bloqueio" aria-hidden="true" [style.clip-path]="furoNoBloqueio()"></div>
 }
 
 @if (fase() === 'passo') {
@@ -54,16 +54,24 @@
 
       <div class="balao__acoes">
         <button type="button" class="btn btn--texto" (click)="encerrar()">Pular</button>
-        <span class="balao__navegacao">
-          @if (indicePasso() > 0) {
-            <button type="button" class="btn-icone" aria-label="Passo anterior" (click)="voltar()">
-              <app-icone nome="voltar" [tamanho]="18" />
+        @if (passoAtual().aguardar; as dica) {
+          <!-- passo interativo: quem avança é o toque no destaque -->
+          <span class="balao__aguardando" role="status">
+            <span class="balao__dedo" aria-hidden="true">👆</span>
+            {{ dica }}
+          </span>
+        } @else {
+          <span class="balao__navegacao">
+            @if (podeVoltar()) {
+              <button type="button" class="btn-icone" aria-label="Passo anterior" (click)="voltar()">
+                <app-icone nome="voltar" [tamanho]="18" />
+              </button>
+            }
+            <button #botaoAvancar type="button" class="btn btn--primario" (click)="avancar()">
+              {{ ehUltimoPasso() ? 'Concluir' : 'Próximo' }}
             </button>
-          }
-          <button #botaoAvancar type="button" class="btn btn--primario" (click)="avancar()">
-            {{ ehUltimoPasso() ? 'Concluir' : 'Próximo' }}
-          </button>
-        </span>
+          </span>
+        }
       </div>
     </div>
   }

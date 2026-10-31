@@ -70,6 +70,14 @@ export function passosDoTourDaAgenda(
       esperaMs: ESPERA_MENU_MS,
     },
     {
+      alvo: 'agenda-dias-pc',
+      titulo: 'Escolha o dia',
+      texto: 'Toque no calendário para ver outro dia. Os dias em que você não atende aparecem como fechados.',
+      previa: [],
+      antes: () => acoes.irPara('agendamentos'),
+      esperaMs: ESPERA_MENU_MS,
+    },
+    {
       alvo: 'agenda-dia',
       titulo: 'O assistente marca sozinho',
       texto:

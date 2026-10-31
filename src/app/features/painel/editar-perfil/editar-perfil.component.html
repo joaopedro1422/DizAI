@@ -48,9 +48,9 @@
   </section>
 
   <section class="bloco" aria-labelledby="perfil-pagamento">
-    <h3 id="perfil-pagamento" class="rotulo-maiusculo">Pagamento, entrega e antecedência</h3>
+    <h3 id="perfil-pagamento" class="rotulo-maiusculo">{{ ramoServico() ? 'Pagamento e atendimento' : 'Pagamento, entrega e antecedência' }}</h3>
     <p class="bloco__dica">O assistente usa essas informações para responder seus clientes.</p>
-    <app-etapa-pagamento-entrega [grupo]="formulario.controls.pagamentoEntrega" [exibirCabecalho]="false" />
+    <app-etapa-pagamento-entrega [grupo]="formulario.controls.pagamentoEntrega" [exibirCabecalho]="false" [exibirAntecedencia]="!ramoServico()" />
   </section>
 
   @if (mostrarHorario()) {

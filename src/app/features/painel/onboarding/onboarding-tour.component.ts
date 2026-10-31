@@ -96,7 +96,24 @@ export class OnboardingTourComponent implements OnDestroy {
   private readonly exemplos = inject(ConteudoRamoService).exemplos;
   private readonly perfil = inject(PerfilService).perfil;
   protected readonly passoAtual = computed(() => this.passos()[this.indicePasso()]);
+  /** Depois de um passo interativo não dá para voltar: o que o lojista tocou já mudou a tela. */
+  protected readonly podeVoltar = computed(
+    () => this.indicePasso() > 0 && !this.passos()[this.indicePasso() - 1]?.aguardar,
+  );
   protected readonly ehUltimoPasso = computed(() => this.indicePasso() === this.passos().length - 1);
+  /**
+   * Passo interativo: o bloqueio ganha um furo no recorte (clip-path com evenodd), e só o elemento destacado
+   * recebe o toque. Fora desses passos, o bloqueio cobre a tela inteira.
+   */
+  protected readonly furoNoBloqueio = computed(() => {
+    const recorte = this.destaque();
+    if (!this.passoAtual()?.aguardar || !recorte || !this.balaoVisivel()) {
+      return null;
+    }
+    const { top, left, width, height } = recorte;
+    const [x1, y1, x2, y2] = [left, top, left + width, top + height].map((valor) => `${Math.round(valor)}px`);
+    return `polygon(evenodd, 0 0, 100% 0, 100% 100%, 0 100%, 0 0, ${x1} ${y1}, ${x2} ${y1}, ${x2} ${y2}, ${x1} ${y2}, ${x1} ${y1})`;
+  });
   protected readonly progresso = computed(() => ((this.indicePasso() + 1) / Math.max(this.passos().length, 1)) * 100);
 
   /** Posição do recorte iluminado em volta da seção. */
@@ -181,6 +198,13 @@ export class OnboardingTourComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.destruido = true;
     this.limparTemporizadores();
+  }
+
+  /** A tela avança um passo interativo depois que o lojista fez o que foi pedido. */
+  proximoPasso(): void {
+    if (this.fase() !== 'inativo') {
+      this.avancar();
+    }
   }
 
   protected avancar(): void {

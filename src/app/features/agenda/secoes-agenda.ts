@@ -9,13 +9,13 @@ export type SecaoConfiguracao = Extract<SecaoAgenda, 'horarios' | 'equipe' | 'me
 export interface InfoSecaoAgenda {
   valor: SecaoAgenda;
   titulo: string;
-  /** Uma linha sobre o que a página tem (no topo do computador). */
+  /** Uma linha sobre o que a página tem (no topo do computador); vazia = sem a linha. */
   descricao: string;
   icone: NomeIcone;
 }
 
 export const SECOES_DA_AGENDA: InfoSecaoAgenda[] = [
-  { valor: 'agendamentos', titulo: 'Agendamentos', descricao: 'Os horários marcados de cada dia', icone: 'calendario' },
+  { valor: 'agendamentos', titulo: 'Agendamentos', descricao: '', icone: 'calendario' },
   { valor: 'numeros', titulo: 'Números', descricao: 'Faturamento, atendimentos e clientes', icone: 'grafico' },
 ];
 

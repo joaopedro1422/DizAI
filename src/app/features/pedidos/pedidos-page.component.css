@@ -2,15 +2,6 @@
   min-height: 100dvh;
 }
 
-/* No celular as abas vão embaixo do título (quebram a linha); no computador, ao lado */
-.topo-pedidos {
-  flex-wrap: wrap;
-}
-
-.topo-pedidos .abas {
-  flex: 1 1 100%;
-}
-
 .pedidos {
   display: flex;
   flex-direction: column;
@@ -25,33 +16,6 @@
   gap: 14px;
 }
 
-.pedidos__rodape {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.pedidos__chats {
-  width: 100%;
-}
-
-.aba__contador {
-  min-width: 20px;
-  padding: 1px 6px;
-  border-radius: var(--raio-pilula);
-  background: #ffffff;
-  color: var(--cor-primaria);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.aba--ativa .aba__contador {
-  background: var(--cor-primaria);
-  color: #ffffff;
-}
-
 /* =====================================================================================
    Tablet e computador: a tela ocupa a largura toda (pode ficar aberta numa tela da cozinha)
    ===================================================================================== */
@@ -62,14 +26,6 @@
     border-right: none;
   }
 
-  .topo-pedidos {
-    flex-wrap: nowrap;
-  }
-
-  .topo-pedidos .abas {
-    flex: none;
-  }
-
   .pedidos {
     padding: 24px 32px 40px;
   }
@@ -78,15 +34,6 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: start;
-  }
-
-  .pedidos__rodape {
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  .pedidos__chats {
-    width: auto;
   }
 }
 
@@ -163,8 +110,62 @@
   }
 }
 
-/* "Registrar pedido": botão no topo da aba "Em andamento" */
-.acoes-pedidos {
+/* "Registrar pedido" com texto: só no computador, na linha do título (no celular é o "+" do topo) */
+.topo-registrar {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .topo-registrar {
+    display: inline-flex;
+    flex: none;
+    align-self: center;
+  }
+}
+
+/* No pé do menu: de onde vêm os pedidos (o Chats) */
+.chats-card {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: 14px;
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto);
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+
+.chats-card:hover {
+  border-color: var(--cor-primaria);
+}
+
+.chats-card__icone {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+}
+
+.chats-card__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.chats-card__textos small {
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+}
+
+.chats-card__seta {
+  flex: none;
+  color: var(--cor-texto-suave);
 }

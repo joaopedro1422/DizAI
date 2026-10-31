@@ -6,6 +6,7 @@ export type Dica =
   | 'video-perguntas'
   | 'video-agenda'
   | 'tour-agenda'
+  | 'tour-pedidos'
   | 'video-chats'
   | 'video-atendimento';
 

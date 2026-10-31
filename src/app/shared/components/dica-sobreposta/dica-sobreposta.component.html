@@ -2,8 +2,12 @@
 
 <section class="janela" role="dialog" aria-modal="true" [attr.aria-labelledby]="idTitulo">
   <div class="janela__cabecalho">
-    <span class="janela__icone" aria-hidden="true">
-      <app-icone [nome]="icone()" [tamanho]="22" [espessura]="1.9" />
+    <span class="janela__icone" [class.janela__icone--marca]="marca()" aria-hidden="true">
+      @if (marca()) {
+        <app-logo variante="claro" [mostrarNome]="false" [tamanhoSimbolo]="26" />
+      } @else {
+        <app-icone [nome]="icone()" [tamanho]="22" [espessura]="1.9" />
+      }
     </span>
     @if (sobretitulo()) {
       <span class="janela__sobretitulo">{{ sobretitulo() }}</span>

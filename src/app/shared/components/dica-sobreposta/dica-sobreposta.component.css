@@ -49,6 +49,11 @@
   color: var(--cor-ambar);
 }
 
+/* com a marca (ex.: boas-vindas): o quadrado azul com o símbolo do DizAI */
+.janela__icone--marca {
+  background: var(--cor-primaria);
+}
+
 .janela__sobretitulo {
   margin-bottom: -4px;
   font-size: 12px;

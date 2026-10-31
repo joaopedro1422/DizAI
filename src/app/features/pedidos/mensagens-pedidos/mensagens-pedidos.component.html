@@ -1,0 +1,42 @@
+<div class="horarios horarios--uma-coluna">
+  <section class="grupo" appAlvoTour="pedidos-mensagens">
+    <div class="grupo__cabecalho">
+      <h2 class="grupo__titulo">Avisos do pedido</h2>
+      <p class="grupo__descricao">
+        Ao marcar o pedido, a mensagem já vem escrita e sai pelo WhatsApp da loja, como uma mensagem sua. Dá para
+        trocar o texto antes de enviar ou não avisar.
+      </p>
+    </div>
+    <div class="painel-ajustes">
+      <div class="ajuste aviso">
+        <span class="ajuste__icone"><app-icone nome="sino" [tamanho]="18" [espessura]="2" /></span>
+        <span class="ajuste__textos">
+          <span class="ajuste__titulo">Pedido pronto</span>
+          <span class="ajuste__descricao">Quando você toca em "Pedido pronto"</span>
+          <span class="aviso__balao">{{ previa(avisoPronto) }}</span>
+        </span>
+      </div>
+      <div class="ajuste aviso">
+        <span class="ajuste__icone ajuste__icone--verde"><app-icone nome="check" [tamanho]="18" [espessura]="2" /></span>
+        <span class="ajuste__textos">
+          <span class="ajuste__titulo">Entregue</span>
+          <span class="ajuste__descricao">Quando você toca em "Entregue": o agradecimento</span>
+          <span class="aviso__balao">{{ previa(agradecimento) }}</span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="grupo">
+    <div class="grupo__cabecalho">
+      <h2 class="grupo__titulo">Mensagens prontas</h2>
+      <p class="grupo__descricao">
+        Textos seus (ex.: "Saiu para entrega"), que aparecem como atalhos na hora de avisar. {{ '{nome}' }} e
+        {{ '{valor}' }} viram os dados de cada pedido.
+      </p>
+    </div>
+    <div class="painel-ajustes mensagens-prontas">
+      <app-mensagens-prontas [config]="config()" />
+    </div>
+  </section>
+</div>

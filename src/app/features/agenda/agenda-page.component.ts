@@ -92,6 +92,8 @@ const ATUALIZAR_A_CADA_MS = 15_000;
     './agenda-page.component.css',
     './agenda-colunas.css',
     './lista-espera.css',
+    './agenda-pc.css',
+    '../../shared/estilos-tela-com-menu.css',
     './topo-agenda.css',
   ],
 })
@@ -111,6 +113,8 @@ export class AgendaPageComponent implements OnInit {
   protected readonly aba = signal<SecaoAgenda>('agendamentos');
   /** Gaveta do menu aberta (celular). */
   protected readonly menuAberto = signal(false);
+  /** Computador: o calendário abre num modal pelo botão ao lado do dia. */
+  protected readonly calendarioAberto = signal(false);
   protected readonly infoSecao = computed(() => infoDaSecao(this.aba()));
   /** A parte do formulário de configuração que aparece (fora das configurações, a última não importa). */
   protected readonly secaoConfiguracao = computed<SecaoConfiguracao>(() => {
@@ -292,11 +296,28 @@ export class AgendaPageComponent implements OnInit {
   protected readonly horaEmFoco = signal<number | null>(null);
   protected readonly colunasRoladas = signal(false);
   protected readonly colunasRoladasParaBaixo = signal(false);
+  /** Ainda há profissionais escondidos à direita: aparece a seta flutuante da direita. */
+  protected readonly colunasComMaisADireita = signal(false);
+  private readonly areaColunas = viewChild<ElementRef<HTMLElement>>('areaColunas');
 
   protected aoRolarColunas(evento: Event): void {
     const area = evento.target as HTMLElement;
     this.colunasRoladas.set(area.scrollLeft > 2);
     this.colunasRoladasParaBaixo.set(area.scrollTop > 2);
+    this.medirColunas(area);
+  }
+
+  /** Setas da linha dos nomes: anda uma coluna (a largura de um profissional) para o lado. */
+  protected rolarColunas(direcao: 1 | -1): void {
+    const area = this.areaColunas()?.nativeElement;
+    const coluna = area?.querySelector<HTMLElement>('.colunas__nome');
+    if (area) {
+      area.scrollBy({ left: direcao * ((coluna?.offsetWidth ?? 320) + 10), behavior: 'smooth' });
+    }
+  }
+
+  private medirColunas(area: HTMLElement): void {
+    this.colunasComMaisADireita.set(area.scrollLeft + area.clientWidth < area.scrollWidth - 2);
   }
 
   /** A linha vermelha da hora atual na visão completa (só hoje). */
@@ -305,6 +326,16 @@ export class AgendaPageComponent implements OnInit {
   private rolouParaAgora = false;
 
   constructor() {
+    effect((aoLimpar) => {
+      const area = this.areaColunas()?.nativeElement;
+      if (!area) {
+        this.colunasComMaisADireita.set(false);
+        return;
+      }
+      const observador = new ResizeObserver(() => this.medirColunas(area));
+      observador.observe(area);
+      aoLimpar(() => observador.disconnect());
+    });
     // abriu a visão completa (ou voltou para hoje nela): a tela rola até a linha da hora atual, uma vez
     effect(() => {
       const aberta =

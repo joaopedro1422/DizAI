@@ -1,4 +1,4 @@
-<div class="tela-app tela-agenda">
+<div class="tela-app tela-agenda tela-com-menu" [class.tela-agenda--dia]="aba() === 'agendamentos'">
   <!-- menu da agenda: gaveta no celular, coluna fixa à esquerda no computador -->
   <app-menu-agenda
     [secao]="aba()"
@@ -13,11 +13,11 @@
     (tour)="comecarTour()"
   />
 
-  <div class="agenda-corpo">
-  <header class="topo-agenda">
+  <div class="agenda-corpo corpo-com-menu">
+  <header class="topo-menu">
     <button
       type="button"
-      class="topo-agenda__menu"
+      class="topo-menu__menu"
       appAlvoTour="agenda-menu"
       aria-label="Abrir o menu da agenda"
       [attr.aria-expanded]="menuAberto()"
@@ -25,14 +25,37 @@
     >
       <app-icone nome="menu" [tamanho]="22" [espessura]="2" />
     </button>
-    <div class="topo-agenda__textos">
-      <span class="topo-agenda__sobre">Minha Agenda</span>
-      <h1 class="topo-agenda__titulo">{{ infoSecao().titulo }}</h1>
-      <p class="topo-agenda__descricao">{{ infoSecao().descricao }}</p>
+    <div class="topo-menu__textos">
+      <span class="topo-menu__sobre">Minha Agenda</span>
+      <h1 class="topo-menu__titulo">{{ infoSecao().titulo }}</h1>
+      @if (infoSecao().descricao) {
+        <p class="topo-menu__descricao">{{ infoSecao().descricao }}</p>
+      }
     </div>
-    <button type="button" class="topo-agenda__link" aria-label="Copiar o link da agenda online" (click)="copiarLinkAgenda()">
+    <button type="button" class="topo-menu__acao" aria-label="Copiar o link da agenda online" (click)="copiarLinkAgenda()">
       <app-icone nome="link" [tamanho]="18" [espessura]="2" />
     </button>
+    <!-- computador: as ações do dia no topo, compactas (no celular ficam embaixo da agenda) -->
+    @if (computador() && aba() === 'agendamentos' && !carregando()) {
+      <div class="topo-botoes" appAlvoTour="agenda-agendar-pc">
+        @if (!folgaNoDia() && temHorarios()) {
+          <button type="button" class="btn btn--secundario btn--pequeno" [disabled]="mudandoFolga()" (click)="pedirFolga()">
+            <app-icone nome="calendarioFolga" [tamanho]="16" />
+            Não atendo neste dia
+          </button>
+        }
+        @if (temProdutosAVenda()) {
+          <button type="button" class="btn btn--secundario btn--pequeno" (click)="registrandoVenda.set(true)">
+            <app-icone nome="sacola" [tamanho]="16" />
+            Registrar venda
+          </button>
+        }
+        <button type="button" class="btn btn--primario btn--pequeno" (click)="criando.set(true)">
+          <app-icone nome="mais" [tamanho]="16" [espessura]="2.2" />
+          Agendar
+        </button>
+      </div>
+    }
   </header>
 
   @if (carregando()) {
@@ -56,52 +79,23 @@
           </a>
         }
 
-        <div class="calendario" appAlvoTour="agenda-dias">
-          <div class="calendario__topo">
-            <span class="calendario__mes">{{ mesDoDia() }}</span>
-            <span class="calendario__setas">
-              <button type="button" class="btn-icone btn-icone--sem-borda" aria-label="Semana anterior" [disabled]="!podeVoltarSemana()" (click)="mudarSemana(-1)">
-                <app-icone nome="voltar" [tamanho]="18" [espessura]="2" />
-              </button>
-              <button type="button" class="btn-icone btn-icone--sem-borda" aria-label="Próxima semana" [disabled]="!podeAvancarSemana()" (click)="mudarSemana(1)">
-                <app-icone nome="avancar" [tamanho]="18" [espessura]="2" />
-              </button>
-            </span>
-          </div>
-          <app-faixa-dias
-            rotulo="Dias da agenda"
-            variante="limpa"
-            [gradeEmTelaGrande]="true"
-            [itens]="itensFaixa()"
-            [selecionado]="diaSelecionado()"
-            (escolher)="escolherDia($event)"
-          />
-        </div>
+        @if (!computador()) {
+          <ng-container [ngTemplateOutlet]="calendario" />
+        }
 
-        <div class="acoes-dia acoes-dia--lateral" appAlvoTour="agenda-agendar-pc">
-          <button type="button" class="btn btn--primario btn--grande btn--bloco" (click)="criando.set(true)">
-            <app-icone nome="mais" [tamanho]="18" [espessura]="2" />
-            Agendar horário
-          </button>
-          @if (temProdutosAVenda()) {
-            <button type="button" class="btn btn--secundario btn--bloco" (click)="registrandoVenda.set(true)">
-              <app-icone nome="sacola" [tamanho]="18" />
-              Registrar venda
-            </button>
-          }
-          @if (!folgaNoDia() && temHorarios()) {
-            <button type="button" class="btn btn--secundario btn--bloco" [disabled]="mudandoFolga()" (click)="pedirFolga()">
-              <app-icone nome="calendarioFolga" [tamanho]="18" />
-              Não vou atender neste dia
-            </button>
-          }
-        </div>
       </div>
 
       <div class="agenda-principal">
         <div class="dia" appAlvoTour="agenda-dia">
           <div class="dia__cabecalho">
-            <h2 class="dia__titulo">{{ tituloDia() }}</h2>
+            <span class="dia__titulo-linha">
+              <h2 class="dia__titulo">{{ tituloDia() }}</h2>
+              @if (computador()) {
+                <button type="button" class="dia__calendario" appAlvoTour="agenda-dias-pc" aria-label="Escolher o dia no calendário" title="Escolher o dia" (click)="calendarioAberto.set(true)">
+                  <app-icone nome="calendario" [tamanho]="20" [espessura]="2.2" />
+                </button>
+              }
+            </span>
             <span class="dia__resumo">{{ resumoDia() }}</span>
           </div>
         </div>
@@ -235,7 +229,19 @@
           @if (completaEmColunas()) {
             <!-- computador, 2+ profissionais: a mesma linha do tempo, com uma coluna para cada um (rola para o lado) -->
             @if (linhaEmColunas(); as linha) {
-              <div class="colunas" [class.colunas--rolada]="colunasRoladas()" [class.colunas--rolada-baixo]="colunasRoladasParaBaixo()" [style.--quantidade-colunas]="linha.colunas.length" (scroll)="aoRolarColunas($event)">
+              <!-- muitos profissionais (passam da largura): setas flutuantes na linha dos nomes, uma coluna por toque -->
+              <div class="colunas-area">
+              @if (colunasRoladas()) {
+                <button type="button" class="colunas__seta colunas__seta--esquerda" aria-label="Ver os profissionais à esquerda" (click)="rolarColunas(-1)">
+                  <app-icone nome="voltar" [tamanho]="18" [espessura]="2.2" />
+                </button>
+              }
+              @if (colunasComMaisADireita()) {
+                <button type="button" class="colunas__seta colunas__seta--direita" aria-label="Ver os profissionais à direita" (click)="rolarColunas(1)">
+                  <app-icone nome="avancar" [tamanho]="18" [espessura]="2.2" />
+                </button>
+              }
+              <div #areaColunas class="colunas" [class.colunas--rolada]="colunasRoladas()" [class.colunas--rolada-baixo]="colunasRoladasParaBaixo()" [style.--quantidade-colunas]="linha.colunas.length" (scroll)="aoRolarColunas($event)">
                 <div class="colunas__conteudo">
                   <div class="colunas__nomes" aria-hidden="true">
                     <!-- canto em cima da régua: cobre os nomes que passam por baixo ao rolar para o lado -->
@@ -286,6 +292,7 @@
                     }
                   </div>
                 </div>
+              </div>
               </div>
             } @else if (!folgaNoDia()) {
               <app-estado-vazio
@@ -680,3 +687,35 @@
     </button>
   </span>
 </ng-template>
+
+<!-- a faixa de dias com o mês e as setas: no celular fica no alto da agenda; no computador abre no modal -->
+<ng-template #calendario>
+  <div class="calendario" appAlvoTour="agenda-dias">
+    <div class="calendario__topo">
+      <span class="calendario__mes">{{ mesDoDia() }}</span>
+      <span class="calendario__setas">
+        <button type="button" class="btn-icone btn-icone--sem-borda" aria-label="Semana anterior" [disabled]="!podeVoltarSemana()" (click)="mudarSemana(-1)">
+          <app-icone nome="voltar" [tamanho]="18" [espessura]="2" />
+        </button>
+        <button type="button" class="btn-icone btn-icone--sem-borda" aria-label="Próxima semana" [disabled]="!podeAvancarSemana()" (click)="mudarSemana(1)">
+          <app-icone nome="avancar" [tamanho]="18" [espessura]="2" />
+        </button>
+      </span>
+    </div>
+    <app-faixa-dias
+      rotulo="Dias da agenda"
+      variante="limpa"
+      [gradeEmTelaGrande]="true"
+      [itens]="itensFaixa()"
+      [selecionado]="diaSelecionado()"
+      (escolher)="escolherDia($event); calendarioAberto.set(false)"
+    />
+  </div>
+</ng-template>
+
+@if (calendarioAberto()) {
+  <!-- computador: o calendário pelo botão ao lado do dia; escolher um dia já fecha -->
+  <app-bottom-sheet titulo="Escolha o dia" (fechar)="calendarioAberto.set(false)">
+    <ng-container [ngTemplateOutlet]="calendario" />
+  </app-bottom-sheet>
+}

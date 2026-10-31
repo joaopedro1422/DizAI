@@ -53,10 +53,9 @@
 @if (mostrarBoasVindas()) {
   <!-- conta nova: primeiro o tipo do negócio, para os exemplos e tutoriais terem a cara dele -->
   <app-dica-sobreposta
-    icone="brilho"
+    [marca]="true"
     sobretitulo="Boas-vindas ao DizAI"
     [titulo]="tituloBoasVindas()"
-    descricao="Escolha o que mais combina com você. Assim os exemplos, as sugestões e os tutoriais do painel ficam com a cara do seu negócio."
     rotuloBotao="Conhecer o painel"
     rotuloSecundario="Agora não"
     [bloqueada]="segmentoEscolhido() === undefined"

@@ -7,16 +7,23 @@ import { AlvoTour, OnboardingTourService } from './onboarding-tour.service';
   selector: '[appAlvoTour]',
 })
 export class AlvoTourDirective implements OnInit, OnDestroy {
-  readonly alvo = input.required<AlvoTour>({ alias: 'appAlvoTour' });
+  /** Vazio = não marca nada (ex.: grupo do menu lateral sem passo no tour). */
+  readonly alvo = input.required<AlvoTour | null | undefined>({ alias: 'appAlvoTour' });
 
   private readonly elemento = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly tourService = inject(OnboardingTourService);
 
   ngOnInit(): void {
-    this.tourService.registrar(this.alvo(), this.elemento.nativeElement);
+    const alvo = this.alvo();
+    if (alvo) {
+      this.tourService.registrar(alvo, this.elemento.nativeElement);
+    }
   }
 
   ngOnDestroy(): void {
-    this.tourService.remover(this.alvo());
+    const alvo = this.alvo();
+    if (alvo) {
+      this.tourService.remover(alvo, this.elemento.nativeElement);
+    }
   }
 }
