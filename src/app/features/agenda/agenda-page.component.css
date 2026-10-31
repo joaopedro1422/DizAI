@@ -1,87 +1,8 @@
-/* "Ver página" (mesmo botão da Galeria) */
-/* Link da agenda online no topo (ao lado do voltar): clicável, com o botão de copiar */
-.link-topo {
-  display: inline-flex;
-  align-items: center;
-  min-width: 0;
-  max-width: 70%;
-  border-radius: var(--raio-pilula);
-  background: var(--cor-primaria-clara);
-  color: var(--cor-primaria);
-}
-
-.link-topo__url {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-  padding: 7px 4px 7px 12px;
-  color: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.link-topo__texto {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.link-topo__copiar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-  width: 34px;
-  height: 32px;
-  border: none;
-  border-left: 1px solid rgba(30, 58, 114, 0.15);
-  border-radius: 0 var(--raio-pilula) var(--raio-pilula) 0;
-  background: transparent;
-  color: inherit;
-}
-
-.link-topo__copiar:hover {
-  background: rgba(30, 58, 114, 0.08);
-}
-
-/* Abas (mesmo desenho da tela de Chats) */
-.abas {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4px;
-  padding: 4px;
-  border-radius: var(--raio-medio);
-  background: var(--cor-primaria-clara);
-}
-
-.aba {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px;
-  border: none;
-  border-radius: 11px;
-  background: transparent;
-  color: var(--cor-texto-secundario);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.aba--ativa {
-  background: var(--cor-fundo);
-  color: var(--cor-texto);
-  font-weight: 700;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
-}
-
 .agendamentos {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  padding-top: 4px;   /* a faixa de dias fica logo abaixo das abas */
+  padding-top: 14px;   /* a faixa de dias fica logo abaixo do topo */
 }
 
 /* Primeira vez: ainda sem horários */
@@ -361,10 +282,6 @@ a.faixa-aviso {
   gap: 6px;
   margin: -4px 0 -6px;
   font-size: 13px;
-}
-
-.visualizacao__rotulo {
-  color: var(--cor-texto-suave);
 }
 
 .visualizacao__campo {
@@ -725,56 +642,6 @@ a.faixa-aviso {
   color: var(--cor-texto-secundario);
 }
 
-.acoes-dia__mensagens {
-  align-self: center;
-  color: var(--cor-texto-secundario);
-}
-
-/* Escolha da mensagem antes de abrir o WhatsApp */
-.escolher-mensagem {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.opcao-mensagem {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px 14px;
-  border: 1px solid var(--cor-borda);
-  border-radius: var(--raio-medio);
-  background: var(--cor-fundo);
-  color: var(--cor-texto);
-  text-decoration: none;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
-}
-
-.opcao-mensagem:hover {
-  border-color: var(--cor-ativo);
-  background: #F2FAF5;
-}
-
-.opcao-mensagem__titulo {
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.opcao-mensagem__texto {
-  display: -webkit-box;
-  overflow: hidden;
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--cor-texto-secundario);
-  white-space: pre-line;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
-  line-clamp: 4;
-}
-
-.escolher-mensagem__gerenciar {
-  align-self: center;
-}
 
 /* Faixa de dias numa moldura azul-clara: os dias brancos e o dia escolhido se destacam do fundo da tela */
 /* Mês do dia escolhido com as setas de semana, e a faixa de dias logo abaixo (sem moldura) */
@@ -806,19 +673,14 @@ a.faixa-aviso {
   opacity: 0.35;
 }
 
-/* No topo azul (estilos-topo-azul.css) o link da agenda online fica translúcido */
-.topo-azul .link-topo {
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
-}
-
-.topo-azul .link-topo__copiar {
-  border-left-color: rgba(255, 255, 255, 0.25);
-  color: #ffffff;
-}
-
-.topo-azul .link-topo__copiar:hover {
-  background: rgba(255, 255, 255, 0.12);
+/* celular: linha cinza na largura toda da tela, separando os dias dos agendamentos */
+@media (max-width: 1023px) {
+  .calendario::after {
+    content: '';
+    height: 1.5px;
+    margin: 0 calc(50% - 50vw);
+    background: var(--cor-borda);
+  }
 }
 
 /* =====================================================================================
@@ -830,40 +692,6 @@ a.faixa-aviso {
     --largura-tela-app: none;
     border-left: none;
     border-right: none;
-  }
-
-  /* abas na linha do título: um seletor compacto, do tamanho do texto */
-  .abas-titulo {
-    display: inline-flex;
-    flex: none;
-  }
-
-  .abas {
-    display: inline-flex;
-    gap: 2px;
-    padding: 3px;
-    border-radius: 12px;
-    background: var(--cor-fundo-suave);
-    border: 1px solid var(--cor-borda-suave);
-  }
-
-  .aba {
-    min-height: 36px;
-    padding: 0 16px;
-    border-radius: 9px;
-    color: var(--cor-texto-suave);
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-  }
-
-  .aba:not(.aba--ativa):hover {
-    color: var(--cor-texto);
-    background: rgba(15, 23, 42, 0.04);
-  }
-
-  .aba--ativa {
-    color: var(--cor-primaria);
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.1), 0 0 0 1px var(--cor-borda-suave);
   }
 
   .agendamentos {
@@ -932,51 +760,18 @@ a.faixa-aviso {
     zoom: 0.84;          /* 340 px de desenho em 285 px de coluna: tudo menor, na mesma proporção */
   }
 
-  /* os agendamentos ocupam a altura inteira da tela, abaixo do topo azul, até o fim */
-  .tela-agenda {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .tela-agenda > .agendamentos {
+  /* os agendamentos ocupam a altura inteira da tela, abaixo do título, até o fim */
+  .agenda-corpo > .agendamentos {
     flex: 1;
     padding-bottom: 0;
   }
 
-  .tela-agenda > .agendamentos > .agenda-principal {
+  .agenda-corpo > .agendamentos > .agenda-principal {
     align-self: stretch;   /* a grade usa align-items: start; aqui a área da direita vai até o fim da tela */
     border-left-color: #DCE0E7;   /* o limite entre a coluna da esquerda e os agendamentos, um pouco mais cinza */
   }
 }
 
-
-/* "Números": botão no topo azul, ao lado do título (fora das abas) */
-.botao-numeros {
-  display: inline-flex;
-  align-items: center;
-  flex: none;
-  gap: 6px;
-  min-height: 36px;
-  padding: 0 14px;
-  border: none;
-  border-radius: var(--raio-pilula);
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.botao-numeros:hover {
-  background: rgba(255, 255, 255, 0.22);
-}
-
-.botao-numeros--ativo {
-  background: #ffffff;
-  color: var(--cor-primaria);
-}
 
 /* Filtro por profissional (só com 2+) */
 .filtro-profissional {

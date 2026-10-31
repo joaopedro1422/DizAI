@@ -18,6 +18,8 @@ import { IconeComponent } from '../../../shared/components/icone/icone.component
 import { InterruptorComponent } from '../../../shared/components/interruptor/interruptor.component';
 import { ETIQUETAS_AGENDAMENTO, MensagemConfirmacaoComponent } from '../mensagem-confirmacao/mensagem-confirmacao.component';
 import { ProfissionaisAgendaComponent } from '../profissionais/profissionais-agenda.component';
+import { SecaoConfiguracao } from '../secoes-agenda';
+import { AlvoTourDirective } from '../../painel/onboarding/alvo-tour.directive';
 
 interface Trecho {
   inicio: string;
@@ -95,9 +97,9 @@ const DIA_PADRAO: Trecho[] = [
 const MAXIMO_PERIODOS_POR_DIA = 4;
 
 /**
- * Aba "Horários" da agenda: em quais dias e horários o negócio atende (vários períodos por dia, para o almoço),
- * de quanto em quanto tempo os horários começam, a antecedência mínima, o lembrete e, no fim, as mensagens
- * (agendamento, lembrete e agradecimento), cada uma num card que abre e fecha.
+ * Configurações da agenda, uma página do menu por parte (secao): Horários (dias e horários de atendimento, vários
+ * períodos por dia para o almoço, intervalo e antecedência), Equipe, Lembretes e mensagens (o lembrete e as mensagens
+ * de agendamento, lembrete e agradecimento, cada uma num card que abre e fecha) e Lista de espera.
  * A agenda não tem chave própria: fica ativa com "Agendamento automático" em "Quando o cliente quiser agendar".
  */
 @Component({
@@ -111,15 +113,18 @@ const MAXIMO_PERIODOS_POR_DIA = 4;
     MensagemConfirmacaoComponent,
     ProfissionaisAgendaComponent,
     DicaSobrepostaComponent,
+    AlvoTourDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './horarios-atendimento.component.html',
-  styleUrl: './horarios-atendimento.component.css',
+  styleUrls: ['./horarios-atendimento.component.css', './ajustes-agenda.css'],
 })
 export class HorariosAtendimentoComponent {
   readonly configuracao = input.required<ConfiguracaoAgenda>();
   /** Serviços cadastrados sem duração: a agenda não consegue marcar esses. */
   readonly servicosSemDuracao = input(0);
+  /** A página do menu da agenda: cada uma mostra a sua parte do formulário (o Salvar vale para todas). */
+  readonly secao = input<SecaoConfiguracao>('horarios');
 
   private readonly agendaService = inject(AgendaService);
   private readonly produtoService = inject(ProdutoService);
@@ -271,6 +276,11 @@ export class HorariosAtendimentoComponent {
 
   protected removerTrecho(indice: number): void {
     this.definirTrechos(this.diaAberto(), this.trechosDiaAberto().filter((_, i) => i !== indice));
+  }
+
+  /** Os seletores das páginas de configuração guardam minutos no value. */
+  protected valorEscolhido(evento: Event): number {
+    return Number((evento.target as HTMLSelectElement).value);
   }
 
   protected escolherIntervalo(minutos: number): void {

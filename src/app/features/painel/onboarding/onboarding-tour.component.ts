@@ -5,6 +5,7 @@ import {
   OnDestroy,
   computed,
   inject,
+  input,
   output,
   signal,
   viewChild,
@@ -28,6 +29,8 @@ interface Medidas {
   alvo: Retangulo;
   larguraJanela: number;
   alturaJanela: number;
+  /** Altura do balão deste passo (com a prévia do WhatsApp ele é alto). */
+  alturaBalao: number;
 }
 
 type FaseTour = 'inativo' | 'passo';
@@ -40,6 +43,10 @@ const FOLGA_DESTAQUE_PX = 6;
 const DISTANCIA_BALAO_PX = 18;
 const LARGURA_MAXIMA_BALAO_PX = 448;
 const MARGEM_LATERAL_PX = 16;
+/** Espaço livre que o balão e o card deixam no topo e no pé da tela. */
+const MARGEM_TELA_PX = 16;
+/** Altura do balão antes de ele existir na tela (o primeiro passo), com a prévia do WhatsApp. */
+const ALTURA_BALAO_ESTIMADA_PX = 380;
 
 /**
  * Tour guiado do primeiro acesso: escurece a tela e destaca uma seção por vez.
@@ -63,9 +70,12 @@ const MARGEM_LATERAL_PX = 16;
 export class OnboardingTourComponent implements OnDestroy {
   /** Disparado quando o tour acaba: true se o lojista foi até o fim ("Próximo" no último passo), false se pulou. */
   readonly encerrado = output<boolean>();
+  /** Altura de um topo preso na tela (ex.: o topo azul da agenda no celular): a seção não para embaixo dele. */
+  readonly margemTopo = input(0);
 
   private readonly tourService = inject(OnboardingTourService);
   private readonly botaoAvancar = viewChild<ElementRef<HTMLButtonElement>>('botaoAvancar');
+  private readonly balaoElemento = viewChild<ElementRef<HTMLElement>>('balaoElemento');
 
   /** Os passos desta loja (pelo ramo), só com os cards que estão na tela. */
   protected readonly passos = signal<PassoTour[]>([]);
@@ -104,25 +114,35 @@ export class OnboardingTourComponent implements OnDestroy {
     };
   });
 
-  /** O balão fica abaixo da seção quando ela está na metade de cima da tela, e acima no caso contrário. */
+  /**
+   * O balão fica do lado da seção com espaço para ele inteiro (abaixo, de preferência). Sem espaço em nenhum dos
+   * dois, fica do lado com mais espaço e é preso dentro da tela: nunca some para cima nem para baixo.
+   */
   protected readonly balao = computed(() => {
     const medidas = this.medidas();
     if (!medidas) {
       return null;
     }
-    const { alvo, larguraJanela, alturaJanela } = medidas;
+    const { alvo, larguraJanela, alturaJanela, alturaBalao } = medidas;
     const largura = Math.min(LARGURA_MAXIMA_BALAO_PX, larguraJanela - MARGEM_LATERAL_PX * 2);
-    const esquerda = (larguraJanela - largura) / 2;
-    const ficaAbaixo = alvo.top + alvo.height / 2 < alturaJanela / 2;
+    // centrado na seção (no celular ocupa a largura toda); no computador fica perto dela, ex.: o menu à esquerda
     const centroAlvo = alvo.left + alvo.width / 2;
-    const posicaoSeta = Math.min(Math.max(centroAlvo - esquerda - 7, 24), largura - 38);
+    const esquerda = Math.min(
+      Math.max(centroAlvo - largura / 2, MARGEM_LATERAL_PX),
+      larguraJanela - largura - MARGEM_LATERAL_PX,
+    );
     const distancia = FOLGA_DESTAQUE_PX + DISTANCIA_BALAO_PX;
+    const espacoAbaixo = alturaJanela - (alvo.top + alvo.height + distancia) - MARGEM_TELA_PX;
+    const espacoAcima = alvo.top - distancia - MARGEM_TELA_PX;
+    const ficaAbaixo = espacoAbaixo >= alturaBalao || espacoAbaixo >= espacoAcima;
+    const posicaoSeta = Math.min(Math.max(centroAlvo - esquerda - 7, 24), largura - 38);
+    const limite = Math.max(alturaJanela - alturaBalao - MARGEM_TELA_PX, MARGEM_TELA_PX);
 
     return {
       largura,
       esquerda,
-      topo: ficaAbaixo ? alvo.top + alvo.height + distancia : null,
-      base: ficaAbaixo ? null : alturaJanela - alvo.top + distancia,
+      topo: ficaAbaixo ? Math.min(alvo.top + alvo.height + distancia, limite) : null,
+      base: ficaAbaixo ? null : Math.min(alturaJanela - alvo.top + distancia, limite),
       setaEmCima: ficaAbaixo,
       posicaoSeta,
     };
@@ -144,6 +164,20 @@ export class OnboardingTourComponent implements OnDestroy {
     void this.irParaPasso(0);
   }
 
+  /**
+   * Tour com passos prontos (ex.: o da agenda). Os alvos podem ainda não estar na tela: cada passo prepara a tela
+   * no "antes" e, se mesmo assim o alvo não aparece (ou está escondido nesta largura), o passo é pulado.
+   */
+  iniciarCom(passos: PassoTour[]): void {
+    this.limparTemporizadores();
+    this.passos.set(passos);
+    if (passos.length === 0) {
+      this.encerrar(true);
+      return;
+    }
+    void this.irParaPasso(0);
+  }
+
   ngOnDestroy(): void {
     this.destruido = true;
     this.limparTemporizadores();
@@ -158,7 +192,7 @@ export class OnboardingTourComponent implements OnDestroy {
   }
 
   protected voltar(): void {
-    void this.irParaPasso(Math.max(0, this.indicePasso() - 1));
+    void this.irParaPasso(Math.max(0, this.indicePasso() - 1), -1);
   }
 
   protected encerrar(concluido = false): void {
@@ -185,20 +219,43 @@ export class OnboardingTourComponent implements OnDestroy {
     this.medirAlvoAgora();
   }
 
-  private async irParaPasso(indice: number): Promise<void> {
-    const elemento = this.tourService.obterElemento(this.passos()[indice].alvo);
-    if (!elemento) {
+  /** direcao: para onde seguir se o alvo deste passo não estiver na tela (1 = próximo, -1 = anterior). */
+  private async irParaPasso(indice: number, direcao: 1 | -1 = 1): Promise<void> {
+    const passo = this.passos()[indice];
+    const troca = ++this.trocaAtual;
+    if (passo.antes) {
+      this.balaoVisivel.set(false);
+      passo.antes();
+      await this.esperar(passo.esperaMs ?? 0);
+      await new Promise((resolver) => requestAnimationFrame(resolver));
+      if (troca !== this.trocaAtual || this.destruido) {
+        return;
+      }
+    }
+    const elemento = this.tourService.obterElemento(passo.alvo);
+    if (!elemento || !estaVisivel(elemento)) {
+      const proximo = indice + direcao;
+      if (proximo >= 0 && proximo < this.passos().length) {
+        void this.irParaPasso(proximo, direcao);
+      } else if (direcao === 1) {
+        this.encerrar(true);
+      }
       return;
     }
-    const troca = ++this.trocaAtual;
 
     this.balaoVisivel.set(false);
     this.animarRecorte.set(true);
     this.indicePasso.set(indice);
     this.fase.set('passo');
+    // um quadro para o balão já ter o texto e a prévia deste passo: a rolagem conta com a altura dele
+    await new Promise((resolver) => requestAnimationFrame(resolver));
+    if (troca !== this.trocaAtual || this.destruido) {
+      return;
+    }
 
-    // Calcula onde a seção vai ficar depois da rolagem e já leva o recorte para lá.
-    const rolagemDestino = this.calcularRolagemParaCentralizar(elemento);
+    // Calcula onde a seção vai ficar depois da rolagem e já leva o recorte para lá. Num menu preso na tela
+    // (a gaveta da agenda, a coluna do computador) a página não rola.
+    const rolagemDestino = estaPresoNaTela(elemento) ? window.scrollY : this.calcularRolagem(elemento);
     this.medidas.set(this.medirComRolagem(elemento, rolagemDestino - window.scrollY));
     window.scrollTo({ top: rolagemDestino, behavior: 'smooth' });
 
@@ -212,10 +269,17 @@ export class OnboardingTourComponent implements OnDestroy {
     this.botaoAvancar()?.nativeElement.focus({ preventScroll: true });
   }
 
-  private calcularRolagemParaCentralizar(elemento: HTMLElement): number {
+  /**
+   * Centraliza a seção junto com o balão embaixo dela (o conjunto); se não cabe, a seção sobe até perto do topo.
+   * Antes ela ia para o meio da tela e o balão alto (com a prévia) passava do topo.
+   */
+  private calcularRolagem(elemento: HTMLElement): number {
     const retangulo = elemento.getBoundingClientRect();
     const topoNaPagina = retangulo.top + window.scrollY;
-    const desejado = topoNaPagina - (window.innerHeight - retangulo.height) / 2;
+    const conjunto = retangulo.height + FOLGA_DESTAQUE_PX + DISTANCIA_BALAO_PX + this.alturaDoBalao();
+    const folgaMinima = this.margemTopo() + MARGEM_TELA_PX + FOLGA_DESTAQUE_PX;
+    const folgaNoTopo = Math.max((window.innerHeight - this.margemTopo() - conjunto) / 2 + this.margemTopo(), folgaMinima);
+    const desejado = topoNaPagina - folgaNoTopo;
     const maximo = document.documentElement.scrollHeight - window.innerHeight;
     return Math.round(Math.min(Math.max(desejado, 0), Math.max(maximo, 0)));
   }
@@ -240,7 +304,12 @@ export class OnboardingTourComponent implements OnDestroy {
       },
       larguraJanela: window.innerWidth,
       alturaJanela: window.innerHeight,
+      alturaBalao: this.alturaDoBalao(),
     };
+  }
+
+  private alturaDoBalao(): number {
+    return this.balaoElemento()?.nativeElement.offsetHeight || ALTURA_BALAO_ESTIMADA_PX;
   }
 
   /** Resolve quando a página fica alguns quadros sem rolar (ou depois de um tempo máximo). */
@@ -279,4 +348,21 @@ export class OnboardingTourComponent implements OnDestroy {
     this.temporizadores.forEach(clearTimeout);
     this.temporizadores = [];
   }
+}
+
+/** Escondido nesta largura (display: none, ou um agrupador "display: contents") não tem tamanho para destacar. */
+function estaVisivel(elemento: HTMLElement): boolean {
+  const retangulo = elemento.getBoundingClientRect();
+  return retangulo.width > 0 && retangulo.height > 0;
+}
+
+/** Dentro de algo fixo ou preso na tela: rolar a página não muda a posição dele. */
+function estaPresoNaTela(elemento: HTMLElement): boolean {
+  for (let atual: HTMLElement | null = elemento; atual; atual = atual.parentElement) {
+    const posicao = getComputedStyle(atual).position;
+    if (posicao === 'fixed' || posicao === 'sticky') {
+      return true;
+    }
+  }
+  return false;
 }

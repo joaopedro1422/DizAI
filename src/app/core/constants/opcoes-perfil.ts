@@ -33,7 +33,7 @@ export const RAMOS_NEGOCIO: OpcaoDescrita<RamoNegocio>[] = [
   {
     valor: 'DOCES_SALGADOS',
     rotulo: 'Doces e salgados',
-    descricao: 'Tortas, bolos, doces, salgados e lanches',
+    descricao: 'Bolos, doces, tortas, salgados e lanches sob encomenda',
   },
   {
     valor: 'PRODUTOS_PERSONALIZADOS',
@@ -51,6 +51,9 @@ export const RAMOS_NEGOCIO: OpcaoDescrita<RamoNegocio>[] = [
     descricao: 'Nenhum dos anteriores se parece com o meu',
   },
 ];
+
+/** Ramos oferecidos no cadastro e em Dados da loja: "Produtos em geral" saiu por enquanto (continua valendo para quem já tem). */
+export const RAMOS_PARA_ESCOLHER = RAMOS_NEGOCIO.filter((ramo) => ramo.valor !== 'PRODUTOS_GERAIS');
 
 export const FORMAS_PAGAMENTO: OpcaoSelecao<FormaPagamento>[] = [
   { valor: 'PIX', rotulo: 'Pix' },

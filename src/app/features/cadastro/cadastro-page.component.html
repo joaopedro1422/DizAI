@@ -37,10 +37,10 @@
     <main class="formulario__corpo">
       @switch (etapaAtual()) {
         @case (1) {
-          <app-etapa-ramo [controle]="formulario.controls.ramo" />
+          <app-etapa-dados-negocio [grupo]="formulario.controls.dadosNegocio" />
         }
         @case (2) {
-          <app-etapa-dados-negocio [grupo]="formulario.controls.dadosNegocio" [ramo]="formulario.controls.ramo.value" />
+          <app-etapa-ramo [controle]="formulario.controls.ramo" />
         }
         @case (3) {
           <app-etapa-acesso [grupo]="formulario.controls.acesso" />

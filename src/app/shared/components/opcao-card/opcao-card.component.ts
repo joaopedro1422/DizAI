@@ -98,10 +98,11 @@ export interface EtiquetaOpcao {
     }
 
     .opcao__etiqueta {
+      flex: none;
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      margin-left: 8px;
+      margin-left: auto;   /* encostada à direita do card */
       padding: 2px 8px;
       border-radius: var(--raio-pilula);
       background: var(--cor-primaria-clara);
@@ -112,12 +113,17 @@ export interface EtiquetaOpcao {
     }
 
     .opcao__textos {
+      flex: 1;
+      min-width: 0;
       display: flex;
       flex-direction: column;
       gap: 4px;
     }
 
     .opcao__titulo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       font-size: 15px;
       font-weight: 700;
     }

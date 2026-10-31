@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, output, signal } 
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { RAMOS_NEGOCIO } from '../../../core/constants/opcoes-perfil';
+import { RAMOS_NEGOCIO, RAMOS_PARA_ESCOLHER } from '../../../core/constants/opcoes-perfil';
 import { PeriodoAtendimento } from '../../../core/models/agenda.model';
 import { DadosLoja, RamoNegocio, UnidadeAntecedencia, ramoUsaAgenda } from '../../../core/models/perfil.model';
 import { SegmentoNegocio, segmentoDoPerfil, segmentosDoRamo } from '../../../core/constants/segmentos';
@@ -47,7 +47,8 @@ export class EditarPerfilComponent {
   private readonly agendaService = inject(AgendaService);
   private readonly toastService = inject(ToastService);
 
-  protected readonly ramos = RAMOS_NEGOCIO;
+  // "Produtos em geral" só aparece para quem já está nele
+  protected readonly ramos = this.perfilService.perfil().ramo === 'PRODUTOS_GERAIS' ? RAMOS_NEGOCIO : RAMOS_PARA_ESCOLHER;
   protected readonly salvando = signal(false);
   protected readonly formulario = this.criarFormularioPreenchido();
 

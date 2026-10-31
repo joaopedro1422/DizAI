@@ -168,6 +168,12 @@ export class PainelPageComponent implements OnInit {
   /** Grava o tipo do negócio (se escolheu) e começa o tour, já com os exemplos dele. */
   protected async iniciarTourAposBoasVindas(): Promise<void> {
     this.mostrarBoasVindas.set(false);
+    await this.salvarSegmentoEscolhido();
+    this.tour().iniciar();
+  }
+
+  /** A escolha do tipo do negócio é obrigatória nas boas-vindas: vale também para quem pula o tour. */
+  private async salvarSegmentoEscolhido(): Promise<void> {
     const segmento = this.segmentoEscolhido();
     if (segmento !== undefined && segmento !== (this.perfilService.perfil().segmento ?? null)) {
       try {
@@ -176,7 +182,6 @@ export class PainelPageComponent implements OnInit {
         this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível salvar o tipo do negócio. Mude depois em Dados da loja.'));
       }
     }
-    this.tour().iniciar();
   }
 
   protected aoAlterarSenha(): void {
@@ -206,6 +211,7 @@ export class PainelPageComponent implements OnInit {
   protected pularOnboarding(): void {
     this.mostrarBoasVindas.set(false);
     this.perfilService.marcarOnboardingConcluido();
+    void this.salvarSegmentoEscolhido();
   }
 
   /** Fim do tour: até o fim, convida para o teste; pulado, fica no painel com os "Primeiros passos". */

@@ -236,6 +236,17 @@ export interface ItemFaixaDia {
       border-color: var(--faixa-destaque, var(--cor-primaria));
       background: var(--faixa-destaque, var(--cor-primaria));
     }
+
+    /* agenda do painel no celular: cantos e sombra mais discretos */
+    @media (max-width: 1023px) {
+      :host(.faixa-dias--limpa) .dia {
+        border-radius: 10px;
+      }
+
+      :host(.faixa-dias--limpa) .dia--escolhido {
+        box-shadow: 0 3px 8px rgba(15, 23, 42, 0.12);
+      }
+    }
   `,
   host: {
     '[class.faixa-dias--limpa]': "variante() === 'limpa'",

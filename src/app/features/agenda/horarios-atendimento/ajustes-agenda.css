@@ -1,0 +1,343 @@
+/*
+ * Páginas de configuração da agenda, no desenho de "ajustes" dos apps: cada grupo tem o título fora do cartão e,
+ * dentro, linhas com ícone, texto e o controle à direita (seletor, chave ou seta), separadas por uma linha fina.
+ */
+.horarios {
+  gap: 24px;
+}
+
+.grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* celular: a situação da agenda vem antes da semana (no computador ela fica na coluna da direita) */
+.grupo--situacao {
+  order: -1;
+}
+
+.grupo__cabecalho {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 0 4px;
+}
+
+.grupo__titulo {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.grupo__descricao {
+  margin: 0;
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.painel-ajustes {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: 16px;
+  background: var(--cor-fundo);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.painel-ajustes > * + * {
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+/* A linha de um ajuste */
+.ajuste {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 64px;
+  padding: 12px 14px;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+}
+
+.ajuste--link,
+.ajuste--botao {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.ajuste--link:hover,
+.ajuste--botao:hover {
+  background: var(--cor-fundo-suave);
+}
+
+.ajuste__icone {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+}
+
+.ajuste__icone--verde {
+  background: #E3F2EA;
+  color: var(--cor-ativo);
+}
+
+.ajuste__icone--ambar {
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-ambar);
+}
+
+.ajuste__icone--rosa {
+  background: var(--cor-rosa-fundo);
+  color: var(--cor-rosa);
+}
+
+.ajuste__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ajuste__titulo {
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.ajuste__descricao {
+  margin: 0;
+  color: var(--cor-texto-suave);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+/* Seletor na linha de baixo, à direita (ex.: quando enviar o lembrete): o título fica inteiro */
+.ajuste--empilhado {
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
+
+.ajuste--empilhado .ajuste__textos {
+  flex-basis: calc(100% - 48px);
+}
+
+.ajuste--empilhado .seletor-ajuste {
+  margin-left: auto;
+}
+
+.ajuste__seta,
+.expansivel__seta {
+  flex: none;
+  color: var(--cor-texto-suave);
+}
+
+/* Seletor compacto à direita (select nativo: no celular abre a roleta do sistema) */
+.seletor-ajuste {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+}
+
+.seletor-ajuste select {
+  min-height: 36px;
+  padding: 0 30px 0 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 10px;
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  appearance: none;
+  cursor: pointer;
+}
+
+.seletor-ajuste select:focus-visible {
+  border-color: var(--cor-primaria);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(30, 58, 114, 0.15);
+}
+
+.seletor-ajuste app-icone {
+  position: absolute;
+  right: 10px;
+  color: var(--cor-texto-suave);
+  pointer-events: none;
+}
+
+/* Ativa / Desativada */
+.selo-estado {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.selo-estado i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.selo-estado--ativo {
+  background: #E3F2EA;
+  color: var(--cor-ativo);
+}
+
+/* Mensagens: a linha abre o editor embaixo dela */
+.expansivel__seta {
+  transition: transform 0.2s ease;
+}
+
+.expansivel--aberto .expansivel__seta {
+  transform: rotate(180deg);
+}
+
+.expansivel__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 14px 16px 62px;
+}
+
+/* A semana (dias, o dia escolhido e o resumo) dentro do cartão */
+.painel-ajustes--semana {
+  gap: 14px;
+  padding: 14px;
+}
+
+.painel-ajustes--semana > * + * {
+  border-top: none;
+}
+
+.semana__dia {
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.dia-aberto {
+  border-radius: 12px;
+  background: var(--cor-fundo-suave);
+}
+
+.resumo-semana__linha {
+  padding: 10px 4px;
+  cursor: pointer;
+}
+
+.resumo-semana__linha:last-child {
+  border-bottom: none;
+}
+
+.resumo-semana__texto {
+  flex: 1;
+}
+
+.resumo-semana__seta {
+  color: var(--cor-borda-forte);
+}
+
+.resumo-semana__linha--escolhida .resumo-semana__dia,
+.resumo-semana__linha--escolhida .resumo-semana__seta {
+  color: var(--cor-primaria);
+}
+
+/* Lista de espera: como funciona */
+.passos {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: 16px;
+  background: var(--cor-fundo);
+  list-style: none;
+}
+
+.passos__item {
+  display: flex;
+  gap: 12px;
+  color: var(--cor-texto-secundario);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.passos__item b {
+  color: var(--cor-texto);
+}
+
+.passos__numero {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--cor-primaria);
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+@media (max-width: 559px) {
+  .expansivel__corpo {
+    padding-left: 14px;
+  }
+}
+
+@media (min-width: 760px) {
+  .horarios {
+    gap: 28px;
+  }
+
+  .horarios__coluna,
+  .horarios--uma-coluna {
+    gap: 28px;
+  }
+
+  .painel-ajustes--semana {
+    padding: 18px;
+  }
+}
+
+/* Computador: a barra de salvar fica na área da página, à direita do menu da agenda */
+@media (min-width: 1024px) {
+  .barra-salvar {
+    left: 268px;
+    right: 0;
+    justify-content: flex-end;
+    width: auto;
+    max-width: none;
+    padding-inline: 32px;
+    transform: none;
+    animation: none;
+  }
+
+  .barra-salvar__salvar {
+    flex: none;
+    min-width: 200px;
+  }
+}

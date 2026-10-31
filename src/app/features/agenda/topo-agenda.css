@@ -1,0 +1,130 @@
+/*
+ * Estrutura da agenda: o menu (menu-agenda) e a página escolhida. No celular o topo é uma barra azul de uma linha
+ * (menu, título da página e copiar o link) que fica presa ao rolar; no computador o menu fica à esquerda e o topo
+ * vira o título da página com a descrição.
+ */
+.agenda-corpo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 100dvh;
+}
+
+.topo-agenda {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 10px 10px 8px;
+  padding-top: calc(10px + env(safe-area-inset-top));
+  background: linear-gradient(160deg, var(--cor-primaria) 0%, #2C4F9E 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 12px rgba(10, 20, 45, 0.16);
+}
+
+.topo-agenda__menu,
+.topo-agenda__link {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.topo-agenda__link {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.topo-agenda__menu:hover,
+.topo-agenda__link:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.topo-agenda__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topo-agenda__sobre {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  opacity: 0.72;
+}
+
+.topo-agenda__titulo {
+  overflow: hidden;
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topo-agenda__descricao {
+  display: none;
+}
+
+/* as páginas de configuração: um pouco de respiro embaixo do topo */
+.configuracao {
+  padding-top: 20px;
+}
+
+@media (min-width: 1024px) {
+  .tela-agenda {
+    display: grid !important;
+    grid-template-columns: 268px minmax(0, 1fr);
+    align-items: start;
+    background: var(--cor-fundo-suave);
+  }
+
+  .agenda-corpo {
+    grid-column: 2;
+  }
+
+  .topo-agenda {
+    position: static;
+    padding: 30px 32px 6px;
+    background: none;
+    color: var(--cor-texto);
+    box-shadow: none;
+  }
+
+  .topo-agenda__menu,
+  .topo-agenda__link,
+  .topo-agenda__sobre {
+    display: none;
+  }
+
+  .topo-agenda__titulo {
+    font-size: 28px;
+  }
+
+  .topo-agenda__descricao {
+    display: block;
+    margin: 4px 0 0;
+    color: var(--cor-texto-suave);
+    font-size: 14px;
+  }
+
+  .agenda-corpo > .conteudo-tela {
+    padding: 20px 32px 48px;
+  }
+
+  .configuracao {
+    width: 100%;
+    max-width: 1100px;
+  }
+}

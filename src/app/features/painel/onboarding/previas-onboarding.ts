@@ -15,6 +15,10 @@ export interface PassoTour {
   texto: string;
   /** O efeito daquele card no WhatsApp (o lojista vê para que serve antes de cadastrar). */
   previa: LinhaPrevia[];
+  /** Prepara a tela antes do destaque (ex.: abrir o menu da agenda, trocar de página). */
+  antes?: () => void;
+  /** Quanto esperar depois do "antes" para a tela terminar de mudar (ex.: a gaveta abrindo). */
+  esperaMs?: number;
 }
 
 const conversa = ([cliente, resposta]: [string, string]): LinhaPrevia[] => [

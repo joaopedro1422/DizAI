@@ -33,11 +33,11 @@
     </ul>
   }
 
-  <button #botao type="button" class="btn btn--primario btn--grande btn--bloco" (click)="confirmar.emit()">
+  <button #botao type="button" class="btn btn--primario btn--grande btn--bloco" [disabled]="bloqueada()" (click)="confirmar.emit()">
     {{ rotuloBotao() }}
   </button>
   @if (rotuloSecundario()) {
-    <button type="button" class="btn btn--texto btn--bloco janela__secundario" (click)="secundario.emit()">
+    <button type="button" class="btn btn--texto btn--bloco janela__secundario" [disabled]="bloqueada()" (click)="secundario.emit()">
       {{ rotuloSecundario() }}
     </button>
   }

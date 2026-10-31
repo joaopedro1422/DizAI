@@ -33,8 +33,6 @@ import { EstadoVazioComponent } from '../../shared/components/estado-vazio/estad
 import { FaixaDiasComponent, ItemFaixaDia } from '../../shared/components/faixa-dias/faixa-dias.component';
 import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { HorariosAtendimentoComponent } from './horarios-atendimento/horarios-atendimento.component';
-import { MensagensProntasComponent } from './mensagens-prontas/mensagens-prontas.component';
-import { preencherMensagem } from './mensagens-prontas/variaveis-mensagem';
 import { montarColunas, montarLinhaDoTempo } from './linha-do-tempo';
 import { NovoAgendamentoComponent } from './novo-agendamento/novo-agendamento.component';
 import { NumerosAgendaComponent } from './numeros-agenda/numeros-agenda.component';
@@ -43,9 +41,15 @@ import { SeletorProfissionalComponent } from './seletor-profissional/seletor-pro
 import { EscolhaQuemEstaLivre, QuemEstaLivreComponent } from './quem-esta-livre/quem-esta-livre.component';
 import { formatarReal } from '../pedidos/textos-pedido';
 import { FormsModule } from '@angular/forms';
-import { VideoAgendaComponent } from './video-agenda/video-agenda.component';
-
-type AbaAgenda = 'agendamentos' | 'numeros' | 'horarios';
+import { MenuAgendaComponent } from './menu-agenda/menu-agenda.component';
+import { SecaoAgenda, SecaoConfiguracao, ehConfiguracao, infoDaSecao } from './secoes-agenda';
+import { passosDoTourDaAgenda } from './tour-agenda';
+import { AlvoTourDirective } from '../painel/onboarding/alvo-tour.directive';
+import { OnboardingTourComponent } from '../painel/onboarding/onboarding-tour.component';
+import { OnboardingTourService } from '../painel/onboarding/onboarding-tour.service';
+import { DicaSobrepostaComponent } from '../../shared/components/dica-sobreposta/dica-sobreposta.component';
+import { ConteudoRamoService } from '../../core/services/conteudo-ramo.service';
+import { exemplosDaAgenda } from '../../core/constants/segmentos';
 
 const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
 /** De quanto em quanto tempo a tela busca os agendamentos de novo (os que a IA marcou aparecem sozinhos). */
@@ -53,8 +57,9 @@ const ATUALIZAR_A_CADA_MS = 15_000;
 
 /**
  * Agenda do painel (serviços presenciais).
+ * - Menu (gaveta no celular, coluna no computador): Agendamentos, Números e as páginas de configuração
+ *   (Horários, Equipe, Lembretes e mensagens, Lista de espera) e o link da agenda online.
  * - Agendamentos: faixa de dias com o que está marcado em cada um, agendamento manual, cancelar e folga.
- * - Horários: dias e horários de atendimento e a chave do agendamento automático.
  */
 @Component({
   selector: 'app-agenda-page',
@@ -72,18 +77,22 @@ const ATUALIZAR_A_CADA_MS = 15_000;
     BottomSheetComponent,
     HorariosAtendimentoComponent,
     NovoAgendamentoComponent,
-    MensagensProntasComponent,
-    VideoAgendaComponent,
+    OnboardingTourComponent,
+    DicaSobrepostaComponent,
+    AlvoTourDirective,
     NumerosAgendaComponent,
+    MenuAgendaComponent,
     FormsModule,
   ],
+  // o tour da agenda guarda os próprios alvos (menu, dias, configurações)
+  providers: [OnboardingTourService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './agenda-page.component.html',
   styleUrls: [
-    '../../shared/estilos-topo-azul.css',
     './agenda-page.component.css',
     './agenda-colunas.css',
     './lista-espera.css',
+    './topo-agenda.css',
   ],
 })
 export class AgendaPageComponent implements OnInit {
@@ -93,11 +102,22 @@ export class AgendaPageComponent implements OnInit {
   private readonly perfil = inject(PerfilService).perfil;
   private readonly dicasVistas = inject(DicasVistasService);
 
-  /** Vídeo de orientação na primeira visita (a agenda só existe nos ramos de serviço). */
-  protected readonly mostrarVideo = signal(this.dicasVistas.deveMostrarVideo('video-agenda'));
+  /** Primeira visita: convite para o tour da agenda (aparece depois de carregar). */
+  protected readonly convidarTour = signal(false);
+  private readonly tour = viewChild.required(OnboardingTourComponent);
+  private readonly exemplos = inject(ConteudoRamoService).exemplos;
 
   protected readonly carregando = signal(true);
-  protected readonly aba = signal<AbaAgenda>('agendamentos');
+  protected readonly aba = signal<SecaoAgenda>('agendamentos');
+  /** Gaveta do menu aberta (celular). */
+  protected readonly menuAberto = signal(false);
+  protected readonly infoSecao = computed(() => infoDaSecao(this.aba()));
+  /** A parte do formulário de configuração que aparece (fora das configurações, a última não importa). */
+  protected readonly secaoConfiguracao = computed<SecaoConfiguracao>(() => {
+    const aba = this.aba();
+    return ehConfiguracao(aba) ? aba : 'horarios';
+  });
+  protected readonly nomeLoja = computed(() => this.perfil().nomeLoja ?? '');
   protected readonly diaSelecionado = signal(hojeIso());
 
   protected readonly criando = signal(false);
@@ -106,21 +126,6 @@ export class AgendaPageComponent implements OnInit {
   protected readonly presetNovo = signal<EscolhaQuemEstaLivre | null>(null);
   protected readonly salvandoNovo = signal(false);
   protected readonly paraCancelar = signal<Agendamento | null>(null);
-  /** Cliente cujo WhatsApp foi tocado: abre a escolha de mensagem antes de ir para a conversa. */
-  protected readonly paraMensagem = signal<Agendamento | null>(null);
-  protected readonly gerenciandoMensagens = signal(false);
-
-  /** As mensagens prontas já preenchidas com os dados do cliente escolhido, cada uma com o link do WhatsApp. */
-  protected readonly opcoesMensagem = computed(() => {
-    const agendamento = this.paraMensagem();
-    if (!agendamento) {
-      return [];
-    }
-    return this.agendaService.mensagensProntas().map((mensagem) => {
-      const texto = preencherMensagem(mensagem.texto, agendamento);
-      return { id: mensagem.id, titulo: mensagem.titulo, texto, link: this.linkWhatsapp(agendamento, texto) };
-    });
-  });
   /** Quem atende; com 2+, os cards dizem com quem é e dá para filtrar a agenda por profissional. */
   protected readonly profissionais = this.agendaService.profissionais;
   protected readonly variosProfissionais = this.agendaService.variosProfissionais;
@@ -263,7 +268,7 @@ export class AgendaPageComponent implements OnInit {
   protected readonly telaGrande = signal(this.consultaTelaGrande.matches);
   /** Computador: a completa com 2+ profissionais mostra todos, um por coluna (no celular, um por vez). */
   private readonly consultaComputador = window.matchMedia('(min-width: 1024px)');
-  private readonly computador = signal(this.consultaComputador.matches);
+  protected readonly computador = signal(this.consultaComputador.matches);
   protected readonly completaEmColunas = computed(
     () => this.computador() && this.variosProfissionais() && this.visualizacao() === 'completa',
   );
@@ -356,9 +361,31 @@ export class AgendaPageComponent implements OnInit {
     void this.carregar();
   }
 
-  protected fecharVideo(): void {
-    this.dicasVistas.marcarComoVista('video-agenda');
-    this.mostrarVideo.set(false);
+  // ---------------------------------------------------------------- tour da agenda
+
+  protected comecarTour(): void {
+    this.convidarTour.set(false);
+    this.dicasVistas.marcarComoVista('tour-agenda');
+    this.tour().iniciarCom(
+      passosDoTourDaAgenda(
+        {
+          abrirMenu: () => this.menuAberto.set(true),
+          fecharMenu: () => this.menuAberto.set(false),
+          irPara: (secao) => this.irPara(secao),
+        },
+        exemplosDaAgenda(this.exemplos()),
+      ),
+    );
+  }
+
+  protected dispensarTour(): void {
+    this.convidarTour.set(false);
+    this.dicasVistas.marcarComoVista('tour-agenda');
+  }
+
+  /** Fim do tour: menu fechado e de volta aos agendamentos (ou aos horários, se ainda não há nenhum). */
+  protected aoEncerrarTour(): void {
+    this.irPara(this.temHorarios() ? 'agendamentos' : 'horarios');
   }
 
   protected mudarVisualizacao(evento: Event): void {
@@ -383,13 +410,13 @@ export class AgendaPageComponent implements OnInit {
         this.agendaService.carregarConfiguracao(),
         this.agendaService.atualizarAgendamentos(),
         this.produtoService.carregar(),
-        this.agendaService.carregarMensagensProntas(),
         this.agendaService.carregarProfissionais(),
       ]);
       // primeira vez: abre direto nos horários, que é o que falta configurar
       if (!this.temHorarios()) {
         this.aba.set('horarios');
       }
+      this.convidarTour.set(this.dicasVistas.deveMostrarVideo('tour-agenda'));
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, ERRO_AO_CARREGAR));
     } finally {
@@ -397,9 +424,17 @@ export class AgendaPageComponent implements OnInit {
     }
   }
 
-  protected mudarAba(aba: AbaAgenda): void {
+  protected mudarAba(aba: SecaoAgenda): void {
     this.aba.set(aba);
   }
+
+  /** Página escolhida no menu: fecha a gaveta e volta ao topo. */
+  protected irPara(secao: SecaoAgenda): void {
+    this.aba.set(secao);
+    this.menuAberto.set(false);
+    window.scrollTo({ top: 0 });
+  }
+
 
   protected escolherDia(data: string): void {
     this.diaSelecionado.set(data);
@@ -451,12 +486,6 @@ export class AgendaPageComponent implements OnInit {
   protected mensagemCancelamento(agendamento: Agendamento): string {
     const primeiroNome = agendamento.nomeCliente.split(' ')[0];
     return `Olá, ${primeiroNome}! Precisamos cancelar o seu horário de ${diaPorExtenso(agendamento.data)} às ${agendamento.inicio}. Podemos marcar outro dia?`;
-  }
-
-  /** Do modal de escolha para o de cadastro (o cliente continua guardado para voltar depois). */
-  protected abrirGerenciarMensagens(): void {
-    this.paraMensagem.set(null);
-    this.gerenciandoMensagens.set(true);
   }
 
   protected diaPorExtenso(data: string): string {

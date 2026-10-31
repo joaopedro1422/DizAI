@@ -18,73 +18,6 @@
   padding-bottom: 96px;
 }
 
-.cartao {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 16px;
-  border: 1px solid var(--cor-borda-suave);
-  border-radius: var(--raio-grande);
-  background: var(--cor-fundo);
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
-}
-
-.cartao__titulo {
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.cartao__descricao {
-  margin-top: 4px;
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--cor-texto-suave);
-}
-
-/* Mensagens (agendamento, confirmação, agradecimento): card curto que abre ao tocar */
-.expansivel {
-  gap: 0;
-  padding: 0;
-}
-
-.expansivel__cabecalho {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: 100%;
-  min-height: 56px;
-  padding: 14px 16px;
-  border: none;
-  border-radius: var(--raio-grande);
-  background: none;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.expansivel__seta {
-  flex: none;
-  color: var(--cor-texto-suave);
-  transition: transform 0.2s ease;
-}
-
-.expansivel--aberto .expansivel__seta {
-  transform: rotate(180deg);
-}
-
-.expansivel__corpo {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 0 16px 16px;
-}
-
-.expansivel__corpo > .cartao__descricao {
-  margin-top: 0;
-}
-
 /* Agradecimento depois do atendimento: descrição e chave na mesma linha */
 .agradecimento__linha {
   display: flex;
@@ -120,101 +53,6 @@
 .agradecimento__aviso app-icone {
   flex: none;
   margin-top: 1px;
-}
-
-/* Chave da agenda automática */
-.chave {
-  transition: border-color 0.2s ease, background-color 0.2s ease;
-}
-
-.chave--ligada {
-  border-color: #BFE0CC;
-  background: linear-gradient(180deg, #F2FAF5 0%, #FFFFFF 70%);
-}
-
-.chave__linha {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.chave__icone {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: var(--cor-fundo-suave);
-  color: var(--cor-texto-suave);
-}
-
-.chave--ligada .chave__icone {
-  background: #E3F2EA;
-  color: var(--cor-ativo);
-}
-
-.chave__textos {
-  flex: 1;
-  min-width: 0;
-}
-
-.chave__estado {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--cor-texto-suave);
-}
-
-.chave--ligada .chave__estado {
-  color: var(--cor-ativo);
-}
-
-.chave__descricao {
-  margin-top: 0;
-}
-
-.chave__vantagens {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: 13px;
-  color: var(--cor-texto-secundario);
-}
-
-.chave__vantagens li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.chave__vantagens app-icone {
-  color: var(--cor-ativo);
-}
-
-.aviso-duracao {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 12px 14px;
-  border: 1px solid #F1D9A6;
-  border-radius: var(--raio-medio);
-  background: var(--cor-ambar-fundo);
-  font-size: 13px;
-  line-height: 1.5;
-  color: var(--cor-texto-secundario);
-}
-
-.aviso-duracao app-icone {
-  color: var(--cor-ambar);
-}
-
-.aviso-duracao a {
-  font-weight: 700;
-  color: var(--cor-primaria);
 }
 
 /* Os 7 dias da semana */
@@ -453,31 +291,6 @@
   to { transform: translate(-50%, 0); }
 }
 
-/* Agenda ligada, mas o modo não é o automático: leva para o painel */
-.chave__modo {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 12px 14px;
-  border: 1px solid #F1D9A6;
-  border-radius: var(--raio-medio);
-  background: var(--cor-ambar-fundo);
-  color: var(--cor-ambar);
-  font-size: 13px;
-  line-height: 1.5;
-  text-decoration: none;
-}
-
-.chave__modo span {
-  color: var(--cor-texto-secundario);
-}
-
-.chave__modo strong {
-  display: block;
-  margin-top: 2px;
-  color: var(--cor-primaria);
-}
-
 /* Tablet e computador: duas colunas, os dias e horários com mais espaço. Nada muda abaixo de 760px. */
 @media (min-width: 760px) {
   .horarios {
@@ -494,7 +307,10 @@
     min-width: 0;
   }
 
-  .cartao {
-    padding: 20px;
+  /* Equipe, mensagens e lista de espera: uma coluna só, na largura de leitura */
+  .horarios--uma-coluna {
+    display: flex;
+    align-items: stretch;
+    max-width: 760px;
   }
 }

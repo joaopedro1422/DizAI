@@ -229,63 +229,66 @@
     </div>
   }
 
-  <div class="campo">
-    <div class="atributos__cabecalho">
-      <span class="campo__rotulo">
-        Opções que o cliente escolhe
-        @if (ehProdutoAVenda()) {
-          <span class="campo__rotulo-opcional">(opcional)</span>
-        }
-      </span>
-      <span class="campo__dica">Ex.: {{ conteudo().produto.exemploOpcoes }}. Deixe vazio se não tiver.</span>
-    </div>
-
-    <div formArrayName="atributos" class="atributos__lista">
-      @for (atributo of atributos.controls; track atributo; let indice = $index) {
-        <div class="atributo caixa-suave" [formGroupName]="indice">
-          <div class="atributo__linha">
-            <input class="campo__entrada atributo__entrada" type="text" formControlName="nome" [placeholder]="conteudo().produto.nomeOpcao" [attr.aria-label]="'Nome da opção ' + (indice + 1)">
-            <button type="button" class="btn-icone" aria-label="Remover opção" (click)="removerAtributo(indice)">
-              <app-icone nome="fechar" [tamanho]="16" [espessura]="2" />
-            </button>
-          </div>
-          <input class="campo__entrada atributo__entrada" type="text" formControlName="opcoes" [placeholder]="conteudo().produto.valoresOpcao + ' (separe por vírgula)'" [attr.aria-label]="'Valores da opção ' + (indice + 1)">
-          @if (!pedeDuracao()) {
-            <div class="atributo__quantidade">
-              <span class="atributo__quantidade-rotulo" [id]="'quantidade-opcao-' + indice">Quantas o cliente escolhe</span>
-              <div class="atributo__quantidade-campos" role="group" [attr.aria-labelledby]="'quantidade-opcao-' + indice">
-                <input
-                  class="campo__entrada atributo__entrada atributo__quantidade-numero"
-                  type="number"
-                  inputmode="numeric"
-                  min="0"
-                  max="20"
-                  formControlName="quantidade"
-                  aria-label="Quantidade"
-                  [class.atributo__quantidade-numero--inativo]="atributo.controls.modo.value === 'QUANTAS_QUISER'"
-                >
-                <select class="campo__entrada atributo__entrada atributo__quantidade-modo" formControlName="modo" aria-label="Como contar">
-                  @for (modo of modosEscolha; track modo.valor) {
-                    <option [value]="modo.valor">{{ modo.rotulo }}</option>
-                  }
-                </select>
-              </div>
-            </div>
-            @if (atributo.controls.quantidade.value === 0) {
-              <span class="campo__dica">Não obrigatória: o assistente só usa como informação e não pergunta ao cliente.</span>
-            } @else {
-              <span class="campo__dica">Coloque 0 se for opcional: o assistente pergunta se o cliente deseja, sem obrigar.</span>
-            }
+  <!-- serviços não têm opções para o cliente escolher (o produto à venda, sim) -->
+  @if (!ramoServico() || ehProdutoAVenda()) {
+    <div class="campo">
+      <div class="atributos__cabecalho">
+        <span class="campo__rotulo">
+          Opções que o cliente escolhe
+          @if (ehProdutoAVenda()) {
+            <span class="campo__rotulo-opcional">(opcional)</span>
           }
-        </div>
-      }
-    </div>
+        </span>
+        <span class="campo__dica">Ex.: {{ conteudo().produto.exemploOpcoes }}. Deixe vazio se não tiver.</span>
+      </div>
 
-    <button type="button" class="btn btn--secundario atributos__adicionar" (click)="adicionarAtributo()">
-      <app-icone nome="mais" [tamanho]="16" [espessura]="2" />
-      Adicionar opção
-    </button>
-  </div>
+      <div formArrayName="atributos" class="atributos__lista">
+        @for (atributo of atributos.controls; track atributo; let indice = $index) {
+          <div class="atributo caixa-suave" [formGroupName]="indice">
+            <div class="atributo__linha">
+              <input class="campo__entrada atributo__entrada" type="text" formControlName="nome" [placeholder]="conteudo().produto.nomeOpcao" [attr.aria-label]="'Nome da opção ' + (indice + 1)">
+              <button type="button" class="btn-icone" aria-label="Remover opção" (click)="removerAtributo(indice)">
+                <app-icone nome="fechar" [tamanho]="16" [espessura]="2" />
+              </button>
+            </div>
+            <input class="campo__entrada atributo__entrada" type="text" formControlName="opcoes" [placeholder]="conteudo().produto.valoresOpcao + ' (separe por vírgula)'" [attr.aria-label]="'Valores da opção ' + (indice + 1)">
+            @if (!pedeDuracao()) {
+              <div class="atributo__quantidade">
+                <span class="atributo__quantidade-rotulo" [id]="'quantidade-opcao-' + indice">Quantas o cliente escolhe</span>
+                <div class="atributo__quantidade-campos" role="group" [attr.aria-labelledby]="'quantidade-opcao-' + indice">
+                  <input
+                    class="campo__entrada atributo__entrada atributo__quantidade-numero"
+                    type="number"
+                    inputmode="numeric"
+                    min="0"
+                    max="20"
+                    formControlName="quantidade"
+                    aria-label="Quantidade"
+                    [class.atributo__quantidade-numero--inativo]="atributo.controls.modo.value === 'QUANTAS_QUISER'"
+                  >
+                  <select class="campo__entrada atributo__entrada atributo__quantidade-modo" formControlName="modo" aria-label="Como contar">
+                    @for (modo of modosEscolha; track modo.valor) {
+                      <option [value]="modo.valor">{{ modo.rotulo }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+              @if (atributo.controls.quantidade.value === 0) {
+                <span class="campo__dica">Não obrigatória: o assistente só usa como informação e não pergunta ao cliente.</span>
+              } @else {
+                <span class="campo__dica">Coloque 0 se for opcional: o assistente pergunta se o cliente deseja, sem obrigar.</span>
+              }
+            }
+          </div>
+        }
+      </div>
+
+      <button type="button" class="btn btn--secundario atributos__adicionar" (click)="adicionarAtributo()">
+        <app-icone nome="mais" [tamanho]="16" [espessura]="2" />
+        Adicionar opção
+      </button>
+    </div>
+  }
 
   @if (!ramoServico()) {
     <div class="campo">

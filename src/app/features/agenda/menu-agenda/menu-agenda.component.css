@@ -1,0 +1,282 @@
+/* Celular: gaveta por cima da tela, que entra pela esquerda */
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0s linear 0.26s;
+}
+
+:host(.menu-agenda--aberto) {
+  visibility: visible;
+  pointer-events: auto;
+  transition: none;
+}
+
+.fundo {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 18, 40, 0.45);
+  opacity: 0;
+  transition: opacity 0.26s ease;
+}
+
+:host(.menu-agenda--aberto) .fundo {
+  opacity: 1;
+}
+
+.menu {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: min(300px, 86vw);
+  padding: 12px 14px calc(16px + env(safe-area-inset-bottom));
+  padding-top: calc(12px + env(safe-area-inset-top));
+  overflow-y: auto;
+  background: var(--cor-fundo);
+  box-shadow: 12px 0 32px rgba(10, 18, 40, 0.18);
+  transform: translateX(-100%);
+  transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:host(.menu-agenda--aberto) .menu {
+  transform: translateX(0);
+}
+
+.menu__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu__voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px 8px 6px;
+  border-radius: 10px;
+  color: var(--cor-texto-secundario);
+  font-size: 13.5px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.menu__voltar:hover {
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto);
+}
+
+.menu__marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 14px;
+  padding: 0 6px;
+}
+
+.menu__marca-icone {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--cor-primaria);
+  color: #ffffff;
+}
+
+.menu__marca-textos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.menu__marca-textos b {
+  font-family: var(--fonte-titulo);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.menu__marca-textos small {
+  overflow: hidden;
+  color: var(--cor-texto-suave);
+  font-size: 12.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menu__grupo {
+  margin: 14px 0 4px;
+  padding: 0 10px;
+  color: var(--cor-texto-suave);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.menu__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--cor-texto-secundario);
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.menu__item:hover {
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto);
+}
+
+.menu__item--ativo,
+.menu__item--ativo:hover {
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+  font-weight: 700;
+}
+
+/* "Como usar a agenda": logo acima do card da agenda online */
+.menu__ajuda {
+  margin-top: auto;
+  margin-bottom: 8px;
+  color: var(--cor-texto-suave);
+  font-size: 13.5px;
+}
+
+/* Agenda online, no pé do menu */
+.online {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: 14px;
+  background: var(--cor-fundo-suave);
+}
+
+.online__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.online__titulo {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.online__estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--cor-texto-suave);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.online__estado i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cor-texto-suave);
+}
+
+.online__estado--ativa {
+  color: var(--cor-sucesso);
+}
+
+.online__estado--ativa i {
+  background: currentColor;
+}
+
+.online__link {
+  overflow: hidden;
+  color: var(--cor-primaria);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.online__acoes {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 6px;
+}
+
+.online__botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 9px;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.online__botao:hover {
+  border-color: var(--cor-primaria);
+  color: var(--cor-primaria);
+}
+
+/* Computador: menu fixo à esquerda, sempre à vista */
+@media (min-width: 1024px) {
+  /* fixo à esquerda (o sticky não segurava dentro da grade); a página fica na 2ª coluna */
+  :host {
+    inset: 0 auto 0 0;
+    z-index: 1;
+    width: 268px;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .fundo,
+  .menu__fechar {
+    display: none;
+  }
+
+  .menu {
+    position: static;
+    width: 100%;
+    height: 100%;
+    padding: 18px 16px 20px;
+    border-right: 1px solid var(--cor-borda-suave);
+    box-shadow: none;
+    transform: none;
+    transition: none;
+  }
+}

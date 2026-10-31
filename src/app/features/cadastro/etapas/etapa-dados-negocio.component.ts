@@ -8,7 +8,7 @@ import { GrupoDadosNegocio } from '../cadastro-formulario';
 
 type CampoDadosNegocio = keyof GrupoDadosNegocio['controls'];
 
-/** Passo 2: nome, nome do negócio e descrição (os exemplos seguem o ramo escolhido no passo 1). */
+/** Passo 1: nome, nome do negócio e descrição (sem ramo escolhido ainda, os exemplos são os de serviços). */
 @Component({
   selector: 'app-etapa-dados-negocio',
   imports: [ReactiveFormsModule],

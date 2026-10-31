@@ -17,6 +17,7 @@
 
   @if (balao(); as posicao) {
     <div
+      #balaoElemento
       class="balao"
       [class.balao--visivel]="balaoVisivel()"
       [attr.aria-hidden]="!balaoVisivel()"

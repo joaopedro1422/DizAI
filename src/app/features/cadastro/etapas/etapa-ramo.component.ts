@@ -1,11 +1,11 @@
 import { Component, input } from '@angular/core';
 
-import { RAMOS_NEGOCIO } from '../../../core/constants/opcoes-perfil';
+import { RAMOS_PARA_ESCOLHER } from '../../../core/constants/opcoes-perfil';
 import { RamoNegocio } from '../../../core/models/perfil.model';
 import { EtiquetaOpcao, OpcaoCardComponent } from '../../../shared/components/opcao-card/opcao-card.component';
 import { ControleRamo } from '../cadastro-formulario';
 
-/** Passo 1: o ramo que mais se parece com o negócio (os exemplos dos passos seguintes seguem ele). */
+/** Passo 2: o ramo que mais se parece com o negócio (ajusta as sugestões iniciais do painel). */
 @Component({
   selector: 'app-etapa-ramo',
   imports: [OpcaoCardComponent],
@@ -35,7 +35,7 @@ import { ControleRamo } from '../cadastro-formulario';
 export class EtapaRamoComponent {
   readonly controle = input.required<ControleRamo>();
 
-  protected readonly ramos = RAMOS_NEGOCIO;
+  protected readonly ramos = RAMOS_PARA_ESCOLHER;
   /** Recurso que vem junto com o ramo: a agenda nos serviços presenciais, os pedidos nos produtos. */
   protected readonly etiquetas: Partial<Record<RamoNegocio, EtiquetaOpcao>> = {
     SERVICOS_PRESENCIAIS: { texto: 'Agenda', icone: 'calendario' },

@@ -44,6 +44,8 @@ export class DicaSobrepostaComponent implements AfterViewInit, OnDestroy {
   readonly rotuloBotao = input('Entendi');
   /** Segundo botão, só texto (ex.: "Agora não"). Vazio = sem o botão. */
   readonly rotuloSecundario = input('');
+  /** Os botões (e o Esc) só funcionam depois de uma escolha obrigatória no conteúdo, ex.: o tipo do negócio. */
+  readonly bloqueada = input(false);
   readonly confirmar = output<void>();
   readonly secundario = output<void>();
 
@@ -59,6 +61,9 @@ export class DicaSobrepostaComponent implements AfterViewInit, OnDestroy {
 
   /** Esc fecha pelo caminho mais leve: o botão secundário, quando existe. */
   protected aoPressionarEsc(): void {
+    if (this.bloqueada()) {
+      return;
+    }
     if (this.rotuloSecundario()) {
       this.secundario.emit();
     } else {

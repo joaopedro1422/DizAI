@@ -98,6 +98,7 @@ const TEMPO_POR_SLIDE_MS = 6000;
       touch-action: pan-y;
     }
 
+    
     .trilho {
       display: flex;
       margin: 0;

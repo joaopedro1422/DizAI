@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
 import { ERRO_AO_CARREGAR, mensagemDoErro } from '../../core/api/erro-api';
 import { Album, Feedback, NovoAlbum, NovoFeedback } from '../../core/models/galeria.model';
@@ -29,7 +28,6 @@ type ModalGaleria = 'topico' | 'fotos' | 'feedback' | 'endereco' | 'vitrine' | '
 @Component({
   selector: 'app-galeria-page',
   imports: [
-    RouterLink,
     CabecalhoPaginaComponent,
     IconeComponent,
     BottomSheetComponent,
