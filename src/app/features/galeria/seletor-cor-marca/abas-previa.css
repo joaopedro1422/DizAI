@@ -5,6 +5,18 @@
   gap: 8px;
 }
 
+/* celular: um embaixo do outro, para "Vitrine" e "Agendar" caberem inteiros na prévia */
+@media (max-width: 519px) {
+  .abas-estilos {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .abas-previa {
+    width: min(100%, 240px);
+    margin: 0 auto;
+  }
+}
+
 .abas-previa {
   display: grid;
   grid-template-columns: 1fr 1fr;

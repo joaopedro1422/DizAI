@@ -1,11 +1,14 @@
 <app-telefone-demo>
   <div class="tela-real">
-    <!-- tela "Chats" do painel (app-cabecalho-pagina + abas + conversa-aguardando-card) -->
-    <header class="cabecalho">
-      <span class="btn-icone btn-icone--sem-borda cabecalho__voltar"><app-icone nome="voltar" [tamanho]="22" /></span>
-      <div class="cabecalho__textos">
-        <h1 class="titulo-pagina">Chats</h1>
-        <p class="cabecalho__subtitulo">Conversas que precisam de você aparecem aqui.</p>
+    <!-- tela "Chats" do painel (topo azul de chats-page + conversa-aguardando-card) -->
+    <header class="topo-azul">
+      <div class="topo-azul__linha">
+        <span class="topo-azul__voltar"><app-icone nome="voltar" [tamanho]="22" /></span>
+        <span class="botao-clientes"><app-icone nome="pessoas" [tamanho]="17" [espessura]="2" /> Clientes</span>
+      </div>
+      <div class="topo-azul__textos">
+        <h1 class="topo-azul__titulo">Chats</h1>
+        <p class="topo-azul__sub">Conversas que precisam de você aparecem aqui.</p>
       </div>
       <div class="abas">
         <span class="aba aba--ativa">
@@ -31,7 +34,7 @@
 
           <span class="motivo">Pronto para fechar</span>
 
-          <p class="mensagem">"1 minuto! Já te confirmo."</p>
+          <p class="mensagem">"1 Minuto!"</p>
 
           <div class="resumo caixa-suave">
             <span class="rotulo-maiusculo">Resumo do pedido</span>

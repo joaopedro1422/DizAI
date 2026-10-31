@@ -14,6 +14,11 @@ import { formatarReal } from '../../pedidos/textos-pedido';
 /** O "horário" escolhido quando o cliente toca em "Entrar na lista de espera" (dia sem horário livre). */
 const LISTA_ESPERA = 'lista-espera';
 
+/** Espera o próximo passo aparecer (e o cliente ver o check do que escolheu) antes de rolar até ele. */
+const ATRASO_ROLAGEM_MS = 280;
+/** Folga acima do passo quando a página rola até ele. */
+const FOLGA_ROLAGEM_PX = 16;
+
 /** Horários do dia em grupos, para a lista não virar um muro de botões. */
 const TURNOS = [
   { nome: 'Manhã', ate: '12:00' },
@@ -218,9 +223,14 @@ export class AgendaPublicaComponent implements OnInit {
   }
 
   protected alternarServico(servico: ServicoAgenda): void {
+    const primeiro = this.escolhidos().length === 0;
     this.escolhidos.update((ids) => alternarItem(ids, servico.id));
     this.horaSelecionada.set(null);
     void this.buscarHorarios();
+    // só no primeiro serviço: quem quer somar outro continua no mesmo passo
+    if (primeiro) {
+      this.rolarAte(this.comProfissionais() ? 'passo-profissional' : 'passo-dia');
+    }
   }
 
   /** Setinhas do "Também temos": desligadas nas pontas da rolagem. */
@@ -268,19 +278,51 @@ export class AgendaPublicaComponent implements OnInit {
     this.profissionalEscolhido.set(id);
     this.horaSelecionada.set(null);
     void this.buscarHorarios();
+    this.rolarAte('passo-dia');
   }
 
   protected escolherDia(data: string): void {
     this.diaSelecionado.set(data);
     this.horaSelecionada.set(null);
+    this.rolarAte('passo-hora');
   }
 
   protected escolherHora(hora: string): void {
     this.horaSelecionada.set(hora);
+    this.rolarAte('passo-nome');
   }
 
   protected digitarNome(evento: Event): void {
     this.nome.set((evento.target as HTMLInputElement).value.slice(0, 60));
+  }
+
+  /** Nome escrito (saiu do campo ou deu Enter): desce até o fim, com o resumo e o envio. */
+  protected terminarNome(): void {
+    if (!this.faltaNome()) {
+      this.rolarAte(null);
+    }
+  }
+
+  /**
+   * Rolagem automática: depois de cada escolha a página desce até o próximo passo (o cartão do título com esse id),
+   * ou até o fim (null). Só desce: se o cliente já está mais abaixo, fica onde está.
+   */
+  private rolarAte(idTitulo: string | null): void {
+    setTimeout(() => {
+      let topo = document.documentElement.scrollHeight;
+      if (idTitulo) {
+        const passo = document.getElementById(idTitulo)?.closest('section');
+        if (!passo) {
+          return;
+        }
+        topo = passo.getBoundingClientRect().top + window.scrollY - FOLGA_ROLAGEM_PX;
+      }
+      if (topo <= window.scrollY + 8) {
+        return;
+      }
+      const suave = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: topo, behavior: suave ? 'smooth' : 'auto' });
+    }, ATRASO_ROLAGEM_MS);
   }
 
   private async carregar(): Promise<void> {

@@ -109,7 +109,7 @@ export const SEGMENTOS_SERVICOS_PRESENCIAIS: DadosSegmento[] = [
           { cliente: true, texto: 'Eu e mais 3 padrinhos, de manhã' },
           { texto: 'Perfeito! Vou passar para o Léo montar os horários.' },
           { cliente: true, texto: 'Fechado!' },
-          { texto: '1 minuto! Já te confirmo.' },
+          { texto: '1 Minuto!' },
         ],
         resumo: [
           { campo: 'Serviço', valor: 'Dia do noivo' },
@@ -271,7 +271,7 @@ export const SEGMENTOS_SERVICOS_PRESENCIAIS: DadosSegmento[] = [
           { cliente: true, texto: 'Dia 14, eu e 2 madrinhas' },
           { texto: 'Perfeito! Vou passar para a Bia montar o seu horário.' },
           { cliente: true, texto: 'Combinado!' },
-          { texto: '1 minuto! Já te confirmo.' },
+          { texto: '1 Minuto!' },
         ],
         resumo: [
           { campo: 'Serviço', valor: 'Penteado de noiva' },
@@ -433,7 +433,7 @@ export const SEGMENTOS_SERVICOS_PRESENCIAIS: DadosSegmento[] = [
           { cliente: true, texto: 'Mandei aqui! Pode ser sábado?' },
           { texto: 'Recebi! Vou passar para a Bella ver o desenho e o valor.' },
           { cliente: true, texto: 'Combinado!' },
-          { texto: '1 minuto! Já te confirmo.' },
+          { texto: '1 Minuto!' },
         ],
         resumo: [
           { campo: 'Serviço', valor: 'Nail art personalizada' },
@@ -595,7 +595,7 @@ export const SEGMENTOS_SERVICOS_PRESENCIAIS: DadosSegmento[] = [
           { cliente: true, texto: 'Daqui a 2 meses' },
           { texto: 'Perfeito! Vou passar para a Lu montar o seu cronograma.' },
           { cliente: true, texto: 'Ótimo!' },
-          { texto: '1 minuto! Já te confirmo.' },
+          { texto: '1 Minuto!' },
         ],
         resumo: [
           { campo: 'Serviço', valor: 'Pacote noiva' },

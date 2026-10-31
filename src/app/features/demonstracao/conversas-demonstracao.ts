@@ -242,7 +242,7 @@ export const DEMONSTRACOES: Record<TipoNegocio, TipoDemonstracao> = {
           { de: 'cliente', texto: 'Ana Paula, Rua das Flores 120, Centro. Umas 15h. Pix' },
           { de: 'assistente', texto: 'Anotei! Confere:\n- Bolo Ninho com Morango (30 fatias)\n- 100 brigadeiros gourmet\n- Entrega: sábado, 26/10, às 15h\n- Endereço: Rua das Flores, 120, Centro\n- Pagamento: Pix\n\nEstá tudo certo?' },
           { de: 'cliente', texto: 'Tudo certo!' },
-          { de: 'assistente', texto: '1 minuto! Já te confirmo.' },
+          { de: 'assistente', texto: '1 Minuto!' },
           { de: 'notificacao', titulo: 'Pedido pronto para fechar', texto: 'Ana Paula · Bolo + 100 brigadeiros · sáb 26/10', destaque: 'Te entrega o pedido pronto para fechar' },
           { de: 'dono', texto: 'Oi, Ana! Aqui é a Ju 💕 Pedido confirmado! Já te mando a chave Pix.' },
           { de: 'dia', texto: 'Sábado, 26/10' },
@@ -295,7 +295,7 @@ export const DEMONSTRACOES: Record<TipoNegocio, TipoDemonstracao> = {
           { de: 'cliente', texto: 'Lucas Andrade. Pra Marina, Av. Cabo Branco 1500, ap 302. "Feliz aniversário, meu amor!" Pix' },
           { de: 'assistente', texto: 'Anotei! Confere:\n- Buquê com 12 rosas vermelhas\n- Caixa de Ferrero Rocher\n- Cartão: "Feliz aniversário, meu amor!"\n- Entrega hoje para Marina: Av. Cabo Branco, 1500, ap 302\n- Pagamento: Pix\n\n*Total: R$ 154,80*\n\nEstá tudo certo?' },
           { de: 'cliente', texto: 'Tudo certo!' },
-          { de: 'assistente', texto: '1 minuto! Já te confirmo.' },
+          { de: 'assistente', texto: '1 Minuto!' },
           { de: 'notificacao', titulo: 'Pedido pronto para fechar', texto: 'Lucas · Buquê 12 rosas + Ferrero · entrega hoje', destaque: 'Te entrega o pedido pronto para fechar' },
           { de: 'dono', texto: 'Oi, Lucas! Aqui é a Bia 🌹 Pedido confirmado! Já te mando a chave Pix.' },
           {

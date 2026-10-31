@@ -1,14 +1,21 @@
 @let loja = exemplo();
-<!-- tudo aqui dentro tem o tamanho real da página (375 px) e as mesmas classes da vitrine; o CSS reduz o conjunto -->
-<div class="tela" aria-hidden="true">
+<!--
+  tudo aqui dentro tem o tamanho real da página (375 px) e as mesmas classes da vitrine; o CSS reduz o conjunto.
+  É só ilustração: inert tira os botões do carrossel do foco do teclado.
+-->
+<div class="tela" aria-hidden="true" inert>
   <div class="navegador">
     <app-icone nome="escudo" [tamanho]="13" [espessura]="2" />
     {{ loja.link }}
   </div>
 
   <div #rolagem class="rolagem">
-    <div class="vitrine" [class.vitrine--fundo-pagina]="loja.areaCorFundoGaleria === 'PAGINA'" [class.vitrine--rolada]="rolada()">
-      <div class="container-topo" [class.container-topo--fundo-cabecalho]="loja.areaCorFundoGaleria === 'CABECALHO'">
+    <div
+      class="vitrine"
+      [class.vitrine--fundo-pagina]="areaFundo() === 'PAGINA'"
+      [class.vitrine--agenda]="mostrandoAgenda()"
+    >
+      <div class="container-topo" [class.container-topo--fundo-cabecalho]="areaFundo() === 'CABECALHO'">
         @if (capa(); as imagemCapa) {
           <div class="vitrine__capa"><img [src]="imagemCapa" alt=""></div>
         }
@@ -25,7 +32,7 @@
         </header>
 
         @if (loja.agenda) {
-          <div class="alternar">
+          <div class="alternar" [attr.data-abas]="loja.estiloAbas ?? 'PILULA'">
             <span class="alternar__opcao" [class.alternar__opcao--ativa]="!mostrandoAgenda()">
               <app-icone nome="imagem" [tamanho]="17" />
               Vitrine
@@ -39,7 +46,7 @@
 
         @if (!mostrandoAgenda()) {
           <nav class="categorias" [class.categorias--minimalista]="loja.estiloMenu === 'MINIMALISTA'">
-            @for (categoria of loja.categorias; track categoria; let primeira = $first) {
+            @for (categoria of menu(); track categoria; let primeira = $first) {
               <span class="categoria" [class.categoria--ativa]="primeira">{{ categoria }}</span>
             }
           </nav>
@@ -47,7 +54,7 @@
       </div>
 
       @if (!mostrandoAgenda()) {
-        <main class="albuns">
+        <main class="albuns" [attr.data-layout]="loja.layoutFotos">
           @for (album of albuns(); track album.nome; let primeiro = $first) {
             <section class="album">
               <div class="album__cabecalho">
@@ -56,7 +63,12 @@
               </div>
               <div class="album__grade">
                 @for (foto of album.fotos; track $index; let ordem = $index) {
-                  <span class="album__botao-foto" [style.background]="fundoDaFoto(foto)" [style.animation-delay.ms]="ordem * 40">
+                  <span
+                    class="album__botao-foto"
+                    [style.background]="fundoDaFoto(foto)"
+                    [style.aspect-ratio]="proporcao(ordem)"
+                    [style.animation-delay.ms]="ordem * 40"
+                  >
                     @if (foto.url) {
                       <img class="album__foto" [src]="foto.url" alt="" loading="lazy" decoding="async">
                     }
@@ -71,35 +83,101 @@
               }
             </section>
           }
+
+          <!-- os tópicos de feedbacks e "Como chegar", até onde a página rola na fase "topicos" -->
+          @if (feedbacks().length || loja.endereco) {
+            <div #extras class="extras">
+              @if (feedbacks().length) {
+                <section class="album">
+                  <div class="album__cabecalho">
+                    <span class="album__nome">Feedbacks</span>
+                    <span class="album__contagem">{{ resumoFeedbacks() }}</span>
+                  </div>
+                  <app-carrossel-feedbacks [feedbacks]="feedbacks()" [celular]="true" />
+                </section>
+              }
+              @if (loja.endereco; as endereco) {
+                <section class="album">
+                  <div class="album__cabecalho">
+                    <span class="album__nome">Como chegar</span>
+                  </div>
+                  <!-- o mesmo cartão do MapaLojaComponent, com um mapa desenhado no lugar do Google Maps -->
+                  <div class="mapa">
+                    <div class="mapa__quadro">
+                      <svg class="mapa__desenho" viewBox="0 0 327 190" preserveAspectRatio="xMidYMid slice">
+                        <rect width="327" height="190" fill="#ebe9e4" />
+                        <path d="M-10 150 C 60 128, 120 170, 190 140 S 300 110, 340 128 L 340 200 L -10 200 Z" fill="#c9def0" />
+                        <rect x="214" y="18" width="78" height="54" rx="10" fill="#d4e7cf" />
+                        <rect x="24" y="22" width="56" height="40" rx="8" fill="#d4e7cf" />
+                        <g stroke="#ffffff" stroke-linecap="round">
+                          <path d="M-10 92 L 340 70" stroke-width="12" />
+                          <path d="M120 -10 L 150 200" stroke-width="10" />
+                          <path d="M-10 30 L 340 12" stroke-width="6" />
+                          <path d="M40 -10 L 58 140" stroke-width="6" />
+                          <path d="M250 -10 L 236 130" stroke-width="6" />
+                          <path d="M150 120 L 340 104" stroke-width="5" />
+                        </g>
+                        <path d="M-10 92 L 340 70" stroke="#f6dc8f" stroke-width="5" stroke-linecap="round" />
+                      </svg>
+                      <span class="mapa__ampliar">Ver mapa ampliado</span>
+                      <span class="mapa__pino"><app-icone nome="local" [tamanho]="18" [espessura]="2.2" /></span>
+                    </div>
+                    <div class="mapa__rodape">
+                      <span class="mapa__endereco"><span aria-hidden="true">📍</span>{{ endereco }}</span>
+                      <span class="mapa__botao">
+                        <app-icone nome="seta" [tamanho]="16" [espessura]="2" />
+                        Traçar rota
+                      </span>
+                    </div>
+                  </div>
+                </section>
+              }
+            </div>
+          }
         </main>
       } @else if (loja.agenda) {
         @let agenda = loja.agenda;
-        <!-- a aba "Agendar horário": os mesmos passos da agenda pública, já preenchidos -->
+        @let escolhido = agenda.servicos[0];
+        <!-- a aba "Agendar horário": os passos da agenda pública em cartões, já preenchidos -->
         <main class="agenda">
           <section class="passo">
-            <span class="passo__titulo"><span class="passo__numero passo__numero--feito">1</span>Escolha o serviço</span>
+            <span class="passo__titulo">
+              <span class="passo__numero passo__numero--feito"><app-icone nome="check" [tamanho]="13" [espessura]="3.2" /></span>
+              Escolha o serviço
+            </span>
             <div class="servicos">
               @for (servico of agenda.servicos; track servico.nome; let primeiro = $first) {
                 <span class="servico" [class.servico--escolhido]="primeiro">
-                  <span class="servico__marca">
-                    @if (primeiro) {
-                      <app-icone nome="check" [tamanho]="14" [espessura]="3" />
-                    }
+                  <span class="servico__corpo">
+                    <span class="servico__nome">{{ servico.nome }}</span>
+                    <span class="servico__descricao">{{ servico.descricao }}</span>
+                    <span class="servico__meta">
+                      <span class="servico__preco">{{ servico.preco }}</span>
+                      <span class="servico__ponto"></span>
+                      <span class="servico__duracao"><app-icone nome="relogio" [tamanho]="14" [espessura]="2" /> {{ servico.duracao }}</span>
+                    </span>
                   </span>
-                  <span class="servico__nome">{{ servico.nome }}</span>
-                  <span class="servico__duracao"><app-icone nome="relogio" [tamanho]="14" />{{ servico.duracao }}</span>
+                  <span class="servico__marca">
+                    <app-icone [nome]="primeiro ? 'check' : 'mais'" [tamanho]="15" [espessura]="2.6" />
+                  </span>
                 </span>
               }
             </div>
           </section>
 
           <section class="passo">
-            <span class="passo__titulo"><span class="passo__numero passo__numero--feito">2</span>Escolha o dia</span>
+            <span class="passo__titulo">
+              <span class="passo__numero passo__numero--feito"><app-icone nome="check" [tamanho]="13" [espessura]="3.2" /></span>
+              Escolha o dia
+            </span>
             <app-faixa-dias rotulo="Dias" [itens]="dias()" [selecionado]="diaEscolhido()" />
           </section>
 
           <section class="passo">
-            <span class="passo__titulo"><span class="passo__numero passo__numero--feito">3</span>Escolha o horário</span>
+            <span class="passo__titulo">
+              <span class="passo__numero passo__numero--feito"><app-icone nome="check" [tamanho]="13" [espessura]="3.2" /></span>
+              Escolha o horário
+            </span>
             <div class="turno">
               <span class="turno__nome">Tarde</span>
               <div class="horarios">
@@ -111,19 +189,36 @@
           </section>
 
           <section class="passo">
-            <span class="passo__titulo"><span class="passo__numero passo__numero--feito">4</span>Seu nome</span>
-            <!-- o nome é obrigatório: o resumo e o envio só aparecem depois dele -->
-            @if (rolada()) {
+            <span class="passo__titulo">
+              <!-- o nome é obrigatório: o envio só libera depois dele -->
+              <span class="passo__numero" [class.passo__numero--feito]="agendaPreenchida()">
+                @if (agendaPreenchida()) {
+                  <app-icone nome="check" [tamanho]="13" [espessura]="3.2" />
+                } @else {
+                  4
+                }
+              </span>
+              Seu nome
+            </span>
+            @if (agendaPreenchida()) {
               <span class="campo-nome">{{ agenda.nomeCliente }}</span>
             } @else {
-              <span class="campo-nome campo-nome--vazio">Como podemos te chamar?</span>
+              <span class="campo-nome"><i>Como podemos te chamar?</i></span>
             }
           </section>
 
-          @if (rolada()) {
+          @if (agendaPreenchida()) {
             <div class="resumo">
-              <span class="resumo__linha"><strong>{{ agenda.servicos[0].nome }}</strong> · {{ agenda.servicos[0].duracao }}</span>
-              <span class="resumo__linha">{{ quando() }}</span>
+              <span class="resumo__titulo">Resumo do agendamento</span>
+              <span class="resumo__linha">
+                <span class="resumo__icone"><app-icone nome="brilho" [tamanho]="15" [espessura]="2" /></span>
+                <span><strong>{{ escolhido.nome }}</strong> · {{ escolhido.duracao }}</span>
+              </span>
+              <span class="resumo__linha">
+                <span class="resumo__icone"><app-icone nome="calendario" [tamanho]="15" [espessura]="2" /></span>
+                <span>{{ quando() }}</span>
+              </span>
+              <span class="resumo__total"><span>Total</span><strong>{{ escolhido.preco }}</strong></span>
               <span class="resumo__nota">Ao enviar, o horário é conferido e confirmado na hora pelo WhatsApp.</span>
             </div>
           }
@@ -133,24 +228,30 @@
       <footer class="rodape">
         <span class="rodape__credito">
           Criado com
-          <app-logo [tamanhoSimbolo]="14" [tamanhoTexto]="13" />
+          <app-logo [tamanhoSimbolo]="14" [tamanhoTexto]="13" [variante]="escura() ? 'claro' : 'escuro'" />
         </span>
       </footer>
     </div>
   </div>
 
-  <!-- o botão fixo no rodapé, como na página -->
+  <!-- o botão fixo no rodapé, como na página; na agenda, a barra com o que foi escolhido e o envio -->
   @if (!mostrandoAgenda()) {
     <span class="botao-fixo">
       <app-icone nome="conversa" [tamanho]="20" />
       Falar pelo WhatsApp
     </span>
-  } @else if (rolada()) {
-    <span class="botao-fixo botao-fixo--sombra">
-      <app-icone nome="conversa" [tamanho]="20" />
-      Enviar pelo WhatsApp
-    </span>
-  } @else {
-    <span class="botao-fixo botao-fixo--inativo">Escreva o seu nome</span>
+  } @else if (loja.agenda) {
+    @let servico = loja.agenda.servicos[0];
+    <div class="enviar">
+      <span class="enviar__resumo">{{ servico.nome }} · {{ servico.duracao }} · {{ servico.preco }}</span>
+      <span class="enviar__botao" [class.enviar__botao--inativo]="!agendaPreenchida()">
+        @if (agendaPreenchida()) {
+          <app-icone nome="conversa" [tamanho]="20" />
+          Enviar pelo WhatsApp
+        } @else {
+          Escreva o seu nome
+        }
+      </span>
+    </div>
   }
 </div>

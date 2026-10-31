@@ -12,16 +12,22 @@ import {
 } from '@angular/core';
 
 import { ehFonteManuscrita, fonteComFamilia } from '../../../../core/models/vitrine.model';
+import { FeedbackPublico } from '../../../../core/models/loja-publica.model';
 import { buscarCorMarca } from '../../../../core/constants/cores-marca';
+import { fundoDoDestaque } from '../../../../core/constants/estilos-cor';
 import { diaPorExtenso, hojeIso, somarDias } from '../../../../core/utils/datas-agenda';
 import { FaixaDiasComponent, ItemFaixaDia } from '../../../../shared/components/faixa-dias/faixa-dias.component';
 import { IconeComponent } from '../../../../shared/components/icone/icone.component';
 import { LogoComponent } from '../../../../shared/components/logo/logo.component';
 import { desenharCapaDegrade } from '../../../galeria/seletor-cor-marca/capa-degrade';
+import { CarrosselFeedbacksComponent } from '../../../vitrine-publica/carrossel-feedbacks/carrossel-feedbacks.component';
 import { ExemploGaleria, FotoExemplo } from '../exemplos-galeria';
 
-/** O que a miniatura mostra: a galeria, a aba "Agendar horário" escolhida, ou a mesma aba rolada até o fim. */
-export type FaseVitrine = 'trabalhos' | 'agenda' | 'agenda-fim';
+/**
+ * O que a miniatura mostra: o topo com as fotos, a página rolada até os feedbacks e o "Como chegar", a aba
+ * "Agendar horário" escolhida, ou a mesma aba rolada até o fim.
+ */
+export type FaseVitrine = 'trabalhos' | 'topicos' | 'agenda' | 'agenda-fim';
 
 /** A largura em que a página é desenhada (a de um celular). */
 const LARGURA_PAGINA = 375;
@@ -29,23 +35,35 @@ const LARGURA_PAGINA = 375;
 /** Igual à página: 6 fotos por tópico e "Ver todas as N". */
 const FOTOS_VISIVEIS = 6;
 
+/** Mosaico: as fotos de exemplo são quadradas; estas proporções imitam fotos de alturas diferentes. */
+const PROPORCOES_MOSAICO = ['4 / 5', '1', '3 / 4', '5 / 4', '4 / 5', '1'];
+
 /** A "capa pronta" é desenhada uma vez por cor. */
 const capasDesenhadas = new Map<string, string>();
 
 /**
  * A página pública da loja (/l/{slug}) em miniatura, para a landing. Desenhada no tamanho de um celular de verdade
- * (375 px, com as mesmas medidas e classes da vitrine) e reduzida para caber no aparelho.
- * A faixa de dias da aba "Agendar horário" é o mesmo componente da agenda pública.
+ * (375 px, com as mesmas medidas e classes da vitrine e da agenda pública) e reduzida para caber no aparelho.
+ * Segue o que o lojista escolhe em "Personalizar vitrine": fonte, menu, estilo da cor, abas, fotos e o tema escuro.
+ * O carrossel de feedbacks e a faixa de dias são os próprios componentes da vitrine; o mapa é um desenho (o Google
+ * Maps de verdade pesaria na landing).
  */
 @Component({
   selector: 'app-vitrine-miniatura',
-  imports: [IconeComponent, LogoComponent, FaixaDiasComponent],
+  imports: [IconeComponent, LogoComponent, FaixaDiasComponent, CarrosselFeedbacksComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './vitrine-miniatura.component.html',
-  styleUrl: './vitrine-miniatura.component.css',
+  styleUrls: [
+    './vitrine-miniatura.component.css',
+    './vitrine-miniatura-topicos.css',
+    './vitrine-miniatura-agenda.css',
+  ],
   host: {
-    '[style.--vitrine-destaque]': 'corMarca().hex',
-    '[style.--vitrine-fundo-selecionado]': 'corMarca().fundo',
+    '[class.escura]': 'escura()',
+    '[style.--vitrine-destaque]': 'escura() ? "#ffffff" : corMarca().hex',
+    '[style.--vitrine-destaque-fundo]': 'fundoDestaque()',
+    '[style.--vitrine-fundo-selecionado]': 'escura() ? "#0f0e0d" : corMarca().fundo',
+    '[style.--vitrine-selecao]': 'corSelecao()',
     '[style.--vitrine-fonte]': 'fonte()',
   },
 })
@@ -54,8 +72,22 @@ export class VitrineMiniaturaComponent {
   readonly fase = input<FaseVitrine>('trabalhos');
 
   private readonly rolagem = viewChild<ElementRef<HTMLElement>>('rolagem');
+  private readonly extras = viewChild<ElementRef<HTMLElement>>('extras');
 
   protected readonly corMarca = computed(() => buscarCorMarca(this.exemplo().corMarca));
+  protected readonly escura = computed(() => this.exemplo().temaEscuro === true);
+  /** Os preenchimentos (botões, etiqueta ativa) na cor da loja e no estilo escolhido, como na vitrine. */
+  protected readonly fundoDestaque = computed(() => fundoDoDestaque(this.corMarca().hex, this.exemplo().estiloCor));
+  /** Tema escuro: bordas do que está selecionado na cor da loja (preto e grafite viram um cinza claro), como na vitrine. */
+  protected readonly corSelecao = computed(() => {
+    const hex = this.corMarca().hex;
+    if (!this.escura()) {
+      return null;
+    }
+    return hex === '#151515' || hex === '#3F4652' ? '#8a837d' : hex;
+  });
+  /** No tema escuro a cor de fundo vale para a página toda. */
+  protected readonly areaFundo = computed(() => (this.escura() ? 'PAGINA' : this.exemplo().areaCorFundoGaleria));
   /** Manuscritas ficam com o nome grande; as outras, um pouco menor. */
   protected readonly fonteManuscrita = computed(() => ehFonteManuscrita(this.exemplo().fonteGaleria));
 
@@ -74,16 +106,35 @@ export class VitrineMiniaturaComponent {
     return capasDesenhadas.get(hex) ?? null;
   });
 
-  protected readonly mostrandoAgenda = computed(() => !!this.exemplo().agenda && this.fase() !== 'trabalhos');
-  protected readonly rolada = computed(() => this.mostrandoAgenda() && this.fase() === 'agenda-fim');
+  protected readonly mostrandoAgenda = computed(
+    () => !!this.exemplo().agenda && (this.fase() === 'agenda' || this.fase() === 'agenda-fim'),
+  );
+  protected readonly agendaPreenchida = computed(() => this.mostrandoAgenda() && this.fase() === 'agenda-fim');
 
-  /** Os dois primeiros tópicos viram álbuns, como na página (o segundo aparece cortado embaixo). */
+  /** O menu: os tópicos de fotos e, depois, Feedbacks e Como chegar (na ordem da página). */
+  protected readonly menu = computed(() => {
+    const { categorias, feedbacks, endereco } = this.exemplo();
+    return [...categorias, ...(feedbacks?.length ? ['Feedbacks'] : []), ...(endereco ? ['Como chegar'] : [])];
+  });
+
+  /** Os dois primeiros tópicos viram álbuns, como na página (sem os extras, o segundo aparece cortado embaixo). */
   protected readonly albuns = computed(() => {
     const { categorias, fotos, quantidadeFotos } = this.exemplo();
     return [
       { nome: categorias[0], fotos: fotos.slice(0, FOTOS_VISIVEIS), quantidade: quantidadeFotos },
       { nome: categorias[1], fotos: [...fotos.slice(FOTOS_VISIVEIS), ...fotos.slice(0, 3)], quantidade: 9 },
-    ];
+    ].filter((album) => !!album.nome);
+  });
+
+  /** Os feedbacks no formato do carrossel da vitrine. */
+  protected readonly feedbacks = computed<FeedbackPublico[]>(() =>
+    (this.exemplo().feedbacks ?? []).map((feedback, indice) => ({ id: indice + 1, ...feedback })),
+  );
+  protected readonly resumoFeedbacks = computed(() => {
+    const feedbacks = this.feedbacks();
+    const media = feedbacks.reduce((soma, f) => soma + f.estrelas, 0) / Math.max(1, feedbacks.length);
+    const nota = media.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    return `★ ${nota} · ${feedbacks.length} ${feedbacks.length === 1 ? 'avaliação' : 'avaliações'}`;
   });
 
   /** Os próximos dias, como a agenda pública mostra: domingo fechado, um dia lotado. */
@@ -103,7 +154,11 @@ export class VitrineMiniaturaComponent {
   protected readonly diaEscolhido = computed(() => this.dias().find((dia) => !dia.desativado)?.data ?? '');
   protected readonly quando = computed(() => {
     const agenda = this.exemplo().agenda;
-    return agenda ? `${diaPorExtenso(this.diaEscolhido())} às ${agenda.horaEscolhida}` : '';
+    if (!agenda) {
+      return '';
+    }
+    const dia = diaPorExtenso(this.diaEscolhido());
+    return `${dia.charAt(0).toUpperCase()}${dia.slice(1)} às ${agenda.horaEscolhida}`;
   });
 
   constructor() {
@@ -116,14 +171,24 @@ export class VitrineMiniaturaComponent {
     });
     inject(DestroyRef).onDestroy(() => this.desligar());
 
-    // "rola" a página até o fim para mostrar o nome, o resumo e o envio; volta ao topo nas outras fases
+    // "rola" a página: até os feedbacks/Como chegar, até o fim da agenda preenchida ou de volta ao topo
     effect(() => {
-      const rolada = this.rolada();
+      const fase = this.fase();
       this.exemplo();
-      // depois de desenhar o nome e o resumo
+      // depois de desenhar o que a fase mostra
       setTimeout(() => {
         const caixa = this.rolagem()?.nativeElement;
-        caixa?.scrollTo({ top: rolada ? caixa.scrollHeight : 0, behavior: rolada ? 'smooth' : 'instant' });
+        if (!caixa) {
+          return;
+        }
+        const extras = this.extras()?.nativeElement;
+        if (fase === 'topicos' && extras) {
+          caixa.scrollTo({ top: extras.offsetTop - 24, behavior: 'smooth' });
+        } else if (fase === 'agenda-fim') {
+          caixa.scrollTo({ top: caixa.scrollHeight, behavior: 'smooth' });
+        } else {
+          caixa.scrollTo({ top: 0, behavior: 'instant' });
+        }
       }, 60);
     });
   }
@@ -132,5 +197,10 @@ export class VitrineMiniaturaComponent {
 
   protected fundoDaFoto(foto: FotoExemplo): string {
     return `radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.55), transparent 45%), linear-gradient(150deg, ${foto.claro}, ${foto.escuro})`;
+  }
+
+  /** No mosaico cada foto tem uma altura; nos outros layouts quem manda é o CSS. */
+  protected proporcao(ordem: number): string | null {
+    return this.exemplo().layoutFotos === 'MOSAICO' ? PROPORCOES_MOSAICO[ordem % PROPORCOES_MOSAICO.length] : null;
   }
 }

@@ -185,6 +185,8 @@
           aria-required="true"
           [value]="nome()"
           (input)="digitarNome($event)"
+          (change)="terminarNome()"
+          (keydown.enter)="$any($event.target).blur()"
         >
       </section>
 

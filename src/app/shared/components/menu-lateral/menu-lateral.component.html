@@ -12,7 +12,11 @@
   </div>
 
   <div class="menu__marca">
-    <span class="menu__marca-icone"><app-icone [nome]="icone()" [tamanho]="20" [espessura]="2" /></span>
+    @if (logo(); as logo) {
+      <img class="menu__marca-logo" [src]="logo | urlImagem" alt="">
+    } @else {
+      <span class="menu__marca-icone"><app-icone [nome]="icone()" [tamanho]="20" [espessura]="2" /></span>
+    }
     <span class="menu__marca-textos">
       <b>{{ titulo() }}</b>
       @if (subtitulo()) {

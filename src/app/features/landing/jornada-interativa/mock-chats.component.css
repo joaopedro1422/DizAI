@@ -1,26 +1,57 @@
-/* Tela de Chats no tamanho real: os mesmos valores do cabecalho-pagina, chats-page e conversa-aguardando-card */
-.cabecalho {
+/* Tela de Chats no tamanho real: os mesmos valores de estilos-topo-azul, chats-page e conversa-aguardando-card */
+.topo-azul {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 16px 24px 18px;
+  gap: 12px;
+  padding: 12px 18px 16px;
+  background: linear-gradient(160deg, var(--cor-primaria) 0%, #2c4f9e 100%);
+  color: #ffffff;
 }
 
-.cabecalho__voltar {
-  margin-left: -10px;
-  color: var(--cor-texto);
-}
-
-.cabecalho__textos {
+.topo-azul__linha {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-.cabecalho__subtitulo {
+.topo-azul__voltar {
+  display: inline-flex;
+  margin-left: -6px;
+  padding: 6px;
+}
+
+.botao-clientes {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: var(--raio-pilula);
+  background: rgba(255, 255, 255, 0.12);
   font-size: 14px;
-  line-height: 1.5;
-  color: var(--cor-texto-suave);
+  font-weight: 700;
+}
+
+.topo-azul__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.topo-azul__titulo {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.topo-azul__sub {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--cor-texto-sobre-escuro);
 }
 
 .abas {
@@ -29,7 +60,7 @@
   gap: 4px;
   padding: 4px;
   border-radius: var(--raio-medio);
-  background: var(--cor-primaria-clara);
+  background: rgba(10, 22, 52, 0.32);
 }
 
 .aba {
@@ -39,16 +70,16 @@
   gap: 8px;
   min-height: 44px;
   border-radius: 11px;
-  color: var(--cor-texto-secundario);
+  color: rgba(255, 255, 255, 0.82);
   font-size: 14px;
   font-weight: 600;
 }
 
 .aba--ativa {
-  background: var(--cor-fundo);
-  color: var(--cor-texto);
+  background: #ffffff;
+  color: var(--cor-primaria);
   font-weight: 700;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 2px 8px rgba(10, 20, 45, 0.25);
 }
 
 .aba__contador {

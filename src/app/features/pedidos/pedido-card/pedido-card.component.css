@@ -148,8 +148,10 @@
 
 .acoes .btn {
   min-height: 46px;
+  padding: 0 10px;
   border-radius: 12px;
   font-size: 14px;
+  white-space: nowrap;
 }
 
 /* Computador (quadro da cozinha): um pouco maior, para ler de longe */

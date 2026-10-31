@@ -1,10 +1,14 @@
 <app-telefone-demo>
   <main class="galeria-demo" [class.galeria-demo--marrom]="etapa() === 'cor'">
-    <!-- cabeçalho igual ao da tela Galeria do painel: voltar + "Ver página pública", título + "Personalizar vitrine" -->
+    <!-- cabeçalho igual ao da tela Galeria do painel: voltar + o link da vitrine (copiar), título + "Personalizar vitrine" -->
     <header class="galeria-demo__cabecalho">
       <div class="galeria-demo__topo">
         <span class="galeria-demo__voltar"><app-icone nome="voltar" [tamanho]="17" /></span>
-        <span class="galeria-demo__link"><app-icone nome="externo" [tamanho]="11" [espessura]="2" /> Ver página pública</span>
+        <span class="galeria-demo__link">
+          <app-icone nome="link" [tamanho]="11" [espessura]="2" />
+          <span class="galeria-demo__link-texto">dizai.com/l/pedacinho-do-ceu</span>
+          <span class="galeria-demo__link-copiar"><app-icone nome="copiar" [tamanho]="11" [espessura]="2" /></span>
+        </span>
       </div>
       <div class="galeria-demo__linha-titulo">
         <h1 class="galeria-demo__titulo">Galeria</h1>
@@ -96,19 +100,49 @@
           <h2>Personalizar vitrine</h2>
           <span><app-icone nome="fechar" [tamanho]="16" /></span>
         </header>
+        <!-- os mesmos campos do seletor-cor-marca, na mesma ordem (a janela continua com o fundo, as abas e as fotos) -->
         <div class="galeria-demo__cor">
-          <div><strong>Cor de destaque</strong><p>Usada nas categorias, no botão do WhatsApp e em detalhes da vitrine. Atual: <b>Marrom</b>.</p></div>
+          <strong>Cor de destaque</strong>
+          <span class="galeria-demo__estilo">
+            <i class="galeria-demo__estilo-amostra"></i>
+            <span><b>Normal</b><small>Cor chapada, como sempre</small></span>
+            <app-icone nome="setaBaixo" [tamanho]="12" [espessura]="2.4" />
+          </span>
           <div class="galeria-demo__paleta" role="radiogroup" aria-label="Cor de destaque">
-            <span role="radio" aria-checked="false" style="background:#151515"></span><span role="radio" aria-checked="false" style="background:#3f4652"></span>
-            <span role="radio" aria-checked="false" style="background:#1e3a72"></span><span role="radio" aria-checked="false" style="background:#0f4c5c"></span>
-            <span role="radio" aria-checked="false" style="background:#1d5a36"></span><span role="radio" aria-checked="false" style="background:#4a5a23"></span>
-            <span role="radio" aria-checked="false" style="background:#8a6100"></span><span role="radio" aria-checked="false" style="background:#a3410f"></span>
-            <span role="radio" aria-checked="false" style="background:#8e1b2b"></span>
-            <span role="radio" aria-checked="false" style="background:#a12a63"></span>
-            <span role="radio" aria-checked="false" style="background:#5b2a86"></span>
-            <span class="galeria-demo__marrom" role="radio" aria-checked="true" aria-label="Marrom selecionado"><app-icone nome="check" [tamanho]="14" [espessura]="3" /></span>
+            <span role="radio" aria-checked="false" style="background:#151515"></span>
+            <span role="radio" aria-checked="false" style="background:#3F4652"></span>
+            <span role="radio" aria-checked="false" style="background:#1E3A72"></span>
+            <span role="radio" aria-checked="false" style="background:#0F4C5C"></span>
+            <span role="radio" aria-checked="false" style="background:#1D5A36"></span>
+            <span role="radio" aria-checked="false" style="background:#4A5A23"></span>
+            <span role="radio" aria-checked="false" style="background:#8A6100"></span>
+            <span role="radio" aria-checked="false" style="background:#A3410F"></span>
+            <span role="radio" aria-checked="false" style="background:#8E1B2B"></span>
+            <span role="radio" aria-checked="false" style="background:#A12A63"></span>
+            <span role="radio" aria-checked="false" style="background:#5B2A86"></span>
+            <span class="galeria-demo__marrom" role="radio" aria-checked="true" aria-label="Marrom selecionado"><app-icone nome="check" [tamanho]="13" [espessura]="3" /></span>
+            <span role="radio" aria-checked="false" style="background:#5FA80A"></span>
+            <span role="radio" aria-checked="false" style="background:#16A34A"></span>
+            <span role="radio" aria-checked="false" style="background:#0891B2"></span>
+            <span role="radio" aria-checked="false" style="background:#2563EB"></span>
+            <span role="radio" aria-checked="false" style="background:#7C3AED"></span>
+            <span role="radio" aria-checked="false" style="background:#E11D74"></span>
+            <span role="radio" aria-checked="false" style="background:#DC2626"></span>
+            <span role="radio" aria-checked="false" style="background:#F2690D"></span>
           </div>
-          <div class="galeria-demo__fonte"><strong>Fonte</strong><span>Playfair Display</span></div>
+          <strong>Fonte</strong>
+          <span class="galeria-demo__fonte">Playfair Display <app-icone nome="setaBaixo" [tamanho]="12" [espessura]="2.4" /></span>
+          <strong>Menu de categorias</strong>
+          <div class="galeria-demo__menus">
+            <span class="galeria-demo__menu galeria-demo__menu--marcado">
+              <span class="galeria-demo__menu-previa"><i class="ativa">Bolos</i><i>Tortas</i></span>
+              Arredondado
+            </span>
+            <span class="galeria-demo__menu">
+              <span class="galeria-demo__menu-previa galeria-demo__menu-previa--minimalista"><i class="ativa">Bolos</i><i>Tortas</i></span>
+              Minimalista
+            </span>
+          </div>
           <span class="galeria-demo__botao galeria-demo__botao--salvar">Salvar alterações</span>
         </div>
       </section>

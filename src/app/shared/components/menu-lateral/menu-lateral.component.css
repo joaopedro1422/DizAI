@@ -90,6 +90,15 @@
   color: #ffffff;
 }
 
+.menu__marca-logo {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px var(--cor-borda);
+}
+
 .menu__marca-textos {
   display: flex;
   flex-direction: column;

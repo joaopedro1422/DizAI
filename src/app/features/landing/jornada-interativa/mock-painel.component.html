@@ -4,7 +4,10 @@
       <div class="app-tela">
         <!-- Tela "Produtos" do painel: cabeçalho, botão, filtros e cards -->
         <header class="cabecalho">
-          <span class="cabecalho__voltar"><app-icone nome="voltar" [tamanho]="17" /></span>
+          <span class="cabecalho__topo">
+            <span class="cabecalho__voltar"><app-icone nome="voltar" [tamanho]="17" /></span>
+            <span class="cabecalho__video"><app-icone nome="reproduzir" [tamanho]="9" /> Vídeo</span>
+          </span>
           <h1 class="titulo-pagina">Produtos</h1>
           <p class="cabecalho__subtitulo">{{ etapaProduto() === 'salvo' ? '3 cadastrados' : '2 cadastrados' }}</p>
           <span class="botao botao--primario botao--largo" [class.botao--tocado]="etapaProduto() === 'tocando'">
@@ -115,11 +118,20 @@
       <div class="app-tela">
         <!-- Tela "Serviços" do painel (ramo de serviço): o mesmo cadastro, com a duração do atendimento -->
         <header class="cabecalho">
-          <span class="cabecalho__voltar"><app-icone nome="voltar" [tamanho]="17" /></span>
+          <span class="cabecalho__topo">
+            <span class="cabecalho__voltar"><app-icone nome="voltar" [tamanho]="17" /></span>
+            <span class="cabecalho__video"><app-icone nome="reproduzir" [tamanho]="9" /> Vídeo</span>
+          </span>
           <h1 class="titulo-pagina">Serviços</h1>
           <p class="cabecalho__subtitulo">{{ etapaProduto() === 'salvo' ? '3 cadastrados' : '2 cadastrados' }}</p>
-          <span class="botao botao--primario botao--largo" [class.botao--tocado]="etapaProduto() === 'tocando'">
-            <app-icone nome="mais" [tamanho]="14" [espessura]="2" /> Adicionar serviço
+          <!-- nos serviços, "Adicionar produto" (produto à venda) fica ao lado -->
+          <span class="botoes-cadastro">
+            <span class="botao botao--primario botao--largo" [class.botao--tocado]="etapaProduto() === 'tocando'">
+              <app-icone nome="mais" [tamanho]="14" [espessura]="2" /> Adicionar serviço
+            </span>
+            <span class="botao botao--secundario botao--largo">
+              <app-icone nome="mais" [tamanho]="14" [espessura]="2" /> Adicionar produto
+            </span>
           </span>
         </header>
         <div class="filtros"><span class="chip chip--ativo">Todos</span><span class="chip">Mãos</span><span class="chip">Pés</span></div>
@@ -215,11 +227,6 @@
                   </div>
                   <span class="campo__dica">A agenda usa a duração para saber quais horários cabem este serviço.</span>
                 </div>
-                <div class="campo">
-                  <span class="campo__rotulo">Opções que o cliente escolhe</span>
-                  <span class="campo__dica">Ex.: Formato → amendoado, quadrado, bailarina. Deixe vazio se não tiver.</span>
-                  <span class="botao botao--secundario botao--pequeno"><app-icone nome="mais" [tamanho]="12" [espessura]="2" /> Adicionar opção</span>
-                </div>
               </div>
             </div>
             <span class="botao botao--primario botao--grande" [class.botao--tocado]="etapaProduto() === 'salvando'">
@@ -305,6 +312,18 @@
                 <span class="campo__dica">Escreva do seu jeito, separando os itens por vírgula.</span>
               </div>
             }
+            <!-- mensagens-repasse: o que o cliente recebe na passagem (cada uma editável) -->
+            <div class="repasse">
+              <span class="repasse__titulo">O que o cliente recebe quando a conversa passa para você</span>
+              <span class="repasse__linha">
+                <span><b>{{ coletarDados() ? 'Ao anotar o pedido' : 'Quando o cliente quiser fechar' }}</b><small>"1 Minuto!"</small></span>
+                <span class="repasse__editar"><app-icone nome="editar" [tamanho]="9" /> Editar</span>
+              </span>
+              <span class="repasse__linha">
+                <span><b>Quando não souber responder</b><small>"Vou confirmar, 1 minuto"</small></span>
+                <span class="repasse__editar"><app-icone nome="editar" [tamanho]="9" /> Editar</span>
+              </span>
+            </div>
           </section>
         </main>
         @if (alterado()) {

@@ -2,19 +2,26 @@ import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, injec
 import { RouterLink } from '@angular/router';
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
-import { EXEMPLOS_GALERIA } from './exemplos-galeria';
+import { EXEMPLOS_GALERIA, ExemploGaleria } from './exemplos-galeria';
 import { FaseVitrine, VitrineMiniaturaComponent } from './vitrine-miniatura/vitrine-miniatura.component';
 
-/** Quanto tempo cada momento fica na tela. Lojas com agenda mostram a galeria e depois a aba "Agendar horário". */
-const TEMPO_GALERIA_MS = 7000;
-const TEMPOS_COM_AGENDA: { fase: FaseVitrine; ms: number }[] = [
-  { fase: 'trabalhos', ms: 4500 },
-  { fase: 'agenda', ms: 3200 },
-  { fase: 'agenda-fim', ms: 4300 },
-];
+/**
+ * Os momentos de cada loja e quanto tempo cada um fica na tela: o topo com as fotos; a página rolada até os feedbacks
+ * e o "Como chegar" (quando a loja tem); e, nas lojas com agenda, a aba "Agendar horário" e o fim dela preenchido.
+ */
+function momentos(exemplo: ExemploGaleria): { fase: FaseVitrine; ms: number }[] {
+  const temExtras = !!exemplo.feedbacks?.length || !!exemplo.endereco;
+  const lista: { fase: FaseVitrine; ms: number }[] = temExtras
+    ? [{ fase: 'trabalhos', ms: 3800 }, { fase: 'topicos', ms: 5200 }]
+    : [{ fase: 'trabalhos', ms: exemplo.agenda ? 4500 : 7000 }];
+  if (exemplo.agenda) {
+    lista.push({ fase: 'agenda', ms: 3200 }, { fase: 'agenda-fim', ms: 4300 });
+  }
+  return lista;
+}
 
 const BENEFICIOS = [
-  'Fotos separadas em tópicos',
+  'Fotos separadas em tópicos, feedbacks dos clientes e o mapa de como chegar',
   'Personalize do seu jeito, com a sua cor e a sua logo',
   'Link para colocar na bio do Instagram',
   'O assistente envia o link quando o cliente pergunta por fotos e exemplos',
@@ -56,11 +63,10 @@ export class SecaoGaleriaComponent implements OnInit {
 
   /** Espera o momento atual acabar e passa para o próximo (a próxima fase ou a próxima loja). */
   private agendar(): void {
-    const comAgenda = !!this.exemploAtual().agenda;
-    const espera = comAgenda ? TEMPOS_COM_AGENDA[this.etapa].ms : TEMPO_GALERIA_MS;
+    const espera = momentos(this.exemploAtual())[this.etapa].ms;
     this.temporizador = setTimeout(() => {
       if (!this.pausado() && !document.hidden) {
-        this.avancar(comAgenda);
+        this.avancar();
       }
       this.agendar();
     }, espera);
@@ -79,20 +85,20 @@ export class SecaoGaleriaComponent implements OnInit {
   private escolher(indice: number): void {
     clearTimeout(this.temporizador);
     this.etapa = 0;
-    this.fase.set(TEMPOS_COM_AGENDA[0].fase);
+    this.fase.set('trabalhos');
     this.indiceAtual.set(indice);
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       this.agendar();
     }
   }
 
-  private avancar(comAgenda: boolean): void {
-    if (comAgenda && this.etapa < TEMPOS_COM_AGENDA.length - 1) {
+  private avancar(): void {
+    if (this.etapa < momentos(this.exemploAtual()).length - 1) {
       this.etapa += 1;
     } else {
       this.etapa = 0;
       this.indiceAtual.update((indice) => (indice + 1) % EXEMPLOS_GALERIA.length);
     }
-    this.fase.set(TEMPOS_COM_AGENDA[this.etapa].fase);
+    this.fase.set(momentos(this.exemploAtual())[this.etapa].fase);
   }
 }

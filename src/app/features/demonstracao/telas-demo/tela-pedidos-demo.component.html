@@ -1,36 +1,14 @@
-<!-- cópia de pedidos-page.component.html (celular, aba "Em andamento", filtro "Todos") -->
-<header class="topo-azul">
-  <div class="topo-azul__linha">
-    <span class="topo-azul__voltar"><app-icone nome="voltar" [tamanho]="22" /></span>
+<!-- cópia de pedidos-page.component.html (celular, página "Pedidos", filtro "Todos") -->
+<header class="topo-menu">
+  <span class="topo-menu__menu"><app-icone nome="menu" [tamanho]="22" [espessura]="2" /></span>
+  <div class="topo-menu__textos">
+    <span class="topo-menu__sobre">Pedidos</span>
+    <h1 class="topo-menu__titulo">Pedidos</h1>
   </div>
-  <div class="topo-azul__identidade topo-pedidos">
-    <div class="topo-azul__textos">
-      <h1 class="topo-azul__titulo">Pedidos</h1>
-    </div>
-    <div class="abas">
-      <span class="aba aba--ativa">
-        <app-icone nome="caixa" [tamanho]="16" />
-        Em andamento
-        @if (fase() !== 'entregue') {
-          <span class="aba__contador">1</span>
-        }
-      </span>
-      <span class="aba">
-        <app-icone nome="grafico" [tamanho]="16" />
-        Números
-      </span>
-    </div>
-  </div>
+  <span class="topo-menu__acao"><app-icone nome="mais" [tamanho]="20" [espessura]="2.2" /></span>
 </header>
 
 <main class="conteudo-tela pedidos">
-  <div class="acoes-pedidos">
-    <span class="btn btn--secundario btn--pequeno">
-      <app-icone nome="mais" [tamanho]="16" [espessura]="2.2" />
-      Registrar pedido
-    </span>
-  </div>
-
   @if (fase() === 'entregue') {
     <app-estado-vazio
       icone="caixa"
@@ -92,16 +70,6 @@
     </div>
   }
 
-  <div class="pedidos__rodape">
-    <span class="btn btn--secundario pedidos__chats">
-      <app-icone nome="conversa" [tamanho]="16" />
-      Pedidos esperando no Chats
-    </span>
-    <span class="btn btn--texto btn--pequeno">
-      <app-icone nome="conversa" [tamanho]="16" />
-      Mensagens prontas
-    </span>
-  </div>
 </main>
 
 <!-- cópia de bottom-sheet + acao-pedido ('entregue') + aviso-cliente -->

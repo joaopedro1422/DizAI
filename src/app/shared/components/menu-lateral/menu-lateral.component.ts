@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { AlvoTourDirective } from '../../../features/painel/onboarding/alvo-tour.directive';
 import { AlvoTour } from '../../../features/painel/onboarding/onboarding-tour.service';
+import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
+import { PerfilService } from '../../../core/services/perfil.service';
 import { IconeComponent } from '../icone/icone.component';
 import { NomeIcone } from '../icone/icones';
 
@@ -27,7 +29,7 @@ export interface GrupoMenuLateral {
  */
 @Component({
   selector: 'app-menu-lateral',
-  imports: [RouterLink, IconeComponent, AlvoTourDirective],
+  imports: [RouterLink, IconeComponent, AlvoTourDirective, UrlImagemPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './menu-lateral.component.html',
   styleUrl: './menu-lateral.component.css',
@@ -52,4 +54,8 @@ export class MenuLateralComponent {
   readonly escolher = output<string>();
   readonly fechar = output<void>();
   readonly ajuda = output<void>();
+
+  /** A logo da loja no lugar do ícone da tela (sem logo cadastrada, fica o ícone). */
+  private readonly perfil = inject(PerfilService).perfil;
+  protected readonly logo = computed(() => this.perfil().fotoPerfilUrl);
 }

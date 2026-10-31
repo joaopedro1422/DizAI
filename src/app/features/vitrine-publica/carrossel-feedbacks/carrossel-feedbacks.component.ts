@@ -16,6 +16,7 @@ const TEMPO_POR_SLIDE_MS = 6000;
   imports: [IconeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
+    '[class.carrossel--celular]': 'celular()',
     '(mouseenter)': 'pausado.set(true)',
     '(mouseleave)': 'pausado.set(false)',
     '(focusin)': 'pausado.set(true)',
@@ -257,11 +258,11 @@ const TEMPO_POR_SLIDE_MS = 6000;
     }
 
     @media (min-width: 720px) {
-      .cartao {
+      :host(:not(.carrossel--celular)) .cartao {
         padding: 38px 40px 30px;
       }
 
-      .cartao__texto {
+      :host(:not(.carrossel--celular)) .cartao__texto {
         font-size: 17px;
       }
     }
@@ -275,6 +276,8 @@ const TEMPO_POR_SLIDE_MS = 6000;
 })
 export class CarrosselFeedbacksComponent implements OnInit {
   readonly feedbacks = input.required<FeedbackPublico[]>();
+  /** Sempre no tamanho do celular, mesmo numa tela larga (a vitrine em miniatura da landing). */
+  readonly celular = input(false);
 
   protected readonly atual = signal(0);
   protected readonly pausado = signal(false);

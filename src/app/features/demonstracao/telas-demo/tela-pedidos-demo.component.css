@@ -1,113 +1,78 @@
 /*
- * CÓPIA das regras de celular de estilos-topo-azul, pedidos-page, pedido-card, bottom-sheet, acao-pedido e aviso-cliente
+ * CÓPIA das regras de celular de estilos-tela-com-menu (topo-menu), pedidos-page, pedido-card, bottom-sheet, acao-pedido e aviso-cliente
  * (sem as regras @media min-width, que no hero, dentro de um computador, mudariam o layout).
  * Gerado a partir do CSS real: ao mudar a tela real, atualize esta cópia.
  */
 
-/* ---- estilos-topo-azul.css ---- */
-/*
- * Topo azul das telas de gestão (o mesmo desenho da tela do assistente): voltar, título e as abas num azul mais
- * escuro, com a ativa em branco. Usado pela Agenda e pelos Pedidos (styleUrls de cada tela).
- */
-.topo-azul {
+/* ---- estilos-tela-com-menu.css (só o topo-menu) ---- */
+.topo-menu {
+  position: sticky;
+  top: 0;
+  z-index: 30;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 12px 18px 16px;
-  padding-top: calc(12px + env(safe-area-inset-top));
+  align-items: center;
+  gap: 8px;
+  padding: 10px 10px 10px 8px;
+  padding-top: calc(10px + env(safe-area-inset-top));
   background: linear-gradient(160deg, var(--cor-primaria) 0%, #2C4F9E 100%);
   color: #ffffff;
+  box-shadow: 0 2px 12px rgba(10, 20, 45, 0.16);
 }
 
-.topo-azul__linha {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.topo-azul__voltar {
-  display: inline-flex;
-  margin-left: -6px;
-  padding: 6px;
-  border-radius: 10px;
+.topo-menu__menu,
+.topo-menu__acao {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
   color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
 }
 
-.topo-azul__voltar:hover {
-  background: rgba(255, 255, 255, 0.12);
+.topo-menu__acao {
+  background: rgba(255, 255, 255, 0.14);
 }
 
-.topo-azul__identidade {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.topo-menu__menu:hover,
+.topo-menu__acao:hover {
+  background: rgba(255, 255, 255, 0.22);
 }
 
-.topo-azul__textos {
+.topo-menu__textos {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 2px;
   min-width: 0;
 }
 
-.topo-azul__titulo {
+.topo-menu__sobre {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  opacity: 0.72;
+}
+
+.topo-menu__titulo {
+  overflow: hidden;
   margin: 0;
   font-family: var(--fonte-titulo);
-  font-size: 24px;
+  font-size: 19px;
   font-weight: 600;
-  line-height: 1.15;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.topo-azul .abas {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4px;
-  padding: 4px;
-  border: none;
-  border-radius: var(--raio-medio);
-  background: rgba(10, 22, 52, 0.32);
-}
-
-.topo-azul .aba {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px;
-  border: none;
-  border-radius: 11px;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-
-.topo-azul .aba:not(.aba--ativa):hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-}
-
-.topo-azul .aba--ativa {
-  background: #ffffff;
-  color: var(--cor-primaria);
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(10, 20, 45, 0.25);
+.topo-menu__descricao {
+  display: none;
 }
 
 /* ---- pedidos-page.component.css ---- */
-/* No celular as abas vão embaixo do título (quebram a linha); no computador, ao lado */
-.topo-pedidos {
-  flex-wrap: wrap;
-}
-
-.topo-pedidos .abas {
-  flex: 1 1 100%;
-}
-
 .pedidos {
   display: flex;
   flex-direction: column;
@@ -120,39 +85,6 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-}
-
-.pedidos__rodape {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-}
-
-.pedidos__chats {
-  width: 100%;
-}
-
-.aba__contador {
-  min-width: 20px;
-  padding: 1px 6px;
-  border-radius: var(--raio-pilula);
-  background: #ffffff;
-  color: var(--cor-primaria);
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.aba--ativa .aba__contador {
-  background: var(--cor-primaria);
-  color: #ffffff;
-}
-
-/* "Registrar pedido": botão no topo da aba "Em andamento" */
-.acoes-pedidos {
-  display: flex;
-  justify-content: flex-end;
 }
 
 /* ---- pedido-card.component.css (:host = .pedido-card) ---- */
@@ -277,6 +209,19 @@
   font-variant-numeric: tabular-nums;
 }
 
+.rodape__valores {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rodape__pago {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cor-sucesso);
+  font-variant-numeric: tabular-nums;
+}
+
 .rodape__whatsapp {
   color: var(--cor-primaria);
 }
@@ -293,8 +238,10 @@
 
 .acoes .btn {
   min-height: 46px;
+  padding: 0 10px;
   border-radius: 12px;
   font-size: 14px;
+  white-space: nowrap;
 }
 
 /* ---- bottom-sheet.component.css (:host = .folha-demo) ---- */
@@ -377,6 +324,13 @@
   font-size: 14px;
   line-height: 1.55;
   color: var(--cor-texto-secundario);
+}
+
+/* Valor do pedido à esquerda e "Já pago" (sinal) à direita */
+.valores {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
 /* ---- aviso-cliente.component.css (:host = .aviso-demo) ---- */

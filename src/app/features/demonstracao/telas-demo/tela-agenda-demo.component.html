@@ -1,36 +1,11 @@
-<!-- cópia de agenda-page.component.html (celular, aba "Agendamentos", visualização resumida) -->
-<header class="topo-azul">
-  <div class="topo-azul__linha">
-    <span class="topo-azul__voltar"><app-icone nome="voltar" [tamanho]="22" /></span>
-    <span class="link-topo">
-      <span class="link-topo__url">
-        <app-icone nome="link" [tamanho]="15" [espessura]="2" />
-        <span class="link-topo__texto">{{ agenda().link }}</span>
-      </span>
-      <span class="link-topo__copiar"><app-icone nome="copiar" [tamanho]="15" [espessura]="2" /></span>
-    </span>
+<!-- cópia de agenda-page.component.html (celular, página "Agendamentos", visualização resumida) -->
+<header class="topo-menu">
+  <span class="topo-menu__menu"><app-icone nome="menu" [tamanho]="22" [espessura]="2" /></span>
+  <div class="topo-menu__textos">
+    <span class="topo-menu__sobre">Minha Agenda</span>
+    <h1 class="topo-menu__titulo">Agendamentos</h1>
   </div>
-
-  <div class="topo-azul__identidade">
-    <div class="topo-azul__textos">
-      <h1 class="topo-azul__titulo">Minha Agenda</h1>
-    </div>
-    <span class="botao-numeros">
-      <app-icone nome="grafico" [tamanho]="16" [espessura]="2" />
-      Números
-    </span>
-  </div>
-
-  <div class="abas">
-    <span class="aba aba--ativa">
-      <app-icone nome="calendario" [tamanho]="16" />
-      Agendamentos
-    </span>
-    <span class="aba">
-      <app-icone nome="ajustes" [tamanho]="16" />
-      Configure
-    </span>
-  </div>
+  <span class="topo-menu__acao"><app-icone nome="link" [tamanho]="18" [espessura]="2" /></span>
 </header>
 
 <main class="conteudo-tela agendamentos">
@@ -54,13 +29,14 @@
   <div class="agenda-principal">
     <div class="dia">
       <div class="dia__cabecalho">
-        <h2 class="dia__titulo">{{ agenda().titulo }}</h2>
+        <span class="dia__titulo-linha">
+          <h2 class="dia__titulo">{{ agenda().titulo }}</h2>
+        </span>
         <span class="dia__resumo">{{ resumo() }}</span>
       </div>
     </div>
 
     <div class="visualizacao">
-      <span class="visualizacao__rotulo">Visualização</span>
       <span class="visualizacao__campo">
         <select class="visualizacao__select" tabindex="-1" aria-hidden="true">
           <option selected>Resumida</option>
@@ -109,10 +85,6 @@
       <span class="btn btn--secundario btn--bloco">
         <app-icone nome="calendarioFolga" [tamanho]="18" />
         Não vou atender neste dia
-      </span>
-      <span class="btn btn--texto btn--pequeno acoes-dia__mensagens">
-        <app-icone nome="conversa" [tamanho]="16" />
-        Mensagens prontas
       </span>
     </div>
   </div>

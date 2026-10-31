@@ -12,9 +12,11 @@
 
 .linha-preco__valor {
   flex: 1;
+  min-width: 0;
 }
 
 .linha-preco__a-partir {
+  flex: none;
   min-height: 50px;
   border-radius: 12px;
 }
