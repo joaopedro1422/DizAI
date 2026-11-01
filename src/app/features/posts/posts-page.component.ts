@@ -54,16 +54,6 @@ const OPCOES = 4;
 const HISTORICO_MAXIMO = 24;
 const MAXIMO_CARDAPIO = 6;
 
-/** Um atalho de "O que postar hoje": tirado dos dados da loja, cria as artes num toque. */
-interface Sugestao {
-  id: string;
-  titulo: string;
-  motivo: string;
-  icone: NomeIcone;
-  imagem: string | null;
-  aplicar: () => void;
-}
-
 /** O que a geração usou (para "Outras artes" e "Outros textos" refazerem só uma parte). */
 interface BaseDoPost {
   tipo: TipoPost;
@@ -127,6 +117,10 @@ export class PostsPageComponent implements OnInit {
   // ---------------------------------------------------------------- agenda (horários livres)
   protected readonly servicosAgenda = signal<ServicoAgenda[]>([]);
   protected readonly horariosAgenda = signal<DiaLivre[]>([]);
+  /** Os dias que vão para a arte (às vezes o lojista só quer divulgar o dia seguinte). */
+  protected readonly diasMarcados = signal<string[]>([]);
+  protected readonly diasDaArte = computed(() => this.horariosAgenda().filter((d) => this.diasMarcados().includes(d.dia)));
+  private readonly intervaloAgenda = signal(15);
   protected readonly carregandoAgenda = signal(false);
 
   // ---------------------------------------------------------------- resultado
@@ -203,70 +197,6 @@ export class PostsPageComponent implements OnInit {
     };
   });
 
-  /**
-   * "O que postar hoje": ideias tiradas dos dados da loja (horários livres de verdade, o feedback mais recente, a
-   * foto nova, um item com foto e preço). Uma IA genérica não sabe nada disso; aqui é um toque e as artes saem.
-   */
-  protected readonly sugestoes = computed<Sugestao[]>(() => {
-    const lista: Sugestao[] = [];
-    const proximoDia = this.horariosAgenda()[0];
-    if (this.usaAgenda() && proximoDia) {
-      lista.push({
-        id: 'agenda',
-        titulo: 'Divulgue a agenda',
-        motivo: `${proximoDia.dia} ainda tem horário livre: ${proximoDia.horas.slice(0, 3).join(', ')}`,
-        icone: 'calendario',
-        imagem: null,
-        aplicar: () => this.aplicar('AGENDA'),
-      });
-    }
-    const feedback = this.feedbacks()[0];
-    if (feedback) {
-      lista.push({
-        id: 'depoimento',
-        titulo: `Mostre o elogio de ${feedback.nome.split(' ')[0]}`,
-        motivo: `“${feedback.texto}”`,
-        icone: 'conversa',
-        imagem: null,
-        aplicar: () => this.aplicar('DEPOIMENTO', () => this.feedbackId.set(feedback.id)),
-      });
-    }
-    const foto = this.fotosGaleria()[0];
-    if (foto) {
-      lista.push({
-        id: 'novidade',
-        titulo: 'Poste um trabalho da vitrine',
-        motivo: `Do tópico ${foto.topico}`,
-        icone: 'imagem',
-        imagem: foto.url,
-        aplicar: () => this.aplicar('NOVIDADE', () => this.fotoRef.set(foto.url)),
-      });
-    }
-    const destaque = this.produtos().find((p) => p.fotoUrl && p.preco !== null) ?? this.produtos()[0];
-    if (destaque) {
-      lista.push({
-        id: 'destaque',
-        titulo: `Destaque: ${destaque.nome}`,
-        motivo: [precoDoProduto(destaque), destaque.fotoUrl ? 'com a foto do cadastro' : null].filter(Boolean).join(', ')
-          || 'Do seu cadastro',
-        icone: 'estrela',
-        imagem: destaque.fotoUrl ?? null,
-        aplicar: () => this.aplicar('DESTAQUE', () => this.produtoId.set(destaque.id)),
-      });
-    }
-    if (this.itensComPreco().length >= 3) {
-      lista.push({
-        id: 'cardapio',
-        titulo: 'Sua tabela de preços',
-        motivo: `${Math.min(this.itensComPreco().length, MAXIMO_CARDAPIO)} itens com preço, prontos para salvar no destaque`,
-        icone: 'documento',
-        imagem: null,
-        aplicar: () => this.aplicar('CARDAPIO'),
-      });
-    }
-    return lista;
-  });
-
   /** O que falta escolher para criar (vazio = pode criar). */
   protected readonly falta = computed(() => {
     switch (this.tipo()) {
@@ -281,7 +211,8 @@ export class PostsPageComponent implements OnInit {
       case 'CARDAPIO':
         return this.cardapioIds().length < 2 ? 'Escolha pelo menos 2 itens.' : '';
       case 'AGENDA':
-        return this.horariosAgenda().length === 0 ? 'Escolha um serviço com horários livres.' : '';
+        if (this.horariosAgenda().length === 0) return 'Escolha um serviço com horários livres.';
+        return this.diasDaArte().length === 0 ? 'Marque pelo menos um dia.' : '';
       default:
         return '';
     }
@@ -318,6 +249,7 @@ export class PostsPageComponent implements OnInit {
         .buscarAgenda(this.perfil().slug)
         .then((agenda) => {
           this.servicosAgenda.set(agenda.servicos);
+          this.intervaloAgenda.set(agenda.intervaloMinutos || 15);
           if (agenda.servicos.length > 0) void this.escolherServicoAgenda(agenda.servicos[0].id);
         })
         .catch(() => this.servicosAgenda.set([]));
@@ -325,13 +257,6 @@ export class PostsPageComponent implements OnInit {
   }
 
   // ---------------------------------------------------------------- escolhas na tela
-  /** Sugestão tocada: escolhe o tipo e o conteúdo e já cria as artes. */
-  private aplicar(tipo: TipoPost, preparar?: () => void): void {
-    this.escolherTipo(tipo);
-    preparar?.();
-    void this.criar();
-  }
-
   protected escolherTipo(tipo: TipoPost): void {
     this.tipo.set(tipo);
     this.fotoRef.set(null);
@@ -355,6 +280,10 @@ export class PostsPageComponent implements OnInit {
     );
   }
 
+  protected alternarDia(dia: string): void {
+    this.diasMarcados.update((dias) => (dias.includes(dia) ? dias.filter((d) => d !== dia) : [...dias, dia]));
+  }
+
   protected texto(evento: Event): string {
     return (evento.target as HTMLInputElement).value;
   }
@@ -364,14 +293,15 @@ export class PostsPageComponent implements OnInit {
     this.carregandoAgenda.set(true);
     try {
       const dias = await this.lojaPublicaService.buscarHorarios(this.perfil().slug, [id]);
-      this.horariosAgenda.set(
-        dias
-          .filter((dia) => dia.aberto && dia.horarios.length > 0)
-          .slice(0, 3)
-          .map((dia) => ({ dia: nomeDoDia(dia.data), horas: espalhar(dia.horarios, 4) })),
-      );
+      const livres = dias
+        .filter((dia) => dia.aberto && dia.horarios.length > 0)
+        .slice(0, 3)
+        .map((dia) => ({ dia: nomeDoDia(dia.data), horas: emFaixas(dia.horarios, this.intervaloAgenda()) }));
+      this.horariosAgenda.set(livres);
+      this.diasMarcados.set(livres.map((dia) => dia.dia));
     } catch {
       this.horariosAgenda.set([]);
+      this.diasMarcados.set([]);
     } finally {
       this.carregandoAgenda.set(false);
     }
@@ -482,7 +412,11 @@ export class PostsPageComponent implements OnInit {
     // a foto escolhida primeiro; as outras da galeria completam a colagem
     const escolhida = this.semFoto() ? null : (this.fotoRef() ?? this.fotosParaEscolher()[0] ?? null);
     const refs = escolhida ? [escolhida, ...this.fotosGaleria().map((f) => f.url).filter((u) => u !== escolhida).slice(0, 2)] : [];
-    const fotos = (await Promise.all(refs.map((ref) => this.postsService.imagem(ref)))).filter((f): f is string => !!f);
+    const totalHorarios = this.diasDaArte().reduce((total, dia) => total + Math.min(dia.horas.length, 6), 0);
+    const semEspacoParaFoto = tipo === 'AGENDA' && totalHorarios > 8;
+    const fotos = semEspacoParaFoto
+      ? []
+      : (await Promise.all(refs.map((ref) => this.postsService.imagem(ref)))).filter((f): f is string => !!f);
 
     const preco = produto ? precoDoProduto(produto) : null;
     let assunto = '';
@@ -492,8 +426,8 @@ export class PostsPageComponent implements OnInit {
         break;
       case 'AGENDA': {
         const servico = this.servicosAgenda().find((s) => s.id === this.servicoAgendaId());
-        assunto = `Serviço: ${servico?.nome ?? ''}. Horários livres: `
-          + this.horariosAgenda().map((d) => `${d.dia}: ${d.horas.join(', ')}`).join('; ') + '.';
+        assunto = `Serviço: ${servico?.nome ?? ''}. Horários livres para começar: `
+          + this.diasDaArte().map((d) => `${d.dia}: ${d.horas.join(', ')}`).join('; ') + '.';
         break;
       }
       case 'NOVIDADE': {
@@ -523,7 +457,7 @@ export class PostsPageComponent implements OnInit {
       fotos,
       preco: tipo === 'PROMOCAO' ? null : preco,
       itens: tipo === 'CARDAPIO' ? itens : [],
-      horarios: tipo === 'AGENDA' ? this.horariosAgenda() : [],
+      horarios: tipo === 'AGENDA' ? this.diasDaArte() : [],
       depoimento: tipo === 'DEPOIMENTO' && feedback
         ? { texto: feedback.texto, nome: feedback.nome.split(' ')[0], estrelas: feedback.estrelas }
         : null,
@@ -633,11 +567,19 @@ function nomeDoDia(data: string): string {
   return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
-/** Até `quantidade` horários espalhados pelo dia (de manhã à noite), não só os primeiros. */
-function espalhar(horarios: string[], quantidade: number): string[] {
-  if (horarios.length <= quantidade) return horarios;
-  const passo = (horarios.length - 1) / (quantidade - 1);
-  return Array.from({ length: quantidade }, (_, i) => horarios[Math.round(i * passo)]);
+/**
+ * Todos os horários livres, com os seguidos juntos numa faixa ("09:00 às 11:30"), como o assistente mostra na
+ * conversa: dia cheio de horários livres não pode parecer que só tem alguns.
+ */
+function emFaixas(horarios: string[], intervalo: number): string[] {
+  const minutos = (hora: string) => Number(hora.slice(0, 2)) * 60 + Number(hora.slice(3, 5));
+  const grupos: string[][] = [];
+  for (const hora of horarios) {
+    const ultimo = grupos.at(-1);
+    if (ultimo && minutos(hora) - minutos(ultimo.at(-1)!) <= intervalo) ultimo.push(hora);
+    else grupos.push([hora]);
+  }
+  return grupos.flatMap((grupo) => (grupo.length >= 3 ? [`${grupo[0]} às ${grupo.at(-1)}`] : grupo));
 }
 
 function chaveHistorico(perfilId: string): string {

@@ -8,6 +8,9 @@ import { ConteudoPost, DIMENSOES, EstiloPost, FormatoPost, MarcaPost } from '../
  * (marca, mídia, texto, link); o layout, a paleta, o enfeite, o alinhamento, o filtro da foto e os cantos vêm do
  * EstiloPost em atributos data-* e o CSS (arte-*.css) reorganiza tudo. O mesmo elemento vira o PNG (exportar-post).
  */
+/** Quantos horários de um dia cabem na arte (com mais, o último chip vira "+N horários"). */
+const HORAS_POR_DIA = 6;
+
 @Component({
   selector: 'app-arte-post',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,6 +22,7 @@ import { ConteudoPost, DIMENSOES, EstiloPost, FormatoPost, MarcaPost } from '../
     './arte-layouts-foto-2.css',
     './arte-layouts-moldura.css',
     './arte-layouts-texto.css',
+    './arte-layouts-extra.css',
   ],
 })
 export class ArtePostComponent {
@@ -49,8 +53,11 @@ export class ArtePostComponent {
   /** Só as fotos que o layout usa (a colagem usa 3, os outros 1). */
   protected readonly fotos = computed(() => {
     const fotos = this.conteudo().fotos;
-    const limite = this.estilo().layout === 'colagem' ? 3 : 1;
-    return ['tipografico'].includes(this.estilo().layout) ? [] : fotos.slice(0, limite);
+    const limite = this.estilo().layout === 'colagem' || this.estilo().layout === 'tira' ? 3 : 1;
+    // o cartão com depoimento fica só com o texto (a foto espremida virava uma tira)
+    const semFoto = this.estilo().layout === 'tipografico'
+      || (this.estilo().layout === 'cartao' && this.conteudo().tipo === 'DEPOIMENTO');
+    return semFoto ? [] : fotos.slice(0, limite);
   });
 
   /** O título encolhe com o tamanho do texto, para nunca passar da arte. */
@@ -58,6 +65,18 @@ export class ArtePostComponent {
     const letras = this.conteudo().titulo.length;
     return letras <= 16 ? 'curto' : letras <= 30 ? 'medio' : 'longo';
   });
+
+  /** Até 6 horários por dia na arte (o resto vira "+N"); muitos no total, os chips ficam compactos. */
+  protected readonly horarios = computed(() =>
+    this.conteudo().horarios.map((dia) => ({
+      dia: dia.dia,
+      horas: dia.horas.length > HORAS_POR_DIA ? dia.horas.slice(0, HORAS_POR_DIA - 1) : dia.horas,
+      mais: dia.horas.length > HORAS_POR_DIA ? dia.horas.length - (HORAS_POR_DIA - 1) : 0,
+    })),
+  );
+  protected readonly horariosCompactos = computed(
+    () => this.horarios().reduce((total, dia) => total + dia.horas.length + (dia.mais ? 1 : 0), 0) > 9,
+  );
 
   protected readonly inicial = computed(() => this.marca().nome.trim().charAt(0).toUpperCase());
   protected readonly estrelas = computed(() => '★'.repeat(Math.max(1, Math.min(5, this.conteudo().depoimento?.estrelas ?? 5))));

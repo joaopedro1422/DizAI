@@ -21,11 +21,11 @@ const QUASE_TODOS: TipoPost[] = ['DESTAQUE', 'NOVIDADE', 'PROMOCAO', 'CONVITE'];
 
 export const LAYOUTS: DefinicaoLayout[] = [
   { id: 'moldura', nome: 'Moldura', tipos: [...QUASE_TODOS, 'AGENDA', 'DEPOIMENTO'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['foto', 'cor', 'escura'], variantes: 3 },
-  { id: 'editorial', nome: 'Editorial', tipos: [...QUASE_TODOS, 'DEPOIMENTO'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['clara', 'creme', 'escura', 'cor'], variantes: 2 },
-  { id: 'polaroid', nome: 'Polaroid', tipos: ['DESTAQUE', 'NOVIDADE', 'DEPOIMENTO', 'CONVITE'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['clara', 'creme', 'cor', 'escura'], variantes: 2 },
+  { id: 'editorial', nome: 'Editorial', tipos: [...QUASE_TODOS], fotosMinimo: 1, fotosMaximo: 1, paletas: ['clara', 'creme', 'escura', 'cor'], variantes: 2 },
+  { id: 'polaroid', nome: 'Polaroid', tipos: ['DESTAQUE', 'NOVIDADE', 'CONVITE'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['clara', 'creme', 'cor', 'escura'], variantes: 2 },
   { id: 'arco', nome: 'Arco', tipos: [...QUASE_TODOS], fotosMinimo: 1, fotosMaximo: 1, paletas: ['clara', 'creme', 'cor', 'escura'], variantes: 2 },
-  { id: 'dividido', nome: 'Dividido', tipos: [...QUASE_TODOS, 'AGENDA', 'DEPOIMENTO'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['cor', 'escura', 'creme', 'clara'], variantes: 2 },
-  { id: 'circulo', nome: 'Círculo', tipos: ['DESTAQUE', 'NOVIDADE', 'CONVITE', 'DEPOIMENTO'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['cor', 'clara', 'creme', 'escura'], variantes: 2 },
+  { id: 'dividido', nome: 'Dividido', tipos: [...QUASE_TODOS, 'AGENDA'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['cor', 'escura', 'creme', 'clara'], variantes: 2 },
+  { id: 'circulo', nome: 'Círculo', tipos: ['DESTAQUE', 'NOVIDADE', 'CONVITE'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['cor', 'clara', 'creme', 'escura'], variantes: 2 },
   { id: 'colagem', nome: 'Colagem', tipos: ['NOVIDADE', 'CONVITE', 'DESTAQUE'], fotosMinimo: 3, fotosMaximo: 3, paletas: ['clara', 'creme', 'escura', 'cor'], variantes: 2 },
   { id: 'tipografico', nome: 'Tipográfico', tipos: ['DESTAQUE', 'PROMOCAO', 'CONVITE', 'AGENDA', 'DEPOIMENTO'], fotosMinimo: 0, fotosMaximo: 0, paletas: ['cor', 'escura', 'creme', 'clara'], variantes: 2 },
   { id: 'etiqueta', nome: 'Etiqueta de preço', tipos: ['DESTAQUE', 'PROMOCAO'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['foto', 'clara', 'creme'], precisaPreco: true, variantes: 2 },
@@ -33,9 +33,15 @@ export const LAYOUTS: DefinicaoLayout[] = [
   { id: 'citacao', nome: 'Citação', tipos: ['DEPOIMENTO'], fotosMinimo: 0, fotosMaximo: 1, paletas: ['clara', 'creme', 'cor', 'escura'], variantes: 2 },
   { id: 'calendario', nome: 'Calendário', tipos: ['AGENDA'], fotosMinimo: 0, fotosMaximo: 1, paletas: ['clara', 'cor', 'escura', 'creme'], variantes: 2 },
   { id: 'diagonal', nome: 'Faixa diagonal', tipos: ['NOVIDADE', 'PROMOCAO', 'DESTAQUE'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['foto', 'cor'], variantes: 2 },
-  { id: 'minimal', nome: 'Minimalista', tipos: ['DESTAQUE', 'NOVIDADE', 'CONVITE', 'DEPOIMENTO'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['clara', 'creme'], variantes: 2 },
+  { id: 'minimal', nome: 'Minimalista', tipos: ['DESTAQUE', 'NOVIDADE', 'CONVITE'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['clara', 'creme'], variantes: 2 },
   { id: 'cartao', nome: 'Cartão', tipos: [...QUASE_TODOS, 'AGENDA', 'DEPOIMENTO', 'CARDAPIO'], fotosMinimo: 0, fotosMaximo: 1, paletas: ['cor', 'escura', 'creme', 'clara'], variantes: 2 },
   { id: 'janela', nome: 'Janela', tipos: ['DESTAQUE', 'NOVIDADE', 'CONVITE', 'PROMOCAO'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['foto', 'escura'], variantes: 2 },
+  { id: 'bloco', nome: 'Bloco de cor', tipos: [...QUASE_TODOS], fotosMinimo: 1, fotosMaximo: 1, paletas: ['clara', 'creme', 'escura'], variantes: 2 },
+  { id: 'lateral', nome: 'Faixa lateral', tipos: [...QUASE_TODOS, 'AGENDA'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['clara', 'creme', 'escura', 'cor'], variantes: 2 },
+  { id: 'bilhete', nome: 'Bilhete', tipos: ['DESTAQUE', 'PROMOCAO', 'CONVITE'], fotosMinimo: 0, fotosMaximo: 1, paletas: ['cor', 'escura', 'creme'], variantes: 1 },
+  { id: 'quadro', nome: 'Quadro de galeria', tipos: ['DESTAQUE', 'NOVIDADE', 'CONVITE'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['escura', 'cor', 'creme'], variantes: 2 },
+  { id: 'tira', nome: 'Tira de filme', tipos: ['NOVIDADE', 'CONVITE', 'DESTAQUE'], fotosMinimo: 3, fotosMaximo: 3, paletas: ['clara', 'creme', 'escura', 'cor'], variantes: 2 },
+  { id: 'balao', nome: 'Balão', tipos: ['DEPOIMENTO'], fotosMinimo: 0, fotosMaximo: 1, paletas: ['cor', 'escura', 'creme', 'clara'], variantes: 2 },
 ];
 
 /** Os layouts que servem para este post (tipo, fotos disponíveis e preço). */

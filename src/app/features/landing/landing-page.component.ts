@@ -5,6 +5,7 @@ import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { NomeIcone } from '../../shared/components/icone/icones';
 import { LogoComponent } from '../../shared/components/logo/logo.component';
 import { SecaoGaleriaComponent } from './secao-galeria/secao-galeria.component';
+import { SecaoPostsComponent } from './secao-posts/secao-posts.component';
 import { SecaoParaQuemComponent } from './secao-para-quem/secao-para-quem.component';
 import { SecaoPerguntasComponent } from './secao-perguntas/secao-perguntas.component';
 import { SecaoRecursosComponent } from './secao-recursos/secao-recursos.component';
@@ -36,6 +37,7 @@ interface Passo {
     SecaoPesquisaComponent,
     SecaoSolucaoComponent,
     SecaoGaleriaComponent,
+    SecaoPostsComponent,
     JornadaInterativaComponent,
     SecaoRecursosComponent,
     SecaoParaQuemComponent,

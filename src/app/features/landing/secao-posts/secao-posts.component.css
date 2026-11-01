@@ -1,0 +1,182 @@
+:host {
+  display: block;
+}
+
+/* fundo suave, alternando com a Vitrine pública (branca) logo acima */
+.posts {
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--cor-fundo-suave) 0%, #f7f3fb 100%);
+}
+
+.posts__grade {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 56px 64px;
+  padding-top: 112px;
+  padding-bottom: 112px;
+}
+
+/* Texto -------------------------------------------------------------------- */
+.posts__texto {
+  flex: 1 1 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  max-width: 540px;
+}
+
+.posts__sobretitulo {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.posts__titulo {
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.posts__descricao {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--cor-texto-secundario);
+}
+
+.diferenciais {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.diferencial {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.diferencial__icone {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f58529 0%, #dd2a7b 50%, #8134af 100%);
+  color: #ffffff;
+}
+
+.diferencial__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.diferencial__textos strong {
+  color: var(--cor-texto);
+  font-size: 16px;
+}
+
+.posts__acao {
+  margin-top: 10px;
+}
+
+/* Leque -------------------------------------------------------------------- */
+.leque {
+  --largura: 260px;
+  --abertura: 74px;
+  --giro: 7deg;
+  position: relative;
+  flex: 1 1 480px;
+  height: 470px;
+  margin: 0;
+}
+
+.leque__arte {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  z-index: calc(10 - var(--posicao) * var(--posicao));
+  width: var(--largura);
+  margin-left: calc(var(--largura) / -2);
+  border-radius: 16px;
+  box-shadow: 0 22px 50px rgba(20, 16, 40, 0.22), 0 4px 12px rgba(20, 16, 40, 0.1);
+  transform:
+    translateX(calc(var(--posicao) * var(--abertura)))
+    translateY(calc(var(--posicao) * var(--posicao) * 9px))
+    rotate(calc(var(--posicao) * var(--giro)));
+  transform-origin: 50% 120%;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+  cursor: pointer;
+}
+
+.leque__arte app-arte-post {
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+/* a da frente (sempre no centro) sobe um pouco e fica por cima das outras */
+.leque__arte--frente {
+  z-index: 20;
+  box-shadow: 0 34px 70px rgba(20, 16, 40, 0.32), 0 6px 16px rgba(20, 16, 40, 0.12);
+  transform: translateY(-18px) scale(1.04);
+}
+
+/* as de trás ficam levemente apagadas, para a da frente se destacar */
+.leque__arte:not(.leque__arte--frente) app-arte-post {
+  filter: brightness(0.94);
+}
+
+.leque__negocio {
+  position: absolute;
+  bottom: -34px;
+  left: 50%;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--cor-texto-secundario);
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(20, 16, 40, 0.12);
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity 0.3s ease;
+}
+
+.leque__arte--frente .leque__negocio {
+  opacity: 1;
+}
+
+@media (max-width: 760px) {
+  .posts__grade {
+    padding-top: 72px;
+    padding-bottom: 80px;
+  }
+
+  .leque {
+    --largura: 190px;
+    --abertura: 44px;
+    --giro: 6deg;
+    flex-basis: 100%;
+    height: 360px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leque__arte {
+    transition: none;
+  }
+}

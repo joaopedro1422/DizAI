@@ -1,0 +1,43 @@
+/* ---------- artes para o Instagram: abaixo do card da vitrine, no mesmo desenho ---------- */
+/* o ícone no degradê do Instagram, como na seção "Redes sociais" */
+.ganho__icone--posts {
+  background: linear-gradient(135deg, #f58529 0%, #dd2a7b 50%, #8134af 100%);
+  color: #ffffff;
+}
+
+/* três artes de negócios diferentes, abertas em leque e levemente uma sobre a outra */
+.mini-posts {
+  position: relative;
+  display: block;
+  height: 232px;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--cor-fundo-suave) 0%, #f7f3fb 100%);
+}
+
+.mini-posts__arte {
+  position: absolute;
+  top: 26px;
+  left: 50%;
+  z-index: calc(5 - var(--posicao) * var(--posicao));
+  width: 132px;
+  margin-left: -66px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 14px 30px rgba(20, 16, 40, 0.2), 0 3px 8px rgba(20, 16, 40, 0.1);
+  transform:
+    translateX(calc(var(--posicao) * 118px))
+    translateY(calc(var(--posicao) * var(--posicao) * 8px))
+    rotate(calc(var(--posicao) * 6deg));
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ganho--posts:hover .mini-posts__arte {
+  transform:
+    translateX(calc(var(--posicao) * 132px))
+    translateY(calc(var(--posicao) * var(--posicao) * 8px - 6px))
+    rotate(calc(var(--posicao) * 8deg));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mini-posts__arte { transition: none; }
+}

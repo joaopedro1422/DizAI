@@ -1,4 +1,4 @@
-/* As artes geradas, a janela da arte escolhida e as sugestões de "O que postar hoje". */
+/* As artes geradas e a janela da arte escolhida. */
 .resultados {
   scroll-margin-top: 12px;
   display: flex;
@@ -170,86 +170,4 @@
 .final__secundarias .btn {
   padding: 0 10px;
   white-space: nowrap;
-}
-
-/* ---------- O que postar hoje ---------- */
-.sugestoes {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.sugestoes__titulo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 800;
-}
-
-.sugestoes__lista {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  padding: 2px 2px 8px;
-  scrollbar-width: thin;
-}
-
-.sugestao {
-  display: flex;
-  flex: 0 0 250px;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  border: 1px solid var(--cor-borda);
-  border-radius: 16px;
-  background: var(--cor-fundo);
-  text-align: left;
-  cursor: pointer;
-  transition: border-color 0.15s ease, transform 0.15s ease;
-}
-
-.sugestao:hover {
-  border-color: var(--cor-primaria);
-  transform: translateY(-1px);
-}
-
-.sugestao__imagem {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  overflow: hidden;
-  border-radius: 12px;
-  background: var(--cor-primaria-clara);
-  color: var(--cor-primaria);
-}
-
-.sugestao__imagem img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.sugestao__textos {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.sugestao__titulo {
-  font-size: 13.5px;
-  font-weight: 800;
-}
-
-.sugestao__motivo {
-  display: -webkit-box;
-  overflow: hidden;
-  color: var(--cor-texto-suave);
-  font-size: 12px;
-  line-height: 1.35;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
 }

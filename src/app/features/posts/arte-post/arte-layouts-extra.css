@@ -1,0 +1,322 @@
+/*
+ * Mais composições: bloco de cor, faixa lateral, bilhete, quadro de galeria, tira de filme e balão (depoimento).
+ */
+
+/* ---------- bloco: a foto deslocada sobre um bloco na cor da loja ---------- */
+.arte[data-layout='bloco'] .arte__midia {
+  flex: 1;
+  margin: 10px 80px 50px 0;
+}
+
+.arte[data-layout='bloco'] .arte__midia::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 56px -70px -46px 56px;
+  border-radius: var(--raio);
+  background: var(--preenchimento-marca);
+}
+
+.arte[data-layout='bloco'][data-paleta='escura'] .arte__midia::before {
+  background: var(--p-fundo2);
+}
+
+/* variante 1: o bloco sai para cima e para a esquerda */
+.arte[data-layout='bloco'][data-variante='1'] .arte__midia {
+  margin: 50px 0 10px 80px;
+}
+
+.arte[data-layout='bloco'][data-variante='1'] .arte__midia::before {
+  inset: -46px 56px 56px -70px;
+}
+
+/* ---------- faixa lateral: uma faixa em pé com o selo escrito de lado ---------- */
+.arte[data-layout='lateral'] {
+  padding-left: 230px;
+}
+
+.arte[data-layout='lateral']::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 160px;
+  background: var(--preenchimento-marca);
+}
+
+.arte[data-layout='lateral'][data-paleta='cor']::before {
+  background: var(--p-fundo2);
+}
+
+.arte[data-layout='lateral'] .arte__midia {
+  flex: 1;
+}
+
+.arte[data-layout='lateral'] .arte__texto {
+  position: static;
+}
+
+.arte[data-layout='lateral'] .arte__titulo,
+.arte[data-layout='lateral'] .arte__apoio,
+.arte[data-layout='lateral'] .arte__acao,
+.arte[data-layout='lateral'] .arte__horarios,
+.arte[data-layout='lateral'] .arte__citacao {
+  position: relative;
+  z-index: 1;
+}
+
+.arte[data-layout='lateral'] .arte__selo {
+  position: absolute;
+  z-index: 2;
+  top: var(--pad);
+  bottom: var(--pad);
+  left: 0;
+  width: 160px;
+  justify-content: center;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: #ffffff;
+  font-family: var(--fonte-titulo);
+  font-size: 56px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+/* variante 1: a faixa à direita */
+.arte[data-layout='lateral'][data-variante='1'] {
+  padding-left: var(--pad);
+  padding-right: 230px;
+}
+
+.arte[data-layout='lateral'][data-variante='1']::before {
+  left: auto;
+  right: 0;
+}
+
+.arte[data-layout='lateral'][data-variante='1'] .arte__selo {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
+/* ---------- bilhete: um ingresso com picote e o canhoto ---------- */
+.arte[data-layout='bilhete'] {
+  justify-content: center;
+}
+
+.arte[data-layout='bilhete'] .arte__midia {
+  flex: 1;
+  max-height: 46%;
+  margin: 0 40px -1px;
+}
+
+.arte[data-layout='bilhete'] .arte__foto {
+  border-radius: var(--raio) var(--raio) 0 0;
+}
+
+.arte[data-layout='bilhete'] .arte__texto {
+  margin: 0 40px;
+  padding: 56px 60px 0;
+  border-radius: var(--raio);
+  background: var(--p-cartao);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.18);
+}
+
+.arte[data-layout='bilhete'][data-fotos='1'] .arte__texto {
+  border-radius: 0 0 var(--raio) var(--raio);
+}
+
+.arte[data-layout='bilhete']:not([data-paleta='escura']) .arte__texto {
+  --p-titulo: var(--cor-marca-escura);
+  --p-texto: var(--p-cartao-texto);
+  --p-suave: rgba(23, 19, 15, 0.66);
+  --p-destaque: var(--preenchimento-marca);
+  --p-destaque-texto: #ffffff;
+  --p-linha: rgba(23, 19, 15, 0.22);
+  color: var(--p-cartao-texto);
+}
+
+/* o picote: linha tracejada com duas meias-luas recortadas nas pontas */
+.arte[data-layout='bilhete'] .arte__acao {
+  position: relative;
+  align-self: stretch;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding: 44px 0 52px;
+  border-top: 5px dashed var(--p-linha);
+}
+
+.arte[data-layout='bilhete'] .arte__acao::before,
+.arte[data-layout='bilhete'] .arte__acao::after {
+  content: '';
+  position: absolute;
+  top: -40px;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: var(--p-fundo-solido);
+}
+
+.arte[data-layout='bilhete'] .arte__acao::before { left: -98px; }
+.arte[data-layout='bilhete'] .arte__acao::after { right: -98px; }
+
+.arte[data-layout='bilhete'][data-alinhamento='centro'] .arte__acao {
+  justify-content: center;
+}
+
+/* ---------- quadro: a foto numa moldura de galeria, com a plaquinha ---------- */
+.arte[data-layout='quadro'] {
+  align-items: center;
+}
+
+.arte[data-layout='quadro'] .arte__midia {
+  flex: 1;
+  align-self: stretch;
+  margin: 10px 30px 0;
+  padding: 34px;
+  background: #fbf8f4;
+  box-shadow: 0 0 0 14px #2a211b, 0 34px 60px rgba(0, 0, 0, 0.35);
+}
+
+.arte[data-layout='quadro'] .arte__foto {
+  border-radius: 0;
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+
+.arte[data-layout='quadro'][data-variante='1'] .arte__midia {
+  background: #ffffff;
+  box-shadow: 0 0 0 14px #c9a46a, 0 0 0 18px #8a6a39, 0 34px 60px rgba(0, 0, 0, 0.3);
+}
+
+.arte[data-layout='quadro'] .arte__texto {
+  align-items: center;
+  margin-top: 34px;
+  text-align: center;
+}
+
+.arte[data-layout='quadro'] .arte__titulo {
+  font-size: calc(var(--t-titulo) * 0.78);
+}
+
+.arte[data-layout='quadro'] .arte__acao {
+  justify-content: center;
+}
+
+/* ---------- tira de filme: três fotos em sequência ---------- */
+.arte[data-layout='tira'] {
+  display: grid;
+  grid-template-columns: 38% minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  column-gap: 60px;
+}
+
+.arte[data-layout='tira'] .arte__midia {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  flex-direction: column;
+  gap: 18px;
+  margin: calc(var(--pad) * -1) 0;
+  padding: 50px 46px;
+  background: #141210;
+}
+
+/* os furinhos do filme nas duas bordas */
+.arte[data-layout='tira'] .arte__midia::before,
+.arte[data-layout='tira'] .arte__midia::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 18px;
+  background: repeating-linear-gradient(to bottom, transparent 0 14px, rgba(255, 255, 255, 0.85) 14px 30px, transparent 30px 44px);
+}
+
+.arte[data-layout='tira'] .arte__midia::before { left: 14px; }
+.arte[data-layout='tira'] .arte__midia::after { right: 14px; }
+
+.arte[data-layout='tira'] .arte__foto {
+  border-radius: 6px;
+}
+
+.arte[data-layout='tira'] .arte__marca { grid-column: 2; grid-row: 1; }
+.arte[data-layout='tira'] .arte__texto { grid-column: 2; grid-row: 2; justify-content: center; }
+.arte[data-layout='tira'] .arte__link { grid-column: 2; grid-row: 3; }
+
+.arte[data-layout='tira'] .arte__titulo {
+  font-size: calc(var(--t-titulo) * 0.84);
+}
+
+/* variante 1: o filme do outro lado */
+.arte[data-layout='tira'][data-variante='1'] {
+  grid-template-columns: minmax(0, 1fr) 38%;
+}
+
+.arte[data-layout='tira'][data-variante='1'] .arte__midia { grid-column: 2; }
+.arte[data-layout='tira'][data-variante='1'] .arte__marca,
+.arte[data-layout='tira'][data-variante='1'] .arte__texto,
+.arte[data-layout='tira'][data-variante='1'] .arte__link { grid-column: 1; }
+
+/* ---------- balão: o depoimento num balão de conversa ---------- */
+.arte[data-layout='balao'] .arte__texto {
+  flex: 1;
+  justify-content: center;
+}
+
+.arte[data-layout='balao'] .arte__selo { order: 0; }
+.arte[data-layout='balao'] .arte__titulo { order: 1; }
+.arte[data-layout='balao'] .arte__apoio { order: 2; }
+.arte[data-layout='balao'] .arte__citacao { order: 3; }
+.arte[data-layout='balao'] .arte__acao { order: 4; }
+
+.arte[data-layout='balao'] .arte__citacao {
+  align-self: stretch;
+  align-items: flex-start;
+  margin-bottom: 70px;
+  padding: 56px 60px;
+  border-radius: 56px;
+  background: var(--p-cartao);
+  text-align: left;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.14);
+}
+
+/* o rabinho do balão */
+.arte[data-layout='balao'] .arte__citacao::after {
+  content: '';
+  position: absolute;
+  bottom: -52px;
+  left: 90px;
+  width: 80px;
+  height: 64px;
+  background: var(--p-cartao);
+  clip-path: polygon(0 0, 100% 0, 10% 100%);
+}
+
+.arte[data-layout='balao'][data-variante='1'] .arte__citacao::after {
+  left: auto;
+  right: 90px;
+  clip-path: polygon(0 0, 100% 0, 90% 100%);
+}
+
+.arte[data-layout='balao']:not([data-paleta='escura']) .arte__citacao {
+  --p-texto: var(--p-cartao-texto);
+  --p-suave: rgba(23, 19, 15, 0.62);
+  --p-destaque: var(--preenchimento-marca);
+}
+
+/* a foto vira o "rosto" de quem falou, embaixo do rabinho */
+.arte[data-layout='balao'] .arte__midia {
+  position: absolute;
+  bottom: calc(var(--pad) + 40px);
+  right: var(--pad);
+  width: 200px;
+  height: 200px;
+}
+
+.arte[data-layout='balao'] .arte__foto {
+  border-radius: 50%;
+  box-shadow: 0 0 0 8px var(--p-fundo-solido);
+}

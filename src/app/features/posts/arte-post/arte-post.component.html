@@ -22,6 +22,7 @@
     [attr.data-caixa-alta]="visual.caixaAlta"
     [attr.data-manuscrita]="marca().fonteManuscrita"
     [attr.data-fotos]="fotos().length"
+    [attr.data-horarios-compactos]="horariosCompactos()"
   >
     <div class="arte__decor" aria-hidden="true">
       <i class="arte__d arte__d1"></i><i class="arte__d arte__d2"></i><i class="arte__d arte__d3"></i>
@@ -72,14 +73,17 @@
           }
         </ul>
       }
-      @if (post.horarios.length > 0) {
+      @if (horarios().length > 0) {
         <div class="arte__horarios">
-          @for (dia of post.horarios; track dia.dia) {
+          @for (dia of horarios(); track dia.dia) {
             <div class="arte__dia">
               <span class="arte__dia-nome">{{ dia.dia }}</span>
               <span class="arte__horas">
                 @for (hora of dia.horas; track hora) {
                   <span class="arte__hora">{{ hora }}</span>
+                }
+                @if (dia.mais) {
+                  <span class="arte__hora arte__hora--mais">+{{ dia.mais }} horários</span>
                 }
               </span>
             </div>

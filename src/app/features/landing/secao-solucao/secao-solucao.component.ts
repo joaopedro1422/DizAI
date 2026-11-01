@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
+import { ArtePostComponent } from '../../posts/arte-post/arte-post.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
+import { EXEMPLOS_POSTS } from '../secao-posts/exemplos-posts';
 import { NomeIcone } from '../../../shared/components/icone/icones';
 
 /** A miniatura no pé do card (o pedacinho da tela de verdade que prova o ganho). */
@@ -103,20 +105,22 @@ const RECURSOS_VITRINE: { icone: NomeIcone; titulo: string; texto: string }[] = 
  */
 @Component({
   selector: 'app-secao-solucao',
-  imports: [IconeComponent],
+  imports: [IconeComponent, ArtePostComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './secao-solucao.component.html',
-  styleUrls: ['../secao-landing.css', './secao-solucao.component.css', './ganho-vitrine.css'],
+  styleUrls: ['../secao-landing.css', './secao-solucao.component.css', './ganho-vitrine.css', './ganho-posts.css'],
 })
 export class SecaoSolucaoComponent {
   protected readonly ganhos = GANHOS;
   protected readonly barras = BARRAS;
   protected readonly ondas = ONDAS;
   protected readonly recursosVitrine = RECURSOS_VITRINE;
+  /** Três artes do gerador de posts, de negócios diferentes (as mesmas da seção "Redes sociais"). */
+  protected readonly postsDeExemplo = [EXEMPLOS_POSTS[1], EXEMPLOS_POSTS[0], EXEMPLOS_POSTS[3]];
 
-  /** "Ver": desce até a seção da vitrine pública, logo abaixo na landing. */
-  protected verVitrine(): void {
-    const galeria = document.getElementById('galeria');
+  /** "Ver mais": desce até a seção da vitrine pública ou a de redes sociais, mais abaixo na landing. */
+  protected verSecao(id: 'galeria' | 'posts'): void {
+    const galeria = document.getElementById(id);
     if (!galeria) {
       return;
     }

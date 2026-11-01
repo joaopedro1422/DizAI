@@ -1,0 +1,50 @@
+<section id="posts" class="posts" aria-labelledby="posts-titulo">
+  <div class="container posts__grade">
+    <div class="posts__texto">
+      <span class="posts__sobretitulo">Redes sociais</span>
+      <h2 id="posts-titulo" class="posts__titulo">Seu Instagram ativo, sem passar horas criando arte.</h2>
+      <p class="posts__descricao">
+        Quem aparece com frequência é lembrado. O cliente vê o seu trabalho, confia e chama no WhatsApp. O DizAI cria as
+        artes a partir do que você já cadastrou: é escolher o que divulgar e postar.
+      </p>
+
+      <ul class="diferenciais">
+        @for (item of diferenciais; track item.titulo) {
+          <li class="diferencial">
+            <span class="diferencial__icone"><app-icone [nome]="item.icone" [tamanho]="18" [espessura]="2" /></span>
+            <span class="diferencial__textos">
+              <strong>{{ item.titulo }}</strong>
+              <span>{{ item.texto }}</span>
+            </span>
+          </li>
+        }
+      </ul>
+
+      <a routerLink="/cadastro" class="btn btn--primario btn--hero posts__acao">
+        Criar minhas artes grátis
+        <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
+      </a>
+    </div>
+
+    <!-- o leque: artes de negócios diferentes, feitas pelo gerador de verdade -->
+    <figure
+      class="leque"
+      aria-label="Exemplos de posts criados pelo DizAI para uma manicure, uma confeitaria, uma marcenaria e um eletricista"
+      (mouseenter)="pausado.set(true)"
+      (mouseleave)="pausado.set(false)"
+    >
+      @for (exemplo of exemplos; track exemplo.id; let i = $index) {
+        <div
+          class="leque__arte"
+          [class.leque__arte--frente]="naFrente() === i"
+          [style.--posicao]="posicoes()[i]"
+          (click)="trazerParaFrente(i)"
+          aria-hidden="true"
+        >
+          <app-arte-post [marca]="exemplo.marca" [conteudo]="exemplo.conteudo" [estilo]="exemplo.estilo" formato="feed" [largura]="larguraArte()" />
+          <span class="leque__negocio">{{ exemplo.negocio }}</span>
+        </div>
+      }
+    </figure>
+  </div>
+</section>

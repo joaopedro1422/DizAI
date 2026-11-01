@@ -431,6 +431,28 @@
   gap: 12px;
 }
 
+.arte__hora--mais {
+  border-style: dashed;
+}
+
+/* muitos horários: chips menores e o título mais baixo, para tudo caber */
+.arte[data-horarios-compactos='true'] .arte__horarios {
+  gap: 14px;
+}
+
+.arte[data-horarios-compactos='true'] .arte__hora {
+  padding: 8px 16px;
+  font-size: 25px;
+}
+
+.arte[data-horarios-compactos='true'] .arte__dia-nome {
+  font-size: 29px;
+}
+
+.arte[data-horarios-compactos='true'] .arte__titulo {
+  font-size: calc(var(--t-titulo) * 0.66);
+}
+
 .arte__hora {
   padding: 12px 22px;
   border: 3px solid var(--p-linha);

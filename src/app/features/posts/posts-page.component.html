@@ -2,33 +2,6 @@
   <app-cabecalho-pagina titulo="Posts para redes sociais" subtitulo="Artes com a sua logo, cores e fotos, prontas para postar." />
 
   <main class="conteudo-tela posts corpo-pc">
-    <!-- O que postar hoje: ideias dos dados da loja, um toque e as artes saem -->
-    @if (sugestoes().length > 0) {
-      <section class="sugestoes" aria-labelledby="titulo-sugestoes">
-        <h2 id="titulo-sugestoes" class="sugestoes__titulo">
-          <app-icone nome="brilho" [tamanho]="18" [espessura]="2" />
-          O que postar hoje
-        </h2>
-        <div class="sugestoes__lista">
-          @for (sugestao of sugestoes(); track sugestao.id) {
-            <button type="button" class="sugestao" [disabled]="gerando()" (click)="sugestao.aplicar()">
-              <span class="sugestao__imagem">
-                @if (sugestao.imagem) {
-                  <img [src]="sugestao.imagem | urlImagem" alt="">
-                } @else {
-                  <app-icone [nome]="sugestao.icone" [tamanho]="22" [espessura]="2" />
-                }
-              </span>
-              <span class="sugestao__textos">
-                <span class="sugestao__titulo">{{ sugestao.titulo }}</span>
-                <span class="sugestao__motivo">{{ sugestao.motivo }}</span>
-              </span>
-            </button>
-          }
-        </div>
-      </section>
-    }
-
     <!-- o que o post vai divulgar -->
     <section class="criar" aria-label="Criar post">
       <div class="etapa">
@@ -44,8 +17,10 @@
               (click)="escolherTipo(item.tipo)"
             >
               <span class="tipo__icone"><app-icone [nome]="icone(item.icone)" [tamanho]="20" [espessura]="2" /></span>
-              <span class="tipo__nome">{{ item.nome }}</span>
-              <span class="tipo__descricao">{{ item.descricao }}</span>
+              <span class="tipo__textos">
+                <span class="tipo__nome">{{ item.nome }}</span>
+                <span class="tipo__descricao">{{ item.descricao }}</span>
+              </span>
             </button>
           }
         </div>
@@ -72,11 +47,18 @@
             } @else if (horariosAgenda().length === 0) {
               <p class="aviso">Nenhum horário livre nos próximos dias para este serviço.</p>
             } @else {
-              <ul class="dias">
+              <p class="dica">Marque os dias que vão para a arte.</p>
+              <div class="dias">
                 @for (dia of horariosAgenda(); track dia.dia) {
-                  <li><strong>{{ dia.dia }}</strong> {{ dia.horas.join(' · ') }}</li>
+                  <label class="dia-livre" [class.dia-livre--marcado]="diasMarcados().includes(dia.dia)">
+                    <input type="checkbox" [checked]="diasMarcados().includes(dia.dia)" (change)="alternarDia(dia.dia)">
+                    <span class="dia-livre__textos">
+                      <strong>{{ dia.dia }}</strong>
+                      <span>{{ dia.horas.join(' · ') }}</span>
+                    </span>
+                  </label>
                 }
-              </ul>
+              </div>
             }
           }
           @case ('DEPOIMENTO') {

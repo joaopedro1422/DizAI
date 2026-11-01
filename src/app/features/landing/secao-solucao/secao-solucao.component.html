@@ -115,7 +115,7 @@
           Uma página exclusiva, com a sua logo e as suas cores. O assistente envia o link na conversa e você divulga
           no Instagram, no status ou onde quiser.
         </p>
-        <button type="button" class="ganho__ver" (click)="verVitrine()">
+        <button type="button" class="ganho__ver" (click)="verSecao('galeria')">
           Ver mais
           <app-icone nome="seta" [tamanho]="16" [espessura]="2.2" />
         </button>
@@ -127,6 +127,32 @@
             <span class="vitrine-recursos__icone"><app-icone [nome]="recurso.icone" [tamanho]="16" [espessura]="2" /></span>
             <strong>{{ recurso.titulo }}</strong>
             <small>{{ recurso.texto }}</small>
+          </span>
+        }
+      </div>
+    </article>
+
+    <!-- artes para o Instagram: o mesmo desenho do card da vitrine, com três posts de exemplo ao lado -->
+    <article class="ganho ganho--vitrine ganho--posts">
+      <div class="ganho__cabeca">
+        <span class="ganho__icone ganho__icone--posts">
+          <app-icone nome="brilho" [tamanho]="20" [espessura]="2" />
+        </span>
+        <h3 class="ganho__titulo">Artes para o Instagram</h3>
+        <p class="ganho__texto">
+          Posts e stories prontos, criados a partir do seu negócio: com a sua logo, as suas cores, as suas fotos e os
+          seus preços, e a legenda escrita.
+        </p>
+        <button type="button" class="ganho__ver" (click)="verSecao('posts')">
+          Ver mais
+          <app-icone nome="seta" [tamanho]="16" [espessura]="2.2" />
+        </button>
+      </div>
+
+      <div class="detalhe mini-posts" aria-hidden="true">
+        @for (exemplo of postsDeExemplo; track exemplo.id; let i = $index) {
+          <span class="mini-posts__arte" [style.--posicao]="i - 1">
+            <app-arte-post [marca]="exemplo.marca" [conteudo]="exemplo.conteudo" [estilo]="exemplo.estilo" formato="feed" [largura]="132" />
           </span>
         }
       </div>

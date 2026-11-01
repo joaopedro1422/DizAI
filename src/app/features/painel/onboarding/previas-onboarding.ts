@@ -109,8 +109,8 @@ export function passosDoTour(
         {
           de: 'aviso',
           texto: servico
-            ? 'O que postar hoje: amanhã ainda tem horário livre. Toque e a arte sai pronta.'
-            : 'O que postar hoje: o seu destaque com foto e preço. Toque e a arte sai pronta.',
+            ? 'Agenda aberta: amanhã ainda tem horário das 09:00 às 11:30. A arte sai pronta para postar.'
+            : 'O seu destaque com foto e preço, e a legenda escrita. A arte sai pronta para postar.',
         },
       ],
     },

@@ -32,7 +32,13 @@ export type LayoutPost =
   | 'diagonal'
   | 'minimal'
   | 'cartao'
-  | 'janela';
+  | 'janela'
+  | 'bloco'
+  | 'lateral'
+  | 'bilhete'
+  | 'quadro'
+  | 'tira'
+  | 'balao';
 
 /** De onde vêm as cores: fundo claro tingido, a cor da loja, escuro, creme ou a foto dominando. */
 export type PaletaPost = 'clara' | 'cor' | 'escura' | 'creme' | 'foto';
