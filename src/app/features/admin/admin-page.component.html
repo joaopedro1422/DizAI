@@ -102,6 +102,12 @@
             [value]="busca()"
             (input)="buscar($event)"
           >
+          <!-- o mês do custo da IA (o número no card e em cada loja) -->
+          <select class="campo__entrada lojas__ordem" aria-label="Mês do custo da IA" [disabled]="carregando()" (change)="escolherMes($event)">
+            @for (mes of meses(); track mes.valor) {
+              <option [value]="mes.valor" [selected]="mes.valor === painel()?.mes">Custo de {{ mes.rotulo }}</option>
+            }
+          </select>
           <select class="campo__entrada lojas__ordem" aria-label="Ordenar lojas" (change)="ordenar($event)">
             <option value="recentes" [selected]="ordem() === 'recentes'">Mais novas</option>
             <option value="ativas" [selected]="ordem() === 'ativas'">Mais conversas</option>
@@ -135,7 +141,7 @@
                     {{ loja.nomeDono }} · {{ loja.whatsapp }}@if (loja.ramo) { · {{ loja.ramo }}}
                   </p>
                 </div>
-                <span class="loja__custo" title="Custo estimado da IA neste mês">{{ custo(loja) }}</span>
+                <span class="loja__custo" title="Custo estimado da IA no mês escolhido">{{ custo(loja) }}</span>
               </div>
 
               <div class="loja__selos">

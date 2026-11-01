@@ -23,12 +23,16 @@ export class AdminService {
   /** "Esqueci minha senha" ainda abertos, os mais antigos primeiro. */
   readonly solicitacoesSenha = this.pedidosSenha.asReadonly();
 
-  /** Sempre busca de novo: os números mudam a cada mensagem e o botão "Atualizar" usa o mesmo método. */
-  async carregar(): Promise<void> {
+  /**
+   * Sempre busca de novo: os números mudam a cada mensagem e o botão "Atualizar" usa o mesmo método.
+   * `mes` ("2026-10") troca o mês do custo da IA; sem ele, o mês atual.
+   */
+  async carregar(mes?: string): Promise<void> {
     this.emAndamento.set(true);
     try {
+      const params: Record<string, string> = mes ? { mes } : {};
       const [painel, solicitacoes] = await Promise.all([
-        firstValueFrom(this.http.get<PainelAdmin>(urlApi('/api/admin/painel'))),
+        firstValueFrom(this.http.get<PainelAdmin>(urlApi('/api/admin/painel'), { params })),
         firstValueFrom(this.http.get<SolicitacaoSenha[]>(urlApi('/api/admin/solicitacoes-senha'))),
       ]);
       this.dados.set(painel);

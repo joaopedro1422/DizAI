@@ -35,6 +35,16 @@ const FILTROS: { valor: FiltroLoja; rotulo: string }[] = [
 ];
 
 const DOLAR = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'USD' });
+
+/** "2026-10" -> "outubro" (ou "Outubro de 2026", no seletor). */
+function nomeDoMes(mes: string, comAno = false): string {
+  const [ano, numero] = mes.split('-').map(Number);
+  if (!ano || !numero) {
+    return 'o mês';
+  }
+  const nome = new Date(ano, numero - 1, 1).toLocaleDateString('pt-BR', { month: 'long' });
+  return comAno ? `${nome.charAt(0).toUpperCase()}${nome.slice(1)} de ${ano}` : nome;
+}
 const INTEIRO = new Intl.NumberFormat('pt-BR');
 
 /** Gerenciamento da plataforma: só para as contas marcadas como admin (adminGuard + 403 na API). */
@@ -109,7 +119,7 @@ export class AdminPageComponent implements OnInit {
         detalhe: 'conversas transferidas agora',
       },
       {
-        rotulo: 'Custo da IA no mês',
+        rotulo: this.mesAtual() ? 'Custo da IA no mês' : `Custo da IA em ${nomeDoMes(this.painel()?.mes ?? '')}`,
         valor: DOLAR.format(resumo.custoIaMesUsd),
         detalhe: `${INTEIRO.format(resumo.chamadasIaMes)} chamadas · estimado`,
       },
@@ -145,9 +155,22 @@ export class AdminPageComponent implements OnInit {
     void this.recarregar();
   }
 
-  protected async recarregar(): Promise<void> {
+  /** O mês do custo da IA: o que está na tela (o "Atualizar" continua nele). */
+  protected readonly meses = computed(() =>
+    (this.painel()?.mesesDisponiveis ?? []).map((mes) => ({ valor: mes, rotulo: nomeDoMes(mes, true) })),
+  );
+  protected readonly mesAtual = computed(() => {
+    const painel = this.painel();
+    return !painel || painel.mes === painel.mesesDisponiveis[0];
+  });
+
+  protected escolherMes(evento: Event): void {
+    void this.recarregar((evento.target as HTMLSelectElement).value);
+  }
+
+  protected async recarregar(mes = this.painel()?.mes): Promise<void> {
     try {
-      await this.adminService.carregar();
+      await this.adminService.carregar(mes);
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, ERRO_AO_CARREGAR));
     }

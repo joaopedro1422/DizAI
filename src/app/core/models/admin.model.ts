@@ -68,4 +68,8 @@ export interface PainelAdmin {
   /** Mais novas primeiro. */
   lojas: LojaAdmin[];
   geradoEm: string;
+  /** O mês do custo da IA ("2026-10"). */
+  mes: string;
+  /** Do mês atual até o primeiro com consumo, o mais recente primeiro. */
+  mesesDisponiveis: string[];
 }
