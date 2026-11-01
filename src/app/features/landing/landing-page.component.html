@@ -1,19 +1,21 @@
-<nav class="nav container" aria-label="Principal">
-  <a routerLink="/" class="nav__marca" aria-label="DizAI, início">
-    <app-logo />
-  </a>
-  <div class="nav__links">
-    <a routerLink="/" fragment="solucao" class="nav__link">Solução</a>
-    <a routerLink="/" fragment="recursos" class="nav__link">Recursos</a>
-    <a routerLink="/" fragment="como" class="nav__link">Como funciona</a>
-    <a routerLink="/" fragment="para-quem" class="nav__link">Para quem é</a>
-    <a routerLink="/" fragment="perguntas" class="nav__link">Perguntas</a>
-    <span class="nav__acoes">
-      <a routerLink="/entrar" class="btn btn--secundario nav__entrar">Entrar</a>
-      <a routerLink="/cadastro" class="btn btn--primario">Testar grátis</a>
-    </span>
-  </div>
-</nav>
+<div class="nav-faixa">
+  <nav class="nav container" aria-label="Principal">
+    <a routerLink="/" class="nav__marca" aria-label="DizAI, início">
+      <app-logo />
+    </a>
+    <div class="nav__links">
+      <a routerLink="/" fragment="solucao" class="nav__link">Solução</a>
+      <a routerLink="/" fragment="recursos" class="nav__link">Recursos</a>
+      <a routerLink="/" fragment="como" class="nav__link">Como funciona</a>
+      <a routerLink="/" fragment="para-quem" class="nav__link">Para quem é</a>
+      <a routerLink="/" fragment="perguntas" class="nav__link">Perguntas</a>
+      <span class="nav__acoes">
+        <a routerLink="/entrar" class="btn btn--secundario nav__entrar">Entrar</a>
+        <a routerLink="/cadastro" class="btn btn--primario">Testar grátis</a>
+      </span>
+    </div>
+  </nav>
+</div>
 
 <main>
   <app-secao-hero />

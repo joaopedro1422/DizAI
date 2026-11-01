@@ -5,6 +5,11 @@
 
 /* Navegação ---------------------------------------------------------------- */
 
+/* a linha fina embaixo do menu, na largura toda da tela */
+.nav-faixa {
+  border-bottom: 1px solid var(--cor-borda);
+}
+
 .nav {
   display: flex;
   align-items: center;
