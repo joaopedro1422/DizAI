@@ -73,12 +73,25 @@
   color: #1F7A4A;
 }
 
+/* no computador a vitrine fica no espaço ao lado de "Você assume", com a largura de 2 cards (como o relatório);
+   o card de posts segue na largura toda, embaixo */
+.ganho--vitrine:not(.ganho--posts) {
+  grid-column: span 2;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+}
+
+.ganho--vitrine:not(.ganho--posts) .vitrine-recursos {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 @media (max-width: 1023px) {
   .vitrine-recursos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* no celular, igual aos outros cards (o "Ver mais" fica embaixo do texto) */
 @media (max-width: 640px) {
-  .ganho--vitrine { display: flex; }
+  .ganho--vitrine { display: flex; grid-column: auto; }
+  .ganho--vitrine:not(.ganho--posts) { grid-column: auto; }
   .ganho--vitrine .ganho__ver { grid-column: 2; }
 }

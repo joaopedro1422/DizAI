@@ -42,7 +42,7 @@ interface Rascunho {
 
 /** Usada só se o backend não mandar a padrão (o texto é o de AgendaService.CONFIRMACAO_PADRAO). */
 const CONFIRMACAO_PADRAO =
-  'Agendado! ✅\n\nServiço: {servico}\nData: {data}\nHorário: {horario}\nNome: {nome}\n\n' +
+  'Agendado! ✅\n\n🛠️ Serviço: {servico}\n📅 Data: {data}\n⏰ Horário: {horario}\n👤 Nome: {nome}\n\n' +
   'Se precisar remarcar ou cancelar, é só me avisar por aqui.';
 
 /** Usada só se o backend não mandar o padrão (o texto é o de AgendaService.AGRADECIMENTO_PADRAO). */
