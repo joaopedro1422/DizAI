@@ -1,0 +1,108 @@
+@let post = conteudo();
+@let visual = estilo();
+<!-- a prévia tem o tamanho da tela; a arte por dentro tem o tamanho real e é reduzida por transform -->
+<div class="previa" [style.width.px]="largura()" [style.height.px]="alturaPrevia()">
+  <div
+    #arte
+    class="arte"
+    [style]="variaveis()"
+    [style.width.px]="dimensoes().largura"
+    [style.height.px]="dimensoes().altura"
+    [style.transform]="'scale(' + escala() + ')'"
+    [attr.data-layout]="visual.layout"
+    [attr.data-paleta]="visual.paleta"
+    [attr.data-decor]="visual.decor"
+    [attr.data-alinhamento]="visual.alinhamento"
+    [attr.data-filtro]="visual.filtro"
+    [attr.data-raio]="visual.raio"
+    [attr.data-variante]="visual.variante"
+    [attr.data-formato]="formato()"
+    [attr.data-tipo]="post.tipo"
+    [attr.data-tamanho]="tamanhoTitulo()"
+    [attr.data-caixa-alta]="visual.caixaAlta"
+    [attr.data-manuscrita]="marca().fonteManuscrita"
+    [attr.data-fotos]="fotos().length"
+  >
+    <div class="arte__decor" aria-hidden="true">
+      <i class="arte__d arte__d1"></i><i class="arte__d arte__d2"></i><i class="arte__d arte__d3"></i>
+      <i class="arte__d arte__d4"></i><i class="arte__d arte__d5"></i><i class="arte__d arte__d6"></i>
+    </div>
+
+    @if (fotos().length > 0) {
+      <div class="arte__midia">
+        @for (foto of fotos(); track $index) {
+          <div class="arte__foto"><img [src]="foto" alt=""></div>
+        }
+      </div>
+    }
+
+    <div class="arte__marca">
+      @if (marca().logo; as logo) {
+        <img class="arte__logo" [src]="logo" alt="">
+      } @else {
+        <span class="arte__inicial">{{ inicial() }}</span>
+      }
+      <span class="arte__nome-loja">{{ marca().nome }}</span>
+    </div>
+
+    <div class="arte__texto">
+      @if (post.selo) {
+        <span class="arte__selo">{{ post.selo }}</span>
+      }
+      @if (post.depoimento; as depoimento) {
+        <div class="arte__citacao">
+          <span class="arte__aspas">“</span>
+          <span class="arte__estrelas">{{ estrelas() }}</span>
+          <p class="arte__depoimento">{{ depoimento.texto }}</p>
+          <span class="arte__autor">{{ depoimento.nome }}</span>
+        </div>
+      }
+      <h1 class="arte__titulo">{{ semQuebra(post.titulo) }}</h1>
+      @if (post.apoio) {
+        <p class="arte__apoio">{{ semQuebra(post.apoio) }}</p>
+      }
+      @if (post.itens.length > 0) {
+        <ul class="arte__lista">
+          @for (item of post.itens; track item.nome) {
+            <li class="arte__item">
+              <span class="arte__item-nome">{{ item.nome }}</span>
+              <span class="arte__item-linha"></span>
+              <span class="arte__item-preco">{{ item.preco }}</span>
+            </li>
+          }
+        </ul>
+      }
+      @if (post.horarios.length > 0) {
+        <div class="arte__horarios">
+          @for (dia of post.horarios; track dia.dia) {
+            <div class="arte__dia">
+              <span class="arte__dia-nome">{{ dia.dia }}</span>
+              <span class="arte__horas">
+                @for (hora of dia.horas; track hora) {
+                  <span class="arte__hora">{{ hora }}</span>
+                }
+              </span>
+            </div>
+          }
+        </div>
+      }
+      @if (post.preco || post.chamada) {
+        <div class="arte__acao">
+          @if (post.preco) {
+            <span class="arte__preco">{{ semQuebra(post.preco) }}</span>
+          }
+          @if (post.chamada) {
+            <span class="arte__chamada">
+              {{ post.chamada }}
+              <svg class="arte__seta" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          }
+        </div>
+      }
+    </div>
+
+    <span class="arte__link">{{ marca().link }}</span>
+  </div>
+</div>

@@ -1,0 +1,240 @@
+/* Layouts com a foto em destaque (continuação de arte-layouts-foto.css): círculo, colagem, minimalista e cartão. */
+
+/* ---------- círculo: a foto redonda com uma órbita ---------- */
+.arte[data-layout='circulo'] {
+  align-items: center;
+}
+
+.arte[data-layout='circulo'] .arte__midia {
+  flex: none;
+  width: 620px;
+  height: 620px;
+  margin: 24px 0 8px;
+}
+
+.arte[data-layout='circulo'][data-formato='quadrado'] .arte__midia {
+  width: 470px;
+  height: 470px;
+}
+
+.arte[data-layout='circulo'][data-formato='story'] .arte__midia {
+  width: 760px;
+  height: 760px;
+}
+
+.arte[data-layout='circulo'] .arte__foto {
+  border-radius: 50%;
+}
+
+.arte[data-layout='circulo'] .arte__midia::before {
+  content: '';
+  position: absolute;
+  inset: -28px;
+  border: 3px solid var(--p-linha);
+  border-radius: 50%;
+}
+
+.arte[data-layout='circulo'] .arte__midia::after {
+  content: '';
+  position: absolute;
+  top: 9%;
+  right: 2%;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--preenchimento-marca);
+  box-shadow: 0 0 0 10px var(--p-fundo-solido);
+}
+
+.arte[data-layout='circulo'] .arte__texto {
+  align-items: center;
+  text-align: center;
+}
+
+.arte[data-layout='circulo'] .arte__acao {
+  justify-content: center;
+}
+
+/* variante 1: o círculo grande, cortado na borda direita, e o texto embaixo à esquerda */
+.arte[data-layout='circulo'][data-variante='1'] {
+  align-items: stretch;
+}
+
+.arte[data-layout='circulo'][data-variante='1'] .arte__midia {
+  position: absolute;
+  top: 120px;
+  right: -170px;
+  width: 640px;
+  height: 640px;
+  margin: 0;
+}
+
+.arte[data-layout='circulo'][data-variante='1'][data-formato='quadrado'] .arte__midia {
+  top: 70px;
+  right: -150px;
+  width: 500px;
+  height: 500px;
+}
+
+.arte[data-layout='circulo'][data-variante='1'][data-formato='story'] .arte__midia {
+  top: 220px;
+  width: 820px;
+  height: 820px;
+  right: -220px;
+}
+
+/* o texto fica embaixo, à esquerda, sem passar por baixo da foto */
+.arte[data-layout='circulo'][data-variante='1'] .arte__texto {
+  margin-top: auto;
+  align-items: flex-start;
+  text-align: left;
+  max-width: 100%;
+}
+
+.arte[data-layout='circulo'][data-variante='1'][data-formato='quadrado'] .arte__texto {
+  max-width: 62%;
+}
+
+.arte[data-layout='circulo'][data-variante='1'] .arte__acao {
+  justify-content: flex-start;
+}
+
+/* ---------- colagem: três fotos ---------- */
+.arte[data-layout='colagem'] .arte__midia {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 1.35fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 18px;
+}
+
+.arte[data-layout='colagem'] .arte__foto:first-child {
+  grid-row: span 2;
+}
+
+.arte[data-layout='colagem'][data-variante='1'] .arte__midia {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+}
+
+.arte[data-layout='colagem'][data-variante='1'] .arte__foto:first-child {
+  grid-row: auto;
+}
+
+.arte[data-layout='colagem'][data-variante='1'] .arte__foto:nth-child(2) {
+  margin: 60px 0 -20px;
+}
+
+/* ---------- minimalista: muito respiro e letras finas ---------- */
+.arte[data-layout='minimal'] {
+  align-items: center;
+  padding-left: 120px;
+  padding-right: 120px;
+}
+
+.arte[data-layout='minimal'] .arte__marca {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.arte[data-layout='minimal'] .arte__logo,
+.arte[data-layout='minimal'] .arte__inicial {
+  width: 72px;
+  height: 72px;
+}
+
+.arte[data-layout='minimal'] .arte__nome-loja {
+  font-size: 26px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.arte[data-layout='minimal'] .arte__midia {
+  flex: 1;
+  width: 70%;
+}
+
+.arte[data-layout='minimal'] .arte__texto {
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+}
+
+.arte[data-layout='minimal'] .arte__selo {
+  padding: 0;
+  background: none;
+  color: var(--p-suave);
+}
+
+.arte[data-layout='minimal'] .arte__titulo {
+  font-size: calc(var(--t-titulo) * 0.66);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.arte[data-layout='minimal'] .arte__chamada {
+  padding: 0 0 8px;
+  border-radius: 0;
+  border-bottom: 3px solid var(--p-texto);
+  background: none;
+  color: var(--p-texto);
+  box-shadow: none;
+}
+
+.arte[data-layout='minimal'] .arte__acao {
+  justify-content: center;
+}
+
+/* variante 1: a foto em formato de janela alta e estreita */
+.arte[data-layout='minimal'][data-variante='1'] .arte__midia {
+  width: 52%;
+}
+
+/* ---------- cartão: foto e texto num cartão sobre o fundo da loja ---------- */
+.arte[data-layout='cartao'] .arte__midia {
+  flex: 1;
+  margin: 0 30px -1px;
+}
+
+.arte[data-layout='cartao'] .arte__foto {
+  border-radius: var(--raio) var(--raio) 0 0;
+}
+
+.arte[data-layout='cartao'] .arte__texto {
+  margin: 0 30px;
+  padding: 52px 56px;
+  border-radius: 0 0 var(--raio) var(--raio);
+  background: var(--p-cartao);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.16);
+}
+
+.arte[data-layout='cartao'][data-fotos='0'] .arte__texto {
+  flex: 1;
+  justify-content: center;
+  border-radius: var(--raio);
+}
+
+/* no cartão claro, o texto é escuro e o botão volta para a cor da loja */
+.arte[data-layout='cartao']:not([data-paleta='escura']) .arte__texto {
+  --p-titulo: var(--cor-marca-escura);
+  --p-texto: var(--p-cartao-texto);
+  --p-suave: rgba(23, 19, 15, 0.66);
+  --p-destaque: var(--preenchimento-marca);
+  --p-destaque-texto: #ffffff;
+  --p-linha: rgba(23, 19, 15, 0.22);
+  color: var(--p-cartao-texto);
+}
+
+.arte[data-layout='cartao'] .arte__marca {
+  align-self: center;
+}
+
+.arte[data-layout='cartao'] .arte__link {
+  align-self: center;
+}
+
+/* variante 1: o cartão inclinado de leve */
+.arte[data-layout='cartao'][data-variante='1'] .arte__midia,
+.arte[data-layout='cartao'][data-variante='1'] .arte__texto {
+  transform: rotate(-1.5deg);
+}

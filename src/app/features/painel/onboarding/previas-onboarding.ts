@@ -101,5 +101,18 @@ export function passosDoTour(
           texto: 'Sua página com fotos, feedbacks e endereço. O assistente manda o link quando o cliente pede.',
           previa: conversa([exemplos.galeria.pedidoFotos, `Tenho sim! Veja aqui: ${linkVitrine}`]),
         },
+    {
+      alvo: 'redes-sociais',
+      titulo: 'Posts para o Instagram',
+      texto: 'Artes prontas com a sua logo, cores, fotos e preços, e a legenda escrita. Escolha, ajuste e poste.',
+      previa: [
+        {
+          de: 'aviso',
+          texto: servico
+            ? 'O que postar hoje: amanhã ainda tem horário livre. Toque e a arte sai pronta.'
+            : 'O que postar hoje: o seu destaque com foto e preço. Toque e a arte sai pronta.',
+        },
+      ],
+    },
   ];
 }

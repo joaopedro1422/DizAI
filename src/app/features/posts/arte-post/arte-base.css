@@ -1,0 +1,441 @@
+/*
+ * A arte do post no tamanho real (1080 px de largura). Tudo usa as variáveis da paleta (--p-*, paletas-post.ts):
+ * os layouts (arte-layouts-*.css) só reorganizam estas peças.
+ */
+:host {
+  display: block;
+}
+
+.previa {
+  position: relative;
+  overflow: hidden;
+}
+
+.arte {
+  --pad: 84px;
+  --vao: 30px;
+  --raio: 28px;
+  --raio-botao: 999px;
+  --t-titulo: 104px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--vao);
+  padding: var(--pad);
+  overflow: hidden;
+  background: var(--p-fundo);
+  color: var(--p-texto);
+  font-family: var(--fonte-apoio);
+  transform-origin: 0 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.arte *,
+.arte *::before,
+.arte *::after {
+  box-sizing: border-box;
+}
+
+.arte[data-formato='quadrado'] {
+  --pad: 72px;
+  --vao: 24px;
+  --t-titulo: 92px;
+}
+
+.arte[data-formato='story'] {
+  --pad: 96px;
+  --vao: 38px;
+  --t-titulo: 116px;
+  padding-top: 170px;
+  padding-bottom: 190px;
+}
+
+.arte[data-raio='reto'] {
+  --raio: 0px;
+  --raio-botao: 6px;
+}
+
+.arte[data-raio='redondo'] {
+  --raio: 64px;
+}
+
+/* camadas: enfeites atrás, o resto na frente */
+.arte__decor {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.arte__midia,
+.arte__texto,
+.arte__marca,
+.arte__link {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- fotos ---------- */
+.arte__midia {
+  display: flex;
+  min-height: 0;
+}
+
+.arte__foto {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--raio);
+  background: var(--p-fundo2);
+}
+
+.arte__foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.arte[data-filtro='quente'] .arte__foto img {
+  filter: sepia(0.16) saturate(1.18) contrast(1.04) brightness(1.02);
+}
+
+.arte[data-filtro='pb'] .arte__foto img {
+  filter: grayscale(1) contrast(1.08);
+}
+
+/* duotone: a foto em preto e branco tingida com a cor da loja */
+.arte[data-filtro='duotone'] .arte__foto img {
+  filter: grayscale(1) contrast(1.12) brightness(1.06);
+}
+
+.arte[data-filtro='duotone'] .arte__foto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cor-marca);
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+
+/* ---------- marca (logo + nome) ---------- */
+.arte__marca {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 18px;
+}
+
+.arte__logo,
+.arte__inicial {
+  flex: none;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9), 0 8px 20px rgba(0, 0, 0, 0.14);
+}
+
+.arte__inicial {
+  display: grid;
+  place-items: center;
+  background: var(--p-destaque);
+  color: var(--p-destaque-texto);
+  font-family: var(--fonte-titulo);
+  font-size: 46px;
+  font-weight: 700;
+}
+
+.arte__nome-loja {
+  font-family: var(--fonte-titulo);
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--p-texto);
+}
+
+.arte[data-manuscrita='true'] .arte__nome-loja {
+  font-size: 44px;
+  font-weight: 400;
+}
+
+/* ---------- texto ---------- */
+.arte__texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 26px;
+  min-height: 0;
+}
+
+.arte[data-alinhamento='centro'] .arte__texto {
+  align-items: center;
+  text-align: center;
+}
+
+.arte__selo {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 26px;
+  border-radius: var(--raio-botao);
+  background: var(--p-destaque);
+  color: var(--p-destaque-texto);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.arte[data-caixa-alta='true'] .arte__selo {
+  font-size: 22px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.arte__titulo {
+  margin: 0;
+  max-width: 100%;
+  color: var(--p-titulo);
+  font-family: var(--fonte-titulo);
+  font-size: var(--t-titulo);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  overflow-wrap: break-word;
+}
+
+.arte[data-tamanho='medio'] .arte__titulo {
+  font-size: calc(var(--t-titulo) * 0.86);
+}
+
+.arte[data-tamanho='longo'] .arte__titulo {
+  font-size: calc(var(--t-titulo) * 0.72);
+  line-height: 1.06;
+}
+
+/* manuscritas são mais finas e baixas: maiores e com respiro */
+.arte[data-manuscrita='true'] .arte__titulo {
+  font-weight: 400;
+  font-size: calc(var(--t-titulo) * 1.22);
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.arte[data-manuscrita='true'][data-tamanho='longo'] .arte__titulo {
+  font-size: calc(var(--t-titulo) * 0.95);
+}
+
+.arte__apoio {
+  margin: 0;
+  max-width: 860px;
+  color: var(--p-suave);
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 1.38;
+}
+
+.arte__acao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 30px;
+}
+
+.arte[data-alinhamento='centro'] .arte__acao {
+  justify-content: center;
+}
+
+.arte__preco {
+  color: var(--p-titulo);
+  font-family: var(--fonte-titulo);
+  font-size: 66px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.arte__chamada {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 24px 40px;
+  border-radius: var(--raio-botao);
+  background: var(--p-destaque);
+  color: var(--p-destaque-texto);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.14);
+}
+
+.arte__seta {
+  width: 34px;
+  height: 34px;
+}
+
+.arte__link {
+  flex: none;
+  align-self: flex-start;
+  color: var(--p-suave);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* o link acompanha o alinhamento do texto */
+.arte[data-alinhamento='centro'] .arte__link {
+  align-self: center;
+}
+
+/* ---------- citação (depoimento) ---------- */
+.arte__citacao {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: inherit;
+  gap: 18px;
+}
+
+.arte__aspas {
+  height: 110px;
+  margin-bottom: -20px;
+  color: var(--p-destaque);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 220px;
+  line-height: 0.9;
+}
+
+.arte__estrelas {
+  color: #f2b01e;
+  font-size: 40px;
+  letter-spacing: 6px;
+}
+
+.arte__depoimento {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--p-texto);
+  font-family: var(--fonte-titulo);
+  font-size: 46px;
+  font-style: italic;
+  line-height: 1.3;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+}
+
+/* dividindo espaço com a foto: o depoimento mais curto, para a foto não sumir */
+.arte[data-fotos='1'] .arte__depoimento {
+  font-size: 38px;
+  -webkit-line-clamp: 4;
+}
+
+.arte[data-fotos='1'] .arte__aspas {
+  height: 80px;
+  font-size: 160px;
+}
+
+.arte[data-manuscrita='true'] .arte__depoimento {
+  font-family: var(--fonte-apoio);
+  font-size: 40px;
+}
+
+.arte__autor {
+  color: var(--p-suave);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* com depoimento, o título vira uma chamada pequena e a citação é a estrela */
+.arte[data-tipo='DEPOIMENTO'] .arte__titulo {
+  font-size: calc(var(--t-titulo) * 0.5);
+  line-height: 1.12;
+}
+
+/* ---------- lista (cardápio) ---------- */
+.arte__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.arte__item {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  font-size: 38px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.arte__item-nome {
+  flex: none;
+  max-width: 64%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arte__item-linha {
+  flex: 1;
+  min-width: 40px;
+  border-bottom: 3px dotted var(--p-linha);
+  transform: translateY(-8px);
+}
+
+.arte__item-preco {
+  flex: none;
+  color: var(--p-titulo);
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+}
+
+/* ---------- horários (agenda aberta) ---------- */
+.arte__horarios {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 100%;
+}
+
+.arte__dia {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 22px;
+}
+
+.arte[data-alinhamento='centro'] .arte__dia {
+  justify-content: center;
+}
+
+.arte__dia-nome {
+  min-width: 190px;
+  font-size: 34px;
+  font-weight: 800;
+  text-align: left;
+}
+
+.arte__horas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.arte__hora {
+  padding: 12px 22px;
+  border: 3px solid var(--p-linha);
+  border-radius: var(--raio-botao);
+  font-size: 30px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

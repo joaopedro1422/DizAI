@@ -87,6 +87,7 @@ export class PainelPageComponent implements OnInit {
   private readonly rotasPainel = inject(SessaoService).rotasDoPainel;
   /** Card "Como o assistente atende": as configurações do atendimento ficam numa tela própria. */
   protected readonly rotaAtendimento = computed(() => this.rotasPainel().atendimento);
+  protected readonly rotaPosts = computed(() => this.rotasPainel().posts);
 
   protected readonly editandoPerfil = signal(false);
   protected readonly alterandoSenha = signal(false);

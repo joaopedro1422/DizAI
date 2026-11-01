@@ -114,6 +114,22 @@
   color: var(--cor-borda-forte);
 }
 
+/* "Criar posts" (seção Redes Sociais): ícone em degradê e o selo "Novo" */
+.cartao-posts__icone {
+  background: linear-gradient(135deg, #f58529 0%, #dd2a7b 45%, #8134af 100%);
+  color: #ffffff;
+}
+
+.cartao-posts__selo {
+  flex: none;
+  padding: 4px 10px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
 /* "Primeiros passos" oculto ou concluído: o elemento vazio não ocupa espaço (nem o gap da coluna) */
 .conteudo > app-primeiros-passos:not(:has(> .passos)) {
   display: none;
@@ -136,9 +152,10 @@
     padding: 32px max(40px, calc((100% - 1200px) / 2)) 48px;
   }
 
+  /* coluna da direita, de cima para baixo: Seu assistente, Redes Sociais, Primeiros passos e o convite do app */
   .grupo--negocio {
     grid-column: 1;
-    grid-row: 1 / span 2;
+    grid-row: 1 / span 4;
   }
 
   .grupo--assistente {
@@ -146,53 +163,30 @@
     grid-row: 1;
   }
 
-  /* o aviso da senha temporária fica em cima, nas duas colunas */
+  .grupo--redes {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .conteudo > app-primeiros-passos {
+    grid-column: 2;
+    grid-row: 3;
+  }
+
+  .conteudo > app-no-celular {
+    grid-column: 2;
+    grid-row: 4;
+  }
+
+  /* o aviso da senha temporária fica em cima, nas duas colunas, e o resto desce uma linha */
   .conteudo > .aviso-senha {
     grid-column: 1 / -1;
     grid-row: 1;
   }
 
-  .conteudo:has(> .aviso-senha) > .grupo--negocio {
-    grid-row: 2 / span 2;
-  }
-
-  .conteudo:has(> .aviso-senha) > .grupo--assistente {
-    grid-row: 2;
-  }
-
-  /* o convite do app fica na coluna da direita, logo abaixo do card dos chats */
-  .conteudo > app-no-celular {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  .conteudo:has(> .aviso-senha) > app-no-celular {
-    grid-row: 3;
-  }
-
-  /* "Primeiros passos" na coluna da direita, logo abaixo de "Seu assistente" (o convite do app desce uma linha) */
-  .conteudo:has(> app-primeiros-passos > .passos) > app-primeiros-passos {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  .conteudo:has(> app-primeiros-passos > .passos) > .grupo--negocio {
-    grid-row: 1 / span 3;
-  }
-
-  .conteudo:has(> app-primeiros-passos > .passos) > app-no-celular {
-    grid-row: 3;
-  }
-
-  .conteudo:has(> .aviso-senha):has(> app-primeiros-passos > .passos) > app-primeiros-passos {
-    grid-row: 3;
-  }
-
-  .conteudo:has(> .aviso-senha):has(> app-primeiros-passos > .passos) > .grupo--negocio {
-    grid-row: 2 / span 3;
-  }
-
-  .conteudo:has(> .aviso-senha):has(> app-primeiros-passos > .passos) > app-no-celular {
-    grid-row: 4;
-  }
+  .conteudo:has(> .aviso-senha) > .grupo--negocio { grid-row: 2 / span 4; }
+  .conteudo:has(> .aviso-senha) > .grupo--assistente { grid-row: 2; }
+  .conteudo:has(> .aviso-senha) > .grupo--redes { grid-row: 3; }
+  .conteudo:has(> .aviso-senha) > app-primeiros-passos { grid-row: 4; }
+  .conteudo:has(> .aviso-senha) > app-no-celular { grid-row: 5; }
 }

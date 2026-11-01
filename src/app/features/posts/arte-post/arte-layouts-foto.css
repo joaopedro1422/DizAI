@@ -1,0 +1,240 @@
+/*
+ * Layouts com a foto em destaque, mas sem cobrir a arte: editorial, polaroid, arco e dividido (círculo, colagem,
+ * minimalista e cartão em arte-layouts-foto-2.css). Ordem padrão das peças: marca, foto, texto, link.
+ */
+.arte__marca { order: 0; }
+.arte__midia { order: 1; }
+.arte__texto { order: 2; }
+.arte__link { order: 3; }
+
+/* ---------- editorial: cara de capa de revista ---------- */
+.arte[data-layout='editorial'] .arte__marca {
+  padding-bottom: 24px;
+  border-bottom: 2px solid var(--p-linha);
+}
+
+.arte[data-layout='editorial'] .arte__texto {
+  order: 1;
+  gap: 18px;
+}
+
+.arte[data-layout='editorial'] .arte__midia {
+  order: 2;
+  flex: 1;
+}
+
+.arte[data-layout='editorial'] .arte__selo {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--p-titulo);
+}
+
+.arte[data-layout='editorial'] .arte__titulo {
+  font-size: calc(var(--t-titulo) * 1.08);
+}
+
+/* variante 1: a foto em cima e o texto embaixo */
+.arte[data-layout='editorial'][data-variante='1'] .arte__midia { order: 1; }
+.arte[data-layout='editorial'][data-variante='1'] .arte__texto { order: 2; }
+
+/* ---------- polaroid: a foto num papel branco levemente torto ---------- */
+.arte[data-layout='polaroid'] .arte__midia {
+  flex: 1;
+  align-self: center;
+  width: 74%;
+  padding: 18px 0 10px;
+}
+
+.arte[data-layout='polaroid'] .arte__foto {
+  padding: 26px 26px 120px;
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.22);
+  transform: rotate(-3deg);
+}
+
+.arte[data-layout='polaroid'][data-filtro='duotone'] .arte__foto::after {
+  inset: 26px 26px 120px;
+}
+
+/* variante 1: torta para o outro lado, com uma fita adesiva em cima */
+.arte[data-layout='polaroid'][data-variante='1'] .arte__foto {
+  transform: rotate(2.5deg);
+}
+
+.arte[data-layout='polaroid'][data-variante='1'] .arte__midia::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 50%;
+  width: 190px;
+  height: 56px;
+  margin-left: -95px;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transform: rotate(-4deg);
+}
+
+.arte[data-layout='polaroid'] .arte__texto {
+  align-items: center;
+  text-align: center;
+}
+
+.arte[data-layout='polaroid'] .arte__acao {
+  justify-content: center;
+}
+
+/* ---------- arco: a foto em arco ao lado do texto ---------- */
+.arte[data-layout='arco'] {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44%;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  column-gap: 56px;
+}
+
+.arte[data-layout='arco'] .arte__marca { grid-column: 1; grid-row: 1; }
+.arte[data-layout='arco'] .arte__texto { grid-column: 1; grid-row: 2; justify-content: center; }
+.arte[data-layout='arco'] .arte__link { grid-column: 1; grid-row: 3; }
+
+.arte[data-layout='arco'] .arte__midia {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+}
+
+.arte[data-layout='arco'] .arte__foto,
+.arte[data-layout='arco'] .arte__midia::before {
+  border-radius: 999px 999px var(--raio) var(--raio);
+}
+
+.arte[data-layout='arco'] .arte__midia::before {
+  content: '';
+  position: absolute;
+  inset: -24px 24px 24px -24px;
+  border: 3px solid var(--p-linha);
+}
+
+.arte[data-layout='arco'] .arte__texto {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.arte[data-layout='arco'] .arte__acao {
+  justify-content: flex-start;
+}
+
+/* variante 1 e story: o arco no alto e o texto embaixo */
+.arte[data-layout='arco'][data-variante='1'],
+.arte[data-layout='arco'][data-formato='story'] {
+  display: flex;
+}
+
+.arte[data-layout='arco'][data-variante='1'] .arte__midia,
+.arte[data-layout='arco'][data-formato='story'] .arte__midia {
+  flex: 1;
+  align-self: center;
+  width: 66%;
+  margin-top: 20px;
+}
+
+.arte[data-layout='arco'][data-variante='1'] .arte__texto,
+.arte[data-layout='arco'][data-formato='story'] .arte__texto {
+  align-items: center;
+  text-align: center;
+}
+
+.arte[data-layout='arco'][data-variante='1'] .arte__acao,
+.arte[data-layout='arco'][data-formato='story'] .arte__acao {
+  justify-content: center;
+}
+
+/* ---------- dividido: metade foto, metade cor ---------- */
+.arte[data-layout='dividido'] {
+  padding: 0;
+  gap: 0;
+}
+
+.arte[data-layout='dividido'] .arte__midia {
+  flex: 0 0 54%;
+}
+
+.arte[data-layout='dividido'] .arte__foto {
+  border-radius: 0;
+}
+
+.arte[data-layout='dividido'] .arte__marca {
+  position: absolute;
+  top: 56px;
+  left: 56px;
+  padding: 10px 26px 10px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.arte[data-layout='dividido'] .arte__marca .arte__nome-loja {
+  color: #17130f;
+}
+
+.arte[data-layout='dividido'] .arte__texto {
+  flex: 1;
+  justify-content: center;
+  padding: 56px var(--pad) 20px;
+}
+
+.arte[data-layout='dividido'] .arte__link {
+  padding: 0 var(--pad) 56px;
+}
+
+.arte[data-layout='dividido'][data-alinhamento='centro'] .arte__link {
+  text-align: center;
+}
+
+/* a costura entre as metades: uma faixa fina na cor da loja */
+.arte[data-layout='dividido'] .arte__texto::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: var(--pad);
+  width: 160px;
+  height: 16px;
+  border-radius: 8px;
+  background: var(--preenchimento-marca);
+}
+
+.arte[data-layout='dividido'][data-alinhamento='centro'] .arte__texto::before {
+  left: 50%;
+  margin-left: -80px;
+}
+
+/* variante 1 (fora do story): foto à esquerda, texto à direita */
+.arte[data-layout='dividido'][data-variante='1']:not([data-formato='story']) {
+  display: grid;
+  grid-template-columns: 46% minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.arte[data-layout='dividido'][data-variante='1']:not([data-formato='story']) .arte__midia {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.arte[data-layout='dividido'][data-variante='1']:not([data-formato='story']) .arte__texto {
+  grid-column: 2;
+  grid-row: 1;
+  padding: 72px 64px 24px;
+}
+
+.arte[data-layout='dividido'][data-variante='1']:not([data-formato='story']) .arte__texto::before {
+  display: none;
+}
+
+.arte[data-layout='dividido'][data-variante='1']:not([data-formato='story']) .arte__link {
+  grid-column: 2;
+  grid-row: 2;
+  padding: 0 64px 64px;
+}
+
+.arte[data-layout='dividido'][data-variante='1']:not([data-formato='story']) .arte__titulo {
+  font-size: calc(var(--t-titulo) * 0.78);
+}

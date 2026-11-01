@@ -41,6 +41,21 @@
         <app-cartao-chats appAlvoTour="chats" />
       </section>
 
+      <section class="grupo grupo--redes" aria-labelledby="titulo-redes-sociais">
+        <h2 id="titulo-redes-sociais" class="grupo__titulo">Redes Sociais</h2>
+        <a class="cartao-atendimento cartao-posts" [routerLink]="rotaPosts()" appAlvoTour="redes-sociais">
+          <span class="cartao-atendimento__icone cartao-posts__icone" aria-hidden="true">
+            <app-icone nome="brilho" [tamanho]="22" [espessura]="2" />
+          </span>
+          <span class="cartao-atendimento__textos">
+            <span class="cartao-atendimento__titulo">Criar posts</span>
+            <span class="cartao-atendimento__descricao">Artes para o Instagram com a sua logo, cores, fotos e preços, e a legenda pronta</span>
+          </span>
+          <span class="cartao-posts__selo">Novo</span>
+          <app-icone nome="avancar" [tamanho]="18" [espessura]="2" class="cartao-atendimento__seta" />
+        </a>
+      </section>
+
       <!-- último item do painel: instalar o app e ativar os avisos (some quando não há nada a fazer) -->
       <app-no-celular />
 

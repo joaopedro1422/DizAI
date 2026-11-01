@@ -41,6 +41,12 @@ const rotasDoPainel: Routes = [
       import('./features/estatisticas/estatisticas-page.component').then((m) => m.EstatisticasPageComponent),
   },
   {
+    // gerador de posts para redes sociais (artes com a logo, as cores e as fotos da loja)
+    path: 'posts',
+    title: 'Posts para redes sociais | DizAI',
+    loadComponent: () => import('./features/posts/posts-page.component').then((m) => m.PostsPageComponent),
+  },
+  {
     path: 'agenda',
     title: 'Agenda | DizAI',
     loadComponent: () => import('./features/agenda/agenda-page.component').then((m) => m.AgendaPageComponent),

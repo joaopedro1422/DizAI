@@ -1,0 +1,174 @@
+/* Enfeites de fundo (data-decor): seis peças (.arte__d1..d6) que cada enfeite desenha a seu modo, na cor --p-decor. */
+.arte__d {
+  position: absolute;
+  display: none;
+}
+
+/* ---------- linhas: moldura fina e um traço de acabamento ---------- */
+.arte[data-decor='linhas'] .arte__d1 {
+  display: block;
+  inset: 34px;
+  border: 2px solid var(--p-linha);
+  border-radius: calc(var(--raio) * 0.6);
+}
+
+.arte[data-decor='linhas'] .arte__d2 {
+  display: block;
+  top: 34px;
+  left: 50%;
+  width: 180px;
+  height: 10px;
+  margin-left: -90px;
+  margin-top: -5px;
+  background: var(--p-fundo-solido);
+}
+
+/* ---------- pontos: retalhos de pontilhado ---------- */
+.arte[data-decor='pontos'] .arte__d1,
+.arte[data-decor='pontos'] .arte__d2 {
+  display: block;
+  width: 240px;
+  height: 240px;
+  background-image: radial-gradient(var(--p-decor) 5px, transparent 6px);
+  background-size: 34px 34px;
+  opacity: 0.85;
+}
+
+.arte[data-decor='pontos'] .arte__d1 {
+  top: 24px;
+  right: 24px;
+}
+
+.arte[data-decor='pontos'] .arte__d2 {
+  bottom: 50px;
+  left: 40px;
+  width: 220px;
+  height: 220px;
+}
+
+/* ---------- orgânico: manchas macias ---------- */
+.arte[data-decor='organico'] .arte__d1,
+.arte[data-decor='organico'] .arte__d2,
+.arte[data-decor='organico'] .arte__d3 {
+  display: block;
+  background: var(--p-decor);
+}
+
+.arte[data-decor='organico'] .arte__d1 {
+  top: -180px;
+  right: -160px;
+  width: 640px;
+  height: 600px;
+  border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
+}
+
+.arte[data-decor='organico'] .arte__d2 {
+  bottom: -200px;
+  left: -180px;
+  width: 560px;
+  height: 520px;
+  border-radius: 61% 39% 46% 54% / 52% 61% 39% 48%;
+}
+
+.arte[data-decor='organico'] .arte__d3 {
+  bottom: 22%;
+  right: 7%;
+  width: 120px;
+  height: 110px;
+  border-radius: 50% 50% 44% 56% / 58% 46% 54% 42%;
+}
+
+/* ---------- brilhos: estrelinhas de quatro pontas ---------- */
+.arte[data-decor='brilhos'] .arte__d1,
+.arte[data-decor='brilhos'] .arte__d2,
+.arte[data-decor='brilhos'] .arte__d3,
+.arte[data-decor='brilhos'] .arte__d4 {
+  display: block;
+  width: 70px;
+  height: 70px;
+  background: var(--p-destaque);
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  opacity: 0.55;
+}
+
+.arte[data-decor='brilhos'] .arte__d1 {
+  top: 7%;
+  right: 9%;
+  width: 96px;
+  height: 96px;
+}
+
+.arte[data-decor='brilhos'] .arte__d2 {
+  top: 15%;
+  right: 20%;
+  width: 44px;
+  height: 44px;
+}
+
+/* os de baixo ficam na margem lateral, fora do texto */
+.arte[data-decor='brilhos'] .arte__d3 {
+  top: 54%;
+  left: 14px;
+  width: 54px;
+  height: 54px;
+}
+
+.arte[data-decor='brilhos'] .arte__d4 {
+  top: 64%;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+}
+
+/* ---------- geométrico: círculos e meia-lua ---------- */
+.arte[data-decor='geometrico'] .arte__d1 {
+  display: block;
+  top: -140px;
+  right: -140px;
+  width: 520px;
+  height: 520px;
+  border: 3px solid var(--p-linha);
+  border-radius: 50%;
+}
+
+.arte[data-decor='geometrico'] .arte__d2 {
+  display: block;
+  bottom: -190px;
+  left: -120px;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: var(--p-decor);
+}
+
+.arte[data-decor='geometrico'] .arte__d3 {
+  display: block;
+  top: 92px;
+  right: 230px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--p-destaque);
+  opacity: 0.6;
+}
+
+/* ---------- faixas: listras diagonais nos cantos ---------- */
+.arte[data-decor='faixas'] .arte__d1,
+.arte[data-decor='faixas'] .arte__d2 {
+  display: block;
+  width: 420px;
+  height: 120px;
+  background: repeating-linear-gradient(135deg, var(--p-decor) 0 16px, transparent 16px 34px);
+}
+
+.arte[data-decor='faixas'] .arte__d1 {
+  top: 60px;
+  right: -70px;
+  transform: rotate(-14deg);
+}
+
+.arte[data-decor='faixas'] .arte__d2 {
+  bottom: 70px;
+  left: -90px;
+  transform: rotate(-14deg);
+}

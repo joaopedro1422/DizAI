@@ -1,0 +1,271 @@
+<div class="tela-app tela-pc tela-posts">
+  <app-cabecalho-pagina titulo="Posts para redes sociais" subtitulo="Artes com a sua logo, cores e fotos, prontas para postar." />
+
+  <main class="conteudo-tela posts corpo-pc">
+    <!-- O que postar hoje: ideias dos dados da loja, um toque e as artes saem -->
+    @if (sugestoes().length > 0) {
+      <section class="sugestoes" aria-labelledby="titulo-sugestoes">
+        <h2 id="titulo-sugestoes" class="sugestoes__titulo">
+          <app-icone nome="brilho" [tamanho]="18" [espessura]="2" />
+          O que postar hoje
+        </h2>
+        <div class="sugestoes__lista">
+          @for (sugestao of sugestoes(); track sugestao.id) {
+            <button type="button" class="sugestao" [disabled]="gerando()" (click)="sugestao.aplicar()">
+              <span class="sugestao__imagem">
+                @if (sugestao.imagem) {
+                  <img [src]="sugestao.imagem | urlImagem" alt="">
+                } @else {
+                  <app-icone [nome]="sugestao.icone" [tamanho]="22" [espessura]="2" />
+                }
+              </span>
+              <span class="sugestao__textos">
+                <span class="sugestao__titulo">{{ sugestao.titulo }}</span>
+                <span class="sugestao__motivo">{{ sugestao.motivo }}</span>
+              </span>
+            </button>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- o que o post vai divulgar -->
+    <section class="criar" aria-label="Criar post">
+      <div class="etapa">
+        <h2 class="etapa__titulo"><span class="etapa__numero">1</span>O que você quer divulgar?</h2>
+        <div class="tipos" role="radiogroup" aria-label="Tipo de post">
+          @for (item of tiposDisponiveis(); track item.tipo) {
+            <button
+              type="button"
+              role="radio"
+              class="tipo"
+              [class.tipo--ativo]="tipo() === item.tipo"
+              [attr.aria-checked]="tipo() === item.tipo"
+              (click)="escolherTipo(item.tipo)"
+            >
+              <span class="tipo__icone"><app-icone [nome]="icone(item.icone)" [tamanho]="20" [espessura]="2" /></span>
+              <span class="tipo__nome">{{ item.nome }}</span>
+              <span class="tipo__descricao">{{ item.descricao }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="etapa">
+        <h2 class="etapa__titulo"><span class="etapa__numero">2</span>Escolha o conteúdo</h2>
+
+        @switch (tipo()) {
+          @case ('DESTAQUE') {
+            <ng-container [ngTemplateOutlet]="listaProdutos" />
+          }
+          @case ('AGENDA') {
+            <label class="campo">
+              <span class="campo__rotulo">Serviço</span>
+              <select class="campo__entrada" (change)="escolherServicoAgenda(+texto($event))">
+                @for (servico of servicosAgenda(); track servico.id) {
+                  <option [value]="servico.id" [selected]="servico.id === servicoAgendaId()">{{ servico.nome }}</option>
+                }
+              </select>
+            </label>
+            @if (carregandoAgenda()) {
+              <app-carregando modo="inline" texto="Buscando horários livres…" />
+            } @else if (horariosAgenda().length === 0) {
+              <p class="aviso">Nenhum horário livre nos próximos dias para este serviço.</p>
+            } @else {
+              <ul class="dias">
+                @for (dia of horariosAgenda(); track dia.dia) {
+                  <li><strong>{{ dia.dia }}</strong> {{ dia.horas.join(' · ') }}</li>
+                }
+              </ul>
+            }
+          }
+          @case ('DEPOIMENTO') {
+            <div class="feedbacks">
+              @for (feedback of feedbacks(); track feedback.id) {
+                <button type="button" class="feedback" [class.feedback--ativo]="feedbackId() === feedback.id" (click)="feedbackId.set(feedback.id)">
+                  <span class="feedback__estrelas">{{ '★'.repeat(feedback.estrelas) }}</span>
+                  <span class="feedback__texto">“{{ feedback.texto }}”</span>
+                  <span class="feedback__nome">{{ feedback.nome }}</span>
+                </button>
+              }
+            </div>
+          }
+          @case ('PROMOCAO') {
+            <label class="campo">
+              <span class="campo__rotulo">Qual é a oferta?</span>
+              <input class="campo__entrada" maxlength="80" placeholder="Ex.: 20% off na esmaltação em gel" [value]="oferta()" (input)="oferta.set(texto($event))">
+            </label>
+            <label class="campo">
+              <span class="campo__rotulo">Condições <span class="campo__rotulo-opcional">(opcional)</span></span>
+              <input class="campo__entrada" maxlength="80" placeholder="Ex.: até sábado, 15/11" [value]="condicao()" (input)="condicao.set(texto($event))">
+            </label>
+            <ng-container [ngTemplateOutlet]="listaProdutos" [ngTemplateOutletContext]="{ opcional: true }" />
+          }
+          @case ('CARDAPIO') {
+            <p class="dica">Escolha até 6 itens ({{ cardapioIds().length }} escolhidos).</p>
+            <div class="cardapio">
+              @for (produto of itensComPreco(); track produto.id) {
+                <label class="cardapio__item">
+                  <input type="checkbox" [checked]="cardapioIds().includes(produto.id)" (change)="alternarCardapio(produto.id)">
+                  <span class="cardapio__nome">{{ produto.nome }}</span>
+                </label>
+              }
+            </div>
+          }
+          @case ('NOVIDADE') {
+            <p class="dica">Escolha a foto que acabou de entrar na vitrine.</p>
+          }
+          @case ('CONVITE') {
+            <p class="dica">Um post para chamar novos clientes para o seu WhatsApp e a sua vitrine.</p>
+          }
+        }
+
+        <!-- a foto da arte (a escolhida vem primeiro; a colagem completa com outras da galeria) -->
+        @if (fotosParaEscolher().length > 0) {
+          <span class="campo__rotulo fotos__rotulo">Foto</span>
+          <div class="fotos" role="radiogroup" aria-label="Foto da arte">
+            @if (tipo() !== 'NOVIDADE') {
+              <button type="button" role="radio" class="foto foto--nenhuma" [class.foto--ativa]="semFoto()" [attr.aria-checked]="semFoto()" (click)="escolherFoto(null)">
+                <app-icone nome="fechar" [tamanho]="18" />
+                Sem foto
+              </button>
+            }
+            @for (url of fotosParaEscolher(); track url; let primeira = $first) {
+              @let ativa = !semFoto() && (fotoRef() ? fotoRef() === url : primeira && tipo() !== 'NOVIDADE');
+              <button type="button" role="radio" class="foto" [class.foto--ativa]="ativa" [attr.aria-checked]="ativa" (click)="escolherFoto(url)">
+                <img [src]="url | urlImagem" alt="" loading="lazy">
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="etapa">
+        <h2 class="etapa__titulo"><span class="etapa__numero">3</span>Formato</h2>
+        <div class="formatos" role="radiogroup" aria-label="Formato">
+          @for (item of formatos; track item.valor) {
+            <button type="button" role="radio" class="formato" [class.formato--ativo]="formato() === item.valor" [attr.aria-checked]="formato() === item.valor" (click)="formato.set(item.valor)">
+              <span class="formato__desenho formato__desenho--{{ item.valor }}"></span>
+              <span class="formato__nome">{{ item.rotulo }}</span>
+              <span class="formato__detalhe">{{ item.detalhe }}</span>
+            </button>
+          }
+        </div>
+        <label class="campo">
+          <span class="campo__rotulo">Quer orientar o texto? <span class="campo__rotulo-opcional">(opcional)</span></span>
+          <input class="campo__entrada" maxlength="140" placeholder="Ex.: tom divertido, falar do Dia das Mães" [value]="orientacao()" (input)="orientacao.set(texto($event))">
+        </label>
+      </div>
+
+      <button type="button" class="btn btn--primario btn--grande btn--bloco criar__botao" [disabled]="!!falta() || gerando()" (click)="criar()">
+        <app-icone nome="brilho" [tamanho]="18" [espessura]="2" />
+        {{ gerando() ? 'Criando as artes…' : 'Criar artes' }}
+      </button>
+      @if (falta()) {
+        <span class="criar__falta">{{ falta() }}</span>
+      }
+    </section>
+
+    <!-- as artes geradas -->
+    <section #resultados class="resultados" aria-label="Artes" aria-live="polite">
+      @if (gerando()) {
+        <div class="grade" [attr.data-formato]="formato()">
+          @for (n of [1, 2, 3, 4]; track n) {
+            <div class="esqueleto" [style.width.px]="larguraCartao()"></div>
+          }
+        </div>
+      } @else if (opcoes().length > 0) {
+        <div class="resultados__topo">
+          <h2 class="resultados__titulo">Escolha a sua arte</h2>
+          <div class="resultados__acoes">
+            <button type="button" class="btn btn--secundario btn--pequeno" (click)="outrasArtes()">
+              <app-icone nome="listaRepetida" [tamanho]="16" />
+              Outras artes
+            </button>
+            <button type="button" class="btn btn--secundario btn--pequeno" (click)="outrosTextos()">
+              <app-icone nome="brilho" [tamanho]="16" />
+              Outros textos
+            </button>
+          </div>
+        </div>
+        <div class="grade">
+          @for (opcao of opcoes(); track opcao.id) {
+            <button type="button" class="opcao" [style.width.px]="larguraCartao()" (click)="escolher(opcao)" [attr.aria-label]="'Usar a arte: ' + opcao.conteudo.titulo">
+              <app-arte-post [marca]="marca()" [conteudo]="opcao.conteudo" [estilo]="opcao.estilo" [formato]="formato()" [largura]="larguraCartao()" />
+              <span class="opcao__usar">Usar esta</span>
+            </button>
+          }
+        </div>
+      } @else {
+        <div class="vazio">
+          <span class="vazio__icone"><app-icone nome="imagem" [tamanho]="28" /></span>
+          <strong class="vazio__titulo">Suas artes aparecem aqui</strong>
+          <span class="vazio__texto">Cada vez que você cria, saem composições diferentes, sempre com a cara da sua loja.</span>
+        </div>
+      }
+    </section>
+  </main>
+</div>
+
+<!-- lista dos serviços/produtos (Destaque e Promoção) -->
+<ng-template #listaProdutos let-opcional="opcional">
+  @if (opcional) {
+    <span class="campo__rotulo">Item da oferta <span class="campo__rotulo-opcional">(opcional, para a foto)</span></span>
+  }
+  <div class="produtos">
+    @for (produto of produtos(); track produto.id) {
+      <button type="button" class="produto" [class.produto--ativo]="produtoId() === produto.id" (click)="produtoId.set(produto.id); fotoRef.set(null); semFoto.set(false)">
+        @if (produto.fotoUrl) {
+          <img class="produto__foto" [src]="produto.fotoUrl | urlImagem" alt="" loading="lazy">
+        } @else {
+          <span class="produto__foto produto__foto--vazia"><app-icone nome="caixa" [tamanho]="18" /></span>
+        }
+        <span class="produto__nome">{{ produto.nome }}</span>
+      </button>
+    }
+  </div>
+</ng-template>
+
+@if (escolhida(); as opcao) {
+  <app-bottom-sheet titulo="Seu post" (fechar)="escolhida.set(null)">
+    <div class="final">
+      <div class="final__arte">
+        <app-arte-post #arteEscolhida [marca]="marca()" [conteudo]="opcao.conteudo" [estilo]="opcao.estilo" [formato]="formato()" [largura]="larguraGrande()" />
+      </div>
+      <div class="final__campos">
+        <label class="campo">
+          <span class="campo__rotulo">Título</span>
+          <input class="campo__entrada" maxlength="60" [value]="opcao.conteudo.titulo" (input)="editar('titulo', $event)">
+        </label>
+        <label class="campo">
+          <span class="campo__rotulo">Frase de apoio</span>
+          <input class="campo__entrada" maxlength="120" [value]="opcao.conteudo.apoio" (input)="editar('apoio', $event)">
+        </label>
+        <label class="campo">
+          <span class="campo__rotulo">Botão</span>
+          <input class="campo__entrada" maxlength="32" [value]="opcao.conteudo.chamada" (input)="editar('chamada', $event)">
+        </label>
+        <label class="campo">
+          <span class="campo__rotulo">Legenda para o post</span>
+          <textarea class="campo__entrada final__legenda" rows="6" [value]="opcao.legenda" (input)="editarLegenda($event)"></textarea>
+        </label>
+        <div class="final__acoes">
+          <button type="button" class="btn btn--primario btn--grande btn--bloco" [disabled]="!!exportando()" (click)="compartilhar()">
+            <app-icone nome="externo" [tamanho]="18" />
+            {{ exportando() === 'compartilhar' ? 'Preparando…' : 'Compartilhar' }}
+          </button>
+          <div class="final__secundarias">
+            <button type="button" class="btn btn--secundario" [disabled]="!!exportando()" (click)="baixar()">
+              <app-icone nome="seta" [tamanho]="16" />
+              {{ exportando() === 'baixar' ? 'Gerando…' : 'Baixar' }}
+            </button>
+            <button type="button" class="btn btn--secundario" (click)="copiarLegenda()">
+              <app-icone nome="copiar" [tamanho]="16" />
+              Copiar legenda
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </app-bottom-sheet>
+}

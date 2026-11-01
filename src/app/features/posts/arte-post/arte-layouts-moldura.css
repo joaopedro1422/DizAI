@@ -1,0 +1,284 @@
+/*
+ * Layouts de foto cheia: a foto ocupa a arte inteira e o texto vai por cima (moldura, faixa diagonal, janela e a
+ * etiqueta de preço com paleta "foto"). Nesses, o texto fica sempre legível: degradê escuro ou um painel sólido.
+ */
+
+/* ---------- comum: foto cobrindo tudo, marca num selo branco ---------- */
+.arte[data-layout='moldura'] .arte__midia,
+.arte[data-layout='diagonal'] .arte__midia,
+.arte[data-layout='janela'] .arte__midia,
+.arte[data-layout='etiqueta'][data-paleta='foto'] .arte__midia {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.arte[data-layout='moldura'] .arte__foto,
+.arte[data-layout='diagonal'] .arte__foto,
+.arte[data-layout='janela'] .arte__foto,
+.arte[data-layout='etiqueta'][data-paleta='foto'] .arte__foto {
+  border-radius: 0;
+}
+
+.arte[data-layout='moldura'] .arte__marca,
+.arte[data-layout='diagonal'] .arte__marca,
+.arte[data-layout='janela'] .arte__marca,
+.arte[data-layout='etiqueta'][data-paleta='foto'] .arte__marca {
+  position: absolute;
+  top: var(--pad);
+  left: var(--pad);
+  padding: 10px 28px 10px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.arte[data-layout='moldura'] .arte__marca .arte__nome-loja,
+.arte[data-layout='diagonal'] .arte__marca .arte__nome-loja,
+.arte[data-layout='janela'] .arte__marca .arte__nome-loja,
+.arte[data-layout='etiqueta'][data-paleta='foto'] .arte__marca .arte__nome-loja {
+  color: #17130f;
+}
+
+.arte[data-layout='moldura'] .arte__logo,
+.arte[data-layout='diagonal'] .arte__logo,
+.arte[data-layout='janela'] .arte__logo,
+.arte[data-layout='etiqueta'][data-paleta='foto'] .arte__logo,
+.arte[data-layout='moldura'] .arte__inicial,
+.arte[data-layout='diagonal'] .arte__inicial,
+.arte[data-layout='janela'] .arte__inicial,
+.arte[data-layout='etiqueta'][data-paleta='foto'] .arte__inicial {
+  width: 76px;
+  height: 76px;
+  box-shadow: none;
+}
+
+.arte[data-alinhamento='centro'][data-layout='moldura'] .arte__marca,
+.arte[data-alinhamento='centro'][data-layout='diagonal'] .arte__marca {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* o degradê que deixa o texto legível em cima da foto */
+.arte[data-paleta='foto'] .arte__midia::after,
+.arte[data-layout='diagonal'] .arte__midia::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(12, 9, 7, 0.88) 0%, rgba(12, 9, 7, 0.6) 34%, rgba(12, 9, 7, 0.08) 64%, rgba(12, 9, 7, 0) 78%);
+}
+
+.arte[data-paleta='foto'] .arte__link,
+.arte[data-layout='diagonal'] .arte__link {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+/* ---------- moldura ---------- */
+.arte[data-layout='moldura'] {
+  justify-content: flex-end;
+}
+
+/* paleta da cor/escura: o texto num painel sólido colado no pé da arte */
+.arte[data-layout='moldura']:not([data-paleta='foto']) .arte__texto {
+  margin: 0 calc(var(--pad) * -1) calc(var(--pad) * -1);
+  padding: 60px var(--pad) 120px;
+  border-radius: var(--raio) var(--raio) 0 0;
+  background: var(--p-fundo);
+}
+
+.arte[data-layout='moldura']:not([data-paleta='foto']) .arte__link {
+  position: absolute;
+  bottom: 52px;
+  left: var(--pad);
+  z-index: 2;
+}
+
+.arte[data-layout='moldura'][data-alinhamento='centro']:not([data-paleta='foto']) .arte__link {
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+/* variante 1: o painel vira um cartão flutuando sobre a foto */
+.arte[data-layout='moldura'][data-variante='1']:not([data-paleta='foto']) .arte__texto {
+  margin: 0;
+  padding: 56px 60px;
+  border-radius: var(--raio);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.28);
+}
+
+.arte[data-layout='moldura'][data-variante='1']:not([data-paleta='foto']) .arte__link {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* variante 2 com foto: o texto no meio, sobre um véu escuro na foto inteira */
+.arte[data-layout='moldura'][data-variante='2'][data-paleta='foto'] {
+  justify-content: center;
+}
+
+.arte[data-layout='moldura'][data-variante='2'][data-paleta='foto'] .arte__midia::after {
+  background: rgba(12, 9, 7, 0.52);
+}
+
+.arte[data-layout='moldura'][data-variante='2'][data-paleta='foto'] .arte__link {
+  position: absolute;
+  bottom: var(--pad);
+  left: var(--pad);
+}
+
+/* ---------- faixa diagonal ---------- */
+.arte[data-layout='diagonal'] {
+  justify-content: flex-end;
+}
+
+.arte[data-layout='diagonal'] .arte__texto {
+  position: static;
+}
+
+/* as peças na frente da foto (a faixa, logo abaixo, sai do fluxo e se posiciona pela arte inteira) */
+.arte[data-layout='diagonal'] .arte__titulo,
+.arte[data-layout='diagonal'] .arte__apoio,
+.arte[data-layout='diagonal'] .arte__acao,
+.arte[data-layout='diagonal'] .arte__citacao {
+  position: relative;
+  z-index: 1;
+}
+
+.arte[data-layout='diagonal'] .arte__selo {
+  position: absolute;
+  z-index: 2;
+  top: 24%;
+  left: -120px;
+  right: -120px;
+  justify-content: center;
+  padding: 34px 0;
+  border-radius: 0;
+  background: var(--preenchimento-marca);
+  color: #ffffff;
+  font-family: var(--fonte-titulo);
+  font-size: 72px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transform: rotate(-7deg);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.3);
+}
+
+.arte[data-layout='diagonal'][data-variante='1'] .arte__selo {
+  top: 14%;
+  transform: rotate(6deg);
+}
+
+.arte[data-layout='diagonal'][data-formato='story'] .arte__selo {
+  top: 30%;
+}
+
+.arte[data-layout='diagonal'][data-formato='quadrado'] .arte__selo {
+  top: 17%;
+  font-size: 60px;
+}
+
+/* ---------- janela: moldura branca por dentro e o texto numa caixa sólida ---------- */
+.arte[data-layout='janela'] {
+  justify-content: flex-end;
+}
+
+.arte[data-layout='janela'] .arte__midia::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset: 38px;
+  border: 4px solid rgba(255, 255, 255, 0.85);
+  border-radius: calc(var(--raio) * 0.6);
+}
+
+.arte[data-layout='janela'] .arte__midia::after {
+  background: linear-gradient(to top, rgba(12, 9, 7, 0.4), rgba(12, 9, 7, 0) 55%);
+}
+
+.arte[data-layout='janela'] .arte__texto {
+  max-width: 860px;
+  padding: 56px 60px;
+  border-radius: var(--raio);
+  background: var(--p-fundo);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.3);
+}
+
+.arte[data-layout='janela'] .arte__link {
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* variante 1: a caixa sobe para o alto, à direita */
+.arte[data-layout='janela'][data-variante='1'] {
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding-top: calc(var(--pad) + 140px);
+}
+
+.arte[data-layout='janela'][data-variante='1'] .arte__link {
+  position: absolute;
+  bottom: var(--pad);
+  left: var(--pad);
+}
+
+/* ---------- etiqueta de preço ---------- */
+.arte[data-layout='etiqueta'] .arte__texto,
+.arte[data-layout='etiqueta'] .arte__acao {
+  position: static;
+}
+
+/* as peças na frente da foto; a ação fica fora do fluxo de posição para o preço se prender na arte inteira */
+.arte[data-layout='etiqueta'] .arte__selo,
+.arte[data-layout='etiqueta'] .arte__titulo,
+.arte[data-layout='etiqueta'] .arte__apoio,
+.arte[data-layout='etiqueta'] .arte__chamada {
+  position: relative;
+  z-index: 1;
+}
+
+.arte[data-layout='etiqueta'] .arte__preco {
+  position: absolute;
+  z-index: 3;
+  top: calc(var(--pad) + 130px);
+  right: var(--pad);
+  display: grid;
+  place-items: center;
+  width: 300px;
+  height: 300px;
+  padding: 36px;
+  border-radius: 50%;
+  background: var(--preenchimento-marca);
+  color: #ffffff;
+  font-size: 66px;
+  line-height: 1.05;
+  text-align: center;
+  transform: rotate(-9deg);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.28), inset 0 0 0 10px rgba(255, 255, 255, 0.22);
+}
+
+.arte[data-layout='etiqueta'][data-raio='reto'] .arte__preco {
+  border-radius: 18px;
+}
+
+.arte[data-layout='etiqueta'][data-paleta='foto'] {
+  justify-content: flex-end;
+}
+
+/* sem foto cheia: a foto em cima, o texto embaixo, e a etiqueta presa na foto */
+.arte[data-layout='etiqueta']:not([data-paleta='foto']) .arte__midia {
+  flex: 1;
+}
+
+.arte[data-layout='etiqueta']:not([data-paleta='foto']) .arte__marca {
+  order: -1;
+}
+
+.arte[data-layout='etiqueta'][data-variante='1'] .arte__preco {
+  right: auto;
+  left: var(--pad);
+  transform: rotate(8deg);
+}

@@ -9,6 +9,7 @@ export type AlvoTour =
   | 'modo-pedido'
   | 'chats'
   | 'agenda-pedidos'
+  | 'redes-sociais'
   // tour da agenda (AgendaPageComponent fornece o próprio OnboardingTourService)
   | 'agenda-menu'
   | 'agenda-secoes'
