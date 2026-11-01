@@ -79,16 +79,6 @@ const DO_TIPO: Record<TipoNegocio, RecursoDoTipo[]> = {
       texto: 'De 1 hora a 1 dia antes. Quando o cliente responde que vem, o card ganha "Presença confirmada".',
     },
     {
-      icone: 'calendarioFolga',
-      titulo: 'Seus horários e folgas',
-      texto: 'Expediente de cada dia da semana e as suas folgas: a agenda segue a sua rotina.',
-    },
-    {
-      icone: 'mais',
-      titulo: 'Agende à mão quando quiser',
-      texto: 'Cliente ligou? Marque em segundos, com serviço, profissional e valor, sem horário duplicado.',
-    },
-    {
       icone: 'sacola',
       titulo: 'Produtos à venda',
       texto: 'Esmalte, shampoo, minoxidil: o cliente reserva junto do horário e você registra cada venda.',

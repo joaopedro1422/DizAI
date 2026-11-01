@@ -53,7 +53,7 @@ export class LandingPageComponent {
   protected readonly dores: Dor[] = [
     {
       icone: 'relogio',
-      titulo: 'Cliente que espera, compra de outro',
+      titulo: 'Cliente que espera, procura em outro lugar',
       texto: 'Enquanto você está com as mãos ocupadas ou descansando, a mensagem fica sem resposta e o cliente vai para o concorrente.',
       citacao: '"Oi? Ainda tem horário hoje?" · enviada há 2 h',
     },

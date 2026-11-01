@@ -13,9 +13,7 @@ type DetalheGanho =
   | 'audio'
   | 'jeito'
   | 'assumir'
-  | 'relatorios'
-  | 'aviso'
-  | 'verdade';
+  | 'relatorios';
 
 interface Ganho {
   icone: NomeIcone;
@@ -37,7 +35,7 @@ const GANHOS: Ganho[] = [
   {
     icone: 'conversa',
     titulo: 'Responde tudo sobre o seu negócio',
-    texto: 'Preços, opções, prazos, formas de pagamento, endereço e restrições, do jeito que você cadastrou.',
+    texto: 'Preços, opções, prazos, formas de pagamento, endereço e restrições, do jeito que você cadastrou. Se não souber, passa para você.',
     detalhe: 'conversa',
   },
   {
@@ -70,18 +68,6 @@ const GANHOS: Ganho[] = [
     titulo: 'Você assume a qualquer momento',
     texto: 'Respondeu pelo celular? O assistente sai daquela conversa.',
     detalhe: 'assumir',
-  },
-  {
-    icone: 'sino',
-    titulo: 'Aviso no celular',
-    texto: 'Cliente pronto para fechar ou com uma dúvida? Você fica sabendo na hora.',
-    detalhe: 'aviso',
-  },
-  {
-    icone: 'escudo',
-    titulo: 'Só fala o que é verdade',
-    texto: 'Não inventa preço nem prazo. Se não souber responder, te chama na mesma hora.',
-    detalhe: 'verdade',
   },
 ];
 
