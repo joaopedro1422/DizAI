@@ -358,45 +358,74 @@
 }
 
 /* ---------- lista (cardápio) ---------- */
+/* nunca passa da largura de quem a contém (card, moldura...): o nome encolhe e quebra em até 2 linhas, o preço não
+   quebra e o "a partir de" fica pequeno acima do valor */
 .arte__lista {
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 24px;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+.arte__lista--muitos {
+  gap: 16px;
+}
+
 .arte__item {
   display: flex;
-  align-items: baseline;
-  gap: 18px;
-  font-size: 38px;
+  align-items: flex-end;
+  gap: 16px;
+  min-width: 0;
+  font-size: 36px;
   font-weight: 600;
+  line-height: 1.15;
   text-align: left;
 }
 
+.arte__lista--muitos .arte__item {
+  font-size: 32px;
+}
+
 .arte__item-nome {
-  flex: none;
-  max-width: 64%;
+  display: -webkit-box;
+  flex: 0 1 auto;
+  min-width: 0;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .arte__item-linha {
-  flex: 1;
-  min-width: 40px;
+  flex: 1 1 24px;
+  min-width: 24px;
+  margin-bottom: 0.3em;
   border-bottom: 3px dotted var(--p-linha);
-  transform: translateY(-8px);
 }
 
 .arte__item-preco {
+  display: flex;
   flex: none;
+  flex-direction: column;
+  align-items: flex-end;
   color: var(--p-titulo);
   font-family: var(--fonte-titulo);
   font-weight: 700;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+
+.arte__item-prefixo {
+  font-family: var(--fonte-apoio);
+  font-size: 0.56em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  opacity: 0.8;
 }
 
 /* ---------- horários (agenda aberta) ---------- */

@@ -1,0 +1,86 @@
+/*
+ * Fundo liso: só a cor da loja (sem foto, sem enfeite e sem o degradê/metálico da cor de destaque), a marca no alto,
+ * o texto no meio e o link embaixo. "Com cartão": o texto num cartão translúcido sobre a mesma cor.
+ */
+.arte[data-layout='liso'],
+.arte[data-layout='liso-cartao'] {
+  justify-content: space-between;
+  background: var(--p-fundo-solido);
+}
+
+.arte[data-layout='liso'] .arte__decor,
+.arte[data-layout='liso-cartao'] .arte__decor,
+.arte[data-layout='liso'] .arte__midia,
+.arte[data-layout='liso-cartao'] .arte__midia {
+  display: none;
+}
+
+.arte[data-layout='liso'] .arte__texto,
+.arte[data-layout='liso-cartao'] .arte__texto {
+  flex: 1;
+  justify-content: center;
+}
+
+/* ---------- liso: o título grande, ar de cartaz ---------- */
+.arte[data-layout='liso'] .arte__titulo {
+  font-size: calc(var(--t-titulo) * 1.16);
+}
+
+.arte[data-layout='liso'][data-tamanho='longo'] .arte__titulo,
+.arte[data-layout='liso'][data-tipo='AGENDA'] .arte__titulo,
+.arte[data-layout='liso'][data-tipo='CARDAPIO'] .arte__titulo,
+.arte[data-layout='liso'][data-tipo='DEPOIMENTO'] .arte__titulo {
+  font-size: calc(var(--t-titulo) * 0.8);
+}
+
+/* variante 1: uma linha fina na cor do texto separa o título do resto */
+.arte[data-layout='liso'][data-variante='1'] .arte__titulo::after {
+  content: '';
+  display: block;
+  width: 120px;
+  height: 4px;
+  margin-top: 34px;
+  border-radius: 2px;
+  background: var(--p-linha);
+}
+
+.arte[data-layout='liso'][data-variante='1'][data-alinhamento='centro'] .arte__titulo::after {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+/* ---------- liso com cartão: o texto num cartão translúcido ---------- */
+.arte[data-layout='liso-cartao'] .arte__texto {
+  flex: 0 1 auto;
+  margin: auto 0;
+  padding: 64px 60px;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-radius: calc(var(--raio) + 8px);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* fundo claro (creme ou cor clara): cartão branco quase sólido */
+.arte[data-layout='liso-cartao'][data-paleta='creme'] .arte__texto,
+.arte[data-layout='liso-cartao'][data-paleta='cor'][data-fundo-claro='true'] .arte__texto {
+  border-color: rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.06);
+}
+
+.arte[data-layout='liso-cartao'][data-tamanho='longo'] .arte__titulo,
+.arte[data-layout='liso-cartao'][data-tipo='AGENDA'] .arte__titulo,
+.arte[data-layout='liso-cartao'][data-tipo='CARDAPIO'] .arte__titulo,
+.arte[data-layout='liso-cartao'][data-tipo='DEPOIMENTO'] .arte__titulo {
+  font-size: calc(var(--t-titulo) * 0.7);
+}
+
+/* variante 1: o cartão desce para a parte de baixo, alinhado à esquerda */
+.arte[data-layout='liso-cartao'][data-variante='1'] .arte__texto {
+  align-items: flex-start;
+  margin: auto 0 0;
+  text-align: left;
+}
+
+.arte[data-layout='liso-cartao'][data-variante='1'] .arte__acao {
+  justify-content: flex-start;
+}

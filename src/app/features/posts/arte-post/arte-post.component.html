@@ -11,6 +11,7 @@
     [style.transform]="'scale(' + escala() + ')'"
     [attr.data-layout]="visual.layout"
     [attr.data-paleta]="visual.paleta"
+    [attr.data-fundo-claro]="fundoClaro()"
     [attr.data-decor]="visual.decor"
     [attr.data-alinhamento]="visual.alinhamento"
     [attr.data-filtro]="visual.filtro"
@@ -62,13 +63,18 @@
       @if (post.apoio) {
         <p class="arte__apoio">{{ semQuebra(post.apoio) }}</p>
       }
-      @if (post.itens.length > 0) {
-        <ul class="arte__lista">
-          @for (item of post.itens; track item.nome) {
+      @if (itens().length > 0) {
+        <ul class="arte__lista" [class.arte__lista--muitos]="itens().length > 4">
+          @for (item of itens(); track item.nome) {
             <li class="arte__item">
               <span class="arte__item-nome">{{ item.nome }}</span>
               <span class="arte__item-linha"></span>
-              <span class="arte__item-preco">{{ item.preco }}</span>
+              <span class="arte__item-preco">
+                @if (item.prefixo) {
+                  <small class="arte__item-prefixo">{{ item.prefixo }}</small>
+                }
+                {{ item.valor }}
+              </span>
             </li>
           }
         </ul>

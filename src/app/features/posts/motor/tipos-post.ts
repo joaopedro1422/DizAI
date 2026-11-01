@@ -38,7 +38,9 @@ export type LayoutPost =
   | 'bilhete'
   | 'quadro'
   | 'tira'
-  | 'balao';
+  | 'balao'
+  | 'liso'
+  | 'liso-cartao';
 
 /** De onde vêm as cores: fundo claro tingido, a cor da loja, escuro, creme ou a foto dominando. */
 export type PaletaPost = 'clara' | 'cor' | 'escura' | 'creme' | 'foto';

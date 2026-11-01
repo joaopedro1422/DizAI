@@ -9,6 +9,8 @@ import { ConteudoPost, DIMENSOES, EstiloPost, FormatoPost, MarcaPost } from '../
  * EstiloPost em atributos data-* e o CSS (arte-*.css) reorganiza tudo. O mesmo elemento vira o PNG (exportar-post).
  */
 /** Quantos horários de um dia cabem na arte (com mais, o último chip vira "+N horários"). */
+/** "a partir de R$ 175" -> "a partir de" + "R$ 175" */
+const PREFIXO_DO_PRECO = /^(a partir de|a partir|desde|por apenas|por)\s+(.+)$/i;
 const HORAS_POR_DIA = 6;
 
 @Component({
@@ -23,6 +25,7 @@ const HORAS_POR_DIA = 6;
     './arte-layouts-moldura.css',
     './arte-layouts-texto.css',
     './arte-layouts-extra.css',
+    './arte-layouts-liso.css',
   ],
 })
 export class ArtePostComponent {
@@ -50,12 +53,17 @@ export class ArtePostComponent {
     '--cor-marca-escura': luminancia(this.marca().cor) > 0.42 ? misturar(this.marca().cor, '#000000', 0.45) : this.marca().cor,
   }));
 
+  /** Cor da loja clara (laranja, verde-limão): o fundo na cor pede texto e cartão escuros/brancos. */
+  protected readonly fundoClaro = computed(() => luminancia(this.marca().cor) > 0.42);
+
   /** Só as fotos que o layout usa (a colagem usa 3, os outros 1). */
   protected readonly fotos = computed(() => {
     const fotos = this.conteudo().fotos;
     const limite = this.estilo().layout === 'colagem' || this.estilo().layout === 'tira' ? 3 : 1;
     // o cartão com depoimento fica só com o texto (a foto espremida virava uma tira)
     const semFoto = this.estilo().layout === 'tipografico'
+      || this.estilo().layout === 'liso'
+      || this.estilo().layout === 'liso-cartao'
       || (this.estilo().layout === 'cartao' && this.conteudo().tipo === 'DEPOIMENTO');
     return semFoto ? [] : fotos.slice(0, limite);
   });
@@ -76,6 +84,18 @@ export class ArtePostComponent {
   );
   protected readonly horariosCompactos = computed(
     () => this.horarios().reduce((total, dia) => total + dia.horas.length + (dia.mais ? 1 : 0), 0) > 9,
+  );
+
+  /** Itens da tabela de preços: o "a partir de" vai pequeno acima do valor, para o preço ocupar pouca largura. */
+  protected readonly itens = computed(() =>
+    this.conteudo().itens.map((item) => {
+      const partes = PREFIXO_DO_PRECO.exec(item.preco.trim());
+      return {
+        nome: item.nome,
+        prefixo: partes ? partes[1] : '',
+        valor: this.semQuebra(partes ? partes[2] : item.preco.trim()),
+      };
+    }),
   );
 
   protected readonly inicial = computed(() => this.marca().nome.trim().charAt(0).toUpperCase());

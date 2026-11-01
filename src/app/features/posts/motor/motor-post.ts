@@ -158,6 +158,8 @@ export function gerarEstilos(pedido: PedidoEstilos): EstiloPost[] {
 
 /** Foto cheia (moldura, janela...) pede pouco enfeite; os tipográficos pedem enfeite forte. */
 function escolherDecor(layout: LayoutPost, paleta: PaletaPost, dna: DnaVisual, sorte: () => number): DecorPost {
+  // fundo liso é liso: só a cor, sem enfeite nenhum
+  if (layout === 'liso' || layout === 'liso-cartao') return 'nenhum';
   if (paleta === 'foto' || layout === 'moldura' || layout === 'janela' || layout === 'diagonal') {
     return sorte() < 0.6 ? 'nenhum' : 'linhas';
   }

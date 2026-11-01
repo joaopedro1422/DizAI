@@ -18,6 +18,8 @@ export interface DefinicaoLayout {
 }
 
 const QUASE_TODOS: TipoPost[] = ['DESTAQUE', 'NOVIDADE', 'PROMOCAO', 'CONVITE'];
+/** Os de fundo liso não usam foto: servem para tudo o que não depende dela. */
+const SEM_FOTO: TipoPost[] = ['DESTAQUE', 'PROMOCAO', 'CONVITE', 'AGENDA', 'CARDAPIO', 'DEPOIMENTO'];
 
 export const LAYOUTS: DefinicaoLayout[] = [
   { id: 'moldura', nome: 'Moldura', tipos: [...QUASE_TODOS, 'AGENDA', 'DEPOIMENTO'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['foto', 'cor', 'escura'], variantes: 3 },
@@ -42,6 +44,8 @@ export const LAYOUTS: DefinicaoLayout[] = [
   { id: 'quadro', nome: 'Quadro de galeria', tipos: ['DESTAQUE', 'NOVIDADE', 'CONVITE'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['escura', 'cor', 'creme'], variantes: 2 },
   { id: 'tira', nome: 'Tira de filme', tipos: ['NOVIDADE', 'CONVITE', 'DESTAQUE'], fotosMinimo: 3, fotosMaximo: 3, paletas: ['clara', 'creme', 'escura', 'cor'], variantes: 2 },
   { id: 'balao', nome: 'Balão', tipos: ['DEPOIMENTO'], fotosMinimo: 0, fotosMaximo: 1, paletas: ['cor', 'escura', 'creme', 'clara'], variantes: 2 },
+  { id: 'liso', nome: 'Fundo liso', tipos: SEM_FOTO, fotosMinimo: 0, fotosMaximo: 0, paletas: ['cor', 'creme', 'escura'], variantes: 2 },
+  { id: 'liso-cartao', nome: 'Fundo liso com cartão', tipos: SEM_FOTO, fotosMinimo: 0, fotosMaximo: 0, paletas: ['cor', 'escura', 'creme'], variantes: 2 },
 ];
 
 /** Os layouts que servem para este post (tipo, fotos disponíveis e preço). */
