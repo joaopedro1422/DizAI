@@ -5,8 +5,8 @@ import { ConteudoPost, DIMENSOES, EstiloPost, FormatoPost, MarcaPost } from '../
 
 /**
  * A arte de um post, desenhada no tamanho real (1080 px de largura) e reduzida para a tela. A estrutura é uma só
- * (marca, mídia, texto, link); o layout, a paleta, o enfeite, o alinhamento, o filtro da foto e os cantos vêm do
- * EstiloPost em atributos data-* e o CSS (arte-*.css) reorganiza tudo. O mesmo elemento vira o PNG (exportar-post).
+ * (marca, mídia, texto, link); o layout, a paleta, o enfeite, o fundo, o cartão, o botão, o selo, o alinhamento, o
+ * filtro da foto e os cantos vêm do EstiloPost em atributos data-* e o CSS (arte-*.css) reorganiza tudo. O mesmo elemento vira o PNG (exportar-post).
  */
 /** Quantos horários de um dia cabem na arte (com mais, o último chip vira "+N horários"). */
 /** "a partir de R$ 175" -> "a partir de" + "R$ 175" */
@@ -26,6 +26,8 @@ const HORAS_POR_DIA = 6;
     './arte-layouts-texto.css',
     './arte-layouts-extra.css',
     './arte-layouts-liso.css',
+    './arte-variacoes.css',
+    './arte-decor-extra.css',
   ],
 })
 export class ArtePostComponent {
@@ -42,19 +44,32 @@ export class ArtePostComponent {
   protected readonly escala = computed(() => this.largura() / this.dimensoes().largura);
   protected readonly alturaPrevia = computed(() => Math.round(this.dimensoes().altura * this.escala()));
 
-  protected readonly variaveis = computed<Record<string, string>>(() => ({
-    ...variaveisDaPaleta(this.estilo().paleta, this.marca()),
-    '--fonte-titulo': this.marca().fonteTitulo,
-    '--fonte-apoio': `'${this.estilo().fonteApoio}', system-ui, sans-serif`,
-    '--cor-marca': this.marca().cor,
-    // botões e selos sobre fundo claro (cartão): o preenchimento da loja (metálico, degradê...)
-    '--preenchimento-marca': this.marca().preenchimento,
+  /** A marca com a cor desta arte: a da vitrine ou, quando o sorteio escolheu, a tirada da logo. */
+  private readonly marcaDaArte = computed<MarcaPost>(() => {
+    const marca = this.marca();
+    return this.estilo().origemCor === 'logo' && marca.corLogo
+      ? { ...marca, cor: marca.corLogo, preenchimento: marca.preenchimentoLogo ?? marca.corLogo }
+      : marca;
+  });
+
+  protected readonly variaveis = computed<Record<string, string>>(() => {
+    const marca = this.marcaDaArte();
     // a cor da loja como texto sobre branco: escurecida quando é clara demais para ler
-    '--cor-marca-escura': luminancia(this.marca().cor) > 0.42 ? misturar(this.marca().cor, '#000000', 0.45) : this.marca().cor,
-  }));
+    const corEscura = luminancia(marca.cor) > 0.42 ? misturar(marca.cor, '#000000', 0.45) : marca.cor;
+    return {
+      ...variaveisDaPaleta(this.estilo().paleta, marca),
+      '--fonte-titulo': marca.fonteTitulo,
+      '--fonte-apoio': `'${this.estilo().fonteApoio}', system-ui, sans-serif`,
+      '--cor-marca': marca.cor,
+      // botões e selos sobre fundo claro (cartão), com letra branca: o preenchimento da loja (metálico, degradê...);
+      // cor clara (rosa-claro, amarelo) não segura letra branca, então vai o tom escurecido
+      '--preenchimento-marca': luminancia(marca.cor) > 0.42 ? corEscura : marca.preenchimento,
+      '--cor-marca-escura': corEscura,
+    };
+  });
 
   /** Cor da loja clara (laranja, verde-limão): o fundo na cor pede texto e cartão escuros/brancos. */
-  protected readonly fundoClaro = computed(() => luminancia(this.marca().cor) > 0.42);
+  protected readonly fundoClaro = computed(() => luminancia(this.marcaDaArte().cor) > 0.42);
 
   /** Só as fotos que o layout usa (a colagem usa 3, os outros 1). */
   protected readonly fotos = computed(() => {

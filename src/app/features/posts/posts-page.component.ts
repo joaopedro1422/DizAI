@@ -35,6 +35,7 @@ import { NomeIcone } from '../../shared/components/icone/icones';
 import { formatarReal } from '../pedidos/textos-pedido';
 import { ArtePostComponent } from './arte-post/arte-post.component';
 import { baixarArquivo, compartilharArquivo, gerarPng, nomeDaFamilia } from './motor/exportar-post';
+import { corDaLogo, coresParecidas } from './motor/cor-da-logo';
 import { chaveDoEstilo, dnaDaLoja, gerarEstilos, hashTexto } from './motor/motor-post';
 import { SELOS, TIPOS_POST, TextoPost, textosReserva } from './motor/textos-post';
 import {
@@ -112,6 +113,11 @@ export class PostsPageComponent implements OnInit {
   protected readonly cardapioIds = signal<number[]>([]);
   protected readonly servicoAgendaId = signal<number | null>(null);
   protected readonly formato = signal<FormatoPost>('feed');
+  protected readonly opcoesDeCor: { valor: 'as-duas' | 'vitrine' | 'logo'; rotulo: string }[] = [
+    { valor: 'as-duas', rotulo: 'As duas' },
+    { valor: 'vitrine', rotulo: 'Da vitrine' },
+    { valor: 'logo', rotulo: 'Da logo' },
+  ];
   protected readonly orientacao = signal('');
 
   // ---------------------------------------------------------------- agenda (horários livres)
@@ -131,6 +137,10 @@ export class PostsPageComponent implements OnInit {
   private readonly textos = signal<TextoPost[]>([]);
   private readonly base = signal<BaseDoPost | null>(null);
   private readonly logo = signal<string | null>(null);
+  /** A cor principal da logo (null: logo só branca/cinza, sem logo ou ainda lendo). */
+  private readonly corLogo = signal<string | null>(null);
+  /** "Cor das artes": as duas (metade das artes em cada), só a da vitrine ou só a da logo. */
+  protected readonly corDasArtes = signal<'as-duas' | 'vitrine' | 'logo'>('as-duas');
 
   private readonly resultados = viewChild<ElementRef<HTMLElement>>('resultados');
   private readonly arteEscolhida = viewChild<ArtePostComponent>('arteEscolhida');
@@ -182,15 +192,28 @@ export class PostsPageComponent implements OnInit {
   protected readonly usaFoto = computed(() => this.tipo() !== 'CARDAPIO' || this.fotosParaEscolher().length > 0);
   protected readonly icone = (nome: string) => nome as NomeIcone;
 
+  /** A cor de destaque da vitrine (nem sempre é a cor da marca). */
+  protected readonly corVitrine = computed(() => buscarCorMarca(this.perfil().corMarca).hex);
+  /** A cor da logo, quando ela existe e é diferente da cor da vitrine (só aí aparece a escolha "Cor das artes"). */
+  protected readonly corLogoDiferente = computed(() => {
+    const corLogo = this.corLogo();
+    return corLogo && !coresParecidas(corLogo, this.corVitrine()) ? corLogo : null;
+  });
+
   protected readonly marca = computed<MarcaPost>(() => {
     const perfil = this.perfil();
-    const cor = buscarCorMarca(perfil.corMarca).hex;
+    const corLogo = this.corLogoDiferente();
+    const escolha = this.corDasArtes();
+    const cor = corLogo && escolha === 'logo' ? corLogo : this.corVitrine();
     const fonte = perfil.fonteGaleria ?? 'Poppins';
     return {
       nome: perfil.nomeLoja,
       logo: this.logo(),
       cor,
       preenchimento: fundoDoDestaque(cor, perfil.estiloCor),
+      // "as duas": a cor da logo fica à mão para as artes que o sorteio pôs nela
+      corLogo: corLogo && escolha === 'as-duas' ? corLogo : null,
+      preenchimentoLogo: corLogo && escolha === 'as-duas' ? fundoDoDestaque(corLogo, perfil.estiloCor) : null,
       fonteTitulo: fonteComFamilia(fonte),
       fonteManuscrita: ehFonteManuscrita(fonte),
       link: `dizai.com/l/${perfil.slug}`,
@@ -243,7 +266,10 @@ export class PostsPageComponent implements OnInit {
       if (this.tiposDisponiveis().every((t) => t.tipo !== 'DESTAQUE')) this.tipo.set(this.tiposDisponiveis()[0]?.tipo ?? 'CONVITE');
     });
     void this.galeriaService.carregar();
-    void this.postsService.imagem(this.perfil().fotoPerfilUrl).then((logo) => this.logo.set(logo));
+    void this.postsService.imagem(this.perfil().fotoPerfilUrl).then(async (logo) => {
+      this.logo.set(logo);
+      if (logo) this.corLogo.set(await corDaLogo(logo));
+    });
     if (this.usaAgenda()) {
       void this.lojaPublicaService
         .buscarAgenda(this.perfil().slug)
@@ -371,6 +397,8 @@ export class PostsPageComponent implements OnInit {
       historico,
       quantidade: OPCOES,
       semente: (Date.now() ^ Math.floor(Math.random() * 1e9)) >>> 0,
+      // as duas cores: as artes se alternam entre a da vitrine e a da logo (a escolha vale na hora, pela marca)
+      origens: this.corLogoDiferente() ? ['vitrine', 'logo'] : ['vitrine'],
     });
     const selos = SELOS[base.tipo];
     const deslocamento = hashTexto(perfilId) % selos.length;

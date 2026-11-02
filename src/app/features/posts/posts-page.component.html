@@ -133,6 +133,26 @@
             </button>
           }
         </div>
+        @if (corLogoDiferente(); as corLogo) {
+          <div class="cores" role="radiogroup" aria-label="Cor das artes">
+            <span class="campo__rotulo">Cor das artes</span>
+            <div class="cores__opcoes">
+              @for (opcao of opcoesDeCor; track opcao.valor) {
+                <button type="button" role="radio" class="cor" [class.cor--ativa]="corDasArtes() === opcao.valor" [attr.aria-checked]="corDasArtes() === opcao.valor" (click)="corDasArtes.set(opcao.valor)">
+                  <span class="cor__amostras" aria-hidden="true">
+                    @if (opcao.valor !== 'logo') {
+                      <i [style.background]="corVitrine()"></i>
+                    }
+                    @if (opcao.valor !== 'vitrine') {
+                      <i [style.background]="corLogo"></i>
+                    }
+                  </span>
+                  {{ opcao.rotulo }}
+                </button>
+              }
+            </div>
+          </div>
+        }
         <label class="campo">
           <span class="campo__rotulo">Quer orientar o texto? <span class="campo__rotulo-opcional">(opcional)</span></span>
           <input class="campo__entrada" maxlength="140" placeholder="Ex.: tom divertido, falar do Dia das Mães" [value]="orientacao()" (input)="orientacao.set(texto($event))">

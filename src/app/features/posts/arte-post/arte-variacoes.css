@@ -1,0 +1,163 @@
+/*
+ * Peças que se combinam com qualquer layout: o acabamento do fundo (data-fundo), o jeito dos cartões (data-cartao),
+ * o botão da chamada (data-botao) e o selo (data-selo). Tudo em cima das variáveis da paleta (--p-*), então
+ * funciona nas cinco paletas. O motor não sorteia fundo para foto cheia nem selo/botão para os layouts que já
+ * desenham o próprio (motor-post.ts).
+ */
+
+/* ---------- fundo: uma camada por baixo de tudo (z-index -1 fica abaixo dos ::before dos layouts) ---------- */
+.arte__fundo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.arte[data-fundo='degrade'] .arte__fundo {
+  background: linear-gradient(165deg, transparent 18%, var(--p-fundo2) 100%);
+}
+
+/* um foco de luz no alto e um tom mais fundo no canto oposto */
+.arte[data-fundo='luz'] .arte__fundo {
+  background:
+    radial-gradient(circle at 82% 8%, rgba(255, 255, 255, 0.42), transparent 42%),
+    radial-gradient(circle at 6% 96%, var(--p-fundo2), transparent 55%);
+}
+
+/* várias manchas de cor que se misturam (o "mesh gradient") */
+.arte[data-fundo='malha'] .arte__fundo {
+  background:
+    radial-gradient(at 12% 18%, var(--p-fundo2) 0, transparent 46%),
+    radial-gradient(at 88% 12%, var(--p-decor) 0, transparent 40%),
+    radial-gradient(at 78% 86%, var(--p-fundo2) 0, transparent 48%),
+    radial-gradient(at 18% 92%, var(--p-decor) 0, transparent 38%);
+}
+
+/* textura de papel granulado */
+.arte[data-fundo='grao'] .arte__fundo {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  opacity: 0.32;
+}
+
+.arte[data-fundo='listras'] .arte__fundo {
+  background: repeating-linear-gradient(135deg, var(--p-decor) 0 3px, transparent 3px 34px);
+}
+
+.arte[data-fundo='grade'] .arte__fundo {
+  background:
+    linear-gradient(var(--p-decor) 2px, transparent 2px) 0 0 / 72px 72px,
+    linear-gradient(90deg, var(--p-decor) 2px, transparent 2px) 0 0 / 72px 72px;
+}
+
+/* linhas de caderno */
+.arte[data-fundo='papel'] .arte__fundo {
+  background: repeating-linear-gradient(180deg, transparent 0 62px, var(--p-linha) 62px 64px);
+  opacity: 0.55;
+}
+
+/* duas cores: a parte de baixo num tom mais fundo */
+.arte[data-fundo='meio'] .arte__fundo {
+  background: linear-gradient(180deg, transparent 0 58%, var(--p-fundo2) 58% 100%);
+}
+
+/* ---------- cartões: os blocos claros dos layouts que têm cartão ---------- */
+/* sombra dura deslocada, com contorno (o "neo-brutalismo") */
+.arte[data-cartao='sombra-dura']:is([data-layout='bilhete'], [data-layout='cartao'], [data-layout='liso-cartao']) .arte__texto,
+.arte[data-cartao='sombra-dura'][data-layout='balao'] .arte__citacao,
+.arte[data-cartao='sombra-dura'][data-layout='citacao'][data-variante='1'] .arte__citacao,
+.arte[data-cartao='sombra-dura'][data-layout='cardapio'][data-variante='1'] .arte__lista,
+.arte[data-cartao='sombra-dura'][data-layout='calendario'] .arte__dia {
+  border: 4px solid var(--p-cartao-texto);
+  box-shadow: 16px 16px 0 var(--p-cartao-texto);
+}
+
+/* fosco: branco translúcido com borda clara (o "vidro" sem desfoque, que o PNG não guarda); só nas paletas claras,
+   porque nas escuras o cartão é escuro e o texto, claro */
+.arte[data-cartao='fosco']:not([data-paleta='escura'], [data-paleta='foto']):is([data-layout='bilhete'], [data-layout='cartao']) .arte__texto,
+.arte[data-cartao='fosco']:not([data-paleta='escura'], [data-paleta='foto'])[data-layout='balao'] .arte__citacao,
+.arte[data-cartao='fosco']:not([data-paleta='escura'], [data-paleta='foto'])[data-layout='citacao'][data-variante='1'] .arte__citacao,
+.arte[data-cartao='fosco']:not([data-paleta='escura'], [data-paleta='foto'])[data-layout='calendario'] .arte__dia {
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.12);
+}
+
+/* flutuante: cantos mais redondos e uma sombra longa, como se o cartão saísse da arte */
+.arte[data-cartao='flutuante']:is([data-layout='bilhete'], [data-layout='cartao'], [data-layout='liso-cartao']) .arte__texto,
+.arte[data-cartao='flutuante'][data-layout='citacao'][data-variante='1'] .arte__citacao,
+.arte[data-cartao='flutuante'][data-layout='cardapio'][data-variante='1'] .arte__lista,
+.arte[data-cartao='flutuante'][data-layout='calendario'] .arte__dia {
+  border-radius: calc(var(--raio) + 18px);
+  box-shadow: 0 60px 110px -30px rgba(0, 0, 0, 0.42), 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* recorte de ingresso: dois meios-círculos nas laterais (o bilhete já tem os dele) */
+.arte[data-cartao='recorte'][data-layout='liso-cartao'] .arte__texto,
+.arte[data-cartao='recorte'][data-layout='citacao'][data-variante='1'] .arte__citacao,
+.arte[data-cartao='recorte'][data-layout='cardapio'][data-variante='1'] .arte__lista {
+  --furo: radial-gradient(circle 30px at 0 50%, transparent 98%, #000 100%) left / 51% 100% no-repeat,
+    radial-gradient(circle 30px at 100% 50%, transparent 98%, #000 100%) right / 51% 100% no-repeat;
+  -webkit-mask: var(--furo);
+  mask: var(--furo);
+}
+
+/* ---------- botão da chamada ---------- */
+.arte[data-botao='quadrado'] .arte__chamada {
+  border-radius: 12px;
+  font-size: 26px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.arte[data-botao='contorno'] .arte__chamada {
+  border: 4px solid var(--p-texto);
+  background: transparent;
+  color: var(--p-texto);
+  box-shadow: none;
+}
+
+.arte[data-botao='sublinhado'] .arte__chamada {
+  padding: 0 0 10px;
+  border-radius: 0;
+  border-bottom: 5px solid var(--cor-marca-escura);
+  background: none;
+  color: var(--p-texto);
+  box-shadow: none;
+}
+
+.arte[data-botao='sublinhado'][data-paleta='cor'] .arte__chamada,
+.arte[data-botao='sublinhado'][data-paleta='escura'] .arte__chamada,
+.arte[data-botao='sublinhado'][data-paleta='foto'] .arte__chamada {
+  border-bottom-color: currentColor;
+}
+
+/* ---------- selo de cima ---------- */
+/* só o texto, com um traço antes (ar de revista) */
+.arte[data-selo='texto'] .arte__selo {
+  gap: 18px;
+  padding: 0;
+  background: none;
+  color: var(--p-texto);
+}
+
+.arte[data-selo='texto'] .arte__selo::before {
+  content: '';
+  width: 56px;
+  height: 4px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+/* tarja: retângulo levemente torto, como uma fita colada */
+.arte[data-selo='tarja'] .arte__selo {
+  border-radius: 6px;
+  transform: rotate(-2.5deg);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.arte[data-selo='contorno'] .arte__selo {
+  border: 3px solid var(--p-texto);
+  background: transparent;
+  color: var(--p-texto);
+}

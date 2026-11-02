@@ -47,7 +47,7 @@ const TOUR_SEMPRE_ABERTO = false;
  * TESTE: com true, o fechamento do dia abre toda vez que o painel abre, com os números de hoje até agora. Para voltar
  * ao normal (uma vez por dia, depois do expediente), troque para false.
  */
-const FECHAMENTO_SEMPRE_ABERTO = true;
+const FECHAMENTO_SEMPRE_ABERTO = false;
 /** O dia cujo fechamento o lojista já viu ("AAAA-MM-DD"), por loja. */
 const CHAVE_FECHAMENTO_VISTO = 'dizai:fechamento-visto:';
 /** Tempo que o painel fica à mostra antes do fechamento do dia abrir. */

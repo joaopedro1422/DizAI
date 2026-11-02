@@ -383,3 +383,36 @@
     top: 20px;
   }
 }
+
+/* "Cor das artes": só aparece quando a logo tem uma cor diferente da cor de destaque da vitrine */
+.cores { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.cores__opcoes { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.cor {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px 0 10px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cor--ativa { border-color: var(--cor-primaria); background: var(--cor-primaria-clara); color: var(--cor-primaria); }
+.cor__amostras { display: inline-flex; }
+
+.cor__amostras i {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.15);
+}
+
+.cor__amostras i + i { margin-left: -7px; }

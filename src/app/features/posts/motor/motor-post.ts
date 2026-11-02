@@ -1,18 +1,23 @@
 import { DefinicaoLayout, LAYOUTS, layoutsPara } from './layouts-post';
 import {
+  BotaoPost,
+  CartaoPost,
   DecorPost,
   EstiloPost,
   FiltroFoto,
   FonteApoio,
+  FundoPost,
   LayoutPost,
+  OrigemCor,
   PaletaPost,
   RaioPost,
+  SeloPost,
   TipoPost,
 } from './tipos-post';
 
 /**
- * O "diretor de arte" do gerador: sorteia as combinações (layout, paleta, enfeite, fontes, cantos, filtro da foto)
- * das opções de um post. Para duas lojas nunca receberem as mesmas artes, cada loja tem um DNA visual tirado do id
+ * O "diretor de arte" do gerador: sorteia as combinações (layout, paleta, enfeite, fundo, cartão, botão, selo,
+ * fontes, cantos, filtro da foto e a origem da cor) das opções de um post. Para duas lojas nunca receberem as mesmas artes, cada loja tem um DNA visual tirado do id
  * dela: a ordem preferida dos layouts, as paletas, os enfeites, os cantos e a fonte de apoio que mais combinam com
  * ela. O sorteio parte desse DNA (com uma pitada de acaso) e foge das combinações que a loja já viu.
  */
@@ -62,7 +67,17 @@ function sortearComPeso<T>(itens: readonly T[], peso: (item: T) => number, sorte
 }
 
 const PALETAS: PaletaPost[] = ['clara', 'cor', 'escura', 'creme', 'foto'];
-const DECORS: DecorPost[] = ['linhas', 'pontos', 'organico', 'brilhos', 'geometrico', 'faixas'];
+const DECORS: DecorPost[] = ['linhas', 'pontos', 'organico', 'brilhos', 'geometrico', 'faixas', 'ondas', 'arcos', 'confete'];
+const FUNDOS: FundoPost[] = ['degrade', 'luz', 'malha', 'grao', 'listras', 'grade', 'papel', 'meio'];
+const CARTOES: CartaoPost[] = ['padrao', 'sombra-dura', 'fosco', 'flutuante', 'recorte'];
+const BOTOES: BotaoPost[] = ['pilula', 'quadrado', 'contorno', 'sublinhado'];
+const SELOS_ESTILO: SeloPost[] = ['pilula', 'texto', 'tarja', 'contorno'];
+
+/** A foto cobre a arte inteira: o acabamento do fundo não aparece. */
+const FOTO_CHEIA: LayoutPost[] = ['moldura', 'janela', 'diagonal'];
+/** Layouts que desenham o próprio selo ou o próprio botão (traços do cardápio, faixa da diagonal...). */
+const SELO_PROPRIO: LayoutPost[] = ['minimal', 'cardapio', 'lateral', 'diagonal', 'etiqueta', 'editorial'];
+const BOTAO_PROPRIO: LayoutPost[] = ['minimal', 'etiqueta'];
 const FILTROS: FiltroFoto[] = ['natural', 'quente', 'pb', 'duotone'];
 const RAIOS: RaioPost[] = ['reto', 'suave', 'redondo'];
 const FONTES_APOIO: FonteApoio[] = ['Manrope', 'DM Sans', 'Montserrat', 'Poppins'];
@@ -78,6 +93,10 @@ export interface DnaVisual {
   alinhamento: 'esquerda' | 'centro';
   filtro: FiltroFoto;
   caixaAlta: boolean;
+  fundosPreferidos: FundoPost[];
+  cartao: CartaoPost;
+  botao: BotaoPost;
+  selo: SeloPost;
 }
 
 export function dnaDaLoja(perfilId: string): DnaVisual {
@@ -94,6 +113,10 @@ export function dnaDaLoja(perfilId: string): DnaVisual {
     alinhamento: sorte() < 0.5 ? 'esquerda' : 'centro',
     filtro: embaralhar(FILTROS.filter((f) => f !== 'natural'), sorte)[0],
     caixaAlta: sorte() < 0.55,
+    fundosPreferidos: embaralhar(FUNDOS, sorte).slice(0, 3),
+    cartao: CARTOES[Math.floor(sorte() * CARTOES.length)],
+    botao: BOTOES[Math.floor(sorte() * BOTOES.length)],
+    selo: SELOS_ESTILO[Math.floor(sorte() * SELOS_ESTILO.length)],
   };
 }
 
@@ -112,6 +135,8 @@ export interface PedidoEstilos {
   quantidade: number;
   /** Muda a cada "Gerar": a mesma loja e o mesmo post rendem artes novas. */
   semente: number;
+  /** As cores que entram no sorteio (as duas = metade das artes na cor da vitrine, metade na da logo). */
+  origens: OrigemCor[];
 }
 
 /**
@@ -151,6 +176,13 @@ export function gerarEstilos(pedido: PedidoEstilos): EstiloPost[] {
       fonteApoio: pedido.dna.fonteApoio[sorte() < 0.7 ? 0 : 1],
       caixaAlta: sorte() < 0.75 ? pedido.dna.caixaAlta : !pedido.dna.caixaAlta,
       variante: Math.floor(sorte() * layout.variantes),
+      fundo: escolherFundo(layout.id, paleta, pedido.dna, sorte),
+      cartao: sorte() < 0.6 ? pedido.dna.cartao : CARTOES[Math.floor(sorte() * CARTOES.length)],
+      botao: BOTAO_PROPRIO.includes(layout.id) ? 'pilula'
+        : sorte() < 0.65 ? pedido.dna.botao : BOTOES[Math.floor(sorte() * BOTOES.length)],
+      selo: SELO_PROPRIO.includes(layout.id) ? 'pilula'
+        : sorte() < 0.65 ? pedido.dna.selo : SELOS_ESTILO[Math.floor(sorte() * SELOS_ESTILO.length)],
+      origemCor: pedido.origens[i % Math.max(1, pedido.origens.length)] ?? 'vitrine',
     });
   }
   return estilos;
@@ -166,6 +198,15 @@ function escolherDecor(layout: LayoutPost, paleta: PaletaPost, dna: DnaVisual, s
   if (layout === 'minimal') return sorte() < 0.5 ? 'linhas' : 'nenhum';
   if (sorte() < 0.78) return dna.decorsPreferidos[Math.floor(sorte() * dna.decorsPreferidos.length)];
   return DECORS[Math.floor(sorte() * DECORS.length)];
+}
+
+/** Foto cobrindo tudo ou fundo liso de propósito: sem acabamento; nos outros, o que a loja prefere (às vezes liso). */
+function escolherFundo(layout: LayoutPost, paleta: PaletaPost, dna: DnaVisual, sorte: () => number): FundoPost {
+  if (paleta === 'foto' || FOTO_CHEIA.includes(layout) || layout === 'liso' || layout === 'liso-cartao') return 'liso';
+  const r = sorte();
+  if (r < 0.22) return 'liso';
+  if (r < 0.82) return dna.fundosPreferidos[Math.floor(sorte() * dna.fundosPreferidos.length)];
+  return FUNDOS[Math.floor(sorte() * FUNDOS.length)];
 }
 
 function escolherFiltro(dna: DnaVisual, sorte: () => number): FiltroFoto {

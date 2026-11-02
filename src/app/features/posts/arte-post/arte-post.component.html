@@ -13,6 +13,10 @@
     [attr.data-paleta]="visual.paleta"
     [attr.data-fundo-claro]="fundoClaro()"
     [attr.data-decor]="visual.decor"
+    [attr.data-fundo]="visual.fundo"
+    [attr.data-cartao]="visual.cartao"
+    [attr.data-botao]="visual.botao"
+    [attr.data-selo]="visual.selo"
     [attr.data-alinhamento]="visual.alinhamento"
     [attr.data-filtro]="visual.filtro"
     [attr.data-raio]="visual.raio"
@@ -25,6 +29,7 @@
     [attr.data-fotos]="fotos().length"
     [attr.data-horarios-compactos]="horariosCompactos()"
   >
+    <div class="arte__fundo" aria-hidden="true"></div>
     <div class="arte__decor" aria-hidden="true">
       <i class="arte__d arte__d1"></i><i class="arte__d arte__d2"></i><i class="arte__d arte__d3"></i>
       <i class="arte__d arte__d4"></i><i class="arte__d arte__d5"></i><i class="arte__d arte__d6"></i>

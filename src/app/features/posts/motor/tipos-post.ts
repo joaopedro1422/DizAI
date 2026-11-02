@@ -44,7 +44,27 @@ export type LayoutPost =
 
 /** De onde vêm as cores: fundo claro tingido, a cor da loja, escuro, creme ou a foto dominando. */
 export type PaletaPost = 'clara' | 'cor' | 'escura' | 'creme' | 'foto';
-export type DecorPost = 'nenhum' | 'linhas' | 'pontos' | 'organico' | 'brilhos' | 'geometrico' | 'faixas';
+export type DecorPost =
+  | 'nenhum'
+  | 'linhas'
+  | 'pontos'
+  | 'organico'
+  | 'brilhos'
+  | 'geometrico'
+  | 'faixas'
+  | 'ondas'
+  | 'arcos'
+  | 'confete';
+/** O acabamento do fundo, por baixo dos enfeites (arte-variacoes.css): some quando a foto cobre a arte. */
+export type FundoPost = 'liso' | 'degrade' | 'luz' | 'malha' | 'grao' | 'listras' | 'grade' | 'papel' | 'meio';
+/** O jeito dos cartões dos layouts que têm cartão (bilhete, cartão, balão, citação, calendário, fundo liso). */
+export type CartaoPost = 'padrao' | 'sombra-dura' | 'fosco' | 'flutuante' | 'recorte';
+/** O botão da chamada ("Agende pelo WhatsApp"). */
+export type BotaoPost = 'pilula' | 'quadrado' | 'contorno' | 'sublinhado';
+/** O selo de cima ("Novidade", "Agenda aberta"). */
+export type SeloPost = 'pilula' | 'texto' | 'tarja' | 'contorno';
+/** De onde vem a cor da arte: a de destaque da vitrine ou a tirada da logo. */
+export type OrigemCor = 'vitrine' | 'logo';
 export type FiltroFoto = 'natural' | 'quente' | 'pb' | 'duotone';
 export type RaioPost = 'reto' | 'suave' | 'redondo';
 /** A fonte das letras pequenas (selo, apoio, chamada); o título usa sempre a fonte da vitrine da loja. */
@@ -62,6 +82,11 @@ export interface EstiloPost {
   caixaAlta: boolean;
   /** Pequenas variações dentro do layout (posição da foto, lado do texto...), de 0 a 3. */
   variante: number;
+  fundo: FundoPost;
+  cartao: CartaoPost;
+  botao: BotaoPost;
+  selo: SeloPost;
+  origemCor: OrigemCor;
 }
 
 /** A identidade da loja, igual à da vitrine pública. */
@@ -72,6 +97,9 @@ export interface MarcaPost {
   /** A cor de destaque (hex) e o preenchimento no estilo escolhido (metálico, degradê...). */
   cor: string;
   preenchimento: string;
+  /** A cor principal da logo (tirada da imagem, `cor-da-logo.ts`) e o preenchimento nela; null sem cor própria. */
+  corLogo: string | null;
+  preenchimentoLogo: string | null;
   /** "'Playfair Display', serif": a fonte da vitrine, para o título. */
   fonteTitulo: string;
   fonteManuscrita: boolean;
