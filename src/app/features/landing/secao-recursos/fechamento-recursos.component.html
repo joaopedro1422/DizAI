@@ -11,34 +11,10 @@
   </ul>
 </div>
 
-<!-- no computador, a tela do painel e a chamada lado a lado -->
-<div class="final">
-  <!--
-    a tela de verdade do painel em HTML (public/landing/tela-*.html: o DOM e o CSS da tela real no computador, com
-    dados de exemplo), desenhada em 1440 px e reduzida para caber: fica nítida em qualquer tamanho
-  -->
-  <figure #tela class="tela-painel" [style.--escala]="escala()" [style.aspect-ratio]="'1440 / ' + alturaTela()">
-    @if (tipo() === 'produtos') {
-      <iframe
-        src="/landing/tela-pedidos.html"
-        width="1440"
-        height="1146"
-        loading="lazy"
-        tabindex="-1"
-        title="Tela de Pedidos do painel: o menu dos pedidos e os pedidos em preparo e prontos para entregar, com os itens, o valor e os botões Pedido pronto e Entregue"
-      ></iframe>
-    } @else {
-      <iframe
-        src="/landing/tela-agenda.html"
-        width="1440"
-        height="1125"
-        loading="lazy"
-        tabindex="-1"
-        title="Tela Minha Agenda do painel na visualização completa: o menu da agenda e os horários do dia, com os clientes, os serviços e os valores"
-      ></iframe>
-    }
-  </figure>
+<!-- o que muda na prática, um ganho por vez -->
+<app-ganhos-negocio [tipo]="tipo()" />
 
+<div class="final">
   <!-- o gancho final: testar com o próprio negócio -->
   <div class="chamada">
     <div class="chamada__textos">

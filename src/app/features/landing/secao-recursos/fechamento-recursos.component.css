@@ -74,43 +74,18 @@
   line-height: 1.5;
 }
 
-/* Tela do painel e chamada: lado a lado no computador, uma embaixo da outra no resto */
+/* Chamada final, na largura toda: o texto à esquerda e os botões à direita no computador */
 .final {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: center;
-  gap: 28px;
-  margin-top: 36px;
-}
-
-/* A tela real do painel (Pedidos ou Agenda) em HTML: 1440 px reduzidos para a largura da moldura */
-.tela-painel {
-  position: relative;
-  margin: 0;
-  overflow: hidden;
-  border: 6px solid rgba(255, 255, 255, 0.14);
-  border-radius: 24px;
-  background: #FFFFFF;
-  box-shadow: 0 30px 70px rgba(4, 10, 25, 0.35);
-}
-
-.tela-painel iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  border: 0;
-  transform: scale(var(--escala));
-  transform-origin: 0 0;
-  pointer-events: none;
+  margin-top: 56px;
 }
 
 /* Chamada final: testar com o próprio negócio -------------------------------- */
 
 .chamada {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 24px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px 40px;
   padding: 40px;
   border-radius: 28px;
   background: #FFFFFF;
@@ -122,6 +97,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  max-width: 620px;
 }
 
 .chamada__titulo {
@@ -171,7 +147,7 @@
 }
 
 @media (max-width: 1023px) {
-  .final { grid-template-columns: minmax(0, 1fr); }
+  .chamada { flex-direction: column; align-items: flex-start; }
   .comuns__lista { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
@@ -179,8 +155,7 @@
   .comuns__lista { gap: 10px; }
   .comum { padding: 16px; }
   .chamada { padding: 26px 22px; border-radius: 24px; }
-  .final { margin-top: 24px; gap: 20px; }
-  .tela-painel { border-width: 4px; border-radius: 16px; }
+  .final { margin-top: 32px; }
   .chamada__acoes { width: 100%; }
   .chamada__acoes .btn { width: 100%; }
 }

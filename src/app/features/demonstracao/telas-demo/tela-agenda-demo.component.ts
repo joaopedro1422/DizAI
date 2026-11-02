@@ -2,22 +2,25 @@ import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, computed, i
 
 import { FaixaDiasComponent, ItemFaixaDia } from '../../../shared/components/faixa-dias/faixa-dias.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
-import { formatarReal } from '../../pedidos/textos-pedido';
+import { minutosDoDia } from '../../../core/utils/datas-agenda';
+import { PIXELS_POR_MINUTO } from '../../agenda/linha-do-tempo';
 import { AgendaDemo } from '../conversas-demonstracao';
+import { LinhaAgendaDemoComponent } from './linha-agenda-demo.component';
 
-/** A tela rola até onde o horário novo vai entrar (se ele ficar abaixo da dobra)... */
+/** A tela rola até onde o horário novo vai entrar na linha do tempo (se ele ficar abaixo da dobra)... */
 const ROLAGEM_MS = 700;
 /** ...e ele entra na lista logo depois (como chega no painel aberto). */
 const ENTRADA_DO_NOVO_MS = 1500;
 
 /**
  * A Minha Agenda do painel no celular, no tamanho real, no dia do horário que o assistente acabou de marcar.
- * Mesmo HTML e as mesmas classes da tela real (agenda-page na visualização resumida; o CSS é a cópia das regras
- * de celular). A faixa de dias é o próprio FaixaDiasComponent da tela real.
+ * Mesmo HTML e as mesmas classes da tela real (agenda-page na visualização completa, a linha do tempo do
+ * `LinhaAgendaDemoComponent`; o CSS é a cópia das regras de celular). A faixa de dias é o próprio
+ * FaixaDiasComponent da tela real.
  */
 @Component({
   selector: 'app-tela-agenda-demo',
-  imports: [IconeComponent, FaixaDiasComponent],
+  imports: [IconeComponent, FaixaDiasComponent, LinhaAgendaDemoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './tela-agenda-demo.component.html',
   styleUrls: ['./tela-agenda-demo.component.css', './telas-demo.css'],
@@ -59,16 +62,16 @@ export class TelaAgendaDemoComponent {
     inject(DestroyRef).onDestroy(() => temporizadores.forEach(clearTimeout));
   }
 
-  /** Deixa à vista o card que fica logo antes do horário novo (o novo entra embaixo dele). */
+  /** Deixa à vista o trecho da linha do tempo em que o horário novo vai entrar (com um pouco do que vem antes). */
   private rolarAteONovo(tela: HTMLElement): void {
-    const indiceNovo = this.agenda().horarios.findIndex((horario) => horario.novo);
-    const anterior = indiceNovo > 0 ? tela.querySelectorAll<HTMLElement>('.horario')[indiceNovo - 1] : null;
-    if (anterior) {
-      tela.scrollTo({ top: anterior.offsetTop - 140, behavior: 'smooth' });
-    }
+    const novo = this.agenda().horarios.find((horario) => horario.novo);
+    const linha = tela.querySelector<HTMLElement>('.linha');
+    // a primeira marca da linha é a hora em que a grade começa
+    const primeiraHora = linha?.querySelector('.linha__hora')?.textContent?.trim();
+    if (!novo || !linha || !primeiraHora) return;
+    const topoDoNovo = (minutosDoDia(novo.inicio) - minutosDoDia(primeiraHora)) * PIXELS_POR_MINUTO;
+    const topoDaLinha = linha.getBoundingClientRect().top - tela.getBoundingClientRect().top + tela.scrollTop;
+    tela.scrollTo({ top: Math.max(0, topoDaLinha + topoDoNovo - 170), behavior: 'smooth' });
   }
 
-  protected real(valor: number): string {
-    return formatarReal(valor);
-  }
 }

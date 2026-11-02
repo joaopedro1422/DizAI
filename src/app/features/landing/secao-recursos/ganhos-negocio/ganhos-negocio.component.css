@@ -1,0 +1,226 @@
+/*
+ * "Menos correria. Mais negócio." (dentro da faixa azul de Recursos): à esquerda o título e o índice dos ganhos, à
+ * direita o cartão. O tempo de cada ganho é a animação "encher" (barrinhas e o cronômetro escondido do cartão).
+ */
+:host {
+  --tempo-ganho: 7s;
+  --verde: #8FE3B0;
+  display: block;
+}
+
+.ganhos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 540px);
+  align-items: center;
+  gap: 64px;
+  margin-top: 56px;
+  padding-top: 56px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.ganhos__lado {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ganhos__sobretitulo {
+  color: var(--verde);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ganhos__titulo {
+  color: #ffffff;
+  font-size: clamp(34px, 4.2vw, 52px);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+}
+
+.ganhos__titulo-destaque {
+  display: block;
+  /* o degradê só pinta dentro da caixa: sem esse respiro, a perna do "g" de "negócio" é cortada */
+  padding-bottom: 0.12em;
+  background: linear-gradient(90deg, #B9CEFF, var(--verde) 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ganhos__descricao {
+  max-width: 440px;
+  color: #B9C4DA;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+/* ---------- índice (computador) ---------- */
+.indice {
+  display: flex;
+  flex-direction: column;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.indice__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: baseline;
+  width: 100%;
+  padding: 13px 0 15px;
+  border: none;
+  background: none;
+  color: rgba(255, 255, 255, 0.5);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.indice__item:hover { color: rgba(255, 255, 255, 0.82); }
+.indice__item--ativo { color: #ffffff; }
+
+.indice__numero {
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.indice__titulo {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* a linha embaixo de cada item: o ativo enche em verde no tempo do ganho */
+.indice__barra,
+.segmento {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.indice__barra {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+}
+
+.indice__barra i,
+.segmento i {
+  position: absolute;
+  inset: 0;
+  background: var(--verde);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.indice__item--ativo .indice__barra i,
+.segmento--ativo i {
+  animation: encher var(--tempo-ganho) linear forwards;
+}
+
+.segmento--feito i { transform: scaleX(1); }
+
+/* ---------- palco do cartão ---------- */
+.palco {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* no computador o índice já mostra o progresso */
+.segmentos { display: none; }
+
+.controles {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.controles__seta {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.controles__seta:hover { border-color: rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.12); }
+.controles__seta:focus-visible,
+.indice__item:focus-visible { outline: 2px solid var(--verde); outline-offset: 3px; }
+
+/*
+ * o relógio do ganho (dentro do cartão): invisível, só a animação; ao terminar, passa para o próximo. Fica neste
+ * arquivo porque o Angular renomeia as @keyframes por arquivo (no ganhos-cartao.css o "encher" não existiria)
+ */
+.cronometro {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  animation: encher var(--tempo-ganho) linear forwards;
+}
+
+/* pausado (mouse em cima, foco ou fora da tela): as barrinhas e o cronômetro param onde estão */
+:host(.pausado) .indice__barra i,
+:host(.pausado) .segmento i,
+:host(.pausado) .cronometro {
+  animation-play-state: paused;
+}
+
+@keyframes encher {
+  to { transform: scaleX(1); }
+}
+
+/* ---------- tablet e celular: título em cima, o cartão e as barrinhas embaixo ---------- */
+@media (max-width: 1023px) {
+  .ganhos {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    margin-top: 40px;
+    padding-top: 40px;
+  }
+
+  .indice { display: none; }
+
+  .segmentos {
+    display: flex;
+    gap: 6px;
+  }
+
+  .segmento {
+    flex: 1;
+    height: 4px;
+  }
+
+  .palco { max-width: 560px; }
+  .controles { justify-content: center; }
+}
+
+/* sem movimento: nada passa sozinho; troca só pelas setas, pelo índice ou arrastando */
+@media (prefers-reduced-motion: reduce) {
+  .indice__item--ativo .indice__barra i,
+  .segmento--ativo i {
+    animation: none;
+    transform: scaleX(1);
+  }
+
+  .cronometro { animation: none; }
+}

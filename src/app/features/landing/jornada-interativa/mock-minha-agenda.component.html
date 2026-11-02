@@ -41,48 +41,11 @@
       </div>
 
       <div class="visualizacao">
-        <span class="visualizacao__campo">Resumida <app-icone nome="setaBaixo" [tamanho]="14" [espessura]="2.4" /></span>
+        <span class="visualizacao__campo">Completa <app-icone nome="setaBaixo" [tamanho]="14" [espessura]="2.4" /></span>
       </div>
 
-      <div class="lista-horarios">
-        <article class="horario">
-          <div class="horario__tempo">
-            <span class="horario__inicio">09:00</span>
-            <span class="horario__fim">10:30</span>
-          </div>
-          <div class="horario__corpo">
-            <span class="horario__nome">Júlia Martins</span>
-            <span class="horario__servicos">Pé e mão <span class="horario__duracao">· 1h30</span></span>
-            <span class="horario__rodape">
-              <span class="horario__whatsapp"><app-icone nome="conversa" [tamanho]="14" /> (83) 99812-3344</span>
-            </span>
-          </div>
-          <div class="horario__lateral">
-            <span class="horario__assistente"><app-icone nome="brilho" [tamanho]="16" [espessura]="2" /></span>
-            <span class="horario__cancelar"><app-icone nome="fechar" [tamanho]="18" /></span>
-          </div>
-        </article>
-
-        @if (novoHorario()) {
-          <article class="horario horario--novo">
-            <div class="horario__tempo">
-              <span class="horario__inicio">14:00</span>
-              <span class="horario__fim">15:00</span>
-            </div>
-            <div class="horario__corpo">
-              <span class="horario__nome">Mariana</span>
-              <span class="horario__servicos">Esmaltação em gel <span class="horario__duracao">· 1h</span></span>
-              <span class="horario__rodape">
-                <span class="horario__whatsapp"><app-icone nome="conversa" [tamanho]="14" /> (83) 98765-4321</span>
-              </span>
-            </div>
-            <div class="horario__lateral">
-              <span class="horario__assistente"><app-icone nome="brilho" [tamanho]="16" [espessura]="2" /></span>
-              <span class="horario__cancelar"><app-icone nome="fechar" [tamanho]="18" /></span>
-            </div>
-          </article>
-        }
-      </div>
+      <!-- a linha do tempo do dia: Júlia às 11:00, o horário livre e a Mariana entrando às 14:00 -->
+      <app-linha-agenda-demo [horarios]="horarios()" [expediente]="expediente" />
 
       <div class="acoes-dia">
         <span class="btn btn--primario btn--grande btn--bloco">

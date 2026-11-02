@@ -718,10 +718,11 @@ function horaAtual(): string {
 type Visualizacao = 'resumida' | 'completa';
 const CHAVE_VISUALIZACAO = 'dizai.agenda.visualizacao';
 
+/** A completa é o padrão (conta nova, navegador novo); a resumida só quando o lojista escolheu e ficou guardado. */
 function lerVisualizacao(): Visualizacao {
   try {
-    return localStorage.getItem(CHAVE_VISUALIZACAO) === 'completa' ? 'completa' : 'resumida';
+    return localStorage.getItem(CHAVE_VISUALIZACAO) === 'resumida' ? 'resumida' : 'completa';
   } catch {
-    return 'resumida';
+    return 'completa';
   }
 }

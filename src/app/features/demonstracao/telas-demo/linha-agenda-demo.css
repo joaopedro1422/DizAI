@@ -1,0 +1,278 @@
+/*
+ * Cópia das regras da visualização completa da agenda no celular (agenda-page.component.css: .linha, .bloco e
+ * .bloco__linha-nome/.bloco__extras), sem a linha do "agora". Ao mudar a linha do tempo da agenda, atualize aqui.
+ */
+:host { display: block; }
+
+.linha {
+  --coluna-horas: 46px;
+  position: relative;
+  margin: 8px 0 4px;
+}
+
+.linha__marca {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-top: 1px solid #E3E7EE;
+  margin-left: var(--coluna-horas);
+}
+
+.linha__marca--meia {
+  border-top: 1px dashed #EEF0F4;
+}
+
+.linha__hora {
+  position: absolute;
+  left: calc(-1 * var(--coluna-horas));
+  top: -8px;
+  width: 38px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: right;
+  color: #8A93A5;
+  font-variant-numeric: tabular-nums;
+}
+
+.linha__marca--meia .linha__hora {
+  font-weight: 500;
+  color: #A9B0BE;
+}
+
+.linha__hora--destaque,
+.linha__marca--meia .linha__hora--destaque {
+  font-weight: 800;
+  color: var(--cor-primaria);
+}
+
+/* começo ou fim fora da grade de 30 min (ex.: 09:45) */
+.linha__hora--extra {
+  left: 0;
+  margin-top: -8px;
+  top: auto;
+  z-index: 1;
+  background: var(--cor-fundo);
+  color: var(--cor-primaria);
+  font-weight: 800;
+}
+
+/* os blocos ficam 1 px para dentro em cima e embaixo: dois seguidos não se colam */
+.bloco {
+  position: absolute;
+  left: var(--coluna-horas);
+  right: 0;
+  margin-top: 1px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bloco--agendamento {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1px;
+  padding: 6px 8px 6px 11px;
+  border-left: 4px solid #A9B3C6;
+  background: #F1F3F7;
+  color: var(--cor-texto);
+}
+
+/* presença confirmada pelo cliente: o bloco fica verde claro */
+.bloco--confirmado {
+  border-left-color: var(--cor-ativo);
+  background: #E6F4EC;
+}
+
+/* acontecendo agora: a barra da esquerda fica verde e mais grossa */
+.bloco--em-andamento {
+  padding-left: 10px;
+  border-left: 4px solid var(--cor-ativo);
+}
+
+.bloco__linha {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.bloco__horario {
+  flex: none;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--cor-texto-secundario);
+  font-variant-numeric: tabular-nums;
+}
+
+.bloco__nome {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.bloco__nome--junto {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.bloco__presenca,
+.bloco__assistente {
+  display: inline-flex;
+  flex: none;
+  color: var(--cor-ativo);
+}
+
+/* os ícones e o X vão para a direita quando o nome não está na mesma linha */
+.bloco__horario + .bloco__profissional,
+.bloco__horario + .bloco__presenca,
+.bloco__horario + .bloco__assistente,
+.bloco__horario + .bloco__cancelar,
+.bloco__horario + .bloco__valor {
+  margin-left: auto;
+}
+
+/* valor do atendimento (toque para ajustar), antes do X */
+.bloco__valor {
+  flex: none;
+  padding: 0 2px;
+  border: none;
+  background: transparent;
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.bloco__valor--vazio {
+  color: var(--cor-texto-suave);
+  font-weight: 600;
+}
+
+.bloco__cancelar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 24px;
+  height: 22px;
+  margin: -2px -4px -2px 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--cor-texto-suave);
+}
+
+.bloco__cancelar:hover {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.bloco__detalhe {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--cor-texto-secundario);
+}
+
+.bloco__servico {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* número do cliente: abre a escolha de mensagem pronta */
+.bloco__whatsapp {
+  flex: none;
+  margin-left: auto;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cor-primaria);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.bloco--medio {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.bloco--curto {
+  justify-content: center;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.bloco--livre {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px dashed #A7B2C4;   /* um pouco mais escura: com vários profissionais as divisões sumiam */
+  background: var(--cor-fundo);
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+.bloco--sem-texto {
+  border-style: dotted;
+}
+
+.bloco--fechado {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: repeating-linear-gradient(135deg, #F3F5F8 0 6px, #ffffff 6px 12px);
+  color: #9AA2B1;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.bloco__linha-nome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.bloco__linha-nome .bloco__nome {
+  flex: 1;
+  min-width: 0;
+}
+
+.bloco__extras {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+/* o horário que o assistente acabou de marcar entra na linha (como chega no painel aberto) */
+.bloco--novo {
+  animation: bloco-novo 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  box-shadow: 0 0 0 2px rgba(49, 131, 56, 0.35);
+}
+
+@keyframes bloco-novo {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bloco--novo { animation: none; }
+}

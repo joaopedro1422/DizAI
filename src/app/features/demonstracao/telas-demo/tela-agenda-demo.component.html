@@ -1,4 +1,4 @@
-<!-- cópia de agenda-page.component.html (celular, página "Agendamentos", visualização resumida) -->
+<!-- cópia de agenda-page.component.html (celular, página "Agendamentos", visualização completa) -->
 <header class="topo-menu">
   <span class="topo-menu__menu"><app-icone nome="menu" [tamanho]="22" [espessura]="2" /></span>
   <div class="topo-menu__textos">
@@ -39,43 +39,14 @@
     <div class="visualizacao">
       <span class="visualizacao__campo">
         <select class="visualizacao__select" tabindex="-1" aria-hidden="true">
-          <option selected>Resumida</option>
+          <option selected>Completa</option>
         </select>
         <app-icone nome="setaBaixo" [tamanho]="14" [espessura]="2.4" />
       </span>
     </div>
 
-    <div class="lista-horarios">
-      @for (horario of horarios(); track horario.inicio) {
-        <article class="horario" [class.entra-novo]="horario.novo">
-          <div class="horario__tempo">
-            <span class="horario__inicio">{{ horario.inicio }}</span>
-            <span class="horario__fim">{{ horario.fim }}</span>
-          </div>
-          <div class="horario__corpo">
-            <span class="horario__nome">{{ horario.nome }}</span>
-            <span class="horario__servicos">{{ horario.servicos }} <span class="horario__duracao">· {{ horario.duracao }}</span></span>
-            <span class="horario__rodape">
-              <span class="horario__contato">
-                <button type="button" class="horario__whatsapp" tabindex="-1">
-                  <app-icone nome="conversa" [tamanho]="14" />
-                  {{ horario.whatsapp }}
-                </button>
-                <button type="button" class="horario__valor" tabindex="-1">{{ real(horario.valor) }}</button>
-              </span>
-            </span>
-          </div>
-          <div class="horario__lateral">
-            @if (horario.assistente) {
-              <span class="horario__assistente"><app-icone nome="brilho" [tamanho]="16" [espessura]="2" /></span>
-            }
-            <button type="button" class="btn-icone btn-icone--sem-borda horario__cancelar" tabindex="-1">
-              <app-icone nome="fechar" [tamanho]="18" />
-            </button>
-          </div>
-        </article>
-      }
-    </div>
+    <!-- a linha do tempo do dia (a mesma conta e o mesmo desenho da agenda de verdade) -->
+    <app-linha-agenda-demo [horarios]="horarios()" />
 
     <div class="acoes-dia">
       <span class="btn btn--primario btn--grande btn--bloco">

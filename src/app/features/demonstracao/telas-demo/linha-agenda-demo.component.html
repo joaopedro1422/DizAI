@@ -1,0 +1,69 @@
+<!-- cópia do #blocoDaLinha da agenda-page (visualização completa no celular, um profissional) -->
+@if (linha(); as linha) {
+  <div class="linha" [style.height.px]="linha.altura">
+    @for (marca of linha.marcas; track marca.texto) {
+      <div class="linha__marca" [class.linha__marca--meia]="!marca.cheia" [style.top.px]="marca.topo" aria-hidden="true">
+        <span class="linha__hora" [class.linha__hora--destaque]="marca.destaque">{{ marca.texto }}</span>
+      </div>
+    }
+    @for (extra of linha.marcasExtras; track extra.texto) {
+      <span class="linha__hora linha__hora--extra" [style.top.px]="extra.topo" aria-hidden="true">{{ extra.texto }}</span>
+    }
+
+    @for (bloco of linha.blocos; track bloco.inicio + bloco.tipo) {
+      @switch (bloco.tipo) {
+        @case ('agendamento') {
+          @let agendamento = bloco.agendamento!;
+          <article
+            class="bloco bloco--agendamento"
+            [class.bloco--novo]="novo(agendamento)"
+            [class.bloco--medio]="bloco.altura < 70"
+            [class.bloco--curto]="bloco.altura < 40"
+            [style.top.px]="bloco.topo"
+            [style.height.px]="bloco.altura - 2"
+          >
+            <div class="bloco__linha">
+              <span class="bloco__horario">{{ bloco.textoInicio }} – {{ bloco.textoFim }}</span>
+              @if (bloco.altura < 70) {
+                <span class="bloco__nome bloco__nome--junto">{{ agendamento.nomeCliente }}</span>
+              }
+              @if (agendamento.origem === 'WHATSAPP') {
+                <span class="bloco__assistente"><app-icone nome="brilho" [tamanho]="13" [espessura]="2" /></span>
+              }
+              @if (bloco.altura < 70) {
+                <span class="bloco__extras"><span class="bloco__valor">{{ real(agendamento.valor ?? 0) }}</span></span>
+              }
+              <span class="bloco__cancelar"><app-icone nome="fechar" [tamanho]="15" [espessura]="2" /></span>
+            </div>
+            @if (bloco.altura >= 70) {
+              <div class="bloco__linha-nome">
+                <span class="bloco__nome">{{ agendamento.nomeCliente }}</span>
+                <span class="bloco__extras"><span class="bloco__valor">{{ real(agendamento.valor ?? 0) }}</span></span>
+              </div>
+            }
+            @if (bloco.altura >= 40) {
+              <span class="bloco__detalhe">
+                <span class="bloco__servico">{{ agendamento.servicos }}</span>
+                <span class="bloco__whatsapp">{{ agendamento.whatsapp }}</span>
+              </span>
+            }
+          </article>
+        }
+        @case ('livre') {
+          <div class="bloco bloco--livre" [class.bloco--sem-texto]="bloco.altura < 24" [style.top.px]="bloco.topo" [style.height.px]="bloco.altura - 2">
+            @if (bloco.altura >= 24) {
+              <span>{{ bloco.textoInicio }} – {{ bloco.textoFim }} · livre</span>
+            }
+          </div>
+        }
+        @case ('fechado') {
+          <div class="bloco bloco--fechado" [style.top.px]="bloco.topo" [style.height.px]="bloco.altura - 2">
+            @if (bloco.altura >= 24) {
+              <span>Fechado · {{ bloco.textoInicio }} – {{ bloco.textoFim }}</span>
+            }
+          </div>
+        }
+      }
+    }
+  </div>
+}

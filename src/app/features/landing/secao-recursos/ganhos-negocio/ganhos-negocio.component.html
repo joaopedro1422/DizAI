@@ -1,0 +1,88 @@
+<section class="ganhos" aria-labelledby="ganhos-titulo" aria-roledescription="carrossel">
+  <!-- à esquerda (computador): o título e o índice dos ganhos -->
+  <div class="ganhos__lado">
+    <span class="ganhos__sobretitulo">Na prática</span>
+    <h3 id="ganhos-titulo" class="ganhos__titulo">
+      Menos correria.
+      <span class="ganhos__titulo-destaque">Mais negócio.</span>
+    </h3>
+    <p class="ganhos__descricao">O que muda no seu dia a dia, a partir do primeiro cliente.</p>
+
+    <ol class="indice">
+      @for (ganho of ganhos(); track ganho.titulo; let i = $index) {
+        <li>
+          <button type="button" class="indice__item" [class.indice__item--ativo]="i === indice()" [attr.aria-current]="i === indice() ? 'step' : null" (click)="irPara(i)">
+            <span class="indice__numero">{{ numero(i) }}</span>
+            <span class="indice__titulo">{{ semPonto(ganho.titulo) }}</span>
+            <span class="indice__barra" aria-hidden="true"><i></i></span>
+          </button>
+        </li>
+      }
+    </ol>
+  </div>
+
+  <!-- o cartão do ganho: troca sozinho, pelo índice, pelas setas ou arrastando -->
+  <div class="palco">
+    <div class="segmentos" aria-hidden="true">
+      @for (ganho of ganhos(); track ganho.titulo; let i = $index) {
+        <span class="segmento" [class.segmento--feito]="i < indice()" [class.segmento--ativo]="i === indice()"><i></i></span>
+      }
+    </div>
+
+    @for (ganho of [atual()]; track indice()) {
+      <article
+        class="cartao"
+        aria-live="polite"
+        [attr.aria-label]="'Ganho ' + (indice() + 1) + ' de ' + ganhos().length"
+        (pointerdown)="comecarArraste($event)"
+        (pointerup)="terminarArraste($event)"
+      >
+        <!-- o tempo do ganho: quando a barrinha enche, passa para o próximo -->
+        <span class="cronometro" aria-hidden="true" (animationend)="proximo()"></span>
+
+        <header class="cartao__topo">
+          <span class="cartao__contador">
+            <strong>{{ numero(indice()) }}</strong>
+            <span>/ {{ numero(ganhos().length - 1) }}</span>
+          </span>
+          <span class="cartao__icone" aria-hidden="true">
+            <app-icone [nome]="ganho.icone" [tamanho]="26" [espessura]="1.9" />
+          </span>
+        </header>
+
+        <div class="cartao__desafio">
+          <span class="cartao__rotulo">O desafio</span>
+          <p>{{ ganho.desafio }}</p>
+        </div>
+
+        <div class="cartao__ganho">
+          <h4 class="cartao__titulo">{{ ganho.titulo }}</h4>
+          <p class="cartao__texto">{{ ganho.texto }}</p>
+        </div>
+
+        <div class="comparacao">
+          <span class="comparacao__lado comparacao__lado--antes">
+            <small>Hoje</small>
+            {{ ganho.antes }}
+          </span>
+          <span class="comparacao__seta" aria-hidden="true">
+            <app-icone nome="seta" [tamanho]="18" [espessura]="2.2" />
+          </span>
+          <span class="comparacao__lado comparacao__lado--depois">
+            <small>Com o DizAI</small>
+            {{ ganho.depois }}
+          </span>
+        </div>
+      </article>
+    }
+
+    <div class="controles">
+      <button type="button" class="controles__seta" aria-label="Ganho anterior" (click)="anterior()">
+        <app-icone nome="voltar" [tamanho]="20" [espessura]="2" />
+      </button>
+      <button type="button" class="controles__seta" aria-label="Próximo ganho" (click)="proximo()">
+        <app-icone nome="avancar" [tamanho]="20" [espessura]="2" />
+      </button>
+    </div>
+  </div>
+</section>
