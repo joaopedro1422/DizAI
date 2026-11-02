@@ -9,6 +9,7 @@ import { SecaoPostsComponent } from './secao-posts/secao-posts.component';
 import { SecaoParaQuemComponent } from './secao-para-quem/secao-para-quem.component';
 import { SecaoPerguntasComponent } from './secao-perguntas/secao-perguntas.component';
 import { SecaoRecursosComponent } from './secao-recursos/secao-recursos.component';
+import { FaixaNegociosComponent } from './faixa-negocios/faixa-negocios.component';
 import { SecaoHeroComponent } from './secao-hero/secao-hero.component';
 import { SecaoPesquisaComponent } from './secao-pesquisa/secao-pesquisa.component';
 import { SecaoSolucaoComponent } from './secao-solucao/secao-solucao.component';
@@ -34,6 +35,7 @@ interface Passo {
     LogoComponent,
     IconeComponent,
     SecaoHeroComponent,
+    FaixaNegociosComponent,
     SecaoPesquisaComponent,
     SecaoSolucaoComponent,
     SecaoGaleriaComponent,

@@ -14,10 +14,9 @@ import { DemonstracaoConversaComponent } from '../demonstracao-conversa/demonstr
 })
 export class SecaoHeroComponent {
   protected readonly garantias = [
-    'Pronto em poucos minutos',
     'No seu número de sempre',
-    'Pensado para microempreendedores',
+    'Para todo tipo de negócio',
     'Você no controle de tudo',
-
+    'Pronto em poucos minutos',
   ];
 }

@@ -1,0 +1,120 @@
+<div class="sobreposicao" (click)="fechar.emit()" aria-hidden="true"></div>
+
+<section class="fechamento" role="dialog" aria-modal="true" aria-labelledby="fechamento-titulo" tabindex="-1">
+  <header class="topo">
+    <div class="topo__linha">
+      <span class="topo__selo">Fechamento do dia</span>
+      <button type="button" class="topo__fechar" aria-label="Fechar" (click)="fechar.emit()">
+        <app-icone nome="fechar" [tamanho]="18" [espessura]="2" />
+      </button>
+    </div>
+
+    <div class="topo__loja">
+      @if (logo(); as url) {
+        <img class="topo__logo" [src]="url" alt="" />
+      } @else {
+        <span class="topo__logo topo__logo--inicial" aria-hidden="true">{{ inicial() }}</span>
+      }
+      <div class="topo__textos">
+        <h2 id="fechamento-titulo" class="topo__data">{{ dataPorExtenso() }}</h2>
+        <span class="topo__situacao">{{ nomeLoja() }} · {{ situacao() }}</span>
+      </div>
+    </div>
+
+    <div class="destaque">
+      <span class="destaque__rotulo">{{ rotuloFaturamento() }}</span>
+      <strong class="destaque__valor">
+        {{ reais().inteiro }}<span class="destaque__centavos">{{ reais().centavos }}</span>
+      </strong>
+      @if (comparacao(); as c) {
+        <span class="destaque__comparacao" [attr.data-tipo]="c.tipo">{{ c.texto }}</span>
+      }
+    </div>
+  </header>
+
+  <div class="corpo">
+    <dl class="indicadores">
+      @for (item of indicadores(); track item.rotulo) {
+        <div class="indicador">
+          <dt class="indicador__rotulo">{{ item.rotulo }}</dt>
+          <dd class="indicador__valor">{{ item.valor }}</dd>
+          @if (item.detalhe) {
+            <dd class="indicador__detalhe">{{ item.detalhe }}</dd>
+          }
+        </div>
+      }
+    </dl>
+
+    <dl class="ficha">
+      @for (linha of ficha(); track linha.rotulo) {
+        <div class="ficha__linha">
+          <dt>{{ linha.rotulo }}</dt>
+          <dd>{{ linha.valor }}</dd>
+        </div>
+      }
+    </dl>
+
+    @if (profissionais().length) {
+      <section class="bloco" aria-labelledby="fechamento-profissionais">
+        <h3 id="fechamento-profissionais" class="bloco__titulo">Por profissional</h3>
+        <ul class="profissionais">
+          @for (p of profissionais(); track p.nome) {
+            <li class="profissional">
+              <div class="profissional__linha">
+                <span class="profissional__nome">{{ p.nome }}</span>
+                <span class="profissional__valor">{{ p.valor }}</span>
+              </div>
+              <div class="profissional__trilho" aria-hidden="true">
+                <span class="profissional__barra" [style.width.%]="p.largura"></span>
+              </div>
+              <span class="profissional__detalhe">
+                {{ p.atendimentos }} {{ p.atendimentos === 1 ? 'atendimento' : 'atendimentos' }}
+              </span>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
+    @if (ranking().itens.length) {
+      <section class="bloco" aria-labelledby="fechamento-ranking">
+        <h3 id="fechamento-ranking" class="bloco__titulo">{{ ranking().titulo }}</h3>
+        <ol class="ranking">
+          @for (item of ranking().itens; track item.nome; let i = $index) {
+            <li class="ranking__item">
+              <span class="ranking__posicao">{{ i + 1 }}</span>
+              <span class="ranking__nome">{{ item.nome }}</span>
+              <span class="ranking__valor">{{ item.valor }}</span>
+            </li>
+          }
+        </ol>
+      </section>
+    }
+
+    <section class="assistente" aria-label="O que o assistente fez">
+      <span class="assistente__icone" aria-hidden="true">
+        <app-icone nome="relogio" [tamanho]="20" [espessura]="2" />
+      </span>
+      <div class="assistente__textos">
+        <span class="assistente__rotulo">Tempo economizado</span>
+        <strong class="assistente__valor">{{ tempoEconomizado() }}</strong>
+        <span class="assistente__descricao">{{ textoAssistente() }}</span>
+      </div>
+    </section>
+
+    @if (amanha(); as texto) {
+      <div class="amanha">
+        <app-icone nome="calendario" [tamanho]="18" [espessura]="2" />
+        <span><strong>Amanhã:</strong> {{ texto }}</span>
+      </div>
+    }
+  </div>
+
+  <footer class="acoes">
+    <button type="button" class="acoes__fechar" (click)="fechar.emit()">Fechar</button>
+    <a class="acoes__ir" [routerLink]="destino().rota" (click)="fechar.emit()">
+      {{ destino().texto }}
+      <app-icone nome="avancar" [tamanho]="16" [espessura]="2" />
+    </a>
+  </footer>
+</section>

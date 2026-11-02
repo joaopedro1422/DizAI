@@ -1,0 +1,132 @@
+@if (carregando()) {
+  <app-carregando texto="Carregando clientes…" />
+} @else {
+  <div class="retornos">
+    <!-- como funciona, em uma linha -->
+    <p class="retornos__explica">
+      <app-icone nome="sino" [tamanho]="18" [espessura]="2" />
+      Escolha um cliente e o dia do retorno. Na véspera, o assistente manda um lembrete para ele agendar.
+    </p>
+
+    @if (pendentes().length) {
+      <section class="grupo" aria-labelledby="retornos-proximos">
+        <h2 id="retornos-proximos" class="grupo__titulo">Próximos retornos</h2>
+        <ul class="cartao lista">
+          @for (retorno of pendentes(); track retorno.id) {
+            <li class="linha">
+              <button type="button" class="linha__principal" (click)="abrirRetorno(retorno)">
+                <app-avatar [nome]="nomeDo(retorno)" [tamanho]="40" />
+                <span class="linha__textos">
+                  <span class="linha__nome">{{ nomeDo(retorno) }}</span>
+                  <span class="linha__detalhe">{{ retorno.descricao }}</span>
+                </span>
+                <span class="linha__data">{{ dia(retorno.data) }}</span>
+              </button>
+              <button type="button" class="linha__remover" [attr.aria-label]="'Remover o retorno de ' + nomeDo(retorno)" (click)="excluir(retorno)">
+                <app-icone nome="fechar" [tamanho]="16" [espessura]="2.2" />
+              </button>
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
+    <section class="grupo" aria-labelledby="retornos-clientes">
+      <h2 id="retornos-clientes" class="grupo__titulo">Marcar retorno</h2>
+      <label class="busca">
+        <app-icone nome="busca" [tamanho]="18" [espessura]="2" />
+        <span class="somente-leitor-tela">Buscar cliente</span>
+        <input type="search" placeholder="Buscar por nome ou número" autocomplete="off" [value]="busca()" (input)="digitarBusca($event)">
+      </label>
+      <ul class="cartao lista">
+        @for (cliente of clientes(); track cliente.id) {
+          <li>
+            <button type="button" class="linha__principal" [disabled]="!cliente.numero" (click)="abrirCliente(cliente)">
+              <app-avatar [nome]="cliente.nome" [tamanho]="40" />
+              <span class="linha__textos">
+                <span class="linha__nome">{{ cliente.nome }}</span>
+                <span class="linha__detalhe">{{ cliente.whatsapp || 'Sem WhatsApp' }}</span>
+              </span>
+              @if (retornoDe(cliente); as retorno) {
+                <span class="selo">
+                  <app-icone nome="retorno" [tamanho]="13" [espessura]="2.4" />
+                  {{ dia(retorno.data) }}
+                </span>
+              } @else if (cliente.numero) {
+                <app-icone class="linha__seta" nome="avancar" [tamanho]="18" [espessura]="2" />
+              }
+            </button>
+          </li>
+        } @empty {
+          <li class="vazio">
+            @if (busca()) {
+              Nenhum cliente com "{{ busca() }}".
+            } @else {
+              Os clientes aparecem aqui depois da primeira conversa ou do primeiro agendamento.
+            }
+          </li>
+        }
+      </ul>
+    </section>
+
+    @if (enviados().length) {
+      <section class="grupo" aria-labelledby="retornos-enviados">
+        <h2 id="retornos-enviados" class="grupo__titulo">Lembretes enviados</h2>
+        <ul class="cartao lista">
+          @for (retorno of enviados(); track retorno.id) {
+            <li class="linha linha--enviado">
+              <app-avatar [nome]="nomeDo(retorno)" [tamanho]="36" />
+              <span class="linha__textos">
+                <span class="linha__nome">{{ nomeDo(retorno) }}</span>
+                <span class="linha__detalhe">{{ retorno.descricao }} · retorno {{ dia(retorno.data) }}</span>
+              </span>
+              <app-icone class="linha__enviado" nome="checkDuplo" [tamanho]="18" [espessura]="2" />
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  </div>
+}
+
+@if (aberto(); as cliente) {
+  <app-bottom-sheet [titulo]="'Retorno de ' + (cliente.nome || cliente.whatsapp)" (fechar)="aberto.set(null)">
+    <div class="modal">
+      <div class="campo">
+        <label for="retorno-data" class="campo__rotulo">Dia do retorno</label>
+        <input id="retorno-data" class="campo__entrada" type="date" [min]="amanha" [value]="data()" (input)="digitar('data', $event)">
+        <div class="atalhos">
+          @for (dias of atalhos; track dias) {
+            <button type="button" class="chip chip--pequeno" (click)="escolherAtalho(dias)">Em {{ dias }} dias</button>
+          }
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="retorno-descricao" class="campo__rotulo">Para quê</label>
+        <input id="retorno-descricao" class="campo__entrada" type="text" maxlength="80" placeholder="Ex.: manutenção do gel"
+               [value]="descricao()" (input)="digitar('descricao', $event)">
+      </div>
+
+      <div class="previa">
+        <span class="previa__rotulo">
+          <app-icone nome="conversa" [tamanho]="14" [espessura]="2" />
+          {{ quandoSai() || 'O lembrete sai na véspera, às 10:00.' }}
+        </span>
+        <p class="previa__balao">{{ previa() }}</p>
+        <span class="previa__dica">Quando o cliente responder, o assistente continua a conversa e marca o horário.</span>
+      </div>
+
+      @if (erro(); as mensagem) {
+        <span class="campo__erro" role="alert">{{ mensagem }}</span>
+      }
+
+      <button type="button" class="btn btn--primario btn--grande btn--bloco" [disabled]="salvando()" [attr.aria-busy]="salvando()" (click)="salvar()">
+        {{ existente() ? 'Salvar alteração' : 'Marcar retorno' }}
+      </button>
+      @if (existente(); as retorno) {
+        <button type="button" class="btn btn--texto btn--bloco remover" (click)="excluir(retorno)">Remover retorno</button>
+      }
+    </div>
+  </app-bottom-sheet>
+}

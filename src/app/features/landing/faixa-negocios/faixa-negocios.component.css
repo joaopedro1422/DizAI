@@ -1,0 +1,69 @@
+/* Faixa branca com os tipos de negócio passando (letreiro contínuo) */
+:host { display: block; }
+
+.faixa-negocios {
+  overflow: hidden;
+  padding: 42px 0;
+  background: #ffffff;
+}
+
+/* as pontas somem suavemente */
+.faixa-negocios__janela {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.faixa-negocios__trilho {
+  display: flex;
+  width: max-content;
+  animation: passar 38s linear infinite;
+}
+
+.faixa-negocios:hover .faixa-negocios__trilho { animation-play-state: paused; }
+
+.faixa-negocios__lista {
+  display: flex;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.faixa-negocios__item {
+  display: inline-flex;
+  align-items: center;
+  color: var(--cor-texto-secundario);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* o pontinho entre os nomes, no verde dos checks da landing */
+.faixa-negocios__item::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  margin: 0 32px;
+  border-radius: 50%;
+  background: #1F7A4A;
+  box-shadow: 0 0 0 4px #E4F8EC;
+}
+
+@keyframes passar { to { transform: translateX(-50%); } }
+
+@media (max-width: 640px) {
+  .faixa-negocios { padding: 32px 0; }
+  .faixa-negocios__item { font-size: 14.5px; letter-spacing: 0.1em; }
+  .faixa-negocios__item::after { width: 7px; height: 7px; margin: 0 22px; }
+  .faixa-negocios__trilho { animation-duration: 30s; }
+}
+
+/* sem movimento: os nomes ficam parados, quebrando em linhas no centro */
+@media (prefers-reduced-motion: reduce) {
+  .faixa-negocios__janela { -webkit-mask-image: none; mask-image: none; }
+  .faixa-negocios__trilho { width: auto; animation: none; }
+  .faixa-negocios__lista { flex-wrap: wrap; justify-content: center; row-gap: 8px; padding: 0 16px; }
+  .faixa-negocios__lista + .faixa-negocios__lista { display: none; }
+}

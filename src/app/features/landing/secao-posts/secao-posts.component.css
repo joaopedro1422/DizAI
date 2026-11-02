@@ -5,7 +5,7 @@
 /* fundo suave, alternando com a Vitrine pública (branca) logo acima */
 .posts {
   overflow: hidden;
-  background: linear-gradient(180deg, var(--cor-fundo-suave) 0%, #f7f3fb 100%);
+  background: var(--cor-fundo-suave);
 }
 
 .posts__grade {

@@ -32,6 +32,19 @@
 .jornada__seta--proxima{border-color:var(--cor-primaria);background:var(--cor-primaria);color:#fff}
 .jornada__seta--proxima:hover{background:var(--cor-primaria-hover);color:#fff}
 @keyframes etapa-entrada{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+/* computador: o texto fica centralizado na altura do celular, com letras maiores (a etapa tem altura mínima para o
+   bloco não pular quando a cena troca) */
+@media(min-width:721px){
+  .jornada__layout{align-items:center}
+  .jornada__texto{gap:22px;padding-top:0}
+  .jornada__sobretitulo{font-size:15px}
+  .jornada__tipo{min-height:44px;padding:0 22px;font-size:15px}
+  .jornada__etapa{gap:12px;min-height:230px;margin-top:20px;padding-left:22px;border-left-width:4px}
+  .jornada__numero{font-size:13.5px}
+  .jornada__titulo-cena{font-size:clamp(28px,3vw,36px);line-height:1.15;letter-spacing:-.03em}
+  .jornada__descricao-cena{font-size:18px;line-height:1.6}
+  .jornada__pausar{width:44px;min-height:44px}
+}
 @media(max-width:900px){.jornada__layout{grid-template-columns:minmax(0,1fr) minmax(320px,360px);gap:28px}.jornada__titulo{font-size:clamp(32px,4.5vw,42px)}}
 @media(max-width:720px){
   .jornada{padding:0 0 68px}.jornada__layout{grid-template-columns:1fr;gap:27px}

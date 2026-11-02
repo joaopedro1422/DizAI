@@ -1,0 +1,62 @@
+@let atual = roteiro();
+<div class="comparacao" [attr.data-modo]="atual.modo">
+  <span class="selo" aria-live="polite">
+    @if (atual.modo === 'com') {
+      <app-icone nome="check" [tamanho]="14" [espessura]="3" />
+      Com o DizAI
+    } @else {
+      <app-icone nome="fechar" [tamanho]="14" [espessura]="3" />
+      Sem o DizAI
+    }
+  </span>
+
+  <figure class="janela" [attr.aria-label]="'Conversa de exemplo no WhatsApp com ' + atual.loja">
+    <div class="janela__topo">
+      <span class="janela__avatar" [style.background]="atual.cor" aria-hidden="true">{{ atual.inicial }}</span>
+      <span class="janela__contato">
+        <span class="janela__nome">{{ atual.loja }}</span>
+        <span class="janela__status" [class.janela__status--digitando]="status() === 'digitando…'">{{ status() }}</span>
+      </span>
+    </div>
+
+    <div #rolagem class="janela__conversa">
+      @for (mensagem of mensagens(); track $index) {
+        @if (mensagem.de === 'tempo') {
+          <p class="tempo">
+            <app-icone nome="relogio" [tamanho]="13" [espessura]="2" />
+            {{ mensagem.texto }}
+          </p>
+        } @else if (mensagem.de === 'documento') {
+          <div class="balao balao--documento">
+            <span class="documento">
+              <span class="documento__tipo" aria-hidden="true">PDF</span>
+              <span class="documento__textos">
+                <span class="documento__nome">{{ mensagem.texto }}</span>
+                <span class="documento__detalhe">{{ mensagem.detalhe }}</span>
+              </span>
+            </span>
+            <span class="balao__hora">{{ mensagem.hora }}</span>
+          </div>
+        } @else {
+          <div class="balao" [class.balao--cliente]="mensagem.de === 'cliente'">
+            <span class="balao__texto">{{ mensagem.texto }}</span>
+            <span class="balao__hora">
+              {{ mensagem.hora }}
+              @if (mensagem.de === 'cliente') {
+                <app-icone class="balao__lido" nome="checkDuplo" [tamanho]="15" [espessura]="2" />
+              }
+            </span>
+          </div>
+        }
+      }
+      @if (digitando()) {
+        <div class="digitando" aria-label="A loja está escrevendo"><i></i><i></i><i></i></div>
+      }
+    </div>
+
+    <div class="resultado" [class.resultado--visivel]="resultado()" aria-live="polite">
+      <app-icone [nome]="atual.modo === 'com' ? 'check' : 'relogio'" [tamanho]="16" [espessura]="2.4" />
+      {{ resultado() }}
+    </div>
+  </figure>
+</div>

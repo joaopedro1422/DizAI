@@ -75,6 +75,13 @@
   padding-bottom: 96px;
 }
 
+/* "A rotina do microempreendedor" começa mais perto da faixa dos tipos de negócio */
+.secao.secao--depois-da-faixa { padding-top: 56px; }
+
+@media (max-width: 640px) {
+  .secao.secao--depois-da-faixa { padding-top: 40px; }
+}
+
 .secao--espacosa {
   gap: 56px;
   padding-top: 112px;
@@ -216,7 +223,7 @@
 /* Chamada final ------------------------------------------------------------ */
 
 .chamada-final {
-  padding: 0 24px 96px;
+  padding: 96px 24px;
 }
 
 .chamada-final__caixa {
@@ -320,7 +327,7 @@
   }
 
   .chamada-final {
-    padding: 0 16px 48px;
+    padding: 48px 16px;
   }
 
   .chamada-final__caixa {

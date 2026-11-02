@@ -42,6 +42,7 @@ import { EscolhaQuemEstaLivre, QuemEstaLivreComponent } from './quem-esta-livre/
 import { formatarReal } from '../pedidos/textos-pedido';
 import { FormsModule } from '@angular/forms';
 import { MenuAgendaComponent } from './menu-agenda/menu-agenda.component';
+import { RetornosAgendaComponent } from './retornos-agenda/retornos-agenda.component';
 import { SecaoAgenda, SecaoConfiguracao, ehConfiguracao, infoDaSecao } from './secoes-agenda';
 import { passosDoTourDaAgenda } from './tour-agenda';
 import { AlvoTourDirective } from '../painel/onboarding/alvo-tour.directive';
@@ -81,6 +82,7 @@ const ATUALIZAR_A_CADA_MS = 15_000;
     DicaSobrepostaComponent,
     AlvoTourDirective,
     NumerosAgendaComponent,
+    RetornosAgendaComponent,
     MenuAgendaComponent,
     FormsModule,
   ],

@@ -2,25 +2,35 @@
   <div class="secao__cabecalho">
     <span class="secao__sobretitulo">Uma solução completa</span>
     <h2 id="solucao-titulo" class="secao__titulo">
-      <span class="solucao__marca">DizAI</span>: atendimento de empresa grande, sem contratar ninguém.
+      <span class="solucao__marca"><app-logo class="solucao__logo" [mostrarNome]="false" [tamanhoSimbolo]="40" aria-hidden="true" />DizAI</span>: atendimento de empresa grande, sem contratar ninguém.
     </h2>
     <p class="secao__descricao">
-      Para quem vende e para quem presta serviços por agendamento, todo dia, em qualquer horário, do seu jeito.
+      Recursos específicos para quem vende produtos e para quem presta serviços por agendamento.
       <br>
-      Do atendimento inicial ao gerenciamento financeiro.
+      Do atendimento inicial ao financeiro.
     </p>
   </div>
 
   <div class="ganhos">
-    <!-- o ganho principal: tempo de volta -->
-    <article class="ganho ganho--tempo">
-      <div class="ganho__textos">
-        <span class="ganho__icone ganho__icone--claro"><app-icone nome="relogio" [tamanho]="22" [espessura]="2" /></span>
-        <h3 class="ganho__titulo">Mais tempo para produzir e para descansar.</h3>
-        <p class="ganho__texto">
-          Cada pergunta que o assistente responde é tempo que você não passa no celular.
-        </p>
+    <!-- o ganho principal, direto: o que aumenta e o que diminui, lado a lado -->
+    <article #cartaoPlacar class="ganho ganho--tempo placar" [class.placar--visivel]="placarVisivel()">
+      <h3 class="placar__rotulo">Com o DizAI no seu WhatsApp</h3>
+      <div class="placar__colunas">
+        @for (coluna of placar; track coluna.tipo; let c = $index) {
+          <div class="placar__coluna" [attr.data-tipo]="coluna.tipo">
+            <span class="placar__cabeca">
+              <span class="placar__sinal" aria-hidden="true">{{ coluna.tipo === 'mais' ? '+' : '−' }}</span>
+              {{ coluna.titulo }}
+            </span>
+            <ul class="placar__itens">
+              @for (item of coluna.itens; track item; let i = $index) {
+                <li class="placar__item" [style.--atraso.ms]="(c * 2 + i) * 120">{{ item }}</li>
+              }
+            </ul>
+          </div>
+        }
       </div>
+      <p class="placar__fecho">Enquanto você trabalha, ele responde.</p>
     </article>
 
     @for (ganho of ganhos; track ganho.titulo) {
@@ -102,8 +112,8 @@
         </span>
         <h3 class="ganho__titulo">Vitrine pública da sua loja</h3>
         <p class="ganho__texto">
-          Uma página exclusiva, com a sua logo e as suas cores. O assistente envia o link na conversa e você divulga
-          no Instagram, no status ou onde quiser.
+          Uma página exclusiva, com a sua logo e as suas cores, para você colocar na bio do seu Instagram ou onde
+          quiser.
         </p>
         <button type="button" class="ganho__ver" (click)="verSecao('galeria')">
           Ver mais

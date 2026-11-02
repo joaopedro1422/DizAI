@@ -1,0 +1,103 @@
+/* O cartão azul de "A solução": o placar com o que aumenta (Mais) e o que diminui (Menos), lado a lado.
+   As linhas sobem uma a uma na primeira vez que o card aparece e depois ficam paradas. */
+.placar {
+  gap: 22px;
+}
+
+.placar__rotulo {
+  margin: 0;
+  color: var(--cor-texto-sobre-escuro);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.placar__colunas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.placar__coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.placar__cabeca {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.placar__sinal {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+[data-tipo='mais'] .placar__cabeca { color: #8FE3B0; }
+[data-tipo='mais'] .placar__sinal { background: #8FE3B0; color: #12492E; }
+[data-tipo='menos'] .placar__cabeca { color: #FF9C93; }
+[data-tipo='menos'] .placar__sinal { background: #FF8A80; color: #5C130D; }
+
+.placar__itens {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.placar__item {
+  color: #ffffff;
+  font-size: clamp(18px, 1.55vw, 21px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.placar--visivel .placar__item {
+  animation: placar-sobe 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--atraso, 0ms);
+}
+
+.placar__fecho {
+  margin: 0;
+  color: var(--cor-texto-sobre-escuro);
+  font-size: 15px;
+}
+
+@keyframes placar-sobe {
+  to { opacity: 1; transform: none; }
+}
+
+/* celular: Mais em cima, Menos embaixo */
+@media (max-width: 640px) {
+  .placar { gap: 16px; }
+  .placar__colunas { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .placar__coluna { gap: 10px; padding: 16px 18px; }
+  .placar__item { font-size: 20px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .placar__item,
+  .placar--visivel .placar__item { opacity: 1; transform: none; animation: none; }
+}

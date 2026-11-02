@@ -1,7 +1,16 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnDestroy,
+  signal,
+  viewChild,
+} from '@angular/core';
 
 import { ArtePostComponent } from '../../posts/arte-post/arte-post.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
+import { LogoComponent } from '../../../shared/components/logo/logo.component';
 import { EXEMPLOS_POSTS } from '../secao-posts/exemplos-posts';
 import { NomeIcone } from '../../../shared/components/icone/icones';
 
@@ -35,19 +44,19 @@ const GANHOS: Ganho[] = [
   {
     icone: 'conversa',
     titulo: 'Responde tudo sobre o seu negócio',
-    texto: 'Preços, opções, prazos, formas de pagamento, endereço e restrições, do jeito que você cadastrou. Se não souber, passa para você.',
+    texto: 'Preços, opções, formas de pagamento e tudo o que você cadastrar. Se não souber, te chama.',
     detalhe: 'conversa',
   },
   {
     icone: 'documento',
     titulo: 'Catálogo em imagem ou PDF',
-    texto: 'Envia o cardápio ou a tabela de preços na saudação ou quando o cliente pedir.',
+    texto: 'Envia o cardápio ou a tabela de preços direto na conversa.',
     detalhe: 'catalogo',
   },
   {
     icone: 'microfone',
     titulo: 'Entende os áudios dos clientes',
-    texto: 'O cliente prefere falar? O assistente entende a mensagem de voz e responde por escrito, sem você precisar ouvir.',
+    texto: 'O assistente entende mensagens de voz e responde por escrito.',
     detalhe: 'audio',
   },
   {
@@ -86,17 +95,46 @@ const RECURSOS_VITRINE: { icone: NomeIcone; titulo: string; texto: string }[] = 
 ];
 
 /**
- * "A solução": o que o DizAI faz por qualquer negócio. O cartão azul abre com o tempo de volta; os outros, um
- * ganho cada, com uma miniatura da tela no pé.
+ * "A solução": o que o DizAI faz por qualquer negócio. O cartão azul abre com o placar (Mais: tempo e vendas |
+ * Menos: clientes perdidos e horas no celular); os outros, um ganho cada, com uma miniatura da tela no pé.
  */
 @Component({
   selector: 'app-secao-solucao',
-  imports: [IconeComponent, ArtePostComponent],
+  imports: [IconeComponent, ArtePostComponent, LogoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './secao-solucao.component.html',
-  styleUrls: ['../secao-landing.css', './secao-solucao.component.css', './ganho-vitrine.css', './ganho-posts.css'],
+  styleUrls: ['../secao-landing.css', './secao-solucao.component.css', './ganho-vitrine.css', './ganho-posts.css', './ganho-placar.css'],
 })
-export class SecaoSolucaoComponent {
+export class SecaoSolucaoComponent implements AfterViewInit, OnDestroy {
+  /** O cartão azul: lado a lado, o que aumenta e o que diminui com o assistente atendendo. */
+  protected readonly placar = [
+    { tipo: 'mais', titulo: 'Mais', itens: ['Tempo para produzir', 'Vendas fechadas'] },
+    { tipo: 'menos', titulo: 'Menos', itens: ['Clientes perdidos', 'Horas no celular'] },
+  ] as const;
+  /** As linhas do placar sobem uma a uma na primeira vez que o card aparece na tela (e ficam paradas). */
+  protected readonly placarVisivel = signal(false);
+  private readonly cartaoPlacar = viewChild<ElementRef<HTMLElement>>('cartaoPlacar');
+  private observador?: IntersectionObserver;
+
+  ngAfterViewInit(): void {
+    const cartao = this.cartaoPlacar()?.nativeElement;
+    if (!cartao || typeof IntersectionObserver === 'undefined') {
+      this.placarVisivel.set(true);
+      return;
+    }
+    this.observador = new IntersectionObserver(([entrada]) => {
+      if (entrada.isIntersecting) {
+        this.placarVisivel.set(true);
+        this.observador?.disconnect();
+      }
+    }, { threshold: 0.4 });
+    this.observador.observe(cartao);
+  }
+
+  ngOnDestroy(): void {
+    this.observador?.disconnect();
+  }
+
   protected readonly ganhos = GANHOS;
   protected readonly barras = BARRAS;
   protected readonly ondas = ONDAS;

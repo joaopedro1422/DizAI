@@ -1,5 +1,17 @@
 .solucao__marca {
   color: var(--cor-primaria);
+  white-space: nowrap;
+}
+
+/* o símbolo do DizAI logo antes do nome, do tamanho da letra do título */
+.solucao__logo {
+  margin-right: 0.18em;
+  vertical-align: -0.17em;
+}
+
+.solucao__logo ::ng-deep .logo__simbolo {
+  width: 1.08em;
+  height: 1.08em;
 }
 
 /* 4 colunas: o cartão do tempo e o do relatório ocupam 2, os outros 1 */
@@ -50,7 +62,6 @@
 
 /* todos no verde da faixa do MIT (#8fe3b0), bem clarinho no fundo; o traço verde escuro garante o contraste */
 .ganho__icone { background: #E4F8EC; color: #1F7A4A; }
-.ganho__icone--claro { background: #E4F8EC; color: #1F7A4A; }
 
 .ganho__titulo {
   font-size: 18px;
@@ -77,8 +88,6 @@
 }
 
 .ganho__textos { display: flex; flex-direction: column; gap: 12px; }
-.ganho--tempo .ganho__titulo { max-width: 460px; font-size: clamp(26px, 2.8vw, 34px); line-height: 1.12; }
-.ganho--tempo .ganho__texto { font-size: 16px; color: var(--cor-texto-sobre-escuro); }
 
 /* ---------- miniaturas no pé dos cards ---------- */
 .detalhe {
@@ -257,7 +266,7 @@
   }
   .ganho:not(.ganho--tempo) .ganho__icone { grid-row: span 2; align-self: flex-start; }
   .ganho__titulo { font-size: 16.5px; }
-  .ganho:not(.ganho--largo):not(.ganho--tempo) .detalhe { display: none; }
+  .ganho:not(.ganho--tempo) .detalhe { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

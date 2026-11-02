@@ -113,6 +113,10 @@
   </app-bottom-sheet>
 }
 
+@if (resumoDoDia(); as resumo) {
+  <app-fechamento-do-dia [resumo]="resumo" (fechar)="resumoDoDia.set(null)" />
+}
+
 @if (editandoPerfil()) {
   <app-bottom-sheet titulo="Dados da loja" (fechar)="fecharEdicaoPerfil()">
     <app-editar-perfil (salvo)="aoSalvarPerfil()" />

@@ -55,6 +55,7 @@
 .escolha__segmentos {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 6px;
 }
 
@@ -342,7 +343,7 @@
 .rodape {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
   padding: 0 4px;
 }
@@ -364,21 +365,6 @@
   background: var(--cor-primaria);
 }
 
-.rodape__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--cor-primaria);
-  font-size: 14px;
-  font-weight: 700;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.rodape__link:hover {
-  text-decoration: underline;
-}
-
 @keyframes pontinho {
   0%, 80%, 100% { opacity: 0.35; transform: none; }
   40% { opacity: 1; transform: translateY(-3px); }
@@ -392,12 +378,10 @@
   }
 }
 
-/* Computador: o progresso e o link em cima do celular, a escolha do negócio embaixo */
-@media (min-width: 1024px) {
-  .rodape { order: 1; }
-  .palco { order: 2; }
-  .escolha { order: 3; }
-}
+/* O progresso em cima do celular e a escolha do negócio embaixo (celular e computador) */
+.rodape { order: 1; }
+.palco { order: 2; }
+.escolha { order: 3; }
 
 @media (max-width: 640px) {
   .celular__tela {

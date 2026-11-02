@@ -19,10 +19,10 @@
 
 <main>
   <app-secao-hero />
-  
+  <app-faixa-negocios />
 
   <section class="faixa faixa--suave" aria-labelledby="dor-titulo">
-    <div class="container secao">
+    <div class="container secao secao--depois-da-faixa">
       <span class="secao__sobretitulo">
         A rotina do microempreendedor
       </span>
@@ -70,7 +70,10 @@
   <app-secao-posts />
   <app-secao-para-quem />
 
-  <app-secao-perguntas />
+  <!-- cinza para separar de "Para quem é" (branca) -->
+  <div class="faixa--suave">
+    <app-secao-perguntas />
+  </div>
 
   <section class="chamada-final" aria-labelledby="cta-titulo">
     <div class="chamada-final__caixa">

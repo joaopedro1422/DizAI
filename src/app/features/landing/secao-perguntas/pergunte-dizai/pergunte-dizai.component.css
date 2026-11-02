@@ -36,7 +36,7 @@
   position: absolute;
   inset: -24px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(76, 125, 240, 0.35) 0%, rgba(140, 92, 246, 0.16) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(76, 125, 240, 0.35) 0%, rgba(47, 181, 122, 0.16) 40%, transparent 70%);
   filter: blur(6px);
   animation: aura-pulsa 3.2s ease-in-out infinite;
 }
@@ -45,7 +45,7 @@
   position: absolute;
   inset: 8px;
   border-radius: 50%;
-  background: conic-gradient(from var(--angulo), #1e3a72, #4c7df0, #8c5cf6, #36c2d8, #1e3a72);
+  background: conic-gradient(from var(--angulo), #1e3a72, #4c7df0, #2FB57A, #8FE3B0, #1e3a72);
   animation: gira 4s linear infinite;
 }
 
@@ -63,7 +63,7 @@
 .pergunte__estrela {
   position: absolute;
   display: inline-flex;
-  color: #6d6af2;
+  color: #2FB57A;
   animation: estrela-pisca 2.4s ease-in-out infinite;
 }
 
@@ -89,7 +89,7 @@
 }
 
 .pergunte__brilho-texto {
-  background: linear-gradient(90deg, #1e3a72, #4c7df0, #8c5cf6, #4c7df0, #1e3a72);
+  background: linear-gradient(90deg, #1e3a72, #4c7df0, #2FB57A, #4c7df0, #1e3a72);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -112,7 +112,7 @@
   border-radius: 26px;
   background:
     linear-gradient(var(--cor-fundo), var(--cor-fundo)) padding-box,
-    conic-gradient(from var(--angulo), #dce0e8 0%, #4c7df0 12%, #8c5cf6 22%, #dce0e8 34%, #dce0e8 100%) border-box;
+    conic-gradient(from var(--angulo), #dce0e8 0%, #4c7df0 12%, #2FB57A 22%, #dce0e8 34%, #dce0e8 100%) border-box;
   box-shadow: 0 18px 50px rgba(30, 58, 114, 0.12);
   text-align: left;
   animation: gira 5s linear infinite;
@@ -157,8 +157,8 @@
   gap: 6px;
   padding: 6px 11px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #eef2fd, #f3eefe);
-  color: #4a4fb8;
+  background: linear-gradient(90deg, #EAF0FA, #E4F8EC);
+  color: #1E3A72;
   font-size: 12px;
   font-weight: 700;
 }
@@ -171,7 +171,7 @@
   height: 44px;
   border: none;
   border-radius: 50%;
-  background: linear-gradient(135deg, #1e3a72, #4c64e0);
+  background: linear-gradient(135deg, #1e3a72, #2C6FC9 55%, #2FB57A);
   color: #fff;
   box-shadow: 0 6px 16px rgba(30, 58, 114, 0.3);
   transition: transform 0.15s ease, opacity 0.15s ease;

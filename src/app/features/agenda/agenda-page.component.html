@@ -400,6 +400,10 @@
     <main id="painel-numeros" aria-label="Números da agenda" class="conteudo-tela numeros">
       <app-numeros-agenda />
     </main>
+  } @else if (aba() === 'retornos') {
+    <main id="painel-retornos" aria-label="Retornos dos clientes" class="conteudo-tela numeros">
+      <app-retornos-agenda />
+    </main>
   } @else {
     <!-- as páginas de configuração são um formulário só: trocar de página não perde o que ainda não foi salvo -->
     <main id="painel-configuracao" class="conteudo-tela configuracao">

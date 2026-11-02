@@ -1,0 +1,194 @@
+/* Agenda → Retornos: no desenho de "ajustes" da agenda (título fora do cartão, linhas separadas por linha fina) */
+:host { display: block; }
+
+.retornos {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 720px;
+}
+
+.retornos__explica {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--cor-primaria-clara);
+  color: var(--cor-texto-secundario);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.retornos__explica app-icone { flex-shrink: 0; margin-top: 1px; color: var(--cor-primaria); }
+
+.grupo { display: flex; flex-direction: column; gap: 10px; }
+
+.grupo__titulo {
+  margin: 0;
+  padding: 0 4px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.cartao {
+  overflow: hidden;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: 16px;
+  background: var(--cor-fundo);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.lista { margin: 0; padding: 0; list-style: none; }
+.lista > li + li { border-top: 1px solid var(--cor-borda-suave); }
+
+.linha { display: flex; align-items: center; }
+
+.linha__principal {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  min-height: 62px;
+  padding: 10px 14px;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.linha__principal:hover:not(:disabled) { background: var(--cor-fundo-suave); }
+.linha__principal:disabled { cursor: default; opacity: 0.55; }
+
+.linha__textos { display: flex; flex: 1; flex-direction: column; gap: 2px; min-width: 0; }
+
+.linha__nome {
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.linha__detalhe {
+  overflow: hidden;
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.linha__data {
+  flex-shrink: 0;
+  color: var(--cor-primaria);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.linha__seta { flex-shrink: 0; color: var(--cor-texto-suave); }
+
+.linha__remover {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--cor-texto-suave);
+  cursor: pointer;
+}
+
+.linha__remover:hover { background: var(--cor-fundo-suave); color: var(--cor-erro); }
+
+.linha--enviado { gap: 12px; min-height: 56px; padding: 8px 14px; }
+.linha__enviado { flex-shrink: 0; color: #53BDEB; }
+
+/* o retorno marcado, ao lado do cliente */
+.selo {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--raio-pilula);
+  background: #E4F8EC;
+  color: #1F7A4A;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.busca {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 12px;
+  background: var(--cor-fundo);
+  color: var(--cor-texto-suave);
+}
+
+.busca input {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  border: none;
+  outline: none;
+  background: none;
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 15px;
+}
+
+.busca:focus-within { border-color: var(--cor-primaria); }
+
+.vazio { padding: 18px 16px; color: var(--cor-texto-suave); font-size: 14px; }
+
+/* ---------- modal ---------- */
+.modal { display: flex; flex-direction: column; gap: 16px; }
+.atalhos { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+
+/* prévia da mensagem, como um balão do WhatsApp */
+.previa {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #EFEAE2;
+}
+
+.previa__rotulo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #54656F;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.previa__balao {
+  align-self: flex-start;
+  max-width: 92%;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 0 10px 10px 10px;
+  background: #ffffff;
+  color: #111B21;
+  font-size: 14px;
+  line-height: 1.45;
+  box-shadow: 0 1px 0.5px rgba(11, 20, 26, 0.13);
+}
+
+.previa__dica { color: #54656F; font-size: 12.5px; }
+.remover { color: var(--cor-erro); }

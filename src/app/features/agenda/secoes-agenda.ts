@@ -1,7 +1,14 @@
 import { NomeIcone } from '../../shared/components/icone/icones';
 
 /** As páginas da agenda, escolhidas no menu lateral. */
-export type SecaoAgenda = 'agendamentos' | 'numeros' | 'horarios' | 'equipe' | 'mensagens' | 'lista-espera';
+export type SecaoAgenda =
+  | 'agendamentos'
+  | 'numeros'
+  | 'retornos'
+  | 'horarios'
+  | 'equipe'
+  | 'mensagens'
+  | 'lista-espera';
 
 /** As páginas de configuração: um único formulário (HorariosAtendimentoComponent), cada uma com a sua parte. */
 export type SecaoConfiguracao = Extract<SecaoAgenda, 'horarios' | 'equipe' | 'mensagens' | 'lista-espera'>;
@@ -17,6 +24,7 @@ export interface InfoSecaoAgenda {
 export const SECOES_DA_AGENDA: InfoSecaoAgenda[] = [
   { valor: 'agendamentos', titulo: 'Agendamentos', descricao: '', icone: 'calendario' },
   { valor: 'numeros', titulo: 'Números', descricao: 'Faturamento, atendimentos e clientes', icone: 'grafico' },
+  { valor: 'retornos', titulo: 'Retornos', descricao: 'O dia em que o cliente deve voltar e o lembrete para agendar', icone: 'retorno' },
 ];
 
 export const SECOES_DE_CONFIGURACAO: InfoSecaoAgenda[] = [

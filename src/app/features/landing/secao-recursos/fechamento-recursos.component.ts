@@ -27,8 +27,8 @@ const DO_TIPO: Record<TipoNegocio, RecursoDoTipo[]> = {
   produtos: [
     {
       icone: 'listaRepetida',
-      titulo: 'Coleta tudo o que o produto pede',
-      texto: 'Sabores, quantidades, recheios e adicionais: você diz quantas opções o cliente escolhe e o assistente confere uma por uma.',
+      titulo: 'Coleta o que o seu produto precisa',
+      texto: 'Sabores, massas, quantidades etc. O assistente confere uma por uma.',
     },
     {
       icone: 'caixa',
@@ -38,7 +38,7 @@ const DO_TIPO: Record<TipoNegocio, RecursoDoTipo[]> = {
     {
       icone: 'prancheta',
       titulo: 'Dados de fechamento do seu jeito',
-      texto: 'Nome, retirada ou entrega, endereço, data e pagamento: apenas o que você pedir, antes de passar para você.',
+      texto: 'Defina o que deve ser coletado pelo assistente antes de passar para você.',
     },
     {
       icone: 'calendario',
@@ -66,7 +66,7 @@ const DO_TIPO: Record<TipoNegocio, RecursoDoTipo[]> = {
     {
       icone: 'listaRepetida',
       titulo: 'Remarca e cancela pelo WhatsApp',
-      texto: 'O cliente resolve na conversa e altera apenas os próprios horários. Você recebe o aviso.',
+      texto: 'O cliente resolve tudo pela conversa. Você recebe o aviso.',
     },
     {
       icone: 'emoji',
@@ -84,10 +84,9 @@ const DO_TIPO: Record<TipoNegocio, RecursoDoTipo[]> = {
       texto: 'Esmalte, shampoo, minoxidil: o cliente reserva junto do horário e você registra cada venda.',
     },
     {
-      icone: 'link',
-      titulo: 'Já agenda em outro app?',
-      texto:
-        'Trinks, AppBarber ou Booksy: o assistente tira as dúvidas e manda o seu link para marcar. Indicado para usar fora do horário de funcionamento e não deixar os clientes sem resposta.',
+      icone: 'retorno',
+      titulo: 'Lembrete de retorno',
+      texto: 'Marque quando o cliente deve voltar. Na véspera, ele recebe o lembrete automaticamente.',
     },
   ],
 };

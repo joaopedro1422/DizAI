@@ -36,7 +36,8 @@
   align-items: center;
   gap: 64px;
   padding-top: 64px;
-  padding-bottom: 96px;
+  /* menos espaço embaixo: a faixa dos tipos de negócio vem logo em seguida */
+  padding-bottom: 44px;
 }
 
 .hero__texto {
@@ -207,7 +208,7 @@
   .hero__grade {
     gap: 48px;
     padding-top: 24px;
-    padding-bottom: 64px;
+    padding-bottom: 32px;
   }
 
   .hero__descricao {

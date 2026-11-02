@@ -1,5 +1,5 @@
 <div class="comuns">
-  <h3 class="comuns__titulo">Além disso:</h3>
+  <h3 class="comuns__titulo">Além disso</h3>
   <ul class="comuns__lista" [class.comuns__lista--tres]="doTipo().length % 4 !== 0">
     @for (recurso of doTipo(); track recurso.titulo; let i = $index) {
       <li class="comum entra" [style.--atraso]="200 + i * 40 + 'ms'">

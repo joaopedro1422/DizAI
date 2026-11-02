@@ -32,6 +32,9 @@ import { ConteudoRamoService } from '../../core/services/conteudo-ramo.service';
 import { ramoDeServico, ramoUsaAgenda } from '../../core/models/perfil.model';
 import { perguntaDoPrimeiroTeste } from './onboarding/progresso-onboarding';
 import { ResumoLojaComponent } from './resumo-loja/resumo-loja.component';
+import { FechamentoDoDiaComponent } from './fechamento-do-dia/fechamento-do-dia.component';
+import { ResumoDoDia } from '../../core/models/resumo-do-dia.model';
+import { ResumoDoDiaService } from '../../core/services/resumo-do-dia.service';
 
 /** Tempo que o painel fica à mostra antes da janela de boas-vindas abrir. */
 const ESPERA_BOAS_VINDAS_MS = 2500;
@@ -40,6 +43,15 @@ const ESPERA_BOAS_VINDAS_MS = 2500;
  * concluído), para revisar os passos. Para voltar ao normal (só na conta nova), troque para false.
  */
 const TOUR_SEMPRE_ABERTO = false;
+/**
+ * TESTE: com true, o fechamento do dia abre toda vez que o painel abre, com os números de hoje até agora. Para voltar
+ * ao normal (uma vez por dia, depois do expediente), troque para false.
+ */
+const FECHAMENTO_SEMPRE_ABERTO = true;
+/** O dia cujo fechamento o lojista já viu ("AAAA-MM-DD"), por loja. */
+const CHAVE_FECHAMENTO_VISTO = 'dizai:fechamento-visto:';
+/** Tempo que o painel fica à mostra antes do fechamento do dia abrir. */
+const ESPERA_FECHAMENTO_MS = 700;
 
 /** Tela inicial do painel do lojista. */
 @Component({
@@ -60,6 +72,7 @@ const TOUR_SEMPRE_ABERTO = false;
     EscolhaSegmentoComponent,
     PrimeirosPassosComponent,
     AlterarSenhaComponent,
+    FechamentoDoDiaComponent,
   ],
   providers: [OnboardingTourService],
   templateUrl: './painel-page.component.html',
@@ -78,6 +91,10 @@ export class PainelPageComponent implements OnInit {
   private readonly rotaAtual = inject(ActivatedRoute);
   private readonly tour = viewChild.required(OnboardingTourComponent);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly resumoDoDiaService = inject(ResumoDoDiaService);
+
+  /** Fechamento do dia aberto (null = fechado). */
+  protected readonly resumoDoDia = signal<ResumoDoDia | null>(null);
 
   /** O painel só aparece depois que perfil, catálogo, perguntas, galeria e conversas chegam. */
   protected readonly carregandoPainel = signal(true);
@@ -168,7 +185,26 @@ export class PainelPageComponent implements OnInit {
     if (perfil.id && (!perfil.onboardingConcluido || TOUR_SEMPRE_ABERTO)) {
       const temporizador = setTimeout(() => this.mostrarBoasVindas.set(true), ESPERA_BOAS_VINDAS_MS);
       this.destroyRef.onDestroy(() => clearTimeout(temporizador));
+    } else if (perfil.id) {
+      void this.abrirFechamentoDoDia(perfil.id);
     }
+  }
+
+  /** Primeira visita depois do expediente: o fechamento do dia (uma vez por dia; sem movimento, não abre). */
+  private async abrirFechamentoDoDia(perfilId: string): Promise<void> {
+    let resumo: ResumoDoDia;
+    try {
+      resumo = await this.resumoDoDiaService.buscar(FECHAMENTO_SEMPRE_ABERTO);
+    } catch {
+      return;
+    }
+    const chave = CHAVE_FECHAMENTO_VISTO + perfilId;
+    if (!FECHAMENTO_SEMPRE_ABERTO) {
+      if (!resumo.encerrado || !resumo.comMovimento || lerDoNavegador(chave) === resumo.data) return;
+      gravarNoNavegador(chave, resumo.data);
+    }
+    const temporizador = setTimeout(() => this.resumoDoDia.set(resumo), ESPERA_FECHAMENTO_MS);
+    this.destroyRef.onDestroy(() => clearTimeout(temporizador));
   }
 
   /** Grava o tipo do negócio (se escolheu) e começa o tour, já com os exemplos dele. */
@@ -256,5 +292,21 @@ export class PainelPageComponent implements OnInit {
 
   protected fecharConviteApp(): void {
     this.mostrarConviteApp.set(false);
+  }
+}
+
+function lerDoNavegador(chave: string): string | null {
+  try {
+    return localStorage.getItem(chave);
+  } catch {
+    return null;
+  }
+}
+
+function gravarNoNavegador(chave: string, valor: string): void {
+  try {
+    localStorage.setItem(chave, valor);
+  } catch {
+    // sem armazenamento: o fechamento pode abrir de novo, sem problema
   }
 }

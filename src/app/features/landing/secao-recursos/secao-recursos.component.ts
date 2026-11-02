@@ -9,7 +9,7 @@ export type TipoNegocio = 'produtos' | 'servicos';
 const DESTAQUES: Record<TipoNegocio, string[]> = {
   produtos: [
     'Mantém o cliente por perto fora do seu horário',
-    'Coleta os dados do pedido',
+    'Faz orçamentos e coleta os dados do pedido',
     'Você confirma e resolve o pagamento',
     'Gerencie e organize pedidos em uma tela própria para você',
     'Ganhe uma página de portfólio',

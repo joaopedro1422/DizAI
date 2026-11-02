@@ -9,7 +9,6 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { BalaoConversaComponent } from '../../demonstracao/balao-conversa/balao-conversa.component';
@@ -32,7 +31,7 @@ const PAUSA_ENTRE_CONVERSAS_MS = 4500;
  */
 @Component({
   selector: 'app-demonstracao-conversa',
-  imports: [RouterLink, IconeComponent, BalaoConversaComponent, MolduraTelaDemoComponent, TelaPedidosDemoComponent, TelaAgendaDemoComponent],
+  imports: [IconeComponent, BalaoConversaComponent, MolduraTelaDemoComponent, TelaPedidosDemoComponent, TelaAgendaDemoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './demonstracao-conversa.component.html',
   styleUrl: './demonstracao-conversa.component.css',
