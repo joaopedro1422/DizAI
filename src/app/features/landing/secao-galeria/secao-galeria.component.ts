@@ -24,7 +24,6 @@ const BENEFICIOS = [
   'Fotos separadas em tópicos, feedbacks dos clientes e o mapa de como chegar',
   'Personalize do seu jeito, com a sua cor e a sua logo',
   'Link para colocar na bio do Instagram',
-  'O assistente envia o link quando o cliente pergunta por fotos e exemplos',
   'Para serviços: agenda e horários livres na própria página, para o cliente agendar',
 ];
 

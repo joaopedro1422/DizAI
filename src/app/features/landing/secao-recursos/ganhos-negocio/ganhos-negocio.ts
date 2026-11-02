@@ -36,7 +36,7 @@ export const GANHOS_NEGOCIO: Record<TipoNegocio, GanhoNegocio[]> = {
       icone: 'pessoa',
       desafio: 'Parar a produção a cada "quanto custa?".',
       titulo: 'Você só entra para fechar.',
-      texto: 'O assistente cuida das dúvidas. Você confirma o pedido e o pagamento.',
+      texto: 'O assistente cuida da triagem inicial e dos orçamentos. Você confirma o pedido do seu jeito.\nSem perder o controle do negócio.',
       antes: 'Celular na mão o dia todo',
       depois: 'Só na hora de fechar',
     },

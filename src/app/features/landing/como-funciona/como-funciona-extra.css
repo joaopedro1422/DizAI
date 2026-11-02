@@ -1,0 +1,102 @@
+/*
+ * Passo 1 do "Como funciona", segunda parte: depois do cadastro, desliza por cima a tela dos horários da agenda
+ * (serviços) ou da pergunta frequente de pagamento (produtos). Os campos usam as classes do cadastro
+ * (como-funciona-telas.css); aqui ficam a tela, os dias e o "Salvar" com os tempos desta parte.
+ * As @keyframes são deste arquivo (o Angular renomeia por arquivo).
+ */
+.passo-um {
+  position: relative;
+  height: 100%;
+}
+
+.tela--extra {
+  position: absolute;
+  inset: 0;
+  transform: translateX(100%);
+  box-shadow: -20px 0 40px rgba(15, 23, 42, 0.18);
+  animation: extra-entra 0.5s cubic-bezier(0.22, 1, 0.36, 1) 3.7s forwards;
+}
+
+.folha--extra { gap: 16px; padding-top: 22px; }
+
+/* resposta da pergunta frequente: duas linhas */
+.campo-demo__caixa--alta {
+  align-items: flex-start;
+  height: auto;
+  min-height: 70px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.campo-demo__caixa--alta .campo-demo__valor {
+  white-space: normal;
+  line-height: 1.45;
+}
+
+/* ---------- os dias da semana ---------- */
+.dias-demo {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: 16px;
+  list-style: none;
+}
+
+.dia-demo {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  font-size: 14px;
+  animation: extra-surgir 0.35s ease var(--atraso, 0s) both;
+}
+
+.dia-demo + .dia-demo { border-top: 1px solid var(--cor-borda-suave); }
+
+.dia-demo__nome { font-weight: 800; }
+.dia-demo__horario { color: var(--cor-texto-secundario); font-variant-numeric: tabular-nums; }
+.dia-demo--fechado .dia-demo__horario { color: var(--cor-texto-suave); }
+
+.dia-demo__chave {
+  position: relative;
+  width: 40px;
+  height: 24px;
+  border-radius: 999px;
+  background: #D5DAE3;
+}
+
+.dia-demo__chave i {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.2);
+}
+
+/* os dias abertos ligam um a um, logo depois de aparecer */
+.dia-demo:not(.dia-demo--fechado) .dia-demo__chave {
+  animation: extra-chave 0.25s ease calc(var(--atraso, 0s) + 0.15s) forwards;
+}
+
+.dia-demo:not(.dia-demo--fechado) .dia-demo__chave i {
+  animation: extra-bolinha 0.25s ease calc(var(--atraso, 0s) + 0.15s) forwards;
+}
+
+/* ---------- Salvar desta parte ---------- */
+.salvar--extra { animation: extra-verde 0.4s ease 6.2s forwards; }
+.salvar--extra .salvar__texto { animation: extra-sumir 0.25s ease 6.2s forwards; }
+.salvar--extra .salvar__feito { animation: extra-surgir 0.35s cubic-bezier(0.22, 1.4, 0.36, 1) 6.35s forwards; }
+
+@keyframes extra-entra { to { transform: none; } }
+@keyframes extra-surgir { from { opacity: 0; transform: translateY(6px) scale(0.97); } to { opacity: 1; transform: none; } }
+@keyframes extra-sumir { to { opacity: 0; transform: translateY(-8px); } }
+@keyframes extra-verde { to { background: #1F9D55; } }
+@keyframes extra-chave { to { background: #25D366; } }
+@keyframes extra-bolinha { to { transform: translateX(16px); } }

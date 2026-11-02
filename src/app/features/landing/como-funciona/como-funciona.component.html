@@ -1,0 +1,218 @@
+@let roteiroAtual = roteiro();
+<section id="como" class="como" aria-labelledby="como-titulo">
+  <div class="container como__grade">
+    <!-- à esquerda: o título, Serviços | Produtos e os 3 passos (o ativo abre o texto e enche a barrinha) -->
+    <div class="como__lado">
+      <span class="como__sobretitulo">Como funciona</span>
+      <h2 id="como-titulo" class="como__titulo">
+        Você conta sobre o seu negócio.
+        <span class="como__titulo-destaque">O DizAI atende por você.</span>
+      </h2>
+
+      <div class="tipos" role="tablist" aria-label="Tipo de negócio">
+        <button type="button" role="tab" class="tipos__aba" [class.tipos__aba--ativa]="tipo() === 'servicos'" [attr.aria-selected]="tipo() === 'servicos'" (click)="escolherTipo('servicos')">
+          <app-icone nome="calendario" [tamanho]="16" [espessura]="2" />
+          Serviços
+        </button>
+        <button type="button" role="tab" class="tipos__aba" [class.tipos__aba--ativa]="tipo() === 'produtos'" [attr.aria-selected]="tipo() === 'produtos'" (click)="escolherTipo('produtos')">
+          <app-icone nome="caixa" [tamanho]="16" [espessura]="2" />
+          Produtos
+        </button>
+      </div>
+
+      <ol class="passos">
+        @for (item of passos(); track item.titulo; let i = $index) {
+          <li>
+            <button
+              type="button"
+              class="passo"
+              [class.passo--ativo]="i === indice()"
+              [class.passo--feito]="i < indice()"
+              [attr.aria-current]="i === indice() ? 'step' : null"
+              (click)="irPara(i)"
+            >
+              <span class="passo__numero">{{ numero(i) }}</span>
+              <span class="passo__textos">
+                <span class="passo__titulo">{{ item.titulo }}</span>
+                <span class="passo__abre">
+                  <span class="passo__texto">{{ item.texto }}</span>
+                </span>
+              </span>
+              <!-- o relógio do passo: a barrinha enche no tempo dele e, ao terminar, passa para o próximo -->
+              <span class="passo__barra" aria-hidden="true">
+                @if (i === indice()) {
+                  @for (chave of [chaveTela()]; track chave) {
+                    <i [style.animation-duration.ms]="item.duracaoMs" (animationend)="proximo()"></i>
+                  }
+                }
+              </span>
+            </button>
+          </li>
+        }
+      </ol>
+
+    </div>
+
+    <!-- à direita: o palco com o celular e o selo do passo -->
+    <div class="palco" (mouseenter)="sobre.set(true)" (mouseleave)="sobre.set(false)">
+      @for (chave of [chaveTela()]; track chave) {
+        <span class="selo-flutuante" aria-hidden="true">
+          <span class="selo-flutuante__icone"><app-icone [nome]="passo().selo.icone" [tamanho]="16" [espessura]="2.2" /></span>
+          {{ passo().selo.texto }}
+        </span>
+      }
+
+      <app-telefone-demo class="palco__telefone">
+        @for (chave of [chaveTela()]; track chave) {
+          @switch (indice()) {
+            <!-- 1. o cadastro já preenchido, virando "Salvo"; depois desliza a agenda (serviços) ou a pergunta frequente -->
+            @case (0) {
+              <div class="passo-um">
+              <div class="tela tela--cadastro">
+                <header class="tela__topo">
+                  <app-icone nome="voltar" [tamanho]="20" [espessura]="2" />
+                  <span>{{ tipo() === 'servicos' ? 'Serviços' : 'Produtos' }}</span>
+                </header>
+                <div class="folha">
+                  <span class="folha__alca" aria-hidden="true"></span>
+                  <strong class="folha__titulo">{{ roteiroAtual.tituloCadastro }}</strong>
+                  @for (campo of roteiroAtual.campos; track campo.rotulo; let c = $index) {
+                    <div class="campo-demo" [style.--atraso]="0.25 + c * 0.55 + 's'">
+                      <span class="campo-demo__rotulo">{{ campo.rotulo }}</span>
+                      <span class="campo-demo__caixa" [class.campo-demo__caixa--destaque]="campo.destaque">
+                        <span class="campo-demo__valor">{{ campo.valor }}</span>
+                      </span>
+                    </div>
+                  }
+                  @if (roteiroAtual.opcoes; as opcoes) {
+                    <div class="campo-demo" [style.--atraso]="0.25 + roteiroAtual.campos.length * 0.55 + 's'">
+                      <span class="campo-demo__rotulo">{{ opcoes.rotulo }}</span>
+                      <span class="chips-demo">
+                        @for (valor of opcoes.valores; track valor) {
+                          <span class="chips-demo__chip">{{ valor }}</span>
+                        }
+                      </span>
+                    </div>
+                  }
+                  <span class="salvar">
+                    <span class="salvar__texto">Salvar</span>
+                    <span class="salvar__feito"><app-icone nome="check" [tamanho]="18" [espessura]="2.6" /> Salvo</span>
+                  </span>
+                </div>
+                <span class="toast-demo">
+                  <app-icone nome="check" [tamanho]="15" [espessura]="2.6" />
+                  O assistente já conhece este {{ tipo() === 'servicos' ? 'serviço' : 'produto' }}
+                </span>
+              </div>
+
+              <div class="tela tela--extra">
+                <header class="tela__topo">
+                  <app-icone nome="voltar" [tamanho]="20" [espessura]="2" />
+                  <span>{{ roteiroAtual.extra.tipo === 'agenda' ? 'Minha Agenda' : 'Perguntas frequentes' }}</span>
+                </header>
+                <div class="folha folha--extra">
+                  <strong class="folha__titulo">{{ roteiroAtual.extra.titulo }}</strong>
+                  @if (roteiroAtual.extra.tipo === 'agenda') {
+                    <ul class="dias-demo">
+                      @for (dia of roteiroAtual.extra.dias; track dia.dia; let d = $index) {
+                        <li class="dia-demo" [class.dia-demo--fechado]="!dia.aberto" [style.--atraso]="4.2 + d * 0.22 + 's'">
+                          <span class="dia-demo__nome">{{ dia.dia }}</span>
+                          <span class="dia-demo__horario">{{ dia.horario }}</span>
+                          <span class="dia-demo__chave" aria-hidden="true"><i></i></span>
+                        </li>
+                      }
+                    </ul>
+                  } @else {
+                    <div class="campo-demo" style="--atraso: 4.3s">
+                      <span class="campo-demo__rotulo">Pergunta</span>
+                      <span class="campo-demo__caixa"><span class="campo-demo__valor">{{ roteiroAtual.extra.pergunta }}</span></span>
+                    </div>
+                    <div class="campo-demo campo-demo--resposta" style="--atraso: 5s">
+                      <span class="campo-demo__rotulo">Resposta</span>
+                      <span class="campo-demo__caixa campo-demo__caixa--alta"><span class="campo-demo__valor">{{ roteiroAtual.extra.resposta }}</span></span>
+                    </div>
+                  }
+                  <span class="salvar salvar--extra">
+                    <span class="salvar__texto">Salvar</span>
+                    <span class="salvar__feito"><app-icone nome="check" [tamanho]="18" [espessura]="2.6" /> Salvo</span>
+                  </span>
+                </div>
+              </div>
+              </div>
+            }
+
+            <!-- 2. WhatsApp conectado: o número de sempre e o assistente ligado -->
+            @case (1) {
+              <div class="tela tela--conectado">
+                <header class="tela__topo">
+                  <app-icone nome="voltar" [tamanho]="20" [espessura]="2" />
+                  <span>WhatsApp</span>
+                </header>
+                <div class="conectado">
+                  <span class="conectado__selo" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="44" height="44"><path d="M5 12l5 5L20 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                  </span>
+                  <strong class="conectado__titulo">WhatsApp conectado</strong>
+                  <span class="conectado__numero">{{ roteiroAtual.loja }} · {{ roteiroAtual.numero }}</span>
+
+                  <ul class="conectado__lista">
+                    <li style="--atraso: 0.9s"><app-icone nome="check" [tamanho]="15" [espessura]="2.6" />Seu número de sempre</li>
+                    <li style="--atraso: 1.2s"><app-icone nome="check" [tamanho]="15" [espessura]="2.6" />Contatos pessoais ficam de fora</li>
+                    <li style="--atraso: 1.5s"><app-icone nome="check" [tamanho]="15" [espessura]="2.6" />Você assume qualquer conversa</li>
+                  </ul>
+
+                  <span class="chave-demo">
+                    <span class="chave-demo__textos">
+                      <strong>Assistente ativo</strong>
+                      <small>Respondendo os seus clientes</small>
+                    </span>
+                    <span class="chave-demo__chave" aria-hidden="true"><i></i></span>
+                  </span>
+                </div>
+              </div>
+            }
+
+            <!-- 3. a conversa relâmpago com o que foi cadastrado e o aviso no fim -->
+            @default {
+              <div class="tela tela--conversa">
+                <header class="zap__topo">
+                  <app-icone nome="voltar" [tamanho]="20" [espessura]="2.2" />
+                  <span class="zap__avatar" [style.background]="roteiroAtual.cor">{{ roteiroAtual.inicial }}</span>
+                  <span class="zap__contato">
+                    <strong>{{ roteiroAtual.loja }}</strong>
+                    <small>online</small>
+                  </span>
+                </header>
+                <div class="zap__conversa">
+                  @for (mensagem of roteiroAtual.conversa; track $index; let m = $index) {
+                    <div class="zap__balao" [class.zap__balao--cliente]="mensagem.de === 'cliente'" [style.--atraso]="0.2 + m * 1.05 + 's'">
+                      <span class="zap__texto">{{ mensagem.texto }}</span>
+                      <span class="zap__hora">
+                        {{ mensagem.hora }}
+                        @if (mensagem.de === 'cliente') {
+                          <app-icone nome="checkDuplo" [tamanho]="14" [espessura]="2" />
+                        }
+                      </span>
+                    </div>
+                  }
+                </div>
+                <div class="zap__rodape" aria-hidden="true">
+                  <span class="zap__campo"><app-icone nome="emoji" [tamanho]="19" />Mensagem</span>
+                  <span class="zap__microfone"><app-icone nome="microfone" [tamanho]="17" [espessura]="2" /></span>
+                </div>
+                <div class="aviso-demo" [style.--atraso-aviso]="0.5 + roteiroAtual.conversa.length * 1.05 + 's'">
+                  <span class="aviso-demo__icone"><app-icone nome="sino" [tamanho]="16" [espessura]="2" /></span>
+                  <span class="aviso-demo__textos">
+                    <small>DizAI · agora</small>
+                    <strong>{{ roteiroAtual.aviso.titulo }}</strong>
+                    <span>{{ roteiroAtual.aviso.texto }}</span>
+                  </span>
+                </div>
+              </div>
+            }
+          }
+        }
+      </app-telefone-demo>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,281 @@
+/* As telas do celular no "Como funciona": o cadastro (passo 1) e o WhatsApp conectado (passo 2). Tudo anima por
+   animation-delay a partir do momento em que a tela entra (ela é recriada a cada passo). */
+.tela {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--cor-fundo-suave);
+  animation: tela-entra 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.tela__topo {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  height: 64px;
+  padding: 18px 18px 0;
+  background: var(--cor-primaria);
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+/* ---------- 1. cadastro ---------- */
+.folha {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 10px 18px 22px;
+  border-radius: 22px 22px 0 0;
+  background: #ffffff;
+  box-shadow: 0 -10px 30px rgba(15, 23, 42, 0.08);
+}
+
+.folha__alca {
+  align-self: center;
+  width: 38px;
+  height: 4px;
+  border-radius: 4px;
+  background: #D5DAE3;
+}
+
+.folha__titulo {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.campo-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campo-demo__rotulo {
+  color: var(--cor-texto-secundario);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.campo-demo__caixa {
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 14px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 12px;
+  animation: campo-foco 0.9s ease var(--atraso, 0s) both;
+}
+
+/* o valor "aparece digitado": revela da esquerda para a direita */
+.campo-demo__valor {
+  overflow: hidden;
+  color: var(--cor-texto);
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  clip-path: inset(0 100% 0 0);
+  animation: digitar 0.45s steps(14, end) var(--atraso, 0s) forwards;
+}
+
+.campo-demo__caixa--destaque .campo-demo__valor { color: var(--cor-primaria); font-weight: 800; }
+
+.chips-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chips-demo__chip {
+  padding: 7px 12px;
+  border: 1.5px solid #BFD0EE;
+  border-radius: 999px;
+  background: #EEF3FC;
+  color: var(--cor-primaria);
+  font-size: 12.5px;
+  font-weight: 700;
+  animation: surgir 0.35s cubic-bezier(0.22, 1.4, 0.36, 1) both;
+  animation-delay: var(--atraso, 0s);
+}
+
+/* o botão Salvar vira "Salvo" verde */
+.salvar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 50px;
+  margin-top: auto;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--cor-primaria);
+  color: #ffffff;
+  font-size: 15.5px;
+  font-weight: 800;
+  animation: salvar-verde 0.4s ease 2.6s forwards;
+}
+
+.salvar__texto,
+.salvar__feito {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.salvar__texto { animation: sumir 0.25s ease 2.6s forwards; }
+.salvar__feito { opacity: 0; animation: surgir 0.35s cubic-bezier(0.22, 1.4, 0.36, 1) 2.75s forwards; }
+
+/* o aviso de cadastrado sobe logo acima do botão */
+.toast-demo {
+  position: absolute;
+  bottom: 92px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #141A26;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.3);
+  opacity: 0;
+  animation: subir 0.5s cubic-bezier(0.22, 1, 0.36, 1) 3s forwards;
+}
+
+.toast-demo app-icone { flex-shrink: 0; color: #8FE3B0; }
+
+/* ---------- 2. WhatsApp conectado ---------- */
+.conectado {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 18px 22px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.conectado__selo {
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  margin-bottom: 10px;
+  border-radius: 50%;
+  background: #25D366;
+  color: #ffffff;
+  box-shadow: 0 0 0 10px rgba(37, 211, 102, 0.14), 0 14px 30px rgba(37, 211, 102, 0.35);
+  animation: estourar 0.6s cubic-bezier(0.22, 1.5, 0.36, 1) 0.25s both;
+}
+
+.conectado__titulo {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  animation: surgir 0.4s ease 0.5s both;
+}
+
+.conectado__numero {
+  color: var(--cor-texto-secundario);
+  font-size: 14px;
+  animation: surgir 0.4s ease 0.6s both;
+}
+
+.conectado__lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin: 22px 0 0;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--cor-fundo-suave);
+  list-style: none;
+  text-align: left;
+}
+
+.conectado__lista li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  animation: surgir 0.4s ease var(--atraso, 0s) both;
+}
+
+.conectado__lista app-icone {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #E4F8EC;
+  color: #1F7A4A;
+}
+
+.chave-demo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: auto;
+  padding: 14px 16px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: 16px;
+  text-align: left;
+}
+
+.chave-demo__textos { display: flex; flex-direction: column; gap: 2px; }
+.chave-demo__textos strong { font-size: 14.5px; }
+.chave-demo__textos small { color: var(--cor-texto-suave); font-size: 12.5px; }
+
+.chave-demo__chave {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  border-radius: 999px;
+  background: #D5DAE3;
+  animation: chave-liga 0.3s ease 1.9s forwards;
+}
+
+.chave-demo__chave i {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.2);
+  animation: chave-bolinha 0.3s ease 1.9s forwards;
+}
+
+@keyframes tela-entra { from { opacity: 0; transform: translateX(18px); } }
+@keyframes campo-foco {
+  0% { border-color: var(--cor-borda); }
+  30%, 70% { border-color: var(--cor-primaria); box-shadow: 0 0 0 4px rgba(30, 58, 114, 0.12); }
+  100% { border-color: var(--cor-borda); box-shadow: none; }
+}
+@keyframes digitar { to { clip-path: inset(0 0 0 0); } }
+@keyframes surgir { from { opacity: 0; transform: translateY(6px) scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes sumir { to { opacity: 0; transform: translateY(-8px); } }
+@keyframes salvar-verde { to { background: #1F9D55; } }
+@keyframes subir { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes estourar { from { opacity: 0; transform: scale(0.4); } }
+@keyframes chave-liga { to { background: #25D366; } }
+@keyframes chave-bolinha { to { transform: translateX(20px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .tela, .tela * { animation-duration: 0.01ms !important; animation-delay: 0s !important; }
+}

@@ -46,24 +46,8 @@
 
   <app-secao-recursos />
 
-  <section id="como" class="faixa--suave" aria-labelledby="como-titulo">
-    <div class="container secao secao--espacosa">
-      <div class="secao__cabecalho">
-        <span class="secao__sobretitulo">Como funciona</span>
-        <h2 id="como-titulo" class="secao__titulo">Você conta sobre o seu negócio. O DizAI atende por você.</h2>
-      </div>
-      <ol class="grade grade--passos">
-        @for (passo of passos; track passo.titulo; let indice = $index) {
-          <li class="passo">
-            <span class="passo__numero">{{ numeroDoPasso(indice) }}</span>
-            <h3 class="passo__titulo">{{ passo.titulo }}</h3>
-            <p class="cartao__texto">{{ passo.texto }}</p>
-          </li>
-        }
-      </ol>
-    </div>
-  </section>
-  <app-jornada-interativa />
+  <!-- como funciona: os 3 passos com o celular (cadastro, WhatsApp conectado e a conversa) -->
+  <app-como-funciona />
   
 
   <app-secao-galeria />

@@ -92,6 +92,9 @@
 
 .cartao__texto {
   margin: 0;
+  /* o "
+" do texto vira quebra de linha */
+  white-space: pre-line;
   color: var(--cor-texto-secundario);
   font-size: 17px;
   line-height: 1.5;

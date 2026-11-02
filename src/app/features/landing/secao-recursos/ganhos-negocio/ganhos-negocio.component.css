@@ -148,6 +148,11 @@
   gap: 10px;
 }
 
+/* computador: as setas ficam em cima do cartão (no celular continuam embaixo) */
+@media (min-width: 1024px) {
+  .controles { order: -1; }
+}
+
 .controles__seta {
   display: grid;
   place-items: center;

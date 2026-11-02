@@ -76,8 +76,9 @@
   height: 22px;
   margin-top: 1px;
   border-radius: 50%;
-  background: var(--cor-primaria);
-  color: #ffffff;
+  /* o verde dos checks do hero e do resto da landing */
+  background: #E4F8EC;
+  color: #1F7A4A;
 }
 
 .galeria__acao {

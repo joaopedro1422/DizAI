@@ -13,7 +13,7 @@ import { FaixaNegociosComponent } from './faixa-negocios/faixa-negocios.componen
 import { SecaoHeroComponent } from './secao-hero/secao-hero.component';
 import { SecaoPesquisaComponent } from './secao-pesquisa/secao-pesquisa.component';
 import { SecaoSolucaoComponent } from './secao-solucao/secao-solucao.component';
-import { JornadaInterativaComponent } from './jornada-interativa/jornada-interativa.component';
+import { ComoFuncionaComponent } from './como-funciona/como-funciona.component';
 
 interface Dor {
   icone: NomeIcone;
@@ -21,11 +21,6 @@ interface Dor {
   texto: string;
   /** Uma mensagem de cliente de verdade, para o lojista se reconhecer. */
   citacao: string;
-}
-
-interface Passo {
-  titulo: string;
-  texto: string;
 }
 
 @Component({
@@ -40,7 +35,7 @@ interface Passo {
     SecaoSolucaoComponent,
     SecaoGaleriaComponent,
     SecaoPostsComponent,
-    JornadaInterativaComponent,
+    ComoFuncionaComponent,
     SecaoRecursosComponent,
     SecaoParaQuemComponent,
     SecaoPerguntasComponent,
@@ -72,25 +67,4 @@ export class LandingPageComponent {
       citacao: '"Faz pra sábado?" · chegou no meio do atendimento',
     },
   ];
-
-  protected readonly passos: Passo[] = [
-    {
-      titulo: 'Cadastre o seu negócio',
-      texto: 'Um passo a passo guiado no painel: serviços ou produtos, preços, perguntas frequentes, formas de pagamento e as regras da sua empresa.',
-    },
-    {
-      titulo: 'Conecte o seu WhatsApp',
-      texto: 'Os clientes continuam falando com o mesmo número de sempre. Contatos pessoais, como família e amigos, ficam de fora.',
-    },
-    {
-      titulo: 'Ele atende do começo ao fim',
-      texto:
-        'Tira dúvidas, faz orçamentos e envia catálogo e fotos. Na hora de fechar, marca o horário na sua agenda ou anota o pedido e te avisa no celular.',
-    },
-  ];
-
-  /** "01", "02", "03" */
-  protected numeroDoPasso(indice: number): string {
-    return String(indice + 1).padStart(2, '0');
-  }
 }
