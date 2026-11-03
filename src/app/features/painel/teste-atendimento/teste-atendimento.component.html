@@ -15,7 +15,7 @@
       <h2 id="teste-titulo" class="topo__nome">{{ perfil().nomeLoja }}</h2>
       <span class="topo__status">{{ respondendo() ? 'digitando…' : 'Teste do seu assistente' }}</span>
     </div>
-    <button type="button" class="topo__recomecar" [disabled]="respondendo() || mensagens().length === 0" (click)="recomecar()">
+    <button type="button" class="topo__recomecar" [disabled]="respondendo() || automatico() || mensagens().length === 0" (click)="recomecar()">
       Recomeçar
     </button>
   </header>
@@ -116,6 +116,13 @@
     }
   </div>
 
+  @if (automatico()) {
+    <!-- primeiro teste: o "cliente" escreve sozinho; o lojista só assiste até o fim -->
+    <p class="automatico" role="status">
+      <span class="automatico__ponto" aria-hidden="true"></span>
+      Teste automático: o cliente está escrevendo sozinho. Quando terminar, você pode escrever.
+    </p>
+  }
   <form class="entrada" (ngSubmit)="enviar()">
     @if (gravando()) {
       <div class="gravacao" role="status">
@@ -138,7 +145,8 @@
         class="entrada__campo"
         rows="1"
         maxlength="1000"
-        placeholder="Escreva como se fosse um cliente…"
+        [placeholder]="automatico() ? 'Aguarde o fim do teste automático…' : 'Escreva como se fosse um cliente…'"
+        [disabled]="automatico()"
         [ngModel]="texto()"
         (ngModelChange)="texto.set($event)"
         (keydown)="aoTeclar($event)"
@@ -149,7 +157,7 @@
         </button>
       } @else {
         <!-- campo vazio: o botão vira o microfone, como no WhatsApp -->
-        <button type="button" class="entrada__enviar" [disabled]="respondendo()" aria-label="Gravar um áudio como cliente" (click)="gravar()">
+        <button type="button" class="entrada__enviar" [disabled]="respondendo() || automatico()" aria-label="Gravar um áudio como cliente" (click)="gravar()">
           <app-icone nome="microfone" [tamanho]="20" [espessura]="2.2" />
         </button>
       }
@@ -167,6 +175,17 @@
     rotuloBotao="Conhecer"
     rotuloSecundario="Voltar ao painel"
     (confirmar)="conhecerAgendaOnline()"
+    (secundario)="voltarAoPainel.emit()"
+  />
+} @else if (proximoPasso() === 'pedido') {
+  <app-dica-sobreposta
+    icone="check"
+    sobretitulo="Pedido anotado"
+    titulo="O pedido chegou para você confirmar"
+    descricao="Com o WhatsApp conectado, você recebe um aviso no celular e o pedido aparece no Chats, pronto para confirmar. Veja como ele chega."
+    rotuloBotao="Ver o pedido no Chats"
+    rotuloSecundario="Voltar ao painel"
+    (confirmar)="verPedidoNoChats()"
     (secundario)="voltarAoPainel.emit()"
   />
 } @else if (proximoPasso() === 'produtos') {

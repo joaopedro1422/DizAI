@@ -16,7 +16,7 @@ import { pluralizar } from '../../core/utils/colecao.utils';
 import { BotaoVideoComponent } from '../../shared/components/video-tutorial/botao-video.component';
 import { BottomSheetComponent } from '../../shared/components/bottom-sheet/bottom-sheet.component';
 import { CarregandoComponent } from '../../shared/components/carregando/carregando.component';
-import { DicaSobrepostaComponent } from '../../shared/components/dica-sobreposta/dica-sobreposta.component';
+import { DicaSobrepostaComponent, ItemDica } from '../../shared/components/dica-sobreposta/dica-sobreposta.component';
 import { perguntaDoPrimeiroTeste, testeFeito } from '../painel/onboarding/progresso-onboarding';
 import { CabecalhoPaginaComponent } from '../../shared/components/cabecalho-pagina/cabecalho-pagina.component';
 import { EstadoVazioComponent } from '../../shared/components/estado-vazio/estado-vazio.component';
@@ -128,8 +128,35 @@ export class ProdutosPageComponent implements OnInit {
   private readonly rotaAtual = inject(ActivatedRoute);
   private readonly rotasPainel = inject(SessaoService).rotasDoPainel;
 
+  /**
+   * Vindo do fim do tour (?exemplo=1, lojas de produtos): o produto de exemplo que a conta ganhou nas boas-vindas,
+   * com o convite para ver o assistente vendendo ele (o primeiro teste conversa sozinho até o pedido).
+   */
+  protected readonly mostrarExemplo = signal(false);
+  /** O exemplo na janela: o produto e o que ele tem (preço e as opções), para o lojista saber o que vai ver. */
+  protected readonly exemploParaMostrar = computed<ItemDica[] | null>(() => {
+    const produto = this.produtoService.produtos().find((p) => !p.produtoAVenda);
+    if (!this.mostrarExemplo() || this.carregando() || !produto) {
+      return null;
+    }
+    const preco = produto.preco != null ? `R$ ${produto.preco.toFixed(2).replace('.', ',')}` : 'Preço sob consulta';
+    const opcoes = produto.atributos.map((a) => a.nome);
+    const detalhe = opcoes.length ? `${preco} · ${opcoes.slice(0, -1).join(', ')}${opcoes.length > 1 ? ' e ' : ''}${opcoes[opcoes.length - 1]}` : preco;
+    return [{ icone: 'caixa', titulo: produto.nome, texto: detalhe }];
+  });
+
+  protected verAssistenteVendendo(): void {
+    this.mostrarExemplo.set(false);
+    void this.router.navigate([this.rotasPainel().atendimento], { queryParams: { testar: 1 } });
+  }
+
   ngOnInit(): void {
     const abrirCadastro = this.rotaAtual.snapshot.queryParamMap.has('novo');
+    if (this.rotaAtual.snapshot.queryParamMap.has('exemplo')) {
+      this.mostrarExemplo.set(true);
+      this.mostrarVideo.set(false);   // o vídeo do cadastro fica para a próxima visita
+      void this.router.navigate([], { relativeTo: this.rotaAtual, queryParams: {}, replaceUrl: true });
+    }
     this.produtoService
       .carregar()
       .then(() => {

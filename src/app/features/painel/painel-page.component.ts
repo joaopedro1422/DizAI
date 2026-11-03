@@ -138,6 +138,17 @@ export class PainelPageComponent implements OnInit {
       titulo: 'Teste como se fosse cliente',
       texto: 'Mande uma mensagem e veja a resposta antes de ligar no WhatsApp.',
     };
+    if (temItem && !ramoDeServico(this.perfilService.perfil().ramo)) {
+      // lojas de produtos: a conta já nasce com um produto de exemplo do segmento (boas-vindas)
+      return {
+        descricao: `Deixamos um ${termo} de exemplo cadastrado para você ver como funciona.`,
+        itens: [
+          { icone: 'caixa', titulo: 'Um cadastro completo', texto: 'Preço, opções que o cliente escolhe e adicionais.' } as ItemDica,
+          { icone: 'conversa', titulo: 'O assistente vendendo', texto: 'Uma conversa que acontece sozinha, do preço ao pedido.' } as ItemDica,
+        ],
+        botao: 'Ver o exemplo',
+      };
+    }
     if (temItem) {
       return {
         descricao: 'Você já tem o que ele precisa para responder. Veja como ele atende os seus clientes.',
@@ -217,9 +228,13 @@ export class PainelPageComponent implements OnInit {
   /** A escolha do tipo do negócio é obrigatória nas boas-vindas: vale também para quem pula o tour. */
   private async salvarSegmentoEscolhido(): Promise<void> {
     const segmento = this.segmentoEscolhido();
-    if (segmento !== undefined && segmento !== (this.perfilService.perfil().segmento ?? null)) {
+    // sempre salva (mesmo igual ao atual): é aqui que as lojas de produtos ganham o produto de exemplo
+    if (segmento !== undefined) {
       try {
         await this.perfilService.definirSegmento(segmento);
+        if (!this.produtoService.produtos().length) {
+          await this.produtoService.carregar();
+        }
       } catch (erro) {
         this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível salvar o tipo do negócio. Mude depois em Dados da loja.'));
       }
@@ -269,7 +284,9 @@ export class PainelPageComponent implements OnInit {
   protected aceitarConviteTeste(): void {
     this.mostrarConviteTeste.set(false);
     const rotas = this.rotasPainel();
-    if (this.produtoService.produtos().length > 0) {
+    if (this.produtoService.produtos().length > 0 && !ramoDeServico(this.perfilService.perfil().ramo)) {
+      void this.router.navigate([rotas.produtos], { queryParams: { exemplo: 1 } });
+    } else if (this.produtoService.produtos().length > 0) {
       const item = this.produtoService.produtos().find((produto) => !produto.produtoAVenda);
       const pergunta = perguntaDoPrimeiroTeste(ramoDeServico(this.perfilService.perfil().ramo), item?.nome);
       void this.router.navigate([rotas.atendimento], { queryParams: { testar: 1, pergunta } });

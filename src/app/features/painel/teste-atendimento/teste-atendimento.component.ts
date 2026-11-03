@@ -23,6 +23,11 @@ import { LinhaFormatada, formatarWhatsapp } from './formatacao-whatsapp';
 import { marcarTesteFeito } from '../onboarding/progresso-onboarding';
 import { ramoDeServico } from '../../../core/models/perfil.model';
 import { DicaSobrepostaComponent } from '../../../shared/components/dica-sobreposta/dica-sobreposta.component';
+import { LojaPublicaService } from '../../../core/services/loja-publica.service';
+import { ProdutoService } from '../../../core/services/produto.service';
+import { Router } from '@angular/router';
+import { SessaoService } from '../../../core/auth/sessao.service';
+import { ClienteAutomatico } from './cliente-automatico';
 
 /** Marcador que o backend grava quando o catálogo (PDF/imagens) seria enviado. */
 const MARCADOR_CATALOGO = '[Catálogo enviado ao cliente]';
@@ -63,6 +68,9 @@ const TRANSCREVENDO = '🎤 Transcrevendo o áudio…';
 /** Quanto a janela do próximo passo espera depois da resposta (para dar tempo de ler). */
 const ESPERA_PROXIMO_PASSO_MS = 2500;
 
+/** Primeiro teste: o tempo para o lojista ler a resposta antes de o "cliente" escrever de novo. */
+const ESPERA_CLIENTE_AUTOMATICO_MS = 1800;
+
 /** Limite da gravação no teste: passou disso, envia o que já gravou. */
 const DURACAO_MAXIMA_AUDIO_S = 120;
 
@@ -94,10 +102,19 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
   /** "Voltar ao painel" da janela do próximo passo. */
   readonly voltarAoPainel = output<void>();
   /** Janela depois do primeiro teste: produtos = voltar ao painel; serviços = conhecer a agenda online. */
-  protected readonly proximoPasso = signal<'produtos' | 'servicos' | null>(null);
+  protected readonly proximoPasso = signal<'produtos' | 'pedido' | 'servicos' | null>(null);
   private proximoPassoMostrado = false;
 
   private readonly servico = inject(TesteAtendimentoService);
+  private readonly produtos = inject(ProdutoService);
+  private readonly lojaPublica = inject(LojaPublicaService);
+  /**
+   * Primeiro teste: o "cliente" conversa sozinho até o fim (horário marcado / pedido passado ao dono) e o campo fica
+   * bloqueado enquanto isso; quando ele termina, o lojista escreve normalmente.
+   */
+  private clienteAutomatico: ClienteAutomatico | null = null;
+  protected readonly automatico = signal(false);
+  private esperaAutomatico: number | undefined;
   protected readonly perfil = inject(PerfilService).perfil;
   private readonly rolagem = viewChild<ElementRef<HTMLElement>>('rolagem');
   private readonly campo = viewChild<ElementRef<HTMLTextAreaElement>>('campo');
@@ -152,6 +169,11 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
   );
 
   ngOnInit(): void {
+    if (this.primeiroTeste()) {
+      this.automatico.set(true);
+      void Promise.all([this.carregar(), this.prepararClienteAutomatico()]).then(([, cliente]) => this.comecarAutomatico(cliente));
+      return;
+    }
     // a mensagem pronta sai sozinha (sem o lojista precisar acertar o texto)
     void this.carregar().then(() => {
       if (this.textoInicial().trim()) {
@@ -159,6 +181,92 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
         void this.enviar();
       }
     });
+  }
+
+  /**
+   * Os dados do "cliente" do primeiro teste: nos produtos, o primeiro item cadastrado; nos serviços, o primeiro
+   * serviço e o primeiro horário livre de verdade (pela agenda online, a mesma conta da IA).
+   */
+  private async prepararClienteAutomatico(): Promise<ClienteAutomatico | null> {
+    const perfil = this.perfil();
+    const servico = ramoDeServico(perfil.ramo);
+    const nome = perfil.nomeResponsavel?.trim() || 'Cliente';
+    try {
+      if (!this.produtos.produtos().length) {
+        await this.produtos.carregar();
+      }
+      const item = this.produtos.produtos().find((produto) => !produto.produtoAVenda) ?? null;
+      if (!servico) {
+        return new ClienteAutomatico({
+          servico,
+          nome,
+          produto: item,
+          horarios: perfil.horariosFuncionamento,
+          horarioLivre: perfil.horarioLivre,
+          antecedenciaLojaMinutos: perfil.antecedenciaMinutos,
+        });
+      }
+      let primeiroHorario: { data: string; hora: string } | null = null;
+      try {
+        const agenda = await this.lojaPublica.buscarAgenda(perfil.slug);
+        const alvo = agenda.servicos.find((s) => s.id === item?.id) ?? agenda.servicos[0];
+        if (alvo) {
+          const dias = await this.lojaPublica.buscarHorarios(perfil.slug, [alvo.id]);
+          const dia = dias.find((d) => d.aberto && d.horarios.length);
+          primeiroHorario = dia ? { data: dia.data, hora: dia.horarios[0] } : null;
+        }
+      } catch {
+        // sem a agenda online o cliente escolhe um dos horários que o assistente mostrar
+      }
+      return new ClienteAutomatico({ servico, nome, nomeServico: item?.nome, primeiroHorario });
+    } catch {
+      return null;
+    }
+  }
+
+  private comecarAutomatico(cliente: ClienteAutomatico | null): void {
+    this.clienteAutomatico = cliente;
+    if (!cliente) {
+      this.terminarAutomatico();
+      return;
+    }
+    void this.enviarComoCliente(cliente.primeira());
+  }
+
+  /** Depois de cada resposta: o "cliente" responde sozinho ou a conversa volta para o lojista. */
+  private continuarAutomatico(resposta: RespostaTeste): void {
+    const ultima = [...resposta.mensagens].reverse().find((m) => m.origem !== 'CLIENTE');
+    const proxima = this.clienteAutomatico?.proxima(ultima?.texto ?? '', resposta.acao) ?? null;
+    if (!proxima) {
+      this.terminarAutomatico();
+      return;
+    }
+    this.esperaAutomatico = window.setTimeout(() => void this.enviarComoCliente(proxima), ESPERA_CLIENTE_AUTOMATICO_MS);
+  }
+
+  private terminarAutomatico(): void {
+    if (!this.automatico()) {
+      return;
+    }
+    this.automatico.set(false);
+    this.clienteAutomatico = null;
+    // o tutorial continua: a janela do próximo passo (nos serviços, só com o horário marcado)
+    this.conferirProximoPasso(this.ultimaAcao);
+    this.campo()?.nativeElement.focus();
+  }
+
+  private ultimaAcao: AcaoTeste | null = null;
+
+  private async enviarComoCliente(texto: string): Promise<void> {
+    await this.conversar(texto, () => this.servico.enviar(texto));
+  }
+
+  private readonly router = inject(Router);
+  private readonly rotas = inject(SessaoService).rotasDoPainel;
+
+  /** Produtos, fim do primeiro teste: o pedido do teste espera no Chats como "Pronto para fechar". */
+  protected verPedidoNoChats(): void {
+    void this.router.navigateByUrl(this.rotas().chats);
   }
 
   /** Serviços: abre a agenda online em outra aba e volta ao painel para continuar a configuração. */
@@ -170,7 +278,7 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
 
   /** No primeiro teste: produtos, logo depois da primeira resposta; serviços, quando o horário é marcado. */
   private conferirProximoPasso(acao: AcaoTeste | null | undefined): void {
-    if (!this.primeiroTeste() || this.proximoPassoMostrado) {
+    if (!this.primeiroTeste() || this.proximoPassoMostrado || this.automatico()) {
       return;
     }
     const servico = ramoDeServico(this.perfil().ramo);
@@ -179,7 +287,8 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
     }
     this.proximoPassoMostrado = true;
     // um respiro para o lojista ler a resposta antes da janela
-    window.setTimeout(() => this.proximoPasso.set(servico ? 'servicos' : 'produtos'), ESPERA_PROXIMO_PASSO_MS);
+    const passo = servico ? 'servicos' : acao === 'TRANSFERIR_HUMANO' ? 'pedido' : 'produtos';
+    window.setTimeout(() => this.proximoPasso.set(passo), ESPERA_PROXIMO_PASSO_MS);
   }
 
   ngAfterViewInit(): void {
@@ -189,6 +298,7 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
 
   ngOnDestroy(): void {
     document.body.style.overflow = this.overflowAnteriorDoBody;
+    window.clearTimeout(this.esperaAutomatico);
     this.cancelarGravacao();   // fechou gravando: descarta e libera o microfone
   }
 
@@ -214,7 +324,7 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
 
   protected async enviar(): Promise<void> {
     const texto = this.texto().trim();
-    if (!texto || this.respondendo()) {
+    if (!texto || this.respondendo() || this.automatico()) {
       return;
     }
     this.texto.set('');
@@ -308,12 +418,18 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
       terminou = true;
       this.mensagens.set(resposta.mensagens);
       marcarTesteFeito(this.perfil().id);
-      this.conferirProximoPasso(resposta.acao);
+      this.ultimaAcao = resposta.acao;
       this.aviso.set(resposta.acao ? (AVISOS[resposta.acao] ?? null) : null);
+      if (this.automatico()) {
+        this.continuarAutomatico(resposta);
+      } else {
+        this.conferirProximoPasso(resposta.acao);
+      }
     } catch (erro) {
       terminou = true;
       this.erro.set(mensagemDoErro(erro, 'O assistente não respondeu agora. Tente de novo.'));
       aoFalhar?.();
+      this.terminarAutomatico();
     } finally {
       window.clearInterval(acompanhar);
       this.pendente.set(null);
@@ -341,7 +457,7 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   protected async recomecar(): Promise<void> {
-    if (this.respondendo()) {
+    if (this.respondendo() || this.automatico()) {
       return;
     }
     try {
