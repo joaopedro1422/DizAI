@@ -123,6 +123,10 @@ export class PainelPageComponent implements OnInit {
     const nome = perfil.nomeResponsavel?.trim().split(/\s+/)[0];
     return nome ? `${nome}, qual é o seu negócio?` : 'Qual é o seu negócio?';
   });
+  /** Lojas de produtos saem das boas-vindas direto para o produto de exemplo; as outras, para o tour do painel. */
+  protected readonly rotuloBoasVindas = computed(() =>
+    ramoComProdutoDeExemplo(this.perfilService.perfil().ramo) ? 'Ver o meu exemplo' : 'Conhecer o painel',
+  );
   /** As opções do ramo (barbearia, salão...) e a escolhida nas boas-vindas (undefined = nenhuma ainda). */
   protected readonly segmentosDoRamo = inject(ConteudoRamoService).segmentosDoRamo;
   protected readonly segmentoEscolhido = signal<SegmentoNegocio | null | undefined>(undefined);
@@ -138,8 +142,9 @@ export class PainelPageComponent implements OnInit {
       titulo: 'Teste como se fosse cliente',
       texto: 'Mande uma mensagem e veja a resposta antes de ligar no WhatsApp.',
     };
-    if (temItem && !ramoDeServico(this.perfilService.perfil().ramo)) {
-      // lojas de produtos: a conta já nasce com um produto de exemplo do segmento (boas-vindas)
+    if (ramoComProdutoDeExemplo(this.perfilService.perfil().ramo)) {
+      // lojas de produtos: nunca pede o cadastro; a conta tem um produto de exemplo (criado nas boas-vindas ou,
+      // se faltar, pela tela de Produtos) e o tour termina nele
       return {
         descricao: `Deixamos um ${termo} de exemplo cadastrado para você ver como funciona.`,
         itens: [
@@ -222,6 +227,12 @@ export class PainelPageComponent implements OnInit {
   protected async iniciarTourAposBoasVindas(): Promise<void> {
     this.mostrarBoasVindas.set(false);
     await this.salvarSegmentoEscolhido();
+    if (ramoComProdutoDeExemplo(this.perfilService.perfil().ramo)) {
+      // lojas de produtos: o segmento já criou o produto de exemplo; vai direto a ele e ao teste (sem o tour)
+      this.perfilService.marcarOnboardingConcluido();
+      void this.router.navigate([this.rotasPainel().produtos], { queryParams: { exemplo: 1 } });
+      return;
+    }
     this.tour().iniciar();
   }
 
@@ -284,7 +295,7 @@ export class PainelPageComponent implements OnInit {
   protected aceitarConviteTeste(): void {
     this.mostrarConviteTeste.set(false);
     const rotas = this.rotasPainel();
-    if (this.produtoService.produtos().length > 0 && !ramoDeServico(this.perfilService.perfil().ramo)) {
+    if (ramoComProdutoDeExemplo(this.perfilService.perfil().ramo)) {
       void this.router.navigate([rotas.produtos], { queryParams: { exemplo: 1 } });
     } else if (this.produtoService.produtos().length > 0) {
       const item = this.produtoService.produtos().find((produto) => !produto.produtoAVenda);
@@ -326,4 +337,9 @@ function gravarNoNavegador(chave: string, valor: string): void {
   } catch {
     // sem armazenamento: o fechamento pode abrir de novo, sem problema
   }
+}
+
+/** Ramos de produtos que ganham o produto de exemplo do segmento (ProdutosDeExemplo no backend). */
+export function ramoComProdutoDeExemplo(ramo: string | null | undefined): boolean {
+  return ramo === 'DOCES_SALGADOS' || ramo === 'PRODUTOS_PERSONALIZADOS' || ramo === 'PRODUTOS_GERAIS';
 }

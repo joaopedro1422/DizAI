@@ -28,6 +28,11 @@ export class ProdutoService {
     });
   }
 
+  /** Lojas de produtos sem nada cadastrado: cria o produto de exemplo do segmento (não duplica) e devolve a lista. */
+  async criarExemplo(): Promise<void> {
+    this.listaProdutos.set(await firstValueFrom(this.http.post<Produto[]>(this.url('/exemplo'), {})));
+  }
+
   async adicionar(novoProduto: NovoProduto): Promise<Produto> {
     const produto = await firstValueFrom(this.http.post<Produto>(this.url(), novoProduto));
     this.listaProdutos.update((produtos) => [produto, ...produtos]);

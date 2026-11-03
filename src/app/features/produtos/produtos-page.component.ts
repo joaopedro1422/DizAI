@@ -29,6 +29,9 @@ import { GuiaCadastroComponent } from './guia-cadastro/guia-cadastro.component';
 const TODAS_AS_CATEGORIAS = 'Todos';
 
 
+/** Fim das boas-vindas (lojas de produtos): quanto tempo o exemplo fica à vista antes da janela do teste. */
+const ESPERA_JANELA_EXEMPLO_MS = 3000;
+
 @Component({
   selector: 'app-produtos-page',
   imports: [
@@ -133,6 +136,7 @@ export class ProdutosPageComponent implements OnInit {
    * com o convite para ver o assistente vendendo ele (o primeiro teste conversa sozinho até o pedido).
    */
   protected readonly mostrarExemplo = signal(false);
+  private exemploPedido = false;
   /** O exemplo na janela: o produto e o que ele tem (preço e as opções), para o lojista saber o que vai ver. */
   protected readonly exemploParaMostrar = computed<ItemDica[] | null>(() => {
     const produto = this.produtoService.produtos().find((p) => !p.produtoAVenda);
@@ -153,13 +157,21 @@ export class ProdutosPageComponent implements OnInit {
   ngOnInit(): void {
     const abrirCadastro = this.rotaAtual.snapshot.queryParamMap.has('novo');
     if (this.rotaAtual.snapshot.queryParamMap.has('exemplo')) {
-      this.mostrarExemplo.set(true);
+      this.exemploPedido = true;
       this.mostrarVideo.set(false);   // o vídeo do cadastro fica para a próxima visita
       void this.router.navigate([], { relativeTo: this.rotaAtual, queryParams: {}, replaceUrl: true });
     }
     this.produtoService
       .carregar()
-      .then(() => {
+      .then(async () => {
+        // fim do tour: o exemplo é criado nas boas-vindas; se faltar (boas-vindas puladas, erro), cria agora
+        if (this.exemploPedido && this.produtoService.produtos().length === 0) {
+          await this.produtoService.criarExemplo();
+        }
+        if (this.exemploPedido) {
+          // o lojista vê o produto pronto na lista e, depois, a janela obrigatória do teste
+          window.setTimeout(() => this.mostrarExemplo.set(true), ESPERA_JANELA_EXEMPLO_MS);
+        }
         // vindo do onboarding: o vídeo da primeira visita já leva ao cadastro; sem ele, abre o formulário
         if (abrirCadastro && !this.mostrarVideo()) {
           this.abrirModal();
