@@ -62,9 +62,13 @@ const ATUALIZAR_A_CADA_MS = 15_000;
  *   (Horários, Equipe, Lembretes e mensagens, Lista de espera) e o link da agenda online.
  * - Agendamentos: faixa de dias com o que está marcado em cada um, agendamento manual, cancelar e folga.
  */
+import { ActivatedRoute, Router } from '@angular/router';
+import { ESPERA_FECHAMENTO_MS, FechamentoOnboardingComponent } from '../painel/onboarding/fechamento-onboarding.component';
+
 @Component({
   selector: 'app-agenda-page',
   imports: [
+    FechamentoOnboardingComponent,
     UrlImagemPipe,
     RegistrarVendaComponent,
     SeletorProfissionalComponent,
@@ -388,7 +392,28 @@ export class AgendaPageComponent implements OnInit {
     });
   }
 
+
+  /**
+   * Fim do onboarding (?fechamento=1, vindo do primeiro teste): a tela fica à vista alguns segundos e abre o
+   * "Agora é com você". O vídeo/convite da primeira visita fica para a próxima.
+   */
+  protected readonly mostrarFechamento = signal(false);
+  private readonly rotaAtualFechamento = inject(ActivatedRoute);
+  private readonly routerFechamento = inject(Router);
+
+  private conferirFechamento(): boolean {
+    if (!this.rotaAtualFechamento.snapshot.queryParamMap.has('fechamento')) {
+      return false;
+    }
+    void this.routerFechamento.navigate([], { relativeTo: this.rotaAtualFechamento, queryParams: {}, replaceUrl: true });
+    window.setTimeout(() => this.mostrarFechamento.set(true), ESPERA_FECHAMENTO_MS);
+    return true;
+  }
+
+  private vindoDoFechamento = false;
+
   ngOnInit(): void {
+    this.vindoDoFechamento = this.conferirFechamento();
     // abriu a agenda: a bolinha dos agendamentos novos no ícone do app some
     void limparMarcaIcone('agenda');
     void this.carregar();
@@ -449,7 +474,7 @@ export class AgendaPageComponent implements OnInit {
       if (!this.temHorarios()) {
         this.aba.set('horarios');
       }
-      this.convidarTour.set(this.dicasVistas.deveMostrarVideo('tour-agenda'));
+      this.convidarTour.set(!this.vindoDoFechamento && this.dicasVistas.deveMostrarVideo('tour-agenda'));
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, ERRO_AO_CARREGAR));
     } finally {

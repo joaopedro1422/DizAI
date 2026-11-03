@@ -167,15 +167,14 @@
 
 <!-- primeiro teste do onboarding: o próximo passo, para o tutorial não parar aqui -->
 @if (proximoPasso() === 'servicos') {
+  <!-- o fim do tour continua na Agenda, com o horário marcado e o fechamento "Agora é com você" -->
   <app-dica-sobreposta
     icone="calendario"
     sobretitulo="Horário marcado"
-    titulo="Você também tem uma página de agendamento"
-    descricao="Nela os seus clientes veem os serviços e os horários livres e já pedem o horário pelo WhatsApp. O assistente envia o link na conversa."
-    rotuloBotao="Conhecer"
-    rotuloSecundario="Voltar ao painel"
-    (confirmar)="conhecerAgendaOnline()"
-    (secundario)="voltarAoPainel.emit()"
+    titulo="O agendamento já está na sua agenda"
+    descricao="O assistente marcou o horário sozinho, sem você precisar responder. Veja como ele aparece na sua agenda."
+    rotuloBotao="Ver na agenda"
+    (confirmar)="irParaOFechamento('agenda')"
   />
 } @else if (proximoPasso() === 'pedido') {
   <app-dica-sobreposta
@@ -184,9 +183,7 @@
     titulo="O pedido chegou para você confirmar"
     descricao="Com o WhatsApp conectado, você recebe um aviso no celular e o pedido aparece no Chats, pronto para confirmar. Veja como ele chega."
     rotuloBotao="Ver o pedido no Chats"
-    rotuloSecundario="Voltar ao painel"
-    (confirmar)="verPedidoNoChats()"
-    (secundario)="voltarAoPainel.emit()"
+    (confirmar)="irParaOFechamento('chats')"
   />
 } @else if (proximoPasso() === 'produtos') {
   <app-dica-sobreposta

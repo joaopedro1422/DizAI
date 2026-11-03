@@ -122,23 +122,28 @@ export class ClienteAutomatico {
     if (this.pediu(texto, 'confirmar', /confirm|esta correto|esta certo|tudo certo|certinho|posso anotar|resumo/)) {
       return 'Isso, pode confirmar!';
     }
+    // dados do fechamento: tudo o que o assistente pediu nesta mensagem vai junto ("nome e entrega ou retirada")
+    const dados: string[] = [];
     if (this.pediu(texto, 'quantidade', /quantas unidades|quantidade|quantos (?:voce|vai|deseja|gostaria)/)) {
-      return '100 unidades';
+      dados.push('100 unidades');
     }
     if (this.pediu(texto, 'data', /qual (?:a )?data|para (?:qual|que) (?:data|dia)|para quando|que dia|qual dia/)) {
-      return `Para ${this.dataDoPedido}`;
+      dados.push(`Para ${this.dataDoPedido}`);
     }
     if (this.pediu(texto, 'hora', /que horas|qual (?:o )?horario|que horario/)) {
-      return 'Às 15h';
+      dados.push('Às 15h');
     }
     if (this.pediu(texto, 'entrega', /retirada|retirar|entrega|buscar/)) {
-      return 'Vou retirar';
+      dados.push('Vou retirar');
     }
     if (this.pediu(texto, 'pagamento', /pagamento|pagar|\bpix\b|cartao/)) {
-      return 'Pix';
+      dados.push('Pix');
     }
     if (this.pediu(texto, 'nome', /\bnome\b/)) {
-      return this.dados.nome;
+      dados.push(dados.length ? `Meu nome é ${this.dados.nome}` : this.dados.nome);
+    }
+    if (dados.length) {
+      return dados.join('. ');
     }
     if (this.pediu(texto, 'adicional', /adiciona|acrescentar|mais alguma/)) {
       return 'Não, só isso';

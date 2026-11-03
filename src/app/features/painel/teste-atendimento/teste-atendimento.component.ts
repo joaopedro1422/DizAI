@@ -264,16 +264,12 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
   private readonly router = inject(Router);
   private readonly rotas = inject(SessaoService).rotasDoPainel;
 
-  /** Produtos, fim do primeiro teste: o pedido do teste espera no Chats como "Pronto para fechar". */
-  protected verPedidoNoChats(): void {
-    void this.router.navigateByUrl(this.rotas().chats);
-  }
-
-  /** Serviços: abre a agenda online em outra aba e volta ao painel para continuar a configuração. */
-  protected conhecerAgendaOnline(): void {
-    // ?conhecer=1: a página pública convida o lojista a personalizá-la (só nesta vez, vinda do primeiro teste)
-    window.open(`/l/${this.perfil().slug}/agenda?conhecer=1`, '_blank', 'noopener');
-    this.voltarAoPainel.emit();
+  /**
+   * Fim do primeiro teste: o pedido espera no Chats ("Pronto para fechar") e o horário está na Agenda; a tela abre
+   * o fechamento do onboarding ("Agora é com você") com o ?fechamento=1.
+   */
+  protected irParaOFechamento(destino: 'chats' | 'agenda'): void {
+    void this.router.navigate([this.rotas()[destino]], { queryParams: { fechamento: 1 } });
   }
 
   /** No primeiro teste: produtos, logo depois da primeira resposta; serviços, quando o horário é marcado. */

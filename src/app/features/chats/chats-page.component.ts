@@ -26,6 +26,9 @@ import {
 
 type AbaChats = 'aguardando' | 'andamento';
 
+import { ActivatedRoute, Router } from '@angular/router';
+import { ESPERA_FECHAMENTO_MS, FechamentoOnboardingComponent } from '../painel/onboarding/fechamento-onboarding.component';
+
 @Component({
   selector: 'app-chats-page',
   imports: [
@@ -40,6 +43,7 @@ type AbaChats = 'aguardando' | 'andamento';
     BottomSheetComponent,
     AcaoPedidoConversaComponent,
     DetalheConversaComponent,
+    FechamentoOnboardingComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './chats-page.component.html',
@@ -84,7 +88,28 @@ export class ChatsPageComponent implements OnInit {
     recusar: 'Pedido não aceito',
   };
 
+
+  /**
+   * Fim do onboarding (?fechamento=1, vindo do primeiro teste): a tela fica à vista alguns segundos e abre o
+   * "Agora é com você". O vídeo/convite da primeira visita fica para a próxima.
+   */
+  protected readonly mostrarFechamento = signal(false);
+  private readonly rotaAtualFechamento = inject(ActivatedRoute);
+  private readonly routerFechamento = inject(Router);
+
+  private conferirFechamento(): boolean {
+    if (!this.rotaAtualFechamento.snapshot.queryParamMap.has('fechamento')) {
+      return false;
+    }
+    void this.routerFechamento.navigate([], { relativeTo: this.rotaAtualFechamento, queryParams: {}, replaceUrl: true });
+    window.setTimeout(() => this.mostrarFechamento.set(true), ESPERA_FECHAMENTO_MS);
+    return true;
+  }
+
   ngOnInit(): void {
+    if (this.conferirFechamento()) {
+      this.mostrarVideo.set(false);
+    }
     // o aviso "Pedido para fechar" abre aqui: a bolinha dos pedidos no ícone do app some
     void limparMarcaIcone('pedido');
     this.conversaService

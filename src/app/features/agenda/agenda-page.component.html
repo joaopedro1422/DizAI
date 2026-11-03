@@ -723,3 +723,7 @@
     <ng-container [ngTemplateOutlet]="calendario" />
   </app-bottom-sheet>
 }
+
+@if (mostrarFechamento()) {
+  <app-fechamento-onboarding tipo="servicos" (fechar)="mostrarFechamento.set(false)" />
+}

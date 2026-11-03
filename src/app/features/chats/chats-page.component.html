@@ -107,3 +107,7 @@
 @if (temVideo() && mostrarVideo()) {
   <app-video-chats (confirmar)="fecharVideo()" (fechar)="fecharVideo()" />
 }
+
+@if (mostrarFechamento()) {
+  <app-fechamento-onboarding tipo="produtos" (fechar)="mostrarFechamento.set(false)" />
+}
