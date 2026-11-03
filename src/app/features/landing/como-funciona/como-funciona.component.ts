@@ -19,7 +19,8 @@ import { PASSOS_COMO_FUNCIONA, ROTEIROS_COMO_FUNCIONA, TipoComoFunciona } from '
  * deslizando por cima, os horários da agenda (serviços) ou a pergunta frequente de pagamento (produtos); o WhatsApp
  * conectado; e uma conversa relâmpago com o que foi cadastrado, terminando no aviso.
  * Todo o tempo é CSS: a barrinha do passo é o relógio (`animationend` passa para o próximo) e as telas animam com
- * `animation-delay`; pausar (mouse em cima, foco, fora da tela) é só parar as animações.
+ * `animation-delay`. Pausar (mouse no celular, foco pelo teclado, fora da tela) para só a barrinha: as telas sempre
+ * terminam a animação (pausar a tela nova deixava o celular em branco).
  */
 @Component({
   selector: 'app-como-funciona',
@@ -34,7 +35,7 @@ import { PASSOS_COMO_FUNCIONA, ROTEIROS_COMO_FUNCIONA, TipoComoFunciona } from '
   ],
   host: {
     '[class.pausado]': 'pausado()',
-    '(focusin)': 'focado.set(true)',
+    '(focusin)': 'aoFocar($event)',
     '(focusout)': 'focado.set(false)',
   },
 })
@@ -61,6 +62,12 @@ export class ComoFuncionaComponent {
       observador.observe(elemento);
     });
     inject(DestroyRef).onDestroy(() => observador?.disconnect());
+  }
+
+  /** Só o foco pelo teclado pausa: o clique num passo também dá foco ao botão e não deve travar a troca. */
+  protected aoFocar(evento: FocusEvent): void {
+    const alvo = evento.target as HTMLElement | null;
+    this.focado.set(!!alvo?.matches(':focus-visible'));
   }
 
   protected escolherTipo(tipo: TipoComoFunciona): void {

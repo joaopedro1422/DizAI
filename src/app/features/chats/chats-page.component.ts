@@ -108,6 +108,19 @@ export class ChatsPageComponent implements OnInit {
     }
   }
 
+  /** "Já analisei" o modelo (Bolos e tortas): sai do "Aguardando você"; o assistente continua na conversa. */
+  protected async marcarModeloAnalisado(conversa: Conversa): Promise<void> {
+    this.resolvendoId.set(conversa.id);
+    try {
+      await this.conversaService.marcarModeloAnalisado(conversa.id);
+      this.toastService.mostrar('Modelo marcado como analisado');
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível atualizar a conversa. Tente de novo.'));
+    } finally {
+      this.resolvendoId.set(null);
+    }
+  }
+
   /** HUMANO_ATIVO: o dono respondeu pelo celular; EM_PEDIDO: o pedido está em preparo. Nos dois o assistente fica quieto. */
   protected textoStatus(conversa: Conversa): string {
     if (conversa.status === 'EM_PEDIDO') {

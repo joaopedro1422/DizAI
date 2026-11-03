@@ -240,11 +240,13 @@
   color: #1F7A4A;
 }
 
-/* pausado (mouse no celular, foco no teclado ou fora da tela): tudo para onde está */
-:host(.pausado) .passo__barra i,
-:host(.pausado) .selo-flutuante,
-:host(.pausado) .palco :is(.tela, .tela *) {
-  animation-play-state: paused !important;
+/*
+ * pausado (mouse no celular, foco ou fora da tela): só a barrinha para, então o passo não troca. As telas e o selo
+ * sempre terminam a animação; pausar a tela nova deixava o celular em branco (ela nasce transparente e, com o foco
+ * no passo clicado, ficava parada no primeiro quadro).
+ */
+:host(.pausado) .passo__barra i {
+  animation-play-state: paused;
 }
 
 @keyframes encher { to { transform: scaleX(1); } }

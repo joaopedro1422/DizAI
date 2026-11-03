@@ -14,8 +14,21 @@
 @if (motivo(); as apresentacao) {
   <span class="motivo" [class]="'motivo--' + apresentacao.tom">{{ apresentacao.rotulo }}</span>
 }
+@if (conversa().modeloParaAnalisar) {
+  <span class="motivo motivo--modelo">
+    <app-icone nome="imagem" [tamanho]="13" [espessura]="2.2" />
+    Modelo para analisar
+  </span>
+}
 
-<p class="mensagem">"{{ conversa().ultimaMensagem }}"</p>
+<p class="mensagem">"{{ ultimaMensagem() }}"</p>
+
+@if (soModelo()) {
+  <div class="resumo caixa-suave">
+    <span class="rotulo-maiusculo">Foto de modelo</span>
+    <p class="resumo__duvida">O cliente enviou a foto de um modelo. Veja no WhatsApp se você faz. O assistente continua coletando o pedido.</p>
+  </div>
+}
 
 @if (duvida() !== null) {
   @if (duvida()) {
@@ -43,7 +56,15 @@
     <app-icone nome="conversa" [tamanho]="16" [espessura]="2" />
     Ir ao WhatsApp
   </a>
-  @if (!ehPedido()) {
+  @if (soModelo()) {
+    <button type="button" class="btn btn--secundario acoes__resolvido" [disabled]="resolvendo()" [attr.aria-busy]="resolvendo()" (click)="modeloAnalisado.emit()">
+      @if (resolvendo()) {
+        <app-carregando modo="inline" [tamanho]="20" />
+      } @else {
+        Já analisei
+      }
+    </button>
+  } @else if (!ehPedido()) {
     <button type="button" class="btn btn--secundario acoes__resolvido" [disabled]="resolvendo()" [attr.aria-busy]="resolvendo()" (click)="resolvida.emit()">
       @if (resolvendo()) {
         <app-carregando modo="inline" [tamanho]="20" />

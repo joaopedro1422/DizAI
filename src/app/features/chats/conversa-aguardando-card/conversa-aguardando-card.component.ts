@@ -23,6 +23,8 @@ export class ConversaAguardandoCardComponent {
   readonly conversa = input.required<Conversa>();
   readonly resolvendo = input(false);
   readonly resolvida = output<void>();
+  /** Bolos e tortas: "Já analisei" o modelo que o cliente mandou. */
+  readonly modeloAnalisado = output<void>();
   /** Pedido de loja de produtos: confirmar, entregar ou recusar (no lugar do "Resolvido"). */
   readonly acaoPedido = output<AcaoPedidoConversa>();
 
@@ -45,6 +47,16 @@ export class ConversaAguardandoCardComponent {
   /** Conversa passada por uma pergunta: o card mostra só o assunto, sem resumo de pedido nem os botões do pedido. */
   protected readonly duvida = computed(() =>
     this.conversa().motivoEspera === 'DUVIDA' ? (this.conversa().resumoPedido[0]?.valor ?? '') : null,
+  );
+
+  /** A última mensagem; a foto do cliente chega como "[O cliente enviou uma imagem]" e aparece como "📷 Foto". */
+  protected readonly ultimaMensagem = computed(() =>
+    this.conversa().ultimaMensagem.replace('[O cliente enviou uma imagem]', '📷 Foto ·').trim().replace(/ ·$/, ''),
+  );
+
+  /** Só o modelo para analisar (a IA continua na conversa): o card troca o "Resolvido" pelo "Já analisei". */
+  protected readonly soModelo = computed(
+    () => this.conversa().modeloParaAnalisar && this.conversa().status !== 'AGUARDANDO_DONO',
   );
 
   protected readonly motivo = computed(() => {

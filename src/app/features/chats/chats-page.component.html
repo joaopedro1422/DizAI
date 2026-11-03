@@ -56,6 +56,7 @@
           [conversa]="conversa"
           [resolvendo]="resolvendoId() === conversa.id"
           (resolvida)="marcarComoResolvida(conversa)"
+          (modeloAnalisado)="marcarModeloAnalisado(conversa)"
           (acaoPedido)="acaoPedido.set({ conversa, acao: $event })"
         />
       } @empty {

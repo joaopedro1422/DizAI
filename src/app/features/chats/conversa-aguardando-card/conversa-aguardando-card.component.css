@@ -50,6 +50,14 @@
   color: #7a4c00;
 }
 
+.motivo--modelo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--cor-azul-fundo);
+  color: var(--cor-azul);
+}
+
 .motivo--erro {
   background: var(--cor-rosa-fundo);
   color: #8e2e4d;

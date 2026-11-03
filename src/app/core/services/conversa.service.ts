@@ -21,17 +21,17 @@ export class ConversaService {
 
   readonly carregando = this.carregamento.carregando;
 
-  /** Conversas que precisam do dono, as mais recentes primeiro. */
+  /** Conversas que precisam do dono (e as com um modelo para analisar), as mais recentes primeiro. */
   readonly aguardandoDono = computed(() =>
     this.listaConversas()
-      .filter((conversa) => conversa.status === 'AGUARDANDO_DONO')
+      .filter((conversa) => precisaDoDono(conversa))
       .sort((a, b) => b.atualizadaEm.getTime() - a.atualizadaEm.getTime()),
   );
 
   /** Conversas em andamento (com o assistente ou com o dono no celular), as mais recentes primeiro. */
   readonly emAndamento = computed(() =>
     this.listaConversas()
-      .filter((conversa) => conversa.status !== 'AGUARDANDO_DONO')
+      .filter((conversa) => !precisaDoDono(conversa))
       .sort((a, b) => b.atualizadaEm.getTime() - a.atualizadaEm.getTime()),
   );
 
@@ -67,6 +67,14 @@ export class ConversaService {
     this.listaConversas.update((conversas) =>
       conversas.map((conversa) => (conversa.id === conversaId ? resolvida : conversa)),
     );
+  }
+
+  /** "Já analisei" (Bolos e tortas): o modelo sai do "Aguardando você"; a conversa segue com o assistente. */
+  async marcarModeloAnalisado(conversaId: string): Promise<void> {
+    const atualizada = paraConversa(
+      await firstValueFrom(this.http.patch<ConversaApi>(this.url(`/${conversaId}/modelo-analisado`), null)),
+    );
+    this.listaConversas.update((conversas) => conversas.map((c) => (c.id === conversaId ? atualizada : c)));
   }
 
   /** "Assumir conversa": o assistente para de responder este cliente (volta com o marcarComoResolvida). */
@@ -106,9 +114,15 @@ export class ConversaService {
   }
 }
 
+/** Esperando o dono: a IA passou a conversa ou há um modelo (Bolos e tortas) para ele analisar. */
+function precisaDoDono(conversa: Conversa): boolean {
+  return conversa.status === 'AGUARDANDO_DONO' || conversa.modeloParaAnalisar;
+}
+
 function paraConversa(conversa: ConversaApi): Conversa {
   return {
     ...conversa,
+    modeloParaAnalisar: !!conversa.modeloParaAnalisar,
     motivoEspera: conversa.motivoEspera ?? undefined,
     resumoPedido: conversa.resumoPedido ?? [],
     atualizadaEm: new Date(conversa.atualizadaEm),

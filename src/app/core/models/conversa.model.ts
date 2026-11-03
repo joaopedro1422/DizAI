@@ -35,4 +35,9 @@ export interface Conversa {
   status: StatusConversa;
   motivoEspera?: MotivoEspera;
   resumoPedido: ItemResumoPedido[];
+  /**
+   * Bolos e tortas: o cliente mandou a foto de um modelo e o lojista ainda não marcou "Já analisei". A conversa fica
+   * em "Aguardando você", mas o assistente continua nela (o status não muda).
+   */
+  modeloParaAnalisar: boolean;
 }
