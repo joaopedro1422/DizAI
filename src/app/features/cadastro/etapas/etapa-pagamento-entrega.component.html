@@ -31,7 +31,7 @@
 <fieldset class="etapa__grupo">
   <legend class="etapa__legenda">Como o cliente recebe</legend>
   <div class="grupo-chips">
-    @for (forma of formasRecebimento; track forma.valor) {
+    @for (forma of formasRecebimento(); track forma.valor) {
       @let marcado = controles.formasRecebimento.value.includes(forma.valor);
       <button
         type="button"

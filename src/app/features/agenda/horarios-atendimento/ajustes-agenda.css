@@ -222,48 +222,6 @@
   padding: 4px 14px 16px 62px;
 }
 
-/* A semana (dias, o dia escolhido e o resumo) dentro do cartão */
-.painel-ajustes--semana {
-  gap: 14px;
-  padding: 14px;
-}
-
-.painel-ajustes--semana > * + * {
-  border-top: none;
-}
-
-.semana__dia {
-  border-radius: 12px;
-  cursor: pointer;
-}
-
-.dia-aberto {
-  border-radius: 12px;
-  background: var(--cor-fundo-suave);
-}
-
-.resumo-semana__linha {
-  padding: 10px 4px;
-  cursor: pointer;
-}
-
-.resumo-semana__linha:last-child {
-  border-bottom: none;
-}
-
-.resumo-semana__texto {
-  flex: 1;
-}
-
-.resumo-semana__seta {
-  color: var(--cor-borda-forte);
-}
-
-.resumo-semana__linha--escolhida .resumo-semana__dia,
-.resumo-semana__linha--escolhida .resumo-semana__seta {
-  color: var(--cor-primaria);
-}
-
 /* Lista de espera: como funciona */
 .passos {
   display: flex;
@@ -316,10 +274,6 @@
   .horarios__coluna,
   .horarios--uma-coluna {
     gap: 28px;
-  }
-
-  .painel-ajustes--semana {
-    padding: 18px;
   }
 }
 

@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { AbstractControl, FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { FORMAS_PAGAMENTO, FORMAS_RECEBIMENTO } from '../../../core/constants/opcoes-perfil';
@@ -22,7 +22,10 @@ export class EtapaPagamentoEntregaComponent {
   readonly exibirAntecedencia = input(true);
 
   protected readonly formasPagamento = FORMAS_PAGAMENTO;
-  protected readonly formasRecebimento = FORMAS_RECEBIMENTO;
+  /** Nas lojas de produtos (as que têm antecedência), só Entrega e Retirada. */
+  protected readonly formasRecebimento = computed(() =>
+    this.exibirAntecedencia() ? FORMAS_RECEBIMENTO.filter((forma) => forma.valor !== 'ATENDIMENTO_LOCAL') : FORMAS_RECEBIMENTO,
+  );
 
   protected temErro(controle: AbstractControl): boolean {
     return campoComErro(controle);

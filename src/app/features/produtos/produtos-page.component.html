@@ -128,19 +128,6 @@
   />
 }
 
-@if (exemploParaMostrar(); as exemplo) {
-  <!-- fim do tour (lojas de produtos): obrigatório ver o assistente vendendo o exemplo; não há outra saída -->
-  <app-dica-sobreposta
-    icone="brilho"
-    sobretitulo="Seu primeiro produto"
-    titulo="Deixamos um exemplo pronto"
-    descricao="Veja como um cadastro completo fica. Agora, acompanhe o assistente vendendo este produto, do preço ao pedido. Depois, você edita ou apaga e cadastra os seus."
-    [itens]="exemplo"
-    rotuloBotao="Ver o assistente atendendo"
-    (confirmar)="verAssistenteVendendo()"
-  />
-}
-
 @if (convidarTeste(); as nome) {
   <!-- primeiro item: o melhor momento para ver o assistente respondendo -->
   <app-dica-sobreposta

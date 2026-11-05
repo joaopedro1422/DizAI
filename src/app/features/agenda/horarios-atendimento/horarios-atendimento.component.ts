@@ -11,8 +11,7 @@ import { AgendaService } from '../../../core/services/agenda.service';
 import { PerfilService } from '../../../core/services/perfil.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { alternarItem, pluralizar } from '../../../core/utils/colecao.utils';
-import { DIAS_SEMANA, minutosDoDia } from '../../../core/utils/datas-agenda';
-import { BottomSheetComponent } from '../../../shared/components/bottom-sheet/bottom-sheet.component';
+import { DIAS_SEMANA } from '../../../core/utils/datas-agenda';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { InterruptorComponent } from '../../../shared/components/interruptor/interruptor.component';
@@ -20,11 +19,8 @@ import { ETIQUETAS_AGENDAMENTO, MensagemConfirmacaoComponent } from '../mensagem
 import { ProfissionaisAgendaComponent } from '../profissionais/profissionais-agenda.component';
 import { SecaoConfiguracao } from '../secoes-agenda';
 import { AlvoTourDirective } from '../../painel/onboarding/alvo-tour.directive';
-
-interface Trecho {
-  inicio: string;
-  fim: string;
-}
+import { SemanaAgendaComponent } from '../semana-agenda/semana-agenda.component';
+import { Trecho, validarDia } from '../semana-agenda/semana-agenda';
 
 /** O que está na tela (só vai para o backend no "Salvar"). */
 interface Rascunho {
@@ -88,21 +84,13 @@ const LEMBRETES = [
 /** Quanto tempo quem recebe a vaga da lista de espera tem para responder. */
 const PRAZOS_LISTA_ESPERA = [10, 15, 30];
 
-/** Quem liga o dia ganha o horário mais comum: manhã e tarde com pausa para o almoço. */
-const DIA_PADRAO: Trecho[] = [
-  { inicio: '08:00', fim: '12:00' },
-  { inicio: '13:00', fim: '18:00' },
-];
-
-const MAXIMO_PERIODOS_POR_DIA = 4;
-
 @Component({
   selector: 'app-horarios-atendimento',
   imports: [
+    SemanaAgendaComponent,
     RouterLink,
     IconeComponent,
     InterruptorComponent,
-    BottomSheetComponent,
     CarregandoComponent,
     MensagemConfirmacaoComponent,
     ProfissionaisAgendaComponent,
@@ -140,18 +128,12 @@ export class HorariosAtendimentoComponent {
   protected readonly lembretes = LEMBRETES;
   protected readonly prazosListaEspera = PRAZOS_LISTA_ESPERA;
   protected readonly etiquetasAgradecimento = ETIQUETAS_AGRADECIMENTO;
-  protected readonly maximoPeriodos = MAXIMO_PERIODOS_POR_DIA;
 
   protected readonly rascunho = linkedSignal(() => paraRascunho(this.configuracao()));
-  protected readonly diaAberto = signal<DiaSemana>(diaDeHoje());
   protected readonly salvando = signal(false);
-  protected readonly copiando = signal(false);
   /** Os cards de mensagem abertos (começam fechados, para a tela não ficar comprida). */
   protected readonly mensagensAbertas = signal<MensagemDaAgenda[]>([]);
-  protected readonly diasParaCopiar = signal<DiaSemana[]>([]);
 
-  protected readonly infoDiaAberto = computed(() => DIAS_SEMANA.find((d) => d.valor === this.diaAberto())!);
-  protected readonly trechosDiaAberto = computed(() => this.rascunho().periodos[this.diaAberto()]);
 
   protected readonly alterado = computed(
     () => JSON.stringify(this.rascunho()) !== JSON.stringify(paraRascunho(this.configuracao())),
@@ -174,17 +156,6 @@ export class HorariosAtendimentoComponent {
     DIAS_SEMANA.some((dia) => this.rascunho().periodos[dia.valor].length > 0),
   );
 
-  /** Uma linha por dia da semana, para conferir a semana inteira de uma vez. */
-  protected readonly resumoSemana = computed(() =>
-    DIAS_SEMANA.map((dia) => {
-      const trechos = this.rascunho().periodos[dia.valor];
-      return {
-        ...dia,
-        texto: trechos.length === 0 ? 'Fechado' : trechos.map((t) => `${t.inicio}–${t.fim}`).join('  ·  '),
-        aberto: trechos.length > 0,
-      };
-    }),
-  );
 
   protected readonly confirmacaoPadrao = computed(
     () => this.configuracao().mensagemConfirmacaoPadrao ?? CONFIRMACAO_PADRAO,
@@ -210,10 +181,6 @@ export class HorariosAtendimentoComponent {
     pluralizar(this.servicosSemDuracao(), 'serviço está', 'serviços estão'),
   );
 
-  protected escolherDia(dia: DiaSemana): void {
-    this.diaAberto.set(dia);
-  }
-
   protected definirConfirmacao(texto: string): void {
     this.rascunho.update((r) => ({ ...r, mensagemConfirmacao: texto }));
   }
@@ -232,40 +199,6 @@ export class HorariosAtendimentoComponent {
 
   protected definirAgradecimento(texto: string): void {
     this.rascunho.update((r) => ({ ...r, mensagemAgradecimento: texto }));
-  }
-
-  protected alternarDiaAberto(aberto: boolean): void {
-    this.definirTrechos(this.diaAberto(), aberto ? DIA_PADRAO.map((t) => ({ ...t })) : []);
-  }
-
-  protected alterarTrecho(indice: number, campo: keyof Trecho, evento: Event): void {
-    const valor = (evento.target as HTMLInputElement).value;
-    if (!valor) {
-      return;
-    }
-    const trechos = this.trechosDiaAberto().map((t, i) => (i === indice ? { ...t, [campo]: valor.slice(0, 5) } : t));
-    this.definirTrechos(this.diaAberto(), trechos);
-  }
-
-  protected abrirSeletor(evento: Event): void {
-    try {
-      (evento.target as HTMLInputElement).showPicker();
-    } catch {
-      // navegador sem showPicker ou sem gesto do usuário: segue digitando no campo
-    }
-  }
-
-  /** Novo período depois do último, com 1 hora de pausa (ex.: almoço). */
-  protected adicionarTrecho(): void {
-    const trechos = this.trechosDiaAberto();
-    const ultimo = trechos.at(-1);
-    const inicio = ultimo ? Math.min(minutosDoDia(ultimo.fim) + 60, 22 * 60) : 8 * 60;
-    const fim = Math.min(inicio + 4 * 60, 23 * 60 + 45);
-    this.definirTrechos(this.diaAberto(), [...trechos, { inicio: paraHora(inicio), fim: paraHora(fim) }]);
-  }
-
-  protected removerTrecho(indice: number): void {
-    this.definirTrechos(this.diaAberto(), this.trechosDiaAberto().filter((_, i) => i !== indice));
   }
 
   /** Os seletores das páginas de configuração guardam minutos no value. */
@@ -291,34 +224,6 @@ export class HorariosAtendimentoComponent {
 
   protected escolherPrazoListaEspera(minutos: number): void {
     this.rascunho.update((r) => ({ ...r, listaEsperaMinutos: minutos }));
-  }
-
-  protected abrirCopia(): void {
-    this.diasParaCopiar.set([]);
-    this.copiando.set(true);
-  }
-
-  protected alternarDiaParaCopiar(dia: DiaSemana): void {
-    this.diasParaCopiar.update((dias) => alternarItem(dias, dia));
-  }
-
-  /** Atalho comum: copiar a segunda para os outros dias úteis. */
-  protected marcarDiasUteis(): void {
-    this.diasParaCopiar.set(
-      (['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'] as DiaSemana[]).filter((d) => d !== this.diaAberto()),
-    );
-  }
-
-  protected copiar(): void {
-    const origem = this.trechosDiaAberto();
-    const destinos = this.diasParaCopiar();
-    this.rascunho.update((r) => {
-      const periodos = { ...r.periodos };
-      destinos.forEach((dia) => (periodos[dia] = origem.map((t) => ({ ...t }))));
-      return { ...r, periodos };
-    });
-    this.copiando.set(false);
-    this.toastService.mostrar(`Horários copiados para ${pluralizar(destinos.length, 'dia', 'dias')}`);
   }
 
   protected descartar(): void {
@@ -357,8 +262,8 @@ export class HorariosAtendimentoComponent {
     }
   }
 
-  private definirTrechos(dia: DiaSemana, trechos: Trecho[]): void {
-    this.rascunho.update((r) => ({ ...r, periodos: { ...r.periodos, [dia]: trechos } }));
+  protected definirPeriodos(periodos: Record<DiaSemana, Trecho[]>): void {
+    this.rascunho.update((r) => ({ ...r, periodos }));
   }
 }
 
@@ -403,23 +308,3 @@ function paraConfiguracao(rascunho: Rascunho, atual: ConfiguracaoAgenda): Config
   };
 }
 
-function validarDia(trechos: Trecho[]): string | null {
-  if (trechos.some((t) => minutosDoDia(t.inicio) >= minutosDoDia(t.fim))) {
-    return 'O fim de cada período precisa ser depois do início.';
-  }
-  const ordenados = [...trechos].sort((a, b) => minutosDoDia(a.inicio) - minutosDoDia(b.inicio));
-  for (let i = 1; i < ordenados.length; i++) {
-    if (minutosDoDia(ordenados[i].inicio) < minutosDoDia(ordenados[i - 1].fim)) {
-      return 'Os períodos deste dia estão se sobrepondo.';
-    }
-  }
-  return null;
-}
-
-function paraHora(minutos: number): string {
-  return `${String(Math.floor(minutos / 60)).padStart(2, '0')}:${String(minutos % 60).padStart(2, '0')}`;
-}
-
-function diaDeHoje(): DiaSemana {
-  return DIAS_SEMANA[(new Date().getDay() + 6) % 7].valor;
-}

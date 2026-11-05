@@ -1,0 +1,518 @@
+/* As peças de cada passo do onboarding (envio do catálogo, horários, pagamento, saudação e o exemplo). */
+
+.cartao {
+  padding: 6px 18px;
+  border: 1px solid var(--ob-linha);
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: var(--ob-sombra);
+}
+
+/* Catálogo -------------------------------------------------------------------- */
+
+.envio {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 30px 20px;
+  border: 2px dashed rgba(30, 58, 114, 0.25);
+  border-radius: 22px;
+  background: #ffffff;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.envio:hover,
+.envio--arrastando {
+  border-color: var(--ob-marinho);
+  background: var(--ob-claro);
+}
+
+.envio input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.envio__icone {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  margin-bottom: 4px;
+  border-radius: 16px;
+  background: var(--ob-claro);
+  color: var(--ob-marinho);
+}
+
+.envio strong {
+  font-size: 15px;
+}
+
+.envio small {
+  color: var(--ob-fraco);
+  font-size: 13px;
+}
+
+.arquivos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.arquivo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--ob-linha);
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.arquivo__tipo {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 46px;
+  border-radius: 9px;
+  background: var(--ob-marinho);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.arquivo__tipo--pdf {
+  background: #E5484D;
+}
+
+.arquivo__nome {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 14px;
+}
+
+.arquivo__nome strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arquivo__nome small {
+  color: var(--ob-fraco);
+  font-size: 12.5px;
+}
+
+.arquivo__remover {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ob-fraco);
+  cursor: pointer;
+}
+
+.arquivo__remover:hover {
+  background: rgba(14, 21, 37, 0.06);
+  color: var(--ob-texto);
+}
+
+/* Horário: "Dias e horários" ou "Sempre" -------------------------------------- */
+
+.opcoes-horario,
+.entregas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.opcao,
+.entrega {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--ob-linha);
+  border-radius: 18px;
+  background: #ffffff;
+  color: var(--ob-texto);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.opcao span,
+.entrega__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.opcao strong,
+.entrega strong {
+  font-size: 14.5px;
+}
+
+.opcao small,
+.entrega small {
+  color: var(--ob-fraco);
+  font-size: 12.5px;
+}
+
+.opcao app-icone {
+  color: var(--ob-marinho);
+}
+
+.opcao--ativa,
+.entrega--ativa {
+  border-color: var(--ob-marinho);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(30, 58, 114, 0.1);
+}
+
+/* Pagamento e entrega ------------------------------------------------------- */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1.5px solid var(--ob-linha);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--ob-texto);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.chip--ativo {
+  border-color: var(--ob-marinho);
+  background: var(--ob-marinho);
+  color: #ffffff;
+}
+
+.entrega__icone {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 13px;
+  background: var(--ob-claro);
+  color: var(--ob-marinho);
+}
+
+.entrega__marca {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--ob-linha);
+  border-radius: 50%;
+  color: transparent;
+}
+
+.entrega--ativa .entrega__marca {
+  border-color: var(--ob-verde);
+  background: var(--ob-verde);
+  color: #ffffff;
+}
+
+/* Saudação: o editor e a prévia no WhatsApp lado a lado ------------------------ */
+
+.saudacao {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 14px;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1.5px solid var(--ob-linha);
+  border-radius: 20px;
+  background: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.editor:focus-within {
+  border-color: var(--ob-marinho);
+  box-shadow: 0 0 0 4px rgba(30, 58, 114, 0.1);
+}
+
+.editor__campo {
+  min-height: 150px;
+  padding: 16px 16px 8px;
+  border: 0;
+  outline: none;
+  resize: vertical;
+  color: var(--ob-texto);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.editor__rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px 10px;
+  border-top: 1px solid var(--ob-linha);
+  background: #FAFBFD;
+}
+
+.editor__emojis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.emoji {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.emoji:hover {
+  background: var(--ob-claro);
+  transform: scale(1.12);
+}
+
+.editor__contador {
+  flex: none;
+  color: var(--ob-fraco);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.previa {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.previa__rotulo {
+  color: var(--ob-fraco);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.previa__tela {
+  flex: 1;
+  min-height: 180px;
+  padding: 16px 14px;
+  border-radius: 20px;
+  background: #ECE5DD;
+}
+
+.previa__balao {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  padding: 9px 12px 20px;
+  border-radius: 4px 14px 14px 14px;
+  background: #ffffff;
+  color: #111B21;
+  font-size: 14px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+
+.previa__balao i {
+  position: absolute;
+  right: 10px;
+  bottom: 4px;
+  color: #667781;
+  font-size: 10.5px;
+  font-style: normal;
+}
+
+/* O exemplo, desenhado como um cartão (sem campos) ------------------------------ */
+
+.exemplo {
+  overflow: hidden;
+  border: 1px solid var(--ob-linha);
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: var(--ob-sombra);
+}
+
+.exemplo__topo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 20px 18px;
+  background: linear-gradient(160deg, var(--ob-claro), #ffffff 80%);
+}
+
+.exemplo__selo {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(20, 163, 127, 0.12);
+  color: #0E8A6A;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.exemplo__nome {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.exemplo__descricao {
+  margin: 0;
+  color: var(--ob-suave);
+  font-size: 14.5px;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.exemplo__fatos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.fato {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border: 1px solid var(--ob-linha);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--ob-suave);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.fato--preco {
+  border-color: transparent;
+  background: var(--ob-marinho);
+  color: #ffffff;
+}
+
+.atributo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--ob-linha);
+}
+
+.atributo__cabeca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+
+.atributo__cabeca strong {
+  font-size: 15px;
+}
+
+.atributo__cabeca small {
+  color: var(--ob-marinho);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.atributo__opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.valor {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #F1F4F9;
+  color: var(--ob-texto);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.exemplo__dica {
+  margin: 0;
+  padding: 16px 20px;
+  border-top: 1px solid var(--ob-linha);
+  color: var(--ob-suave);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .saudacao {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .previa__tela {
+    min-height: 0;
+  }
+
+  .entregas {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* os dois cartões do horário continuam lado a lado, mais compactos */
+  .opcao {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .opcao strong {
+    font-size: 13.5px;
+  }
+
+  .opcao small {
+    font-size: 11.5px;
+  }
+}

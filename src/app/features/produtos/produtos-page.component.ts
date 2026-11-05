@@ -28,8 +28,6 @@ import { GuiaCadastroComponent } from './guia-cadastro/guia-cadastro.component';
 
 const TODAS_AS_CATEGORIAS = 'Todos';
 
-/** Fim das boas-vindas (lojas de produtos): quanto tempo o exemplo fica à vista antes da janela do teste. */
-const ESPERA_JANELA_EXEMPLO_MS = 3000;
 
 @Component({
   selector: 'app-produtos-page',
@@ -130,43 +128,11 @@ export class ProdutosPageComponent implements OnInit {
   private readonly rotaAtual = inject(ActivatedRoute);
   private readonly rotasPainel = inject(SessaoService).rotasDoPainel;
 
-  protected readonly mostrarExemplo = signal(false);
-  private exemploPedido = false;
-  /** O exemplo na janela: o produto e o que ele tem (preço e as opções), para o lojista saber o que vai ver. */
-  protected readonly exemploParaMostrar = computed<ItemDica[] | null>(() => {
-    const produto = this.produtoService.produtos().find((p) => !p.produtoAVenda);
-    if (!this.mostrarExemplo() || this.carregando() || !produto) {
-      return null;
-    }
-    const preco = produto.preco != null ? `R$ ${produto.preco.toFixed(2).replace('.', ',')}` : 'Preço sob consulta';
-    const opcoes = produto.atributos.map((a) => a.nome);
-    const detalhe = opcoes.length ? `${preco} · ${opcoes.slice(0, -1).join(', ')}${opcoes.length > 1 ? ' e ' : ''}${opcoes[opcoes.length - 1]}` : preco;
-    return [{ icone: 'caixa', titulo: produto.nome, texto: detalhe }];
-  });
-
-  protected verAssistenteVendendo(): void {
-    this.mostrarExemplo.set(false);
-    void this.router.navigate([this.rotasPainel().atendimento], { queryParams: { testar: 1 } });
-  }
-
   ngOnInit(): void {
     const abrirCadastro = this.rotaAtual.snapshot.queryParamMap.has('novo');
-    if (this.rotaAtual.snapshot.queryParamMap.has('exemplo')) {
-      this.exemploPedido = true;
-      this.mostrarVideo.set(false);   // o vídeo do cadastro fica para a próxima visita
-      void this.router.navigate([], { relativeTo: this.rotaAtual, queryParams: {}, replaceUrl: true });
-    }
     this.produtoService
       .carregar()
-      .then(async () => {
-        // fim do tour: o exemplo é criado nas boas-vindas; se faltar (boas-vindas puladas, erro), cria agora
-        if (this.exemploPedido && this.produtoService.produtos().length === 0) {
-          await this.produtoService.criarExemplo();
-        }
-        if (this.exemploPedido) {
-          // o lojista vê o produto pronto na lista e, depois, a janela obrigatória do teste
-          window.setTimeout(() => this.mostrarExemplo.set(true), ESPERA_JANELA_EXEMPLO_MS);
-        }
+      .then(() => {
         // vindo do onboarding: o vídeo da primeira visita já leva ao cadastro; sem ele, abre o formulário
         if (abrirCadastro && !this.mostrarVideo()) {
           this.abrirModal();

@@ -61,22 +61,6 @@ export function passosDoTour(
       previa: sugerida ? conversa([sugerida.pergunta, semColchetes(sugerida.resposta)]) : [],
     },
     {
-      alvo: 'modo-pedido',
-      titulo: 'Como ele atende',
-      texto: `A saudação, o catálogo em PDF ou imagem e as fotos que ele envia na conversa, e o que fazer quando o cliente quer ${
-        servico ? 'marcar um horário' : 'fechar o pedido'
-      }.`,
-      previa: pedido && resposta ? conversa([pedido.texto, resposta.texto]) : [],
-    },
-    {
-      alvo: 'chats',
-      titulo: 'Chats',
-      texto: servico
-        ? 'Quando o cliente precisa de você, a conversa chega aqui, e você recebe o aviso no celular.'
-        : 'Pedido pronto para fechar chega aqui, com o resumo, e você recebe o aviso no celular.',
-      previa: [{ de: 'aviso', texto: exemplos.avisoChats }],
-    },
-    {
       alvo: 'agenda-pedidos',
       titulo: servico ? 'Sua agenda' : 'Pedidos',
       texto: servico
@@ -102,17 +86,20 @@ export function passosDoTour(
           previa: conversa([exemplos.galeria.pedidoFotos, `Tenho sim! Veja aqui: ${linkVitrine}`]),
         },
     {
-      alvo: 'redes-sociais',
-      titulo: 'Posts para o Instagram',
-      texto: 'Artes prontas com a sua logo, cores, fotos e preços, e a legenda escrita. Escolha, ajuste e poste.',
-      previa: [
-        {
-          de: 'aviso',
-          texto: servico
-            ? 'Agenda aberta: amanhã ainda tem horário das 09:00 às 11:30. A arte sai pronta para postar.'
-            : 'O seu destaque com foto e preço, e a legenda escrita. A arte sai pronta para postar.',
-        },
-      ],
+      alvo: 'modo-pedido',
+      titulo: 'Como ele atende',
+      texto: `A saudação, o catálogo em PDF ou imagem e as fotos que ele envia na conversa, e o que fazer quando o cliente quer ${
+        servico ? 'marcar um horário' : 'fechar o pedido'
+      }.`,
+      previa: pedido && resposta ? conversa([pedido.texto, resposta.texto]) : [],
+    },
+    {
+      alvo: 'chats',
+      titulo: 'Chats',
+      texto: servico
+        ? 'Quando o cliente precisa de você, a conversa chega aqui, e você recebe o aviso no celular.'
+        : 'Pedido pronto para fechar chega aqui, com o resumo, e você recebe o aviso no celular.',
+      previa: [{ de: 'aviso', texto: exemplos.avisoChats }],
     },
   ];
 }

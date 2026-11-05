@@ -1,0 +1,243 @@
+@let atual = passo();
+<div class="fundo" role="dialog" aria-modal="true" aria-labelledby="onboarding-titulo">
+  <section class="janela">
+    <header class="topo">
+      <ol class="progresso" [attr.aria-label]="'Passo ' + (indice() + 1) + ' de ' + passos().length">
+        @for (item of passos(); track item.id; let i = $index) {
+          <li class="progresso__item" [class.progresso__item--feito]="i < indice()" [class.progresso__item--atual]="i === indice()"></li>
+        }
+      </ol>
+    </header>
+
+    <div class="corpo">
+      @switch (atual.id) {
+        @case ('segmento') {
+          <h2 id="onboarding-titulo" class="titulo">
+            {{ primeiroNome() ? primeiroNome() + ', qual' : 'Qual' }} é o <span class="destaque">seu negócio?</span>
+          </h2>
+          <app-escolha-segmento [segmentos]="segmentosDoRamo()" [escolhido]="segmento()" (escolher)="segmento.set($event)" />
+          @if (tentou() && segmento() === undefined) {
+            <p class="erro">Escolha uma opção para continuar.</p>
+          }
+        }
+
+        @case ('catalogo') {
+          <h2 id="onboarding-titulo" class="titulo">
+            Cadastre o seu <span class="destaque">principal catálogo</span>{{ servico() ? '' : ' de produtos' }} em imagens ou PDF
+          </h2>
+          <p class="descricao">
+            {{ servico() ? 'A tabela de preços ou o portfólio do seu negócio.' : 'A imagem com os sabores ou o arquivo de menu do seu negócio.' }}
+            O assistente envia na conversa quando o cliente pergunta.
+          </p>
+          <label
+            class="envio"
+            [class.envio--arrastando]="arrastando()"
+            (dragover)="$event.preventDefault(); arrastando.set(true)"
+            (dragleave)="arrastando.set(false)"
+            (drop)="soltarArquivos($event)"
+          >
+            <input type="file" accept="application/pdf,image/jpeg,image/png" multiple (change)="escolherArquivos($event)" />
+            <span class="envio__icone"><app-icone nome="documento" [tamanho]="26" [espessura]="1.8" /></span>
+            <strong>Toque para escolher ou arraste aqui</strong>
+            <small>1 PDF ou até 2 imagens (JPG ou PNG)</small>
+          </label>
+          @if (arquivosCatalogo().length) {
+            <ul class="arquivos">
+              @for (arquivo of arquivosCatalogo(); track arquivo.name; let i = $index) {
+                <li class="arquivo">
+                  <span class="arquivo__tipo" [class.arquivo__tipo--pdf]="arquivo.type === 'application/pdf'">
+                    {{ arquivo.type === 'application/pdf' ? 'PDF' : 'IMG' }}
+                  </span>
+                  <span class="arquivo__nome"><strong>{{ arquivo.name }}</strong><small>{{ tamanhoArquivo(arquivo) }}</small></span>
+                  <button type="button" class="arquivo__remover" aria-label="Remover arquivo" (click)="removerArquivo(i)">
+                    <app-icone nome="fechar" [tamanho]="16" />
+                  </button>
+                </li>
+              }
+            </ul>
+          } @else if (catalogoSalvo().length) {
+            <p class="nota nota--ok"><app-icone nome="check" [tamanho]="14" [espessura]="2.6" />Catálogo já enviado. Escolha outro arquivo para trocar.</p>
+          }
+          <p class="nota"><app-icone nome="informacao" [tamanho]="14" [espessura]="2" />Mais catálogos (por assunto) podem ser cadastrados depois, em "Como o assistente atende".</p>
+        }
+
+        @case ('horario') {
+          @if (usaAgenda()) {
+            <h2 id="onboarding-titulo" class="titulo">Quais são os <span class="destaque">horários da sua agenda?</span></h2>
+            <p class="descricao">Toque em um dia para ajustar. Use mais de um período para a pausa do almoço.</p>
+          } @else {
+            <h2 id="onboarding-titulo" class="titulo">Qual é o seu <span class="destaque">horário de funcionamento?</span></h2>
+            <p class="descricao">O assistente usa para calcular prazos e avisar o cliente quando a loja está fechada.</p>
+            <div class="opcoes-horario" role="radiogroup" aria-label="Tipo de horário">
+              <button type="button" role="radio" class="opcao" [class.opcao--ativa]="!horarioLivre()" [attr.aria-checked]="!horarioLivre()" (click)="horarioLivre.set(false)">
+                <app-icone nome="calendario" [tamanho]="18" [espessura]="2" />
+                <span><strong>Dias e horários</strong><small>Abro em dias e horas definidos</small></span>
+              </button>
+              <button type="button" role="radio" class="opcao" [class.opcao--ativa]="horarioLivre()" [attr.aria-checked]="horarioLivre()" (click)="horarioLivre.set(true)">
+                <app-icone nome="relogio" [tamanho]="18" [espessura]="2" />
+                <span><strong>Sempre</strong><small>Sem horário fixo</small></span>
+              </button>
+            </div>
+          }
+          @if (usaAgenda()) {
+            <app-semana-agenda [periodos]="periodosAgenda()" (mudou)="periodosAgenda.set($event)" />
+          } @else if (!horarioLivre()) {
+            <div class="cartao">
+              <app-horario-funcionamento [periodos]="horarios()" (mudou)="horarios.set($event)" />
+            </div>
+          }
+          @if (tentou() && horarioInvalido()) {
+            <p class="erro">{{ usaAgenda() ? 'Abra pelo menos um dia e confira os períodos destacados.' : 'Abra pelo menos um dia, com o fim depois do início.' }}</p>
+          }
+        }
+
+        @case ('pagamento') {
+          <h2 id="onboarding-titulo" class="titulo">
+            Como o cliente <span class="destaque">{{ servico() ? 'paga?' : 'paga e recebe?' }}</span>
+          </h2>
+          <p class="descricao">O assistente responde quando o cliente pergunta{{ servico() ? '' : ' e confirma no pedido' }}.</p>
+          <h3 class="subtitulo">Formas de pagamento</h3>
+          <div class="chips">
+            @for (forma of formasPagamento; track forma.valor) {
+              @let marcado = pagamento().includes(forma.valor);
+              <button type="button" class="chip" [class.chip--ativo]="marcado" [attr.aria-pressed]="marcado" (click)="alternarPagamento(forma.valor)">
+                @if (marcado) { <app-icone nome="check" [tamanho]="13" [espessura]="3" /> }
+                {{ forma.rotulo }}
+              </button>
+            }
+          </div>
+          @if (!servico()) {
+            <h3 class="subtitulo">Como o pedido chega ao cliente</h3>
+            <div class="entregas">
+              @for (forma of formasRecebimento; track forma.valor) {
+                @let marcado = recebimento().includes(forma.valor);
+                <button type="button" class="entrega" [class.entrega--ativa]="marcado" [attr.aria-pressed]="marcado" (click)="alternarRecebimento(forma.valor)">
+                  <span class="entrega__icone"><app-icone [nome]="forma.icone" [tamanho]="20" [espessura]="2" /></span>
+                  <span class="entrega__textos"><strong>{{ forma.rotulo }}</strong><small>{{ forma.texto }}</small></span>
+                  <span class="entrega__marca"><app-icone nome="check" [tamanho]="12" [espessura]="3" /></span>
+                </button>
+              }
+            </div>
+          }
+          @if (tentou() && !podeAvancar()) {
+            <p class="erro">Escolha pelo menos uma forma de pagamento{{ servico() ? '' : ' e uma de entrega' }}.</p>
+          }
+        }
+
+        @case ('saudacao') {
+          <h2 id="onboarding-titulo" class="titulo">Escreva uma <span class="destaque">saudação inicial</span></h2>
+          <p class="descricao">
+            A mensagem que será enviada automaticamente no início de cada atendimento. Use emojis, cumprimente e coloque
+            informações. Se quiser, use a mensagem automática atual do seu WhatsApp.
+          </p>
+          <div class="saudacao">
+            <div class="editor">
+              <textarea
+                #campoSaudacao
+                class="editor__campo"
+                rows="6"
+                [maxLength]="limiteSaudacao"
+                [value]="saudacao()"
+                (input)="digitarSaudacao($event)"
+                placeholder="Olá, seja muito bem-vindo(a)!"
+                aria-label="Saudação inicial"
+              ></textarea>
+              <div class="editor__rodape">
+                <div class="editor__emojis" aria-label="Inserir emoji">
+                  @for (emoji of emojis; track emoji) {
+                    <button type="button" class="emoji" (click)="inserirEmoji(emoji)" [attr.aria-label]="'Inserir ' + emoji">{{ emoji }}</button>
+                  }
+                </div>
+                <small class="editor__contador">{{ saudacao().length }}/{{ limiteSaudacao }}</small>
+              </div>
+            </div>
+            <div class="previa" aria-hidden="true">
+              <span class="previa__rotulo">Como o cliente recebe</span>
+              <div class="previa__tela">
+                <span class="previa__balao">{{ saudacao() || 'Olá, seja muito bem-vindo(a)!' }}<i>09:41</i></span>
+              </div>
+            </div>
+          </div>
+          @if (tentou() && !podeAvancar()) {
+            <p class="erro">Escreva a saudação para continuar.</p>
+          }
+        }
+
+        @case ('exemplo') {
+          <h2 id="onboarding-titulo" class="titulo">Cadastramos um <span class="destaque">exemplo</span> para te ajudar</h2>
+          <p class="descricao">Um exemplo de como você pode montar os seus {{ servico() ? 'serviços' : 'produtos' }}.</p>
+          @if (exemplo(); as item) {
+            <article class="exemplo">
+              <div class="exemplo__topo">
+                <span class="exemplo__selo">{{ servico() ? 'Serviço' : 'Produto' }} de exemplo</span>
+                <h3 class="exemplo__nome">{{ item.nome }}</h3>
+                @if (item.descricao) {
+                  <p class="exemplo__descricao">{{ item.descricao }}</p>
+                }
+                <div class="exemplo__fatos">
+                  @if (item.preco != null) {
+                    <span class="fato fato--preco">{{ item.precoAPartirDe ? 'A partir de ' : '' }}{{ preco(item.preco) }}</span>
+                  }
+                  @if (item.duracaoMinutos) {
+                    <span class="fato"><app-icone nome="relogio" [tamanho]="13" [espessura]="2.2" />{{ duracao(item.duracaoMinutos) }}</span>
+                  }
+                  @if (item.antecedenciaMinutos) {
+                    <span class="fato"><app-icone nome="calendario" [tamanho]="13" [espessura]="2.2" />{{ antecedencia(item.antecedenciaMinutos) }}</span>
+                  }
+                </div>
+              </div>
+              @if (item.variacoes?.length) {
+                <div class="atributo">
+                  <span class="atributo__cabeca"><strong>Tamanhos</strong><small>O cliente escolhe 1 e o preço muda</small></span>
+                  <div class="atributo__opcoes">
+                    @for (variacao of item.variacoes; track variacao.nome) {
+                      <span class="valor">{{ variacao.nome }} · {{ preco(variacao.preco) }}</span>
+                    }
+                  </div>
+                </div>
+              }
+              @for (atributo of item.atributos; track atributo.nome) {
+                <div class="atributo">
+                  <span class="atributo__cabeca"><strong>{{ atributo.nome }}</strong><small>{{ regra(atributo) }}</small></span>
+                  <div class="atributo__opcoes">
+                    @for (opcao of atributo.opcoes; track opcao) {
+                      <span class="valor">{{ opcao }}</span>
+                    }
+                  </div>
+                </div>
+              }
+              @if (!item.atributos.length && !item.variacoes?.length) {
+                <p class="exemplo__dica">
+                  Cadastre cada {{ servico() ? 'serviço com preço e duração' : 'produto com preço' }}: o assistente responde com isso,
+                  {{ usaAgenda() ? 'oferece os horários livres e marca na sua agenda.' : 'do jeito que você cadastrar.' }}
+                </p>
+              }
+            </article>
+          } @else {
+            <p class="nota">Carregando o exemplo…</p>
+          }
+          <p class="nota"><app-icone nome="editar" [tamanho]="14" [espessura]="2" />Você pode editar ou apagar este exemplo quando quiser.</p>
+        }
+      }
+    </div>
+
+    <footer class="rodape">
+      @if (indice() > 0) {
+        <button type="button" class="botao-voltar" (click)="voltar()" [disabled]="salvando()">
+          <app-icone nome="voltar" [tamanho]="16" [espessura]="2.2" />Voltar
+        </button>
+      } @else {
+        <span></span>
+      }
+      <div class="rodape__acoes">
+        @if (atual.id === 'catalogo') {
+          <button type="button" class="botao-depois" (click)="pularCatalogo()" [disabled]="salvando()">Depois</button>
+        }
+        <button type="button" class="botao-proximo" (click)="avancar()" [disabled]="salvando()">
+          {{ salvando() ? 'Salvando…' : atual.id === 'exemplo' ? 'Testar atendimento' : 'Próximo' }}
+          <app-icone nome="seta" [tamanho]="17" [espessura]="2.2" />
+        </button>
+      </div>
+    </footer>
+  </section>
+</div>

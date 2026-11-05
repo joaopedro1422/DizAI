@@ -1,0 +1,289 @@
+/* A janela do onboarding: o visual da landing (gelo, cartões brancos, marinho e o degradê nos destaques). */
+:host {
+  --ob-marinho: #1E3A72;
+  --ob-marinho-2: #23457F;
+  --ob-verde: #14A37F;
+  --ob-gelo: #F5F7FB;
+  --ob-texto: #0E1525;
+  --ob-suave: rgba(14, 21, 37, 0.66);
+  --ob-fraco: rgba(14, 21, 37, 0.46);
+  --ob-linha: rgba(14, 21, 37, 0.09);
+  --ob-claro: #EAF0FA;
+  --ob-sombra: 0 1px 2px rgba(15, 23, 42, 0.04), 0 20px 44px -30px rgba(15, 23, 42, 0.35);
+}
+
+.fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(14, 21, 37, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: ob-aparecer 0.3s ease both;
+}
+
+.janela {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 760px);
+  max-height: min(90vh, 880px);
+  overflow: hidden;
+  border-radius: 28px;
+  background:
+    radial-gradient(60% 40% at 100% 0%, rgba(30, 58, 114, 0.07), transparent 70%),
+    radial-gradient(50% 30% at 0% 100%, rgba(20, 163, 127, 0.05), transparent 70%),
+    var(--ob-gelo);
+  color: var(--ob-texto);
+  box-shadow: 0 40px 90px -40px rgba(8, 15, 35, 0.6);
+  animation: ob-subir 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Topo: só a barra de progresso em segmentos -------------------------------- */
+
+.topo {
+  padding: 22px 28px 0;
+}
+
+.progresso {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progresso__item {
+  position: relative;
+  flex: 1;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(14, 21, 37, 0.1);
+}
+
+.progresso__item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--ob-marinho), #2C5AA8);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.progresso__item--feito::after,
+.progresso__item--atual::after {
+  transform: scaleX(1);
+}
+
+.progresso__item--feito::after {
+  background: var(--ob-verde);
+}
+
+/* Corpo ---------------------------------------------------------------------- */
+
+.corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 26px 28px 28px;
+  overflow-y: auto;
+  animation: ob-entrar 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.titulo {
+  margin: 0;
+  font-size: clamp(24px, 3.4vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.destaque {
+  color: inherit;
+}
+
+.descricao {
+  margin: -6px 0 4px;
+  color: var(--ob-suave);
+  font-size: 15.5px;
+  line-height: 1.55;
+}
+
+.subtitulo {
+  margin: 6px 0 0;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.erro {
+  margin: 0;
+  color: #B4332C;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.nota {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  color: var(--ob-suave);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.nota app-icone {
+  flex: none;
+  margin-top: 2px;
+  color: var(--ob-marinho);
+}
+
+.nota--ok app-icone {
+  color: var(--ob-verde);
+}
+
+/* Rodapé: voltar à esquerda, Depois e Próximo à direita ----------------------- */
+
+.rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 28px 20px;
+  border-top: 1px solid var(--ob-linha);
+  background: #ffffff;
+}
+
+.rodape__acoes {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.botao-voltar,
+.botao-depois,
+.botao-proximo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.botao-voltar {
+  padding: 0 14px 0 8px;
+  border: 0;
+  background: transparent;
+  color: var(--ob-suave);
+}
+
+.botao-voltar:hover {
+  color: var(--ob-texto);
+}
+
+.botao-depois {
+  padding: 0 20px;
+  border: 1px solid var(--ob-linha);
+  background: #ffffff;
+  color: var(--ob-texto);
+}
+
+.botao-depois:hover {
+  border-color: rgba(14, 21, 37, 0.2);
+}
+
+.botao-proximo {
+  padding: 0 24px;
+  border: 0;
+  background: linear-gradient(135deg, var(--ob-marinho) 0%, var(--ob-marinho-2) 100%);
+  color: #ffffff;
+  box-shadow: 0 12px 26px -14px var(--ob-marinho);
+}
+
+.botao-proximo:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 30px -14px var(--ob-marinho);
+}
+
+.botao-voltar:disabled,
+.botao-depois:disabled,
+.botao-proximo:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* celular: o mesmo modal, centralizado, com as margens menores */
+@media (max-width: 640px) {
+  .fundo {
+    padding: 12px;
+  }
+
+  .janela {
+    max-height: calc(100dvh - 24px);
+    border-radius: 24px;
+  }
+
+  .topo {
+    padding: 18px 18px 0;
+  }
+
+  .corpo {
+    gap: 14px;
+    padding: 18px 18px 20px;
+  }
+
+  .titulo {
+    font-size: 22px;
+  }
+
+  .descricao {
+    font-size: 14.5px;
+  }
+
+  .rodape {
+    padding: 12px 16px 14px;
+  }
+
+  .botao-voltar,
+  .botao-depois,
+  .botao-proximo {
+    height: 44px;
+  }
+
+  .botao-proximo {
+    padding: 0 20px;
+  }
+}
+
+@keyframes ob-aparecer {
+  from { opacity: 0; }
+}
+
+@keyframes ob-subir {
+  from { opacity: 0; translate: 0 24px; scale: 0.98; }
+}
+
+@keyframes ob-entrar {
+  from { opacity: 0; translate: 0 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fundo,
+  .janela,
+  .corpo {
+    animation: none;
+  }
+}

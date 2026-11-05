@@ -66,38 +66,8 @@
 <app-onboarding-tour (encerrado)="aoEncerrarTour($event)" />
 
 @if (mostrarBoasVindas()) {
-  <!-- conta nova: primeiro o tipo do negócio, para os exemplos e tutoriais terem a cara dele -->
-  <app-dica-sobreposta
-    [marca]="true"
-    sobretitulo="Boas-vindas ao DizAI"
-    [titulo]="tituloBoasVindas()"
-    [rotuloBotao]="rotuloBoasVindas()"
-    rotuloSecundario="Agora não"
-    [bloqueada]="segmentoEscolhido() === undefined"
-    (confirmar)="iniciarTourAposBoasVindas()"
-    (secundario)="pularOnboarding()"
-  >
-    <app-escolha-segmento
-      [segmentos]="segmentosDoRamo()"
-      [escolhido]="segmentoEscolhido()"
-      (escolher)="segmentoEscolhido.set($event)"
-    />
-  </app-dica-sobreposta>
-}
-
-@if (mostrarConviteTeste()) {
-  <!-- fim do tour: leva ao momento em que o lojista vê o assistente respondendo -->
-  <app-dica-sobreposta
-    icone="conversa"
-    sobretitulo="Último passo"
-    titulo="Agora, converse com o seu assistente"
-    [descricao]="conviteTeste().descricao"
-    [itens]="conviteTeste().itens"
-    [rotuloBotao]="conviteTeste().botao"
-    rotuloSecundario="Faço depois"
-    (confirmar)="aceitarConviteTeste()"
-    (secundario)="adiarConviteTeste()"
-  />
+  <!-- conta nova: o onboarding em passos e, no fim, o teste automático -->
+  <app-onboarding-inicial (testar)="iniciarTeste()" />
 }
 
 @if (mostrarConviteApp()) {

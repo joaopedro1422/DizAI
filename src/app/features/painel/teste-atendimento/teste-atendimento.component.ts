@@ -27,7 +27,7 @@ import { LojaPublicaService } from '../../../core/services/loja-publica.service'
 import { ProdutoService } from '../../../core/services/produto.service';
 import { Router } from '@angular/router';
 import { SessaoService } from '../../../core/auth/sessao.service';
-import { ClienteAutomatico } from './cliente-automatico';
+import { ClienteAutomatico, roteiroDoSegmento } from './cliente-automatico';
 
 /** Marcador que o backend grava quando o catálogo (PDF/imagens) seria enviado. */
 const MARCADOR_CATALOGO = '[Catálogo enviado ao cliente]';
@@ -192,6 +192,7 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
           horarios: perfil.horariosFuncionamento,
           horarioLivre: perfil.horarioLivre,
           antecedenciaLojaMinutos: perfil.antecedenciaMinutos,
+          roteiro: roteiroDoSegmento(perfil.segmento, nome),
         });
       }
       let primeiroHorario: { data: string; hora: string } | null = null;

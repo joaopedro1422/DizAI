@@ -1,0 +1,266 @@
+/* O editor da semana da agenda (dias, o dia escolhido com os períodos e o resumo), o mesmo na agenda e no onboarding. */
+.painel-ajustes {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: 16px;
+  background: var(--cor-fundo);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.painel-ajustes > * + * {
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+/* Os 7 dias da semana */
+.semana {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.semana__dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 0 8px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 14px;
+  background: var(--cor-fundo);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.semana__letra {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.semana__ponto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cor-borda);
+}
+
+.semana__dia--aberto .semana__ponto {
+  background: var(--cor-ativo);
+}
+
+.semana__dia--erro .semana__ponto {
+  background: var(--cor-erro);
+}
+
+.semana__dia--escolhido {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria);
+  color: #ffffff;
+}
+
+.semana__dia--escolhido.semana__dia--aberto .semana__ponto {
+  background: #7FD3A2;
+}
+
+/* Editor do dia escolhido */
+.dia-aberto {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+}
+
+.dia-aberto__cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.dia-aberto__nome {
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+
+.dia-aberto__atende {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cor-texto-secundario);
+}
+
+.dia-aberto__fechado {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+.dia-aberto__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.trechos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trecho {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trecho__hora {
+  flex: 1;
+  min-width: 0;
+  min-height: 46px;
+  padding: 0 4px;
+  border: 1px solid #C3CBDA;
+  border-radius: var(--raio-pequeno);
+  background: var(--cor-fundo);
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* sem o ícone do relógio: no celular o seletor abre ao tocar, e o horário cabe inteiro */
+.trecho__hora::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+.trecho__hora::-webkit-datetime-edit {
+  display: flex;
+  justify-content: center;
+}
+
+.trecho__hora:focus {
+  border-color: var(--cor-primaria);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(30, 58, 114, 0.15);
+}
+
+.trecho__ate {
+  flex: none;
+  font-size: 13px;
+  color: var(--cor-texto-suave);
+}
+
+.trecho__remover {
+  flex: none;
+  color: var(--cor-texto-suave);
+}
+
+/* Resumo da semana */
+.resumo-semana {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+.resumo-semana__linha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 2px;
+  border: none;
+  border-bottom: 1px solid var(--cor-borda-suave);
+  background: transparent;
+  text-align: left;
+}
+
+.resumo-semana__dia {
+  flex: none;
+  width: 34px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.resumo-semana__texto {
+  font-size: 13px;
+  color: var(--cor-texto-secundario);
+  font-variant-numeric: tabular-nums;
+}
+
+.resumo-semana__linha--fechado .resumo-semana__texto {
+  color: var(--cor-texto-suave);
+  font-style: italic;
+}
+
+/* Copiar horários */
+.copiar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.copiar__texto {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--cor-texto-secundario);
+}
+
+.copiar__atalho {
+  align-self: flex-start;
+}
+
+/* A semana (dias, o dia escolhido e o resumo) dentro do cartão */
+.painel-ajustes--semana {
+  gap: 14px;
+  padding: 14px;
+}
+
+.painel-ajustes--semana > * + * {
+  border-top: none;
+}
+
+.semana__dia {
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.dia-aberto {
+  border-radius: 12px;
+  background: var(--cor-fundo-suave);
+}
+
+.resumo-semana__linha {
+  padding: 10px 4px;
+  cursor: pointer;
+}
+
+.resumo-semana__linha:last-child {
+  border-bottom: none;
+}
+
+.resumo-semana__texto {
+  flex: 1;
+}
+
+.resumo-semana__seta {
+  color: var(--cor-borda-forte);
+}
+
+.resumo-semana__linha--escolhida .resumo-semana__dia,
+.resumo-semana__linha--escolhida .resumo-semana__seta {
+  color: var(--cor-primaria);
+}
+
+@media (min-width: 760px) {
+  .painel-ajustes--semana {
+    padding: 18px;
+  }
+}

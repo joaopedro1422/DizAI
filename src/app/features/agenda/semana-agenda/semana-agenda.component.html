@@ -1,0 +1,125 @@
+<div class="painel-ajustes painel-ajustes--semana">
+  <div class="semana" role="tablist" aria-label="Dias da semana">
+    @for (dia of diasSemana; track dia.valor) {
+      @let trechos = periodos()[dia.valor];
+      <button
+        type="button"
+        role="tab"
+        class="semana__dia"
+        [class.semana__dia--escolhido]="diaAberto() === dia.valor"
+        [class.semana__dia--aberto]="trechos.length > 0"
+        [class.semana__dia--erro]="erros()[dia.valor]"
+        [attr.aria-selected]="diaAberto() === dia.valor"
+        [attr.aria-label]="dia.nome + (trechos.length > 0 ? ', atende' : ', fechado')"
+        (click)="escolherDia(dia.valor)"
+      >
+        <span class="semana__letra">{{ dia.curto }}</span>
+        <span class="semana__ponto" aria-hidden="true"></span>
+      </button>
+    }
+  </div>
+
+  <div class="dia-aberto">
+    <div class="dia-aberto__cabecalho">
+      <span class="dia-aberto__nome">{{ infoDiaAberto().nome }}</span>
+      <label class="dia-aberto__atende">
+        <span>{{ trechosDiaAberto().length > 0 ? 'Atendo' : 'Fechado' }}</span>
+        <app-interruptor
+          [rotulo]="'Atendo neste dia (' + infoDiaAberto().nome + ')'"
+          [ligado]="trechosDiaAberto().length > 0"
+          (alternar)="alternarDiaAberto($event)"
+        />
+      </label>
+    </div>
+
+    @if (trechosDiaAberto().length > 0) {
+      <ul class="trechos">
+        @for (trecho of trechosDiaAberto(); track $index; let indice = $index) {
+          <li class="trecho">
+            <input
+              class="trecho__hora"
+              type="time"
+              step="900"
+              [value]="trecho.inicio"
+              [attr.aria-label]="'Início do período ' + (indice + 1)"
+              (click)="abrirSeletor($event)"
+              (change)="alterarTrecho(indice, 'inicio', $event)"
+            >
+            <span class="trecho__ate">até</span>
+            <input
+              class="trecho__hora"
+              type="time"
+              step="900"
+              [value]="trecho.fim"
+              [attr.aria-label]="'Fim do período ' + (indice + 1)"
+              (click)="abrirSeletor($event)"
+              (change)="alterarTrecho(indice, 'fim', $event)"
+            >
+            <button type="button" class="btn-icone trecho__remover" aria-label="Remover período" (click)="removerTrecho(indice)">
+              <app-icone nome="lixeira" [tamanho]="16" />
+            </button>
+          </li>
+        }
+      </ul>
+      @if (erros()[diaAberto()]; as erro) {
+        <span class="campo__erro" role="alert">{{ erro }}</span>
+      }
+      <div class="dia-aberto__acoes">
+        @if (trechosDiaAberto().length < maximoPeriodos) {
+          <button type="button" class="btn btn--secundario btn--pequeno" (click)="adicionarTrecho()">
+            <app-icone nome="mais" [tamanho]="16" [espessura]="2" />
+            Adicionar período
+          </button>
+        }
+        <button type="button" class="btn btn--texto btn--pequeno" (click)="abrirCopia()">
+          <app-icone nome="copiar" [tamanho]="15" [espessura]="2" />
+          Copiar para outros dias
+        </button>
+      </div>
+    } @else {
+      <p class="dia-aberto__fechado">Sem atendimento neste dia da semana: o assistente não oferece horários nele.</p>
+    }
+  </div>
+
+  <ul class="resumo-semana" aria-label="Resumo da semana">
+    @for (dia of resumoSemana(); track dia.valor) {
+      <li>
+        <button
+          type="button"
+          class="resumo-semana__linha"
+          [class.resumo-semana__linha--fechado]="!dia.aberto"
+          [class.resumo-semana__linha--escolhida]="dia.valor === diaAberto()"
+          (click)="escolherDia(dia.valor)"
+        >
+          <span class="resumo-semana__dia">{{ dia.curto }}</span>
+          <span class="resumo-semana__texto">{{ dia.texto }}</span>
+          <app-icone class="resumo-semana__seta" nome="avancar" [tamanho]="15" [espessura]="2" />
+        </button>
+      </li>
+    }
+  </ul>
+</div>
+
+@if (copiando()) {
+  <app-bottom-sheet [titulo]="'Copiar os horários de ' + infoDiaAberto().nome" (fechar)="copiando.set(false)">
+    <div class="copiar">
+      <p class="copiar__texto">
+        {{ trechosDiaAberto().length > 0 ? 'Os dias escolhidos ficam com os mesmos períodos.' : 'Os dias escolhidos ficam fechados.' }}
+      </p>
+      <div class="grupo-chips" role="group" aria-label="Dias para copiar">
+        @for (dia of diasSemana; track dia.valor) {
+          @if (dia.valor !== diaAberto()) {
+            @let marcado = diasParaCopiar().includes(dia.valor);
+            <button type="button" class="chip" [class.chip--ativo]="marcado" [attr.aria-pressed]="marcado" (click)="alternarDiaParaCopiar(dia.valor)">
+              {{ dia.curto }}
+            </button>
+          }
+        }
+      </div>
+      <button type="button" class="btn btn--texto btn--pequeno copiar__atalho" (click)="marcarDiasUteis()">Marcar de segunda a sexta</button>
+      <button type="button" class="btn btn--primario btn--grande btn--bloco" [disabled]="diasParaCopiar().length === 0" (click)="copiar()">
+        Copiar
+      </button>
+    </div>
+  </app-bottom-sheet>
+}

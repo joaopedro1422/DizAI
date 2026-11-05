@@ -27,6 +27,22 @@ export interface DadosClienteAutomatico {
   nomeServico?: string | null;
   primeiroHorario?: { data: string; hora: string } | null;
   agora?: Date;
+  /** Roteiro fixo do segmento: as mensagens em ordem, uma depois de cada resposta do assistente. */
+  roteiro?: string[];
+}
+
+/** Salgados: a conversa típica, do preço do cento à retirada. */
+export function roteiroDoSegmento(segmento: string | null | undefined, nome: string): string[] | undefined {
+  if (segmento === 'SALGADOS') {
+    return [
+      'Olá! Quanto custa o cento de salgados?',
+      'Pode ser para amanhã de manhã?',
+      'OK, vou querer 50 coxinhas e 50 risoles',
+      'Está sim',
+      `Vou retirar aí mesmo, me chamo ${nome}`,
+    ];
+  }
+  return undefined;
 }
 
 export class ClienteAutomatico {
@@ -43,6 +59,9 @@ export class ClienteAutomatico {
   /** A mensagem que abre a conversa. */
   primeira(): string {
     this.enviadas++;
+    if (this.dados.roteiro?.length) {
+      return this.dados.roteiro[0];
+    }
     if (this.dados.servico) {
       const servico = minusculaNoInicio(this.dados.nomeServico);
       return servico ? `Oi, gostaria de agendar ${servico}` : 'Oi, gostaria de agendar um horário';
@@ -65,6 +84,9 @@ export class ClienteAutomatico {
   proxima(resposta: string, acao: string | null | undefined): string | null {
     if (this.enviadas >= LIMITE_DE_MENSAGENS || terminou(this.dados.servico, acao)) {
       return null;
+    }
+    if (this.dados.roteiro?.length) {
+      return this.dados.roteiro[this.enviadas++] ?? null;
     }
     const mensagem = this.dados.servico ? this.paraServico(normalizar(resposta), resposta) : this.paraProduto(normalizar(resposta));
     if (mensagem) {
