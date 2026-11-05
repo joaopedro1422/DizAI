@@ -26,10 +26,6 @@ export interface ConfigMensagensProntas {
   dicaVariaveis: string;
 }
 
-/**
- * Conteúdo do modal "Mensagens prontas": lista, cria, edita e apaga os modelos que o lojista manda pelo WhatsApp
- * (da agenda, por padrão, ou dos pedidos, com `config`). As variáveis entram com um toque no ponto do cursor.
- */
 @Component({
   selector: 'app-mensagens-prontas',
   imports: [ReactiveFormsModule, IconeComponent, CarregandoComponent],

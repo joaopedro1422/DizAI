@@ -3,11 +3,6 @@ import { ChangeDetectionStrategy, Component, ElementRef, computed, input, viewCh
 import { luminancia, misturar, variaveisDaPaleta } from '../motor/paletas-post';
 import { ConteudoPost, DIMENSOES, EstiloPost, FormatoPost, MarcaPost } from '../motor/tipos-post';
 
-/**
- * A arte de um post, desenhada no tamanho real (1080 px de largura) e reduzida para a tela. A estrutura é uma só
- * (marca, mídia, texto, link); o layout, a paleta, o enfeite, o fundo, o cartão, o botão, o selo, o alinhamento, o
- * filtro da foto e os cantos vêm do EstiloPost em atributos data-* e o CSS (arte-*.css) reorganiza tudo. O mesmo elemento vira o PNG (exportar-post).
- */
 /** Quantos horários de um dia cabem na arte (com mais, o último chip vira "+N horários"). */
 /** "a partir de R$ 175" -> "a partir de" + "R$ 175" */
 const PREFIXO_DO_PRECO = /^(a partir de|a partir|desde|por apenas|por)\s+(.+)$/i;

@@ -81,11 +81,6 @@ const DO_TIPO: Record<TipoNegocio, RecursoDoTipo[]> = {
   ],
 };
 
-/**
- * Fim da seção Recursos: o resto do que cada tipo de negócio ganha, os ganhos na prática (`GanhosNegocioComponent`)
- * e a chamada para testar com o próprio negócio.
- * Fica num componente próprio para o CSS de cada um caber no limite do build.
- */
 @Component({
   selector: 'app-fechamento-recursos',
   imports: [IconeComponent, RouterLink, GanhosNegocioComponent],

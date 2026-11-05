@@ -28,9 +28,6 @@ import { fundoDoDestaque } from '../../../core/constants/estilos-cor';
 
 const TAMANHO_MAXIMO_CAPA_BYTES = 5 * 1024 * 1024;
 
-/**
- * Configura cor, fonte, fundo e capa da página pública da loja.
- */
 @Component({
   selector: 'app-seletor-cor-marca',
   imports: [IconeComponent, UrlImagemPipe, SeletorFundoComponent, SeletorEstiloCorComponent],

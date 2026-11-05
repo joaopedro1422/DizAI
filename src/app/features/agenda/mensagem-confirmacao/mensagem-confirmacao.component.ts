@@ -19,11 +19,6 @@ export const ETIQUETAS_AGENDAMENTO = ['servico', 'data', 'horario', 'nome'];
 
 export const MAXIMO_CONFIRMACAO = 1000;
 
-/**
- * Editor da mensagem que o cliente recebe quando o assistente marca o horário: campo de altura fixa, etiquetas
- * clicáveis que entram onde está o cursor e a prévia de como a mensagem chega no WhatsApp.
- * Também serve para o agradecimento depois do atendimento (só {nome} e {servico}, em `etiquetas`).
- */
 @Component({
   selector: 'app-mensagem-confirmacao',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -109,10 +104,6 @@ export class MensagemConfirmacaoComponent {
   }
 }
 
-/**
- * A prévia como o WhatsApp mostra: *negrito*, _itálico_ e ~riscado~ (dentro de uma linha).
- * O texto é escapado antes, então só essas três marcas viram HTML.
- */
 function formatarComoWhatsapp(texto: string): string {
   const escapado = texto.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   return escapado

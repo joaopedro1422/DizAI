@@ -43,10 +43,6 @@ interface ItemPedido {
   aPartirDe: boolean;
 }
 
-/**
- * Aba "Orçamento" da página pública (lojas de produtos): o cliente monta o pedido (variação, quantidade e as opções)
- * e vê o total. Nada é gravado: o botão abre o WhatsApp com o pedido escrito, e o atendimento segue como sempre.
- */
 @Component({
   selector: 'app-orcamento-publico',
   imports: [IconeComponent, CarregandoComponent, UrlImagemPipe, PrecoProdutoPipe],

@@ -20,11 +20,6 @@ export interface EscolhaQuemEstaLivre {
   servicoId: number | null;
 }
 
-/**
- * "Quem está livre?" (lupa da agenda, só com 2+ profissionais): o lojista escolhe o horário (e, se quiser, o serviço,
- * que define a duração) e vê cada profissional: livre, ocupado (com quem e até quando), folga ou fora do expediente.
- * "Agendar com…" abre o "Agendar horário" já preenchido.
- */
 @Component({
   selector: 'app-quem-esta-livre',
   imports: [CarregandoComponent, SeletorServicoComponent, UrlImagemPipe],

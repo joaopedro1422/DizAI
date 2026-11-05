@@ -5,11 +5,6 @@ export interface MensagemAoVivo {
   texto: string;
 }
 
-/**
- * Tour dos pedidos: a mensagem que acabou de sair para o cliente, num cartão no estilo do WhatsApp (presa no pé da
- * tela). O balão entra com os "pontinhos" e ganha o ✓✓ de enviado. A chave do @for na tela recria o cartão a cada
- * mensagem, para a animação tocar de novo.
- */
 @Component({
   selector: 'app-envio-ao-vivo',
   changeDetection: ChangeDetectionStrategy.OnPush,

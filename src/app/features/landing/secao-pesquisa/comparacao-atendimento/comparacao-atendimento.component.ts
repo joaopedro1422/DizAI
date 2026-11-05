@@ -16,10 +16,6 @@ import type { TipoNegocio } from '../../../demonstracao/conversas-demonstracao';
 
 type Modo = 'com' | 'sem';
 
-/**
- * Uma mensagem da janela: do cliente (direita), da loja (esquerda), um PDF da loja (texto = nome do arquivo,
- * detalhe = páginas e tamanho) ou o aviso de tempo passando (centro).
- */
 interface Mensagem {
   de: 'cliente' | 'loja' | 'documento' | 'tempo';
   texto: string;
@@ -147,11 +143,6 @@ const DIGITANDO_MS = 1300;
 /** Quanto o resultado fica na tela antes de trocar para o outro atendimento. */
 const RESULTADO_MS = 4200;
 
-/**
- * Seção do MIT: a mesma conversa com o DizAI, resolvida em 2 minutos, e sem ele, com o cliente esperando horas.
- * Serviços (agendar um corte) e produtos (bolo festivo), cada um com e sem; tocam sozinhos enquanto a janela está
- * na tela e param fora dela.
- */
 @Component({
   selector: 'app-comparacao-atendimento',
   imports: [IconeComponent],

@@ -199,136 +199,6 @@ app-secao-posts,
   }
 }
 
-.secao {
-  display: flex;
-  flex-direction: column;
-  gap: 48px;
-  padding-top: 104px;
-  padding-bottom: 104px;
-}
-
-.secao.secao--depois-da-faixa { padding-top: 72px; }
-
-.secao__cabecalho {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  max-width: 760px;
-}
-
-.secao__sobretitulo {
-  color: var(--tom-forte);
-  font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.secao__titulo {
-  font-size: clamp(32px, 4.4vw, 56px);
-  font-weight: 800;
-  letter-spacing: -0.045em;
-  line-height: 1.05;
-  text-wrap: balance;
-}
-
-.secao__titulo--largo {
-  max-width: 820px;
-}
-
-/* As dores: a mensagem do cliente em destaque, sobre o tom, e o que ela custa ---- */
-
-.dores {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
-}
-
-.dor {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border: 1px solid var(--lp-linha);
-  border-radius: 28px;
-  background: #ffffff;
-  box-shadow: var(--lp-sombra);
-  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
-}
-
-.dor:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--lp-sombra-tom);
-}
-
-.dor__cena {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 8px;
-  min-height: 150px;
-  padding: 26px 24px;
-  background:
-    radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.85), transparent 50%),
-    linear-gradient(160deg, var(--tom-fundo-1) 0%, var(--tom-fundo-2) 100%);
-}
-
-.dor__balao {
-  max-width: 92%;
-  padding: 11px 15px;
-  border-radius: 18px 18px 6px 18px;
-  background: #D9FDD3;
-  color: #13241A;
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.4;
-  box-shadow: 0 14px 28px -16px rgba(15, 23, 42, 0.4);
-  animation: lp-boiar 6s calc(var(--ordem, 0) * 0.6s) ease-in-out infinite;
-}
-
-.dor__quando {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.85);
-  color: #B4332C;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.dor__corpo {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 26px 26px 30px;
-}
-
-.dor__icone {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: var(--tom-claro);
-  color: var(--tom-forte);
-}
-
-.dor__titulo {
-  font-size: 21px;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
-}
-
-.dor__texto {
-  color: var(--lp-suave);
-  font-size: 16px;
-  line-height: 1.55;
-}
-
 /* Fim: um painel no tom do público ------------------------------------------ */
 
 .final {
@@ -481,14 +351,6 @@ app-secao-posts,
     padding: 0 16px;
   }
 
-  .secao {
-    gap: 36px;
-    padding-top: 72px;
-    padding-bottom: 72px;
-  }
-
-  .secao.secao--depois-da-faixa { padding-top: 48px; }
-
   .final {
     padding: 32px 16px 64px;
   }
@@ -510,14 +372,8 @@ app-secao-posts,
   100% { transform: translate(3%, -1%) scale(1.02); }
 }
 
-@keyframes lp-boiar {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -6px; }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .lp-aurora,
-  .dor__balao {
+  .lp-aurora {
     animation: none;
   }
 }

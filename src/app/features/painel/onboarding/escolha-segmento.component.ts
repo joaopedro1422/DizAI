@@ -5,10 +5,6 @@ import { DadosSegmento, SegmentoNegocio } from '../../../core/constants/segmento
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { ICONE_OUTRO_TIPO, ICONES_SEGMENTO } from './icones-segmento';
 
-/**
- * Primeiro passo do onboarding (e Dados da loja): o tipo do negócio dentro do ramo, em cartões. Só muda os exemplos,
- * sugestões e tutoriais do painel; "Outro tipo" deixa os exemplos gerais do ramo.
- */
 @Component({
   selector: 'app-escolha-segmento',
   changeDetection: ChangeDetectionStrategy.OnPush,

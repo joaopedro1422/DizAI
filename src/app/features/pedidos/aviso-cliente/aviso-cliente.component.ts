@@ -4,10 +4,6 @@ import { MensagemPronta } from '../../../core/models/agenda.model';
 import { PedidoService } from '../../../core/services/pedido.service';
 import { preencherAviso } from '../textos-pedido';
 
-/**
- * "Avisar o cliente pelo WhatsApp" nas ações do pedido (pronto, entregue): liga/desliga, o texto já preenchido e as
- * mensagens prontas dos pedidos com um toque. O texto que fica no campo é o que vai, já com o nome trocado.
- */
 @Component({
   selector: 'app-aviso-cliente',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -25,10 +25,6 @@ interface Indicador {
   detalhe: string;
 }
 
-/**
- * "Estatísticas" (menu de 3 pontinhos do perfil): o que o assistente fez no período e quanto tempo
- * o lojista deixou de passar respondendo. Fica fora do painel para não poluir a configuração.
- */
 @Component({
   selector: 'app-estatisticas-page',
   imports: [RouterLink, CabecalhoPaginaComponent, CarregandoComponent, IconeComponent],

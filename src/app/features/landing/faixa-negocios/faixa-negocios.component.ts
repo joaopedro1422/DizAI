@@ -13,10 +13,6 @@ const NEGOCIOS = [
   'Encomendas em geral',
 ];
 
-/**
- * Faixa de fundo branco, na largura toda da tela, entre o hero e "A rotina do microempreendedor": os tipos
- * de negócio passando sem parar, separados por pontinhos. A lista vai duas vezes para o laço não ter emenda.
- */
 @Component({
   selector: 'app-faixa-negocios',
   changeDetection: ChangeDetectionStrategy.OnPush,

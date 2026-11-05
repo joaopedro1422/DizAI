@@ -96,12 +96,6 @@ const DIA_PADRAO: Trecho[] = [
 
 const MAXIMO_PERIODOS_POR_DIA = 4;
 
-/**
- * Configurações da agenda, uma página do menu por parte (secao): Horários (dias e horários de atendimento, vários
- * períodos por dia para o almoço, intervalo e antecedência), Equipe, Lembretes e mensagens (o lembrete e as mensagens
- * de agendamento, lembrete e agradecimento, cada uma num card que abre e fecha) e Lista de espera.
- * A agenda não tem chave própria: fica ativa com "Agendamento automático" em "Quando o cliente quiser agendar".
- */
 @Component({
   selector: 'app-horarios-atendimento',
   imports: [
@@ -253,10 +247,6 @@ export class HorariosAtendimentoComponent {
     this.definirTrechos(this.diaAberto(), trechos);
   }
 
-  /**
-   * O ícone do relógio fica escondido (para o horário caber no celular): sem ele, no computador o clique no campo
-   * não abria nada. Agora o clique abre o seletor de horas; digitar continua funcionando.
-   */
   protected abrirSeletor(evento: Event): void {
     try {
       (evento.target as HTMLInputElement).showPicker();

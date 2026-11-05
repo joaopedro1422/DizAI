@@ -79,10 +79,6 @@ const AVISOS: Partial<Record<AcaoTeste, string>> = {
   SEM_INFORMACAO: 'O assistente não soube responder: aqui a conversa iria para você. Continue o teste normalmente.',
 };
 
-/**
- * "Testar atendimento": conversa no estilo WhatsApp em que o lojista escreve como cliente e o assistente responde
- * pelo mesmo caminho do WhatsApp de verdade. Nada vai para o WhatsApp; agendamentos são marcados na agenda de verdade.
- */
 @Component({
   selector: 'app-teste-atendimento',
   imports: [DicaSobrepostaComponent, FormsModule, IconeComponent, UrlImagemPipe],
@@ -108,10 +104,6 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
   private readonly servico = inject(TesteAtendimentoService);
   private readonly produtos = inject(ProdutoService);
   private readonly lojaPublica = inject(LojaPublicaService);
-  /**
-   * Primeiro teste: o "cliente" conversa sozinho até o fim (horário marcado / pedido passado ao dono) e o campo fica
-   * bloqueado enquanto isso; quando ele termina, o lojista escreve normalmente.
-   */
   private clienteAutomatico: ClienteAutomatico | null = null;
   protected readonly automatico = signal(false);
   private esperaAutomatico: number | undefined;
@@ -183,10 +175,6 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
     });
   }
 
-  /**
-   * Os dados do "cliente" do primeiro teste: nos produtos, o primeiro item cadastrado; nos serviços, o primeiro
-   * serviço e o primeiro horário livre de verdade (pela agenda online, a mesma conta da IA).
-   */
   private async prepararClienteAutomatico(): Promise<ClienteAutomatico | null> {
     const perfil = this.perfil();
     const servico = ramoDeServico(perfil.ramo);
@@ -264,10 +252,6 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
   private readonly router = inject(Router);
   private readonly rotas = inject(SessaoService).rotasDoPainel;
 
-  /**
-   * Fim do primeiro teste: o pedido espera no Chats ("Pronto para fechar") e o horário está na Agenda; a tela abre
-   * o fechamento do onboarding ("Agora é com você") com o ?fechamento=1.
-   */
   protected irParaOFechamento(destino: 'chats' | 'agenda'): void {
     void this.router.navigate([this.rotas()[destino]], { queryParams: { fechamento: 1 } });
   }

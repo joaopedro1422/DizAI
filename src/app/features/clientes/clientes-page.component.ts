@@ -29,12 +29,6 @@ const DATA_COMPLETA = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: '
 const HORA = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' });
 const MES_ANO = new Intl.DateTimeFormat('pt-BR', { month: 'short', year: 'numeric' });
 
-/**
- * Tela "Clientes" (aberta pelo botão no topo do Chats): todos os clientes que já conversaram, agendaram (serviços) ou
- * pediram (produtos), com busca por nome ou número e filtros (frequentes, com horário marcado, sumidos). Tocar abre o
- * cliente num modal: quantas vezes veio/pediu, quanto gastou, a última vez, o próximo horário, o favorito, o
- * histórico e o atalho para chamar no WhatsApp.
- */
 @Component({
   selector: 'app-clientes-page',
   imports: [RouterLink, IconeComponent, AvatarComponent, BottomSheetComponent, CarregandoComponent, EstadoVazioComponent],

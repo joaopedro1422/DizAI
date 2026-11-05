@@ -22,11 +22,6 @@ export interface GrupoMenuLateral {
   alvoTour?: AlvoTour;
 }
 
-/**
- * Menu das telas de gestão (Agenda, Pedidos): as páginas da tela em grupos, uma ajuda opcional (o tour) e, no pé,
- * o que a tela projetar (ex.: o card da agenda online). No celular é uma gaveta que abre pelo botão do topo
- * (estilos-tela-com-menu.css); no computador (1024 px+) fica fixo à esquerda.
- */
 @Component({
   selector: 'app-menu-lateral',
   imports: [RouterLink, IconeComponent, AlvoTourDirective, UrlImagemPipe],

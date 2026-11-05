@@ -17,11 +17,6 @@ import { Foto } from '../../../core/models/galeria.model';
 import { gerarLinkWhatsapp } from '../../../core/utils/texto.utils';
 import { IconeComponent } from '../icone/icone.component';
 
-/**
- * Foto ampliada sobre fundo escuro. Fecha no X, no Esc ou tocando fora da foto;
- * as setas (ou as teclas ← →) passam para as outras fotos do mesmo álbum.
- * O pai controla a exibição com `@if` e esconde ao receber `fechar`.
- */
 @Component({
   selector: 'app-visualizador-foto',
   imports: [IconeComponent, UrlImagemPipe],
@@ -39,10 +34,6 @@ export class VisualizadorFotoComponent implements OnInit, AfterViewInit, OnDestr
   readonly indiceInicial = input(0);
   /** Nome do álbum, usado na legenda e no texto alternativo. */
   readonly titulo = input('');
-  /**
-   * Galeria pública: com o WhatsApp e o slug da loja, aparece "Enviar pelo WhatsApp". A mensagem leva o link da
-   * foto (/l/{slug}/foto/{id}), que no WhatsApp vira a prévia com a própria foto, sem o cliente tirar print.
-   */
   readonly whatsappLoja = input('');
   readonly slugLoja = input('');
   readonly fechar = output<void>();

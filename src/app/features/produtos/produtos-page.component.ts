@@ -28,7 +28,6 @@ import { GuiaCadastroComponent } from './guia-cadastro/guia-cadastro.component';
 
 const TODAS_AS_CATEGORIAS = 'Todos';
 
-
 /** Fim das boas-vindas (lojas de produtos): quanto tempo o exemplo fica à vista antes da janela do teste. */
 const ESPERA_JANELA_EXEMPLO_MS = 3000;
 
@@ -131,10 +130,6 @@ export class ProdutosPageComponent implements OnInit {
   private readonly rotaAtual = inject(ActivatedRoute);
   private readonly rotasPainel = inject(SessaoService).rotasDoPainel;
 
-  /**
-   * Vindo do fim do tour (?exemplo=1, lojas de produtos): o produto de exemplo que a conta ganhou nas boas-vindas,
-   * com o convite para ver o assistente vendendo ele (o primeiro teste conversa sozinho até o pedido).
-   */
   protected readonly mostrarExemplo = signal(false);
   private exemploPedido = false;
   /** O exemplo na janela: o produto e o que ele tem (preço e as opções), para o lojista saber o que vai ver. */
@@ -183,10 +178,6 @@ export class ProdutosPageComponent implements OnInit {
     }
   }
 
-  /**
-   * Serviços com agenda e sem horários: o convite leva primeiro aos horários (a agenda abre direto em Configure),
-   * senão o teste não tem horário para oferecer.
-   */
   protected readonly faltamHorarios = computed(
     () => ramoUsaAgenda(this.perfil().ramo) && (this.agendaService.configuracao()?.periodos.length ?? 0) === 0,
   );

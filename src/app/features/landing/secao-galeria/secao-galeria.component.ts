@@ -7,10 +7,6 @@ import { IconeComponent } from '../../../shared/components/icone/icone.component
 import { EXEMPLOS_GALERIA, ExemploGaleria } from './exemplos-galeria';
 import { FaseVitrine, VitrineMiniaturaComponent } from './vitrine-miniatura/vitrine-miniatura.component';
 
-/**
- * Os momentos de cada loja e quanto tempo cada um fica na tela: o topo com as fotos; a página rolada até os feedbacks
- * e o "Como chegar" (quando a loja tem); e, nas lojas com agenda, a aba "Agendar horário" e o fim dela preenchido.
- */
 function momentos(exemplo: ExemploGaleria): { fase: FaseVitrine; ms: number }[] {
   const temExtras = !!exemplo.feedbacks?.length || !!exemplo.endereco;
   const lista: { fase: FaseVitrine; ms: number }[] = temExtras
@@ -59,11 +55,6 @@ const TEXTOS: Record<TipoNegocio | 'geral', { titulo: string; descricao: string;
   },
 };
 
-/**
- * "Vitrine pública" da landing: o texto com os checks à esquerda e, à direita, a página da loja (/l/{slug}) dentro
- * de um celular, com a conversa em que o assistente envia o link. Troca sozinha entre lojas de exemplo (ou pelas setas
- * embaixo); pausa com o mouse ou o foco em cima e fica parada para quem pediu menos movimento no sistema.
- */
 @Component({
   selector: 'app-secao-galeria',
   imports: [RouterLink, IconeComponent, VitrineMiniaturaComponent],

@@ -10,10 +10,6 @@ interface SecaoIndice {
   titulo: string;
 }
 
-/**
- * Política de privacidade pública (exigida pela Meta para o app do WhatsApp e pela LGPD).
- * A seção "exclusao-de-dados" é a URL de instruções de exclusão informada no painel da Meta.
- */
 @Component({
   selector: 'app-privacidade-page',
   imports: [RouterLink, LogoComponent, IconeComponent],

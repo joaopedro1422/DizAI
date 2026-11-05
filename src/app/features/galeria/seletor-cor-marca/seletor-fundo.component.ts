@@ -19,10 +19,6 @@ export const OPCOES_FUNDO: OpcaoFundo[] = [
   { valor: 'ESCURO', nome: 'Tema escuro (preto)', cor: '#0f0e0d' },
 ];
 
-/**
- * "Cor de fundo" da vitrine com dropdown próprio (mesmo desenho do SeletorServicoComponent): cada opção tem a
- * bolinha com a cor de verdade ao lado do nome, para ver o tom antes de escolher.
- */
 @Component({
   selector: 'app-seletor-fundo',
   imports: [IconeComponent],

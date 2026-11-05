@@ -1,14 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  OnDestroy,
-  computed,
-  input,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 import { ArtePostComponent } from '../../posts/arte-post/arte-post.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
@@ -85,8 +75,6 @@ const GANHOS: Ganho[] = [
 
 /** O que muda de um público para o outro (o hub, sem tipo, usa o geral). */
 interface TextosSolucao {
-  descricao: string[];
-  placar: { mais: string[]; menos: string[] };
   conversa: string;
   /** A resposta à nota de voz na miniatura do áudio. */
   respostaAudio: string;
@@ -96,24 +84,18 @@ interface TextosSolucao {
 
 const TEXTOS: Record<TipoNegocio | 'geral', TextosSolucao> = {
   geral: {
-    descricao: ['Recursos específicos para quem vende produtos e para quem presta serviços por agendamento.', 'Do atendimento inicial ao financeiro.'],
-    placar: { mais: ['Tempo para produzir', 'Vendas fechadas'], menos: ['Clientes perdidos', 'Horas no celular'] },
     conversa: 'Preços, opções, formas de pagamento e tudo o que você cadastrar. Se não souber, te chama.',
     respostaAudio: 'Temos sim! Amanhã às 14h ou às 16h30. Qual prefere?',
     catalogo: 'Cardápio de outubro.pdf',
     vitrine: { icone: 'calendario', titulo: 'Agendamento', texto: 'Para serviços, a sua agenda online' },
   },
   produtos: {
-    descricao: ['Do primeiro oi ao pedido anotado, enquanto você produz.', 'A confirmação e o pagamento continuam com você.'],
-    placar: { mais: ['Tempo para produzir', 'Pedidos anotados'], menos: ['Encomendas perdidas', 'Horas no celular'] },
     conversa: 'Preços, sabores, tamanhos, prazos e tudo o que você cadastrar. Se não souber, te chama.',
     respostaAudio: 'Temos sim! O cento sai R$ 90,00. Para qual dia seria?',
     catalogo: 'Cardápio de outubro.pdf',
     vitrine: { icone: 'link', titulo: 'Link na bio', texto: 'Para o Instagram e o WhatsApp' },
   },
   servicos: {
-    descricao: ['Do primeiro oi ao horário marcado, com lembrete antes e agradecimento depois.', 'Do atendimento inicial ao financeiro.'],
-    placar: { mais: ['Horários marcados', 'Tempo com o cliente'], menos: ['Faltas', 'Horas no celular'] },
     conversa: 'Preços, duração, endereço e tudo o que você cadastrar. Se não souber, te chama.',
     respostaAudio: 'Temos sim! Amanhã às 14h ou às 16h30. Qual prefere?',
     catalogo: 'Tabela de serviços.pdf',
@@ -134,50 +116,17 @@ const RECURSOS_VITRINE: { icone: NomeIcone; titulo: string; texto: string }[] = 
   { icone: 'local', titulo: 'Como chegar', texto: 'Endereço com mapa e rota' },
 ];
 
-/**
- * "A solução": o que o DizAI faz por qualquer negócio. O cartão azul abre com o placar (Mais: tempo e vendas |
- * Menos: clientes perdidos e horas no celular); os outros, um ganho cada, com uma miniatura da tela no pé.
- */
 @Component({
   selector: 'app-secao-solucao',
   imports: [IconeComponent, ArtePostComponent, LogoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './secao-solucao.component.html',
-  styleUrls: ['../secao-landing.css', './secao-solucao.component.css', './ganho-vitrine.css', './ganho-posts.css', './ganho-placar.css'],
+  styleUrls: ['../secao-landing.css', './secao-solucao.component.css', './ganho-vitrine.css', './ganho-posts.css'],
 })
-export class SecaoSolucaoComponent implements AfterViewInit, OnDestroy {
+export class SecaoSolucaoComponent {
   /** Landing de um tipo: textos e miniaturas daquele público; sem tipo (hub), o geral. */
   readonly tipo = input<TipoNegocio | null>(null);
   protected readonly textos = computed(() => TEXTOS[this.tipo() ?? 'geral']);
-
-  /** O cartão azul: lado a lado, o que aumenta e o que diminui com o assistente atendendo. */
-  protected readonly placar = computed(() => [
-    { tipo: 'mais', titulo: 'Mais', itens: this.textos().placar.mais },
-    { tipo: 'menos', titulo: 'Menos', itens: this.textos().placar.menos },
-  ]);
-  /** As linhas do placar sobem uma a uma na primeira vez que o card aparece na tela (e ficam paradas). */
-  protected readonly placarVisivel = signal(false);
-  private readonly cartaoPlacar = viewChild<ElementRef<HTMLElement>>('cartaoPlacar');
-  private observador?: IntersectionObserver;
-
-  ngAfterViewInit(): void {
-    const cartao = this.cartaoPlacar()?.nativeElement;
-    if (!cartao || typeof IntersectionObserver === 'undefined') {
-      this.placarVisivel.set(true);
-      return;
-    }
-    this.observador = new IntersectionObserver(([entrada]) => {
-      if (entrada.isIntersecting) {
-        this.placarVisivel.set(true);
-        this.observador?.disconnect();
-      }
-    }, { threshold: 0.4 });
-    this.observador.observe(cartao);
-  }
-
-  ngOnDestroy(): void {
-    this.observador?.disconnect();
-  }
 
   protected readonly ganhos = computed(() =>
     GANHOS.map((ganho) =>

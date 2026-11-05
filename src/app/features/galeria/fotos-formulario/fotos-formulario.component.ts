@@ -17,10 +17,6 @@ interface FotoSelecionada {
 
 const MAXIMO_FOTOS_POR_ENVIO = 20;
 
-/**
- * Modal "Adicionar fotos" em dois passos: escolher o tópico e escolher as fotos.
- * Não é possível enviar fotos sem um tópico selecionado.
- */
 @Component({
   selector: 'app-fotos-formulario',
   imports: [IconeComponent, CarregandoComponent],

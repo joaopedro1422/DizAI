@@ -29,11 +29,6 @@ interface PassoInicial {
   parametros?: Params;
 }
 
-/**
- * "Primeiros passos" no topo do painel: o que falta para o assistente atender de verdade, com o teste logo depois do
- * primeiro produto (é quando o lojista vê o valor). Cada passo se marca sozinho pelos dados da loja; o card some quando
- * tudo está feito ou com "Ocultar".
- */
 @Component({
   selector: 'app-primeiros-passos',
   imports: [RouterLink, IconeComponent],

@@ -3,10 +3,6 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { IconeComponent } from '../icone/icone.component';
 import { LogoComponent } from '../logo/logo.component';
 
-/**
- * Lado azul do login e do cadastro no computador: a marca, uma frase e uma conversa de exemplo no WhatsApp.
- * No celular não aparece (a tela continua só com o formulário).
- */
 @Component({
   selector: 'app-painel-marca',
   changeDetection: ChangeDetectionStrategy.OnPush,

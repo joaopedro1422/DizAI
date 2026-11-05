@@ -12,10 +12,6 @@ interface RespostaViaCep {
   erro?: boolean | string;
 }
 
-/**
- * Endereço do tópico "Como chegar": o CEP preenche rua, bairro, cidade e UF pelo ViaCEP; o lojista completa o número.
- * O pai lê `enderecoCompleto()` (null enquanto faltar rua, número ou cidade) para montar o texto que vai no mapa.
- */
 @Component({
   selector: 'app-endereco-formulario',
   imports: [ReactiveFormsModule, CarregandoComponent],

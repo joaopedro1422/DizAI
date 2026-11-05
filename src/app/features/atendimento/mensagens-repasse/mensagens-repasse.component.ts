@@ -17,11 +17,6 @@ interface LinhaMensagem {
   controle: FormControl<string>;
 }
 
-/**
- * O que o cliente recebe quando a conversa passa para o dono, em "Quando o cliente quiser fechar": uma linha por
- * mensagem com o texto atual e "Editar" (abre o campo ali mesmo). A do repasse é a do modo escolhido (cada modo
- * guarda a sua); a de "não souber responder" vale nos dois.
- */
 @Component({
   selector: 'app-mensagens-repasse',
   imports: [ReactiveFormsModule, IconeComponent],

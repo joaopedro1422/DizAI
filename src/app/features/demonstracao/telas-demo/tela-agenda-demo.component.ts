@@ -12,12 +12,6 @@ const ROLAGEM_MS = 700;
 /** ...e ele entra na lista logo depois (como chega no painel aberto). */
 const ENTRADA_DO_NOVO_MS = 1500;
 
-/**
- * A Minha Agenda do painel no celular, no tamanho real, no dia do horário que o assistente acabou de marcar.
- * Mesmo HTML e as mesmas classes da tela real (agenda-page na visualização completa, a linha do tempo do
- * `LinhaAgendaDemoComponent`; o CSS é a cópia das regras de celular). A faixa de dias é o próprio
- * FaixaDiasComponent da tela real.
- */
 @Component({
   selector: 'app-tela-agenda-demo',
   imports: [IconeComponent, FaixaDiasComponent, LinhaAgendaDemoComponent],

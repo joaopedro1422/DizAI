@@ -8,10 +8,6 @@ import { campoComErro } from '../../../core/utils/validadores';
 import { UnidadeAntecedencia } from '../../../core/models/perfil.model';
 import { GrupoPagamentoEntrega } from '../cadastro-formulario';
 
-/**
- * Formas de pagamento, como o cliente recebe e antecedência mínima.
- * Saiu do cadastro e hoje é preenchido no modal "Dados da loja" do painel.
- */
 @Component({
   selector: 'app-etapa-pagamento-entrega',
   imports: [ReactiveFormsModule],

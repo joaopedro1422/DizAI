@@ -18,12 +18,6 @@ import { GANHOS_NEGOCIO } from './ganhos-negocio';
 /** Arrastar mais que isso no cartão (celular) troca de ganho. */
 const ARRASTE_MINIMO = 48;
 
-/**
- * Recursos → "O que muda no seu negócio": os ganhos do tipo escolhido (Produtos | Serviços), um por vez, num cartão
- * quadrado que passa sozinho. O tempo de cada um é a própria animação da barrinha de progresso (`animationend` passa
- * para o próximo), então pausar é só parar a animação: mouse em cima, foco no teclado ou a seção fora da tela.
- * No computador, à esquerda, o título e o índice dos ganhos (tocar em um vai direto a ele).
- */
 @Component({
   selector: 'app-ganhos-negocio',
   imports: [IconeComponent],

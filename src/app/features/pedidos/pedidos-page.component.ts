@@ -43,12 +43,6 @@ const TITULOS_ACAO: Record<AcaoPedido, string> = {
   valor: 'Valor do pedido',
 };
 
-/**
- * Tela "Pedidos" (só lojas de produtos), com o menu lateral (MenuLateralComponent): Pedidos (os confirmados no Chats,
- * até serem entregues), Números (faturamento, entregues, valor médio) e Mensagens (os avisos e as mensagens prontas).
- * É um caderno de pedidos simples: o fluxo não é obrigatório, dá para marcar como entregue direto.
- * Tour (tour-pedidos.ts): um pedido de exemplo do segmento, só na tela, que o lojista leva até a entrega.
- */
 @Component({
   selector: 'app-pedidos-page',
   imports: [
@@ -237,10 +231,6 @@ export class PedidosPageComponent implements OnInit {
     this.irPara('pedidos');
   }
 
-  /**
-   * Os botões do pedido de exemplo: nada vai ao servidor. "Pedido pronto" passa o card para os prontos e mostra o
-   * aviso saindo; "Entregue" (depois do pronto) tira o card e mostra o agradecimento. O tour segue sozinho.
-   */
   protected aoAcaoDoExemplo(acao: AcaoPedido): void {
     const exemplo = this.exemplo();
     if (!exemplo) {

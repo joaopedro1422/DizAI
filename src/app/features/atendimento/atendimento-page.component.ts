@@ -29,10 +29,6 @@ import { TesteAtendimentoComponent } from '../painel/teste-atendimento/teste-ate
 import { MensagensRepasseComponent } from './mensagens-repasse/mensagens-repasse.component';
 import { catalogosIniciais, criarFormularioConfiguracoes } from '../painel/painel-formulario';
 
-/**
- * "Como o assistente atende": quando o cliente quiser fechar, fotos, saudação, catálogo e instruções obrigatórias.
- * Saía na tela inicial do painel; agora tem tela própria, aberta pelo card da tela inicial.
- */
 @Component({
   selector: 'app-atendimento-page',
   imports: [
@@ -78,10 +74,6 @@ export class AtendimentoPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly rotaAtual = inject(ActivatedRoute);
 
-  /**
-   * "Agendamento automático" só aparece para os ramos com agenda (serviços presenciais). Nos serviços, "Agendo por
-   * outro app" fica no lugar de "Me chamar na hora" (que só continua visível para quem já está nele).
-   */
   protected readonly modosPedido = computed(() => {
     const perfil = this.perfilService.perfil();
     const servico = ramoDeServico(perfil.ramo);
@@ -92,10 +84,6 @@ export class AtendimentoPageComponent implements OnInit {
         (!modo.soProdutos || !servico || perfil.modoPedido === modo.valor),
     );
   });
-  /**
-   * "Só no meu horário de funcionamento" usa o horário cadastrado em Dados da loja (aqui só aparece o resumo).
-   * Vazio quando ainda não foi cadastrado.
-   */
   protected readonly resumoHorario = computed(() => {
     const perfil = this.perfilService.perfil();
     if (perfil.horarioLivre) {
@@ -119,10 +107,6 @@ export class AtendimentoPageComponent implements OnInit {
     () => this.perfilService.perfil().whatsappConectado && this.perfilService.perfil().iaAtiva,
   );
 
-  /**
-   * "Quando você confirma os pedidos?" não aparece em serviço com agendamento automático:
-   * ali o assistente marca e confirma sozinho.
-   */
   protected readonly mostrarConfirmacao = computed(
     () => !(ramoDeServico(this.perfilService.perfil().ramo) && this.valores().modoPedido === 'AGENDAMENTO_AUTOMATICO'),
   );
@@ -322,10 +306,6 @@ export class AtendimentoPageComponent implements OnInit {
     }
   }
 
-  /**
-   * Sobe os arquivos escolhidos de cada catálogo e junta as referências às que já estavam salvas. O 1º catálogo
-   * também vai em catalogoArquivos (o campo de sempre).
-   */
   private async enviarCatalogoPendente(): Promise<void> {
     const controle = this.formulario.controls.catalogos;
     const catalogos = controle.value.map((c) => ({ ...c, arquivos: [...c.arquivos] }));

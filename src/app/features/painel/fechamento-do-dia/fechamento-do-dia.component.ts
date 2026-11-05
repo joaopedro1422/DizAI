@@ -49,10 +49,6 @@ function diaDaSemanaPassada(data: Date): string {
   return `${nome} ${masculino ? 'passado' : 'passada'}`;
 }
 
-/**
- * Fechamento do dia: abre no painel na primeira visita depois do expediente (agenda: depois do último horário;
- * pedidos: depois do horário de funcionamento). Faturamento em destaque, os números do dia e o que o assistente fez.
- */
 @Component({
   selector: 'app-fechamento-do-dia',
   imports: [IconeComponent, RouterLink],

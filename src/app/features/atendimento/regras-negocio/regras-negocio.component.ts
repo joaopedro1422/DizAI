@@ -2,10 +2,6 @@ import { ChangeDetectionStrategy, Component, ElementRef, computed, inject, input
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 
-/**
- * "Instruções obrigatórias" como uma lista de regras: cada regra num cartãozinho (editar e remover),
- * um campo para adicionar e as sugestões do ramo. Por baixo continua o mesmo texto, uma regra por linha.
- */
 @Component({
   selector: 'app-regras-negocio',
   imports: [IconeComponent],

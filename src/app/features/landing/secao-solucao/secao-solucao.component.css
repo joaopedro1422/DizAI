@@ -19,7 +19,7 @@
   height: 1.08em;
 }
 
-/* 4 colunas: o cartão do tempo e o do relatório ocupam 2, os outros 1 */
+/* 4 colunas: o do relatório ocupa 2, os outros 1 */
 .ganhos {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -39,7 +39,7 @@
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.2s ease;
 }
 
-.ganho:not(.ganho--tempo):hover {
+.ganho:hover {
   transform: translateY(-4px);
   border-color: color-mix(in srgb, var(--tom, #3C69E8) 30%, transparent);
   box-shadow: var(--lp-sombra-tom, 0 14px 34px rgba(15, 23, 42, 0.08));
@@ -80,20 +80,6 @@
   font-size: 14.5px;
   line-height: 1.5;
   color: var(--cor-texto-secundario);
-}
-
-/* ---------- tempo de volta ---------- */
-.ganho--tempo {
-  grid-column: span 2;
-  justify-content: center;
-  gap: 22px;
-  padding: 30px;
-  border: 1px solid var(--lp-linha, var(--cor-borda));
-  background:
-    radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.85), transparent 45%),
-    linear-gradient(160deg, var(--tom-fundo-1, #E3EBFF) 0%, var(--tom-fundo-2, #F8FAFF) 90%);
-  color: var(--lp-texto, var(--cor-texto));
-  box-shadow: var(--lp-sombra-tom, var(--sombra-card));
 }
 
 .ganho__textos { display: flex; flex-direction: column; gap: 12px; }
@@ -263,22 +249,21 @@
 
 @media (max-width: 640px) {
   .ganhos { grid-template-columns: minmax(0, 1fr); }
-  .ganho--tempo { grid-column: auto; grid-row: auto; padding: 24px; }
   .ganho--largo { grid-column: auto; display: flex; }
   .ganhos { gap: 10px; }
   /* no celular, os cards pequenos ficam compactos (ícone ao lado, sem a miniatura) para a lista não ficar longa */
-  .ganho:not(.ganho--tempo) { padding: 18px; }
-  .ganho:not(.ganho--tempo) .ganho__cabeca {
+  .ganho { padding: 18px; }
+  .ganho .ganho__cabeca {
     display: grid;
     grid-template-columns: 38px minmax(0, 1fr);
     gap: 4px 14px;
   }
-  .ganho:not(.ganho--tempo) .ganho__icone { grid-row: span 2; align-self: flex-start; }
+  .ganho .ganho__icone { grid-row: span 2; align-self: flex-start; }
   .ganho__titulo { font-size: 16.5px; }
-  .ganho:not(.ganho--tempo) .detalhe { display: none; }
+  .ganho .detalhe { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .ganho { transition: none; }
-  .ganho:not(.ganho--tempo):hover { transform: none; }
+  .ganho:hover { transform: none; }
 }

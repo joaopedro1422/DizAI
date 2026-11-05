@@ -88,11 +88,6 @@ export class ChatsPageComponent implements OnInit {
     recusar: 'Pedido não aceito',
   };
 
-
-  /**
-   * Fim do onboarding (?fechamento=1, vindo do primeiro teste): a tela fica à vista alguns segundos e abre o
-   * "Agora é com você". O vídeo/convite da primeira visita fica para a próxima.
-   */
   protected readonly mostrarFechamento = signal(false);
   private readonly rotaAtualFechamento = inject(ActivatedRoute);
   private readonly routerFechamento = inject(Router);

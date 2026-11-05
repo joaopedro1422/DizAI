@@ -26,13 +26,6 @@ const TURNOS = [
   { nome: 'Noite', ate: '24:00' },
 ];
 
-/**
- * Aba "Agenda" da página pública: o cliente escolhe o serviço, o dia e o horário livre e envia
- * tudo pronto pelo WhatsApp. Nada é marcado aqui: o assistente confere a agenda e confirma na conversa
- * (assim um horário que alguém pegou no meio do caminho nunca é confirmado duas vezes).
- * Dia sem horário livre (com a lista de espera ligada na loja): no lugar dos horários aparece "Entrar na lista de
- * espera"; o resto do caminho é o mesmo (nome e "Enviar pelo WhatsApp") e o assistente põe o cliente na fila.
- */
 @Component({
   selector: 'app-agenda-publica',
   imports: [IconeComponent, CarregandoComponent, FaixaDiasComponent, UrlImagemPipe],
@@ -56,10 +49,6 @@ export class AgendaPublicaComponent implements OnInit {
   protected readonly nome = signal('');
   /** Produtos à venda reservados no passo opcional "Também temos" (ids). */
   protected readonly reservados = signal<number[]>([]);
-  /**
-   * Com 2+ profissionais: quem o cliente escolheu ("qualquer" = sem preferência; null = ainda não escolheu).
-   * Com um só, o passo "Com quem?" não aparece e tudo fica como sempre.
-   */
   protected readonly profissionalEscolhido = signal<string | null>(null);
   /** Ignora respostas antigas quando o cliente troca de serviço rápido. */
   private buscaAtual = 0;
@@ -303,10 +292,6 @@ export class AgendaPublicaComponent implements OnInit {
     }
   }
 
-  /**
-   * Rolagem automática: depois de cada escolha a página desce até o próximo passo (o cartão do título com esse id),
-   * ou até o fim (null). Só desce: se o cliente já está mais abaixo, fica onde está.
-   */
   private rolarAte(idTitulo: string | null): void {
     setTimeout(() => {
       let topo = document.documentElement.scrollHeight;

@@ -6,11 +6,6 @@ import { MenuLateralComponent } from '../../../shared/components/menu-lateral/me
 import { AlvoTourDirective } from '../../painel/onboarding/alvo-tour.directive';
 import { SECOES_DA_AGENDA, SECOES_DE_CONFIGURACAO, SecaoAgenda } from '../secoes-agenda';
 
-/**
- * Menu da agenda: as páginas (Agendamentos, Números e as configurações) e o link da agenda online (copiar e
- * "Personalizar", que leva à tela da vitrine).
- * O desenho e a gaveta são do MenuLateralComponent (compartilhado com os Pedidos).
- */
 @Component({
   selector: 'app-menu-agenda',
   imports: [RouterLink, IconeComponent, AlvoTourDirective, MenuLateralComponent],

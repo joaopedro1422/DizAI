@@ -16,11 +16,6 @@ import { IconeComponent } from '../../../shared/components/icone/icone.component
 import type { TipoLanding } from '../conteudo-landing';
 import { HISTORIAS } from './historia';
 
-/**
- * "Do primeiro oi ao pedido entregue": a história do atendimento contada com a rolagem. À esquerda os passos (o que
- * está no meio da tela fica ativo e enche a linha de progresso); à direita, um palco fixo no tom do público com a foto
- * e a cena do passo ativo (a conversa, o resumo, o aviso, a agenda...). No celular, cada passo traz a própria cena.
- */
 @Component({
   selector: 'app-historia-landing',
   imports: [IconeComponent, NgTemplateOutlet],

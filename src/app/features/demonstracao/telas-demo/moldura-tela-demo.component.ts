@@ -3,11 +3,6 @@ import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, afterNextRe
 /** Largura do celular em que as telas do painel são desenhadas (o tamanho real do app). */
 const LARGURA_REAL = 375;
 
-/**
- * Tela do painel por cima do WhatsApp, no celular da demonstração: o conteúdo é desenhado no tamanho real (375 px)
- * e reduzido para caber na tela, seja qual for o tamanho do celular. O transform também prende os elementos
- * `position: fixed` (a janela que sobe de baixo) dentro do celular.
- */
 @Component({
   selector: 'app-moldura-tela-demo',
   changeDetection: ChangeDetectionStrategy.OnPush,

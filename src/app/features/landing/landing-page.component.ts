@@ -44,11 +44,6 @@ import { CHAVE_TIPO_VISTO, CONTEUDO_LANDING, ROTA_LANDING, TipoLanding } from '.
   styleUrl: './landing-page.component.css',
   host: { '[attr.data-tipo]': 'tipo()' },
 })
-/**
- * Landing de um tipo de negócio (`/vendas` = produtos, `/agendamentos` = serviços; o tipo vem do `data` da rota):
- * as mesmas seções, cada uma com o tipo fixo (sem abas) e os textos, exemplos e conversas daquele público. Ordem: hero,
- * negócios, dores, MIT, linha do tempo, solução, recursos, como funciona, vitrine, redes sociais, para quem é, perguntas.
- */
 export class LandingPageComponent {
   readonly tipo = input.required<TipoLanding>();
 

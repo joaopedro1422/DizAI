@@ -34,13 +34,6 @@ interface ItemCatalogo {
   remover: () => void;
 }
 
-/**
- * "Enviar catálogo em imagem ou PDF?" no painel.
- * Altera os campos modoCatalogo e catalogos do formulário do painel; os arquivos escolhidos agora ficam em
- * `pendentes` (um grupo por catálogo) e o painel envia ao salvar (assim "Descartar" não deixa arquivo perdido).
- * Lojas de produtos no modo "Quando o cliente perguntar" podem ter até 3 catálogos, cada um com um assunto e o
- * contexto (do que ele fala): o assistente envia o do assunto da conversa. Com um só, a tela é a de sempre.
- */
 @Component({
   selector: 'app-catalogo-conversa',
   imports: [RouterLink, IconeComponent, OpcaoCardComponent],
@@ -67,10 +60,6 @@ export class CatalogoConversaComponent {
 
   protected readonly modos = MODOS_CATALOGO;
   protected readonly maximoCatalogos = MAXIMO_CATALOGOS;
-  /**
-   * O aviso do cadastro só aparece quando o lojista troca a opção desta seção:
-   * ao abrir ou recarregar o painel ele começa fechado, e o X fecha de novo.
-   */
   protected readonly avisoFechado = signal(true);
   protected readonly ligado = computed(() => this.modo() !== 'NAO');
   protected readonly tituloItens = computed(() => this.conteudo().tituloItens);
@@ -172,10 +161,6 @@ export class CatalogoConversaComponent {
     this.atualizarCatalogos((lista) => lista.map((c, i) => (i === indice ? { ...c, contexto: valor } : c)));
   }
 
-  /**
-   * Com 1 imagem no catálogo, escolher mais 1 imagem adiciona a segunda.
-   * Qualquer outra escolha (PDF, 2 imagens, ou já havia PDF/2 imagens) troca o catálogo inteiro.
-   */
   protected aoEscolherArquivos(indice: number, evento: Event): void {
     const campo = evento.target as HTMLInputElement;
     const escolhidos = Array.from(campo.files ?? []);

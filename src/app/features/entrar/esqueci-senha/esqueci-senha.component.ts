@@ -8,10 +8,6 @@ import { campoComErro, telefoneValido } from '../../../core/utils/validadores';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 
-/**
- * "Esqueci minha senha" do login: o lojista informa o WhatsApp do negócio e o nome; o pedido vai para o
- * gerenciamento (/admin), onde a equipe confere e manda uma senha temporária pelo WhatsApp.
- */
 @Component({
   selector: 'app-esqueci-senha',
   imports: [ReactiveFormsModule, CarregandoComponent, IconeComponent],

@@ -7,10 +7,6 @@ import { BottomSheetComponent } from '../../../shared/components/bottom-sheet/bo
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { InterruptorComponent } from '../../../shared/components/interruptor/interruptor.component';
 
-/**
- * "Facilitador de orçamentos" (lojas de produtos): liga a aba Orçamento da página pública, onde o cliente monta o
- * pedido e envia pelo WhatsApp. Ao ligar, um modal explica o que é e pede capricho no cadastro dos produtos.
- */
 @Component({
   selector: 'app-facilitador-orcamento',
   imports: [IconeComponent, InterruptorComponent, BottomSheetComponent],

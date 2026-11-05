@@ -13,10 +13,6 @@ import { IconeComponent } from '../icone/icone.component';
 
 let proximoIdTitulo = 0;
 
-/**
- * Modal que sobe da parte de baixo da tela (no celular) e fica centralizado no computador.
- * O pai controla a exibição com `@if` e fecha ao receber `fechar`.
- */
 @Component({
   selector: 'app-bottom-sheet',
   imports: [IconeComponent],

@@ -38,15 +38,7 @@ import { ResumoDoDiaService } from '../../core/services/resumo-do-dia.service';
 
 /** Tempo que o painel fica à mostra antes da janela de boas-vindas abrir. */
 const ESPERA_BOAS_VINDAS_MS = 2500;
-/**
- * TESTE: com true, as boas-vindas e o tour do painel abrem toda vez que o painel abre (mesmo com o onboarding
- * concluído), para revisar os passos. Para voltar ao normal (só na conta nova), troque para false.
- */
 const TOUR_SEMPRE_ABERTO = false;
-/**
- * TESTE: com true, o fechamento do dia abre toda vez que o painel abre, com os números de hoje até agora. Para voltar
- * ao normal (uma vez por dia, depois do expediente), troque para false.
- */
 const FECHAMENTO_SEMPRE_ABERTO = false;
 /** O dia cujo fechamento o lojista já viu ("AAAA-MM-DD"), por loja. */
 const CHAVE_FECHAMENTO_VISTO = 'dizai:fechamento-visto:';

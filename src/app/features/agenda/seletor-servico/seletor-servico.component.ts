@@ -7,11 +7,6 @@ import { IconeComponent } from '../../../shared/components/icone/icone.component
 /** A partir de quantos serviços aparece a busca dentro da lista. */
 const SERVICOS_PARA_BUSCA = 7;
 
-/**
- * Seletor de serviço com dropdown próprio (no lugar dos chips, que não cabem quando há muitos serviços).
- * Começa em "Selecione o serviço"; cada opção mostra a duração com o relógio. `multiplo`: dá para marcar mais de um
- * (o "Agendar horário" junta "Manicure + Pedicure"); a lista fica aberta até tocar fora. Sem `multiplo`, escolher fecha.
- */
 @Component({
   selector: 'app-seletor-servico',
   imports: [IconeComponent],

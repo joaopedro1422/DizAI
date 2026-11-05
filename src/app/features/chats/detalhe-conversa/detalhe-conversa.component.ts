@@ -10,10 +10,6 @@ import { CarregandoComponent } from '../../../shared/components/carregando/carre
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { TempoDecorridoPipe } from '../../../shared/pipes/tempo-decorrido.pipe';
 
-/**
- * Chats → Em andamento, ao tocar numa conversa: quem é (nome e número), as 2 últimas mensagens e o que dá para fazer:
- * assumir (o assistente para de responder) ou devolver ao assistente, e abrir no WhatsApp.
- */
 @Component({
   selector: 'app-detalhe-conversa',
   imports: [AvatarComponent, CarregandoComponent, IconeComponent, TempoDecorridoPipe],

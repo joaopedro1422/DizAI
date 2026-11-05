@@ -70,10 +70,6 @@ const CENAS: CenaVideo[] = [
   { nome: 'Teste antes de ligar', duracao: 6000 },
 ];
 
-/**
- * Vídeo explicativo da tela "Como o assistente atende": cada card e cada escolha (cenas no template). Os exemplos
- * (loja, saudação, conversas) seguem o segmento da loja.
- */
 @Component({
   selector: 'app-video-atendimento',
   imports: [VideoTutorialComponent],

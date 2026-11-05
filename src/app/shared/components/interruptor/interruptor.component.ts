@@ -1,9 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-/**
- * Chave liga/desliga (role="switch"). O pai decide o estado: o componente só avisa o clique,
- * para dar tempo de salvar no backend antes de mudar.
- */
 @Component({
   selector: 'app-interruptor',
   changeDetection: ChangeDetectionStrategy.OnPush,

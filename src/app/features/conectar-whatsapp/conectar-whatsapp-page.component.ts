@@ -21,10 +21,6 @@ import {
   etapasDaSituacao,
 } from './passos-conexao';
 
-/**
- * Assistente de conexão do número da loja com o WhatsApp oficial:
- * uma pergunta inicial (já usa o WhatsApp Business?) e depois uma etapa por vez, até o botão da Meta.
- */
 @Component({
   selector: 'app-conectar-whatsapp-page',
   imports: [ReactiveFormsModule, RouterLink, IconeComponent, CarregandoComponent],
@@ -136,10 +132,6 @@ export class ConectarWhatsappPageComponent implements OnInit {
     }
   }
 
-  /**
-   * Abre o cadastro oficial da Meta (modo app WhatsApp Business: o lojista continua usando o app)
-   * e envia o resultado ao backend, que conclui a conexão e liga o assistente.
-   */
   protected async conectarComFacebook(): Promise<void> {
     if (this.conectando()) {
       return;

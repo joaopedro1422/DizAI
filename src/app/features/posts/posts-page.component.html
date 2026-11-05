@@ -1,5 +1,16 @@
 <div class="tela-app tela-pc tela-posts">
-  <app-cabecalho-pagina titulo="Posts para redes sociais" subtitulo="Artes com a sua logo, cores e fotos, prontas para postar." />
+  <header class="topo-azul">
+    <div class="topo-azul__linha">
+      <a class="topo-azul__voltar" [routerLink]="rotaInicio()" aria-label="Voltar para o painel">
+        <app-icone nome="voltar" [tamanho]="22" />
+        <span class="topo-azul__voltar-texto" aria-hidden="true">Voltar</span>
+      </a>
+    </div>
+    <div class="topo-azul__textos">
+      <h1 class="topo-azul__titulo">Posts para redes sociais</h1>
+      <p class="topo-azul__sub">Artes com a sua logo, cores e fotos, prontas para postar.</p>
+    </div>
+  </header>
 
   <main class="conteudo-tela posts corpo-pc">
     <!-- o que o post vai divulgar -->

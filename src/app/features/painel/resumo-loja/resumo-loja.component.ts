@@ -25,8 +25,6 @@ const ITEM_EDITAR: ItemMenuAcoes<AcaoPerfil> = { id: 'editar', rotulo: 'Editar d
 const ITEM_ESTATISTICAS: ItemMenuAcoes<AcaoPerfil> = { id: 'estatisticas', rotulo: 'Estatísticas', icone: 'grafico' };
 const ITEM_SENHA: ItemMenuAcoes<AcaoPerfil> = { id: 'senha', rotulo: 'Alterar senha', icone: 'cadeado' };
 const ITEM_ATALHO: ItemMenuAcoes<AcaoPerfil> = { id: 'atalho', rotulo: 'Baixar atalho', icone: 'celular' };
-/** Já instalado: a mesma janela, para ativar e testar as notificações deste aparelho. */
-const ITEM_NOTIFICACOES: ItemMenuAcoes<AcaoPerfil> = { id: 'atalho', rotulo: 'Notificações', icone: 'sino' };
 const ITEM_SAIR: ItemMenuAcoes<AcaoPerfil> = { id: 'sair', rotulo: 'Sair da conta', icone: 'sair', perigo: true };
 
 /** Topo do painel: saudação, identidade da loja, status do assistente e link público. */
@@ -57,22 +55,18 @@ export class ResumoLojaComponent {
   private readonly router = inject(Router);
   private readonly rotas = inject(SessaoService).rotasDoPainel;
   protected readonly rotaConectar = computed(() => this.rotas().conectarWhatsapp);
-  /** "Baixar atalho" enquanto o DizAI ainda não está instalado neste aparelho; depois, "Notificações". */
+  /** "Baixar atalho" só enquanto o DizAI ainda não está instalado neste aparelho. */
   protected readonly itensMenu = computed(() => [
     ITEM_EDITAR,
     ITEM_ESTATISTICAS,
     ITEM_SENHA,
-    this.instalacaoApp.podeInstalar() ? ITEM_ATALHO : ITEM_NOTIFICACOES,
+    ...(this.instalacaoApp.podeInstalar() ? [ITEM_ATALHO] : []),
     ITEM_SAIR,
   ]);
 
   protected readonly enviandoFoto = signal(false);
   /** Sem foto, a inicial aparece na cor escolhida para a página pública. */
   protected readonly corMarca = computed(() => buscarCorMarca(this.perfil().corMarca).hex);
-  /**
-   * Brilho do topo no tom da cor de destaque da vitrine (bem clarinho). Preto é a cor padrão de quem nunca
-   * personalizou a vitrine: aí fica o azul claro de sempre (null = o valor do CSS).
-   */
   protected readonly brilhoTopo = computed(() =>
     this.perfil().corMarca === COR_MARCA_PADRAO ? null : `color-mix(in srgb, ${this.corMarca()} 16%, white)`,
   );

@@ -6,10 +6,6 @@ import { DIAS_SEMANA } from '../../../core/utils/datas-agenda';
 /** Abertura padrão de um dia que acabou de ser ligado. */
 const DIA_PADRAO = { inicio: '09:00', fim: '18:00' };
 
-/**
- * Horário de funcionamento para "Só no meu horário": os 7 dias, cada um aberto ou fechado,
- * com um horário de abrir e de fechar. Recebe e devolve a lista de períodos (um por dia aberto).
- */
 @Component({
   selector: 'app-horario-funcionamento',
   changeDetection: ChangeDetectionStrategy.OnPush,

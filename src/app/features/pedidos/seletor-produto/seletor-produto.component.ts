@@ -7,11 +7,6 @@ import { IconeComponent } from '../../../shared/components/icone/icone.component
 /** A partir de quantos produtos aparece a busca. */
 const BUSCA_A_PARTIR_DE = 7;
 
-/**
- * "Produto vendido" nos modais de pedido ("Confirmar pedido", "Já entregue" e "Registrar pedido"): dropdown próprio
- * com os produtos cadastrados (foto, nome e categoria). Opcional: só serve para os "Produtos que mais vendem" dos
- * Números; não aparece no pedido.
- */
 @Component({
   selector: 'app-seletor-produto',
   imports: [IconeComponent, UrlImagemPipe],

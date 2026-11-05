@@ -12,18 +12,9 @@ import {
 } from '@angular/core';
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
-import { TelefoneDemoComponent } from '../jornada-interativa/telefone-demo.component';
+import { TelefoneDemoComponent } from './telefone-demo.component';
 import { PASSOS_COMO_FUNCIONA, ROTEIROS_COMO_FUNCIONA, TipoComoFunciona } from './como-funciona';
 
-/**
- * "Como funciona" (no lugar dos 3 cartões e da demonstração longa): os 3 passos à esquerda e o celular à direita, um
- * passo por vez (~20 s o ciclo). Cada passo é uma tela com um movimento: o cadastro preenchido virando "Salvo" e,
- * deslizando por cima, os horários da agenda (serviços) ou a pergunta frequente de pagamento (produtos); o WhatsApp
- * conectado; e uma conversa relâmpago com o que foi cadastrado, terminando no aviso.
- * Todo o tempo é CSS: a barrinha do passo é o relógio (`animationend` passa para o próximo) e as telas animam com
- * `animation-delay`. Pausar (mouse no celular, foco pelo teclado, fora da tela) para só a barrinha: as telas sempre
- * terminam a animação (pausar a tela nova deixava o celular em branco).
- */
 @Component({
   selector: 'app-como-funciona',
   imports: [IconeComponent, TelefoneDemoComponent],

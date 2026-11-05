@@ -55,12 +55,6 @@ const HORARIOS_LIVRES = ['09:00', '09:30', '10:30', '14:00', '15:30', '17:00'];
 
 const TEMPO_POR_ETAPA_MS = 2800;
 
-/**
- * "Recursos" da landing, o gancho para o visitante testar: abas Produtos | Serviços com o ganho de cada recurso
- * em destaque e uma ilustração da tela de verdade (pedido anotado, gerenciador de pedidos, números; agenda pela
- * conversa, mensagens automáticas, profissionais, página de horários), os recursos comuns e a conta do tempo
- * que o lojista ganha de volta, terminando no "Testar grátis".
- */
 @Component({
   selector: 'app-secao-recursos',
   imports: [IconeComponent, FechamentoRecursosComponent],

@@ -12,10 +12,6 @@ import { SeletorProdutoComponent } from '../seletor-produto/seletor-produto.comp
 /** Aceita "70", "70,5" ou "70.50". */
 const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
 
-/**
- * O mesmo cliente com ou sem o 9º dígito e com ou sem o 55: só dígitos, com o 55 na frente quando é um número do
- * Brasil digitado com DDD, e sem o 9 depois do DDD (como o Telefone.chave do backend).
- */
 function chaveDoNumero(texto: string): string {
   let digitos = texto.replace(/\D/g, '').replace(/^0+/, '');
   if (digitos.length === 10 || digitos.length === 11) digitos = '55' + digitos;
@@ -25,12 +21,6 @@ function chaveDoNumero(texto: string): string {
   return digitos;
 }
 
-/**
- * "Registrar pedido" (tela Pedidos): pedido que chegou fora do assistente. O produto vendido (opcional, só para os
- * Números), a descrição dos itens em texto livre, o valor (é o que
- * entra nos Números), o WhatsApp e o nome (opcionais). Ao digitar o número de um cliente que já existe (conversou,
- * pediu…), o nome vem preenchido sozinho.
- */
 @Component({
   selector: 'app-registrar-pedido',
   imports: [IconeComponent, CarregandoComponent, SeletorProdutoComponent],

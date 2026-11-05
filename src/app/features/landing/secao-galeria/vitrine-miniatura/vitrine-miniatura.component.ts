@@ -23,10 +23,6 @@ import { desenharCapaDegrade } from '../../../galeria/seletor-cor-marca/capa-deg
 import { CarrosselFeedbacksComponent } from '../../../vitrine-publica/carrossel-feedbacks/carrossel-feedbacks.component';
 import { ExemploGaleria, FotoExemplo } from '../exemplos-galeria';
 
-/**
- * O que a miniatura mostra: o topo com as fotos, a página rolada até os feedbacks e o "Como chegar", a aba
- * "Agendar horário" escolhida, ou a mesma aba rolada até o fim.
- */
 export type FaseVitrine = 'trabalhos' | 'topicos' | 'agenda' | 'agenda-fim';
 
 /** A largura em que a página é desenhada (a de um celular). */
@@ -41,13 +37,6 @@ const PROPORCOES_MOSAICO = ['4 / 5', '1', '3 / 4', '5 / 4', '4 / 5', '1'];
 /** A "capa pronta" é desenhada uma vez por cor. */
 const capasDesenhadas = new Map<string, string>();
 
-/**
- * A página pública da loja (/l/{slug}) em miniatura, para a landing. Desenhada no tamanho de um celular de verdade
- * (375 px, com as mesmas medidas e classes da vitrine e da agenda pública) e reduzida para caber no aparelho.
- * Segue o que o lojista escolhe em "Personalizar vitrine": fonte, menu, estilo da cor, abas, fotos e o tema escuro.
- * O carrossel de feedbacks e a faixa de dias são os próprios componentes da vitrine; o mapa é um desenho (o Google
- * Maps de verdade pesaria na landing).
- */
 @Component({
   selector: 'app-vitrine-miniatura',
   imports: [IconeComponent, LogoComponent, FaixaDiasComponent, CarrosselFeedbacksComponent],

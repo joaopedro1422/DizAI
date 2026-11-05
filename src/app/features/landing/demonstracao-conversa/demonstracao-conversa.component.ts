@@ -24,12 +24,6 @@ const AVISO_MS = 3800;
 const LEGENDA_MS = 3200;
 const PAUSA_ENTRE_CONVERSAS_MS = 4500;
 
-/**
- * Conversa ao vivo do hero: o visitante escolhe serviços ou produtos e o segmento, e assiste o assistente atendendo.
- * No fim, o celular mostra a tela do painel (o pedido em Pedidos, o horário na Minha Agenda) e volta ao WhatsApp.
- * Ao terminar, segue para o próximo segmento do mesmo tipo. Pausa sozinha quando sai da tela.
- * A versão detalhada (checks e velocidade) fica em /demonstracao.
- */
 @Component({
   selector: 'app-demonstracao-conversa',
   imports: [IconeComponent, BalaoConversaComponent, MolduraTelaDemoComponent, TelaPedidosDemoComponent, TelaAgendaDemoComponent],

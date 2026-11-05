@@ -48,13 +48,6 @@ const MARGEM_TELA_PX = 16;
 /** Altura do balão antes de ele existir na tela (o primeiro passo), com a prévia do WhatsApp. */
 const ALTURA_BALAO_ESTIMADA_PX = 380;
 
-/**
- * Tour guiado do primeiro acesso: escurece a tela e destaca uma seção por vez.
- *
- * Para a troca de passo ser suave e não "pular", a posição final do recorte é calculada
- * antes de rolar a página: o recorte e a rolagem andam juntos até o mesmo ponto, e o balão
- * só aparece depois que tudo parou.
- */
 @Component({
   selector: 'app-onboarding-tour',
   imports: [IconeComponent, PreviaWhatsappComponent],
@@ -101,10 +94,6 @@ export class OnboardingTourComponent implements OnDestroy {
     () => this.indicePasso() > 0 && !this.passos()[this.indicePasso() - 1]?.aguardar,
   );
   protected readonly ehUltimoPasso = computed(() => this.indicePasso() === this.passos().length - 1);
-  /**
-   * Passo interativo: o bloqueio ganha um furo no recorte (clip-path com evenodd), e só o elemento destacado
-   * recebe o toque. Fora desses passos, o bloqueio cobre a tela inteira.
-   */
   protected readonly furoNoBloqueio = computed(() => {
     const recorte = this.destaque();
     if (!this.passoAtual()?.aguardar || !recorte || !this.balaoVisivel()) {
@@ -131,10 +120,6 @@ export class OnboardingTourComponent implements OnDestroy {
     };
   });
 
-  /**
-   * O balão fica do lado da seção com espaço para ele inteiro (abaixo, de preferência). Sem espaço em nenhum dos
-   * dois, fica do lado com mais espaço e é preso dentro da tela: nunca some para cima nem para baixo.
-   */
   protected readonly balao = computed(() => {
     const medidas = this.medidas();
     if (!medidas) {
@@ -181,10 +166,6 @@ export class OnboardingTourComponent implements OnDestroy {
     void this.irParaPasso(0);
   }
 
-  /**
-   * Tour com passos prontos (ex.: o da agenda). Os alvos podem ainda não estar na tela: cada passo prepara a tela
-   * no "antes" e, se mesmo assim o alvo não aparece (ou está escondido nesta largura), o passo é pulado.
-   */
   iniciarCom(passos: PassoTour[]): void {
     this.limparTemporizadores();
     this.passos.set(passos);
@@ -293,10 +274,6 @@ export class OnboardingTourComponent implements OnDestroy {
     this.botaoAvancar()?.nativeElement.focus({ preventScroll: true });
   }
 
-  /**
-   * Centraliza a seção junto com o balão embaixo dela (o conjunto); se não cabe, a seção sobe até perto do topo.
-   * Antes ela ia para o meio da tela e o balão alto (com a prévia) passava do topo.
-   */
   private calcularRolagem(elemento: HTMLElement): number {
     const retangulo = elemento.getBoundingClientRect();
     const topoNaPagina = retangulo.top + window.scrollY;

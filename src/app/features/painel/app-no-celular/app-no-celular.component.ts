@@ -4,11 +4,6 @@ import { InstalacaoAppService } from '../../../core/pwa/instalacao-app.service';
 import { NotificacoesPushService } from '../../../core/pwa/notificacoes-push.service';
 import { ToastService } from '../../../core/services/toast.service';
 
-/**
- * "DizAI no seu celular": instalar o atalho (PWA) e ativar os avisos de pedido pronto para fechar.
- * cartao: fica no painel enquanto houver algo a fazer. convite: dentro da janela do fim do onboarding.
- * Some sozinho quando o app já está instalado e os avisos ativos (ou o aparelho não tem suporte).
- */
 @Component({
   selector: 'app-no-celular',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -15,11 +15,6 @@ const CENAS: CenaVideo[] = [
   { nome: 'Pronto', duracao: 5000 },
 ];
 
-/**
- * Tutorial do formulário de produto (lojas de produtos), na primeira vez que o lojista abre "Novo produto": o que
- * são as variações de preço e as opções, quando usar cada uma, adicional que muda com o tamanho (um produto por
- * tamanho) e itens genéricos com o mesmo preço (preço da unidade + uma opção). Os exemplos seguem o segmento da loja.
- */
 @Component({
   selector: 'app-guia-cadastro',
   imports: [VideoTutorialComponent],

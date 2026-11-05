@@ -23,10 +23,6 @@ import { EtapaDadosNegocioComponent } from '../../cadastro/etapas/etapa-dados-ne
 import { EtapaPagamentoEntregaComponent } from '../../cadastro/etapas/etapa-pagamento-entrega.component';
 import { HorarioFuncionamentoComponent } from '../../atendimento/horario-funcionamento/horario-funcionamento.component';
 
-/**
- * Formulário do modal "Dados da loja". Reaproveita os campos e validações do cadastro,
- * já preenchidos com o perfil atual.
- */
 @Component({
   selector: 'app-editar-perfil',
   imports: [
@@ -52,10 +48,6 @@ export class EditarPerfilComponent {
   protected readonly salvando = signal(false);
   protected readonly formulario = this.criarFormularioPreenchido();
 
-  /**
-   * Horário de funcionamento da loja: limita os pedidos (o assistente calcula o primeiro horário possível) e,
-   * com "Só no meu horário de funcionamento", também a confirmação. "Sempre" = sem horário fixo.
-   */
   private readonly ramoEscolhido = toSignal(this.formulario.controls.ramo.valueChanges, {
     initialValue: this.formulario.controls.ramo.value,
   });

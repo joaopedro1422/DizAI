@@ -6,10 +6,6 @@ import { FotoCompartilhada } from '../../../core/models/loja-publica.model';
 import { LojaPublicaService } from '../../../core/services/loja-publica.service';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 
-/**
- * /l/{slug}/foto/{id}: só a foto, sem a vitrine em volta. É o link que o cliente manda para a loja pelo botão
- * "Enviar pelo WhatsApp" da galeria (no WhatsApp aparece a prévia com a própria foto, ver PreviaLinkController).
- */
 @Component({
   selector: 'app-foto-compartilhada-page',
   imports: [CarregandoComponent, UrlImagemPipe],

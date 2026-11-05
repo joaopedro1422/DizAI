@@ -4,10 +4,6 @@ import { ESTILOS_COR, fundoDoDestaque } from '../../../core/constants/estilos-co
 import { EstiloCor } from '../../../core/models/vitrine.model';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 
-/**
- * Estilo da cor de destaque (Normal, Metálico, Degradê, Vidro) com dropdown próprio: cada opção mostra uma amostra
- * pintada com a cor escolhida naquele estilo. Mesmo desenho do seletor de "Cor de fundo".
- */
 @Component({
   selector: 'app-seletor-estilo-cor',
   imports: [IconeComponent],

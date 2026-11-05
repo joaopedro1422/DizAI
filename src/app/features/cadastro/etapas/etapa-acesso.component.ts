@@ -3,13 +3,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { formatarTelefone } from '../../../core/utils/texto.utils';
 import { campoComErro } from '../../../core/utils/validadores';
-import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { GrupoAcesso, TAMANHO_MINIMO_SENHA } from '../cadastro-formulario';
 
 /** Passo 2: WhatsApp do negócio (também é o login) e senha de acesso com confirmação. */
 @Component({
   selector: 'app-etapa-acesso',
-  imports: [ReactiveFormsModule, IconeComponent],
+  imports: [ReactiveFormsModule],
   templateUrl: './etapa-acesso.component.html',
   styleUrl: './etapa.css',
 })

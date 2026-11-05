@@ -10,11 +10,6 @@ import { IconeComponent } from '../icone/icone.component';
 /** De quanto em quanto tempo a bolha confere se chegou pedido novo (só com a aba visível). */
 const CONFERIR_A_CADA_MS = 20_000;
 
-/**
- * Bolha flutuante no canto do painel: aparece quando há conversa "Pronto para fechar" esperando no Chats (um resumo
- * de pedido novo), com o número de pedidos num selo amarelo. Tocar abre o Chats. Fica em todas as telas do painel,
- * menos no próprio Chats; confere sozinha a cada 20 s e quando o lojista volta para a aba.
- */
 @Component({
   selector: 'app-bolha-pedidos',
   imports: [IconeComponent],

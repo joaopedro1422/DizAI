@@ -5,11 +5,6 @@ import { SessaoService } from '../../../core/auth/sessao.service';
 import { IconeComponent } from '../icone/icone.component';
 import { NomeIcone } from '../icone/icones';
 
-/**
- * Cabeçalho das telas internas do painel: voltar, título, subtítulo
- * e espaço para ações (`[acoesTopo]` ao lado do voltar, `[acaoTitulo]` ao lado do título
- * e conteúdo livre abaixo do título).
- */
 @Component({
   selector: 'app-cabecalho-pagina',
   imports: [RouterLink, IconeComponent],

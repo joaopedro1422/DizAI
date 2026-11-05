@@ -9,11 +9,6 @@ import { ArmazenamentoFotosService } from '../../../core/services/armazenamento-
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 
-/**
- * Card "Quem atende" (Agenda → Configure): só o nome de cada profissional, sem login próprio. O primeiro é o dono.
- * Com um só, a agenda, a página pública e o assistente funcionam como sempre; com 2 ou mais, o cliente escolhe com
- * quem. Salva na hora (fora da barra "Salvar" dos horários).
- */
 @Component({
   selector: 'app-profissionais-agenda',
   imports: [IconeComponent, CarregandoComponent, UrlImagemPipe],

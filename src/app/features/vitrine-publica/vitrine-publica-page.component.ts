@@ -119,10 +119,6 @@ export class VitrinePublicaPageComponent implements OnInit {
     return fundoDoDestaque(corNoTema, this.loja()?.estiloCor);
   });
 
-  /**
-   * Tema escuro: bordas do que está selecionado (serviço, dia, horário) e o dia escolhido na cor de destaque da loja.
-   * Preto e grafite sumiriam no fundo: viram um cinza claro. No tema claro fica null (vale --vitrine-destaque).
-   */
   protected readonly corSelecao = computed(() => {
     const cor = this.corDaMarca();
     if (!this.temaEscuro() || !cor) {
@@ -137,10 +133,6 @@ export class VitrinePublicaPageComponent implements OnInit {
     return corMarca ? buscarCorMarca(corMarca).hex : null;
   });
 
-  /**
-   * Cor dos detalhes (textos, bordas, ícones) na cor de destaque. No tema escuro os detalhes ficam brancos; os
-   * preenchimentos (botões, etiqueta ativa) continuam na cor da marca pelo --vitrine-destaque-fundo.
-   */
   protected readonly corDestaque = computed(() => (this.temaEscuro() ? '#ffffff' : this.corDaMarca()));
   protected readonly inicial = computed(() => this.nomeLoja().trim().charAt(0).toUpperCase());
 
@@ -151,10 +143,6 @@ export class VitrinePublicaPageComponent implements OnInit {
     void this.carregarLoja();
   }
 
-  /**
-   * Descrição e cartão de compartilhamento para quem lê a página já montada (Google). WhatsApp e Instagram não rodam
-   * o Angular: para eles a hospedagem manda para a prévia do backend (vercel.json → /public/previa/l/{slug}).
-   */
   private atualizarMetaTags(loja: LojaPublica): void {
     const descricao = loja.descricao?.trim() || 'Veja os nossos trabalhos e fale com a gente pelo WhatsApp.';
     this.meta.updateTag({ name: 'description', content: descricao });
@@ -202,10 +190,6 @@ export class VitrinePublicaPageComponent implements OnInit {
     }
   }
 
-  /**
-   * Uma visita por aba (sessionStorage), para recarregar a página não contar de novo.
-   * Quem está logado no painel é o próprio lojista conferindo a galeria: não conta.
-   */
   private contarVisita(slug: string): void {
     if (this.sessao.estaAutenticado()) {
       return;

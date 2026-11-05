@@ -1,4 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,6 +14,7 @@ import {
 } from '@angular/core';
 
 import { mensagemDoErro } from '../../core/api/erro-api';
+import { SessaoService } from '../../core/auth/sessao.service';
 import { buscarCorMarca } from '../../core/constants/cores-marca';
 import { fundoDoDestaque } from '../../core/constants/estilos-cor';
 import { UrlImagemPipe } from '../../core/imagens/url-imagem';
@@ -28,7 +30,6 @@ import { ProdutoService } from '../../core/services/produto.service';
 import { ToastService } from '../../core/services/toast.service';
 import { diaPorExtenso, formatarDuracao, hojeIso, somarDias } from '../../core/utils/datas-agenda';
 import { BottomSheetComponent } from '../../shared/components/bottom-sheet/bottom-sheet.component';
-import { CabecalhoPaginaComponent } from '../../shared/components/cabecalho-pagina/cabecalho-pagina.component';
 import { CarregandoComponent } from '../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../shared/components/icone/icone.component';
 import { NomeIcone } from '../../shared/components/icone/icones';
@@ -66,17 +67,11 @@ interface BaseDoPost {
   depoimento: ConteudoPost['depoimento'];
 }
 
-/**
- * Gerador de posts para redes sociais (/painel/{uuid}/posts): o lojista escolhe o que divulgar e recebe 4 artes
- * diferentes com a logo, as cores, a fonte e as fotos da loja (layouts sorteados pelo motor-post a partir do DNA
- * visual da loja), com os textos escritos pela IA. Na arte escolhida dá para ajustar o texto, baixar o PNG,
- * compartilhar (no celular, direto para o Instagram) e copiar a legenda.
- */
 @Component({
   selector: 'app-posts-page',
   imports: [
     NgTemplateOutlet,
-    CabecalhoPaginaComponent,
+    RouterLink,
     CarregandoComponent,
     IconeComponent,
     BottomSheetComponent,
@@ -85,7 +80,7 @@ interface BaseDoPost {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './posts-page.component.html',
-  styleUrls: ['./posts-page.component.css', './posts-resultados.css'],
+  styleUrls: ['../../shared/estilos-topo-azul.css', './posts-page.component.css', './posts-resultados.css'],
 })
 export class PostsPageComponent implements OnInit {
   private readonly perfilService = inject(PerfilService);
@@ -94,6 +89,8 @@ export class PostsPageComponent implements OnInit {
   private readonly lojaPublicaService = inject(LojaPublicaService);
   private readonly postsService = inject(PostsService);
   private readonly toastService = inject(ToastService);
+  private readonly rotas = inject(SessaoService).rotasDoPainel;
+  protected readonly rotaInicio = computed(() => this.rotas().inicio);
 
   protected readonly perfil = this.perfilService.perfil;
   protected readonly formatos: { valor: FormatoPost; rotulo: string; detalhe: string }[] = [
@@ -595,10 +592,6 @@ function nomeDoDia(data: string): string {
   return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
-/**
- * Todos os horários livres, com os seguidos juntos numa faixa ("09:00 às 11:30"), como o assistente mostra na
- * conversa: dia cheio de horários livres não pode parecer que só tem alguns.
- */
 function emFaixas(horarios: string[], intervalo: number): string[] {
   const minutos = (hora: string) => Number(hora.slice(0, 2)) * 60 + Number(hora.slice(3, 5));
   const grupos: string[][] = [];

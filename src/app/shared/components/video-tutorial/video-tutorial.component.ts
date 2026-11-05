@@ -27,12 +27,6 @@ export interface ContextoCena {
   $implicit: number;
 }
 
-/**
- * Janela com um "vídeo" feito em HTML: legenda em cima e um celular desenhado embaixo, cena a cena.
- * Quem usa passa a lista de cenas e dois templates (`#legenda` e `#tela`), que recebem o índice da cena;
- * as peças e animações das cenas estão em `cenas-video.css` (o componente do vídeo inclui esse arquivo).
- * Começa a tocar sozinho; o pai controla a exibição com `@if` e esconde ao receber `confirmar` ou `fechar`.
- */
 @Component({
   selector: 'app-video-tutorial',
   imports: [IconeComponent, NgTemplateOutlet],

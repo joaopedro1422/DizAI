@@ -3,10 +3,6 @@ import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, afterNextRe
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { CONTEUDO_LANDING, TipoLanding } from '../conteudo-landing';
 
-/**
- * O problema, mostrado em vez de contado: à esquerda o título e as três dores numa lista editorial; à direita a tela de
- * bloqueio do celular do lojista com as mensagens de clientes chegando e ficando sem resposta (caem em cascata).
- */
 @Component({
   selector: 'app-problema-landing',
   imports: [IconeComponent],

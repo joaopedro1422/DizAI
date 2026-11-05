@@ -11,11 +11,6 @@ import {
 } from '../../agenda/mensagens-prontas/mensagens-prontas.component';
 import { AGRADECIMENTO_PADRAO, AVISO_PRONTO_PADRAO, preencherAviso } from '../textos-pedido';
 
-/**
- * Página "Mensagens" dos Pedidos: os avisos que já vêm escritos no "Pedido pronto" e no "Entregue" (o lojista pode
- * trocar o texto na hora) e as mensagens prontas, que viram atalhos nesses avisos. Mesmo desenho de "ajustes" das
- * configurações da agenda.
- */
 @Component({
   selector: 'app-mensagens-pedidos',
   imports: [IconeComponent, MensagensProntasComponent, AlvoTourDirective],

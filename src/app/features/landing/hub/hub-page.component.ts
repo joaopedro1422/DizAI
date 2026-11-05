@@ -159,18 +159,12 @@ const TEMPO_POR_CENA_MS = 4000;
 /** Ondas da nota de voz no cartão do áudio (altura em %). */
 const ONDAS = [28, 52, 78, 44, 92, 60, 34, 70, 48, 86, 40, 64, 30, 54, 74, 38, 24, 46, 66, 36];
 
-/**
- * Hub da raiz (`/`): não é uma landing. Uma tela escura com dois "mundos" na primeira dobra, Vendas (`/vendas`) e
- * Agendamentos (`/agendamentos`), cada um com a sua cor e um carrossel de cenas (foto, mensagem do cliente, o cartão do
- * resultado e o aviso que chega) que desliza a cada 4 s e pausa com o mouse em cima; o mundo escolhido cresce.
- * Embaixo, cartões de vidro com o que vale para os dois e as portas de novo. Sem "Entrar"/"Testar grátis" no topo.
- */
 @Component({
   selector: 'app-hub-page',
   imports: [RouterLink, IconeComponent, LogoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './hub-page.component.html',
-  styleUrl: './hub-page.component.css',
+  styleUrls: ['./hub-page.component.css', './hub-vidros.css', './hub-responsivo.css'],
   host: { '[class.tema-claro]': "tema() !== 'escuro'" },
 })
 export class HubPageComponent {

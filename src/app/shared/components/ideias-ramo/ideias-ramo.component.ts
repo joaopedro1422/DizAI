@@ -9,10 +9,6 @@ export interface IdeiaRamo {
   etiqueta?: string;
 }
 
-/**
- * Lista de ideias prontas para o ramo da loja (produtos, perguntas...).
- * Tocar numa ideia abre o cadastro já preenchido, para o lojista só ajustar.
- */
 @Component({
   selector: 'app-ideias-ramo',
   imports: [IconeComponent],

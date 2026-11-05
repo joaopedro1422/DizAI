@@ -32,12 +32,6 @@ const DIFERENCIAIS: { icone: NomeIcone; titulo: string; texto: string }[] = [
   },
 ];
 
-/**
- * "Redes sociais" da landing, logo abaixo da Vitrine pública: por que manter o Instagram ativo e o gerador de posts
- * em ação. À direita, um leque com artes de negócios diferentes feitas pelo próprio ArtePostComponent (o mesmo do
- * painel): a da frente fica no centro e as outras se abrem dos dois lados; uma por vez vem para a frente (o mouse em
- * cima pausa, o toque traz qualquer uma; parado para quem pediu menos movimento).
- */
 @Component({
   selector: 'app-secao-posts',
   imports: [RouterLink, IconeComponent, ArtePostComponent],

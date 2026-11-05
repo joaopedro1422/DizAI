@@ -5,11 +5,6 @@ import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
 import { Profissional } from '../../../core/models/agenda.model';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 
-/**
- * Filtro de profissional da agenda no celular, com dropdown próprio (as tags tomam muito espaço quando são muitos).
- * Mesmo desenho do SeletorServicoComponent; cada opção traz a foto do profissional (ou as iniciais).
- * `comTodos`: a primeira opção é "Todos" (visualização resumida; na completa do celular é um por vez).
- */
 @Component({
   selector: 'app-seletor-profissional',
   imports: [NgTemplateOutlet, IconeComponent, UrlImagemPipe],

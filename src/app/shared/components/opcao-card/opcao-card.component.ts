@@ -9,10 +9,6 @@ export interface EtiquetaOpcao {
   icone: NomeIcone;
 }
 
-/**
- * Opção de escolha única em formato de card (título + descrição + marcador).
- * Coloque os cards dentro de um elemento com `role="radiogroup"`.
- */
 @Component({
   selector: 'app-opcao-card',
   imports: [IconeComponent],

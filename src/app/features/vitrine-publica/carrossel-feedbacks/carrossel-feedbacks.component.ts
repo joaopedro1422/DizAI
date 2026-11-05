@@ -6,11 +6,6 @@ import { IconeComponent } from '../../../shared/components/icone/icone.component
 /** Tempo de cada feedback na tela antes de passar para o próximo. */
 const TEMPO_POR_SLIDE_MS = 6000;
 
-/**
- * Tópico de feedbacks na vitrine pública: um depoimento por vez, passando sozinho (pausa com o mouse em cima, com o
- * foco num botão ou com a aba escondida; sem animação para quem pediu menos movimento), com < e >, pontinhos e o
- * gesto de arrastar no celular. As cores e a fonte vêm da vitrine (--vitrine-destaque, --vitrine-fonte).
- */
 @Component({
   selector: 'app-carrossel-feedbacks',
   imports: [IconeComponent],

@@ -10,10 +10,6 @@ import { TelaPedidosDemoComponent } from './telas-demo/tela-pedidos-demo.compone
 import { DEMONSTRACOES, TIPOS_NEGOCIO, TipoNegocio, destaquesDe } from './conversas-demonstracao';
 import { ReprodutorConversa } from './reprodutor-conversa';
 
-/**
- * Demonstração completa (/demonstracao?tipo=servicos&segmento=manicure): a conversa acontece sozinha e,
- * ao lado, os checks do que o assistente fez, com pausa e velocidade. Nada vai para o servidor.
- */
 @Component({
   selector: 'app-demonstracao-page',
   imports: [

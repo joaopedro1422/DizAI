@@ -11,10 +11,6 @@ import { formatarReal } from '../textos-pedido';
 /** O que o lojista pode fazer com um pedido em andamento. */
 export type AcaoPedido = 'pronto' | 'entregue' | 'cancelar' | 'valor';
 
-/**
- * Pedido em andamento: quem pediu, o que pediu (o resumo do assistente, sem estrutura fixa), o valor e as ações.
- * "Pronto" avisa o cliente e mantém o pedido na lista; "Entregue" tira da lista e devolve a conversa ao assistente.
- */
 @Component({
   selector: 'app-pedido-card',
   imports: [IconeComponent, MenuAcoesComponent, TempoDecorridoPipe, UrlImagemPipe],

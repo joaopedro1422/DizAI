@@ -38,10 +38,6 @@ const PERIODOS = [
   { dias: 90, rotulo: '90 dias' },
 ];
 
-/**
- * Cores das fatias do "Faturamento por serviço", sempre nesta ordem (a cor segue a posição na lista, que já vem do
- * maior para o menor). Validadas para daltonismo lado a lado; "Outros" é cinza. Ver --serie-* no CSS.
- */
 const CORES_FATIAS = ['var(--serie-1)', 'var(--serie-2)', 'var(--serie-3)', 'var(--serie-4)', 'var(--serie-5)'];
 const COR_OUTROS = 'var(--serie-outros)';
 
@@ -56,12 +52,6 @@ const DIAS_DA_SEMANA: Record<string, { curto: string; longo: string }> = {
   DOM: { curto: 'Dom', longo: 'Domingo' },
 };
 
-/**
- * Aba "Números" da agenda: o faturamento dos atendimentos em destaque (o cartão azul), os indicadores do período,
- * o gráfico do faturamento dia a dia (ou por semana em 90 dias), quanto cada serviço faturou (barra 100% + tabela),
- * os serviços mais feitos, por profissional (2+) e a parte de produtos vendidos no balcão ("Registrar venda").
- * Gráficos em HTML/CSS, sem biblioteca; cada marca tem dica ao passar o mouse ou tocar.
- */
 @Component({
   selector: 'app-numeros-agenda',
   imports: [CarregandoComponent, IconeComponent],

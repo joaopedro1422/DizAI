@@ -11,10 +11,6 @@ export interface ItemMenuAcoes<T extends string = string> {
   perigo?: boolean;
 }
 
-/**
- * Botão de três pontinhos que abre uma pequena lista de ações.
- * Fecha ao escolher um item, ao clicar fora ou ao apertar Esc.
- */
 @Component({
   selector: 'app-menu-acoes',
   imports: [IconeComponent],

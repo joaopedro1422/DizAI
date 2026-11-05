@@ -5,10 +5,6 @@ import { IconeComponent } from '../icone/icone.component';
 
 const CORES_AVATAR = ['#E9D7D1', '#DCE6F7', '#F3E6CC', '#E3E7EE', '#F1E4E0', '#DDEBDF'];
 
-/**
- * Círculo com as iniciais do nome (a cor é sempre a mesma para o mesmo nome) ou, com modo="icone",
- * o ícone de pessoa em azul claro (chats: muitos clientes só têm o número, e as "iniciais" viravam "(9").
- */
 @Component({
   selector: 'app-avatar',
   imports: [IconeComponent],

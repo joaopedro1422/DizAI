@@ -21,10 +21,6 @@ const ITENS: Record<'produtos' | 'servicos', ItemDica[]> = {
   ],
 };
 
-/**
- * Fechamento do onboarding: depois do teste automático, na tela em que o resultado aparece (o pedido no Chats, o
- * horário na Agenda), o que o lojista faz agora. "Começar" leva ao painel; "Ficar aqui" deixa ver a tela.
- */
 @Component({
   selector: 'app-fechamento-onboarding',
   imports: [DicaSobrepostaComponent],

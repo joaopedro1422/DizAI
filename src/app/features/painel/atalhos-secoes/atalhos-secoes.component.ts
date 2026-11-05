@@ -19,10 +19,6 @@ import { AlvoTourDirective } from '../onboarding/alvo-tour.directive';
 /** Cabem duas fotos e o "+N" no canto do card quadrado. */
 const MINIATURAS_GALERIA = 2;
 
-/**
- * Cards de navegação do painel ("Seu negócio"): Agenda (serviços) ou Pedidos (produtos), Produtos, Perguntas,
- * Galeria e Contatos a ignorar.
- */
 @Component({
   selector: 'app-atalhos-secoes',
   imports: [RouterLink, IconeComponent, AlvoTourDirective, UrlImagemPipe],

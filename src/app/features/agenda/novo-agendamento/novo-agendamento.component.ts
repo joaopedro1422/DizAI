@@ -13,11 +13,6 @@ import { campoComErro } from '../../../core/utils/validadores';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { SeletorServicoComponent } from '../seletor-servico/seletor-servico.component';
 
-/**
- * Agendamento que o lojista cadastra à mão (cliente do Instagram, do balcão…).
- * Escolher os serviços preenche a duração; o WhatsApp é opcional, mas com ele o cliente
- * pode remarcar ou cancelar falando com o assistente.
- */
 @Component({
   selector: 'app-novo-agendamento',
   imports: [ReactiveFormsModule, CarregandoComponent, SeletorServicoComponent],

@@ -3,10 +3,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { IconeComponent } from '../icone/icone.component';
 
-/**
- * Mapa do Google com o endereço da loja ("Como chegar"): o mapa incorporado (sem chave de API, já traz o "Abrir no
- * Maps"), o endereço escrito e o botão de traçar a rota. Usado na vitrine pública e na prévia do painel.
- */
 @Component({
   selector: 'app-mapa-loja',
   imports: [IconeComponent],

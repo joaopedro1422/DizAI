@@ -21,10 +21,6 @@ export type AcaoPedidoConversa = 'confirmar' | 'entregar' | 'recusar';
 const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
 const TAMANHO_MAXIMO_ANEXO_BYTES = 5 * 1024 * 1024;
 
-/**
- * Conteúdo do modal das ações de pedido no card da conversa ("Aguardando você"). O valor vem preenchido com o total
- * que o assistente calculou; é o que o lojista confirmar aqui que entra no faturamento.
- */
 @Component({
   selector: 'app-acao-pedido-conversa',
   imports: [CarregandoComponent, AvisoClienteComponent, IconeComponent, UrlImagemPipe, SeletorProdutoComponent],

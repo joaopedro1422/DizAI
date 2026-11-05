@@ -21,10 +21,6 @@ export interface ItemDica {
 
 let proximoIdDica = 0;
 
-/**
- * Janela de orientação com fundo escurecido, no mesmo visual do tour do painel.
- * O pai controla a exibição com `@if` e esconde ao receber `confirmar`.
- */
 @Component({
   selector: 'app-dica-sobreposta',
   imports: [IconeComponent, LogoComponent],

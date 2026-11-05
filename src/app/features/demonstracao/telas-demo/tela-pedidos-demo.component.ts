@@ -20,11 +20,6 @@ const ROTEIRO: [number, Fase][] = [
   [6000, 'entregue'],
 ];
 
-/**
- * A tela Pedidos do painel no celular, no tamanho real: o pedido que acabou de ser confirmado em preparo, o toque em
- * "Entregue" e a janela com o agradecimento que vai pelo WhatsApp. Mesmo HTML e as mesmas classes da tela real
- * (pedidos-page, pedido-card, bottom-sheet, acao-pedido e aviso-cliente; o CSS é a cópia das regras de celular).
- */
 @Component({
   selector: 'app-tela-pedidos-demo',
   imports: [IconeComponent, EstadoVazioComponent],

@@ -21,10 +21,6 @@ export interface ItemFaixaDia {
   marcado?: boolean;
 }
 
-/**
- * Faixa horizontal de dias (Seg 22 → Ter 23 → …) que rola para o lado; o dia escolhido fica em destaque.
- * A cor do destaque vem de --faixa-destaque (a página pública usa a cor da loja; o painel, o azul da marca).
- */
 @Component({
   selector: 'app-faixa-dias',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -51,12 +51,6 @@ const DIAS_DA_SEMANA: Record<string, { curto: string; longo: string }> = {
   DOM: { curto: 'Dom', longo: 'Domingo' },
 };
 
-/**
- * Aba "Números" da tela de pedidos, no mesmo desenho dos Números da agenda (CSS compartilhado): o faturamento dos
- * entregues em destaque, os indicadores (entregues, ticket médio, em andamento, preparo médio), o faturamento dia a
- * dia, em que dia da semana mais se vende, os melhores clientes (e quantos voltaram a comprar) e os últimos
- * entregues. Pedidos de teste não contam.
- */
 @Component({
   selector: 'app-numeros-pedidos',
   imports: [CarregandoComponent, IconeComponent],

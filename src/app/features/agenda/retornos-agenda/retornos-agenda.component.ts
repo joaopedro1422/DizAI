@@ -30,11 +30,6 @@ interface ClienteDoRetorno {
   whatsapp: string;
 }
 
-/**
- * Agenda → Retornos (só serviços com agenda): o lojista escolhe um cliente (a mesma lista da tela Clientes) e marca o
- * dia em que ele deve voltar e para quê. No dia anterior, a partir das 10:00, o DizAI manda o lembrete para agendar e
- * a conversa segue com o assistente.
- */
 @Component({
   selector: 'app-retornos-agenda',
   imports: [AvatarComponent, BottomSheetComponent, CarregandoComponent, IconeComponent],

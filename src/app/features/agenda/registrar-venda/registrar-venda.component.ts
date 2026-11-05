@@ -10,11 +10,6 @@ import { CarregandoComponent } from '../../../shared/components/carregando/carre
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { formatarReal } from '../../pedidos/textos-pedido';
 
-/**
- * "Registrar venda" (Agenda, negócios de serviço que vendem produtos): o funcionário toca no + de cada produto à
- * venda, confere o total e registra. O back recalcula o total pelo preço do cadastro e a venda entra só na parte
- * Produtos dos Números (o faturamento dos atendimentos não muda).
- */
 @Component({
   selector: 'app-registrar-venda',
   imports: [IconeComponent, CarregandoComponent, UrlImagemPipe],

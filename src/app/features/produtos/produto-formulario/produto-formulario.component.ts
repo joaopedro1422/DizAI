@@ -55,10 +55,6 @@ export class ProdutoFormularioComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly armazenamentoFotos = inject(ArmazenamentoFotosService);
 
-  /**
-   * Foto do produto à venda (obrigatória: aparece no passo "Também temos" da agenda online e no card do agendamento).
-   * Sobe na hora para lojas/{slug}/produtos e guarda só a referência.
-   */
   protected readonly foto = signal<string | null>(null);
   protected readonly enviandoFoto = signal(false);
   protected readonly erroFoto = signal('');

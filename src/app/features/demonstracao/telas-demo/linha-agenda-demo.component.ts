@@ -19,12 +19,6 @@ export interface HorarioLinhaDemo {
   novo?: boolean;
 }
 
-/**
- * A Minha Agenda na visualização completa (a linha do tempo do celular), para as telas de demonstração da landing.
- * A conta é a mesma da tela real (`montarLinhaDoTempo`: 30 min = 48 px, livre entre os horários, fechado fora do
- * expediente); o HTML é o do `#blocoDaLinha` da agenda-page e o CSS (linha-agenda-demo.css) é a cópia das regras de
- * celular. Sem expediente informado, ele vai da hora cheia antes do primeiro horário à depois do último.
- */
 @Component({
   selector: 'app-linha-agenda-demo',
   imports: [IconeComponent],

@@ -56,12 +56,6 @@ const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
 /** De quanto em quanto tempo a tela busca os agendamentos de novo (os que a IA marcou aparecem sozinhos). */
 const ATUALIZAR_A_CADA_MS = 15_000;
 
-/**
- * Agenda do painel (serviços presenciais).
- * - Menu (gaveta no celular, coluna no computador): Agendamentos, Números e as páginas de configuração
- *   (Horários, Equipe, Lembretes e mensagens, Lista de espera) e o link da agenda online.
- * - Agendamentos: faixa de dias com o que está marcado em cada um, agendamento manual, cancelar e folga.
- */
 import { ActivatedRoute, Router } from '@angular/router';
 import { ESPERA_FECHAMENTO_MS, FechamentoOnboardingComponent } from '../painel/onboarding/fechamento-onboarding.component';
 
@@ -139,10 +133,6 @@ export class AgendaPageComponent implements OnInit {
   /** Quem atende; com 2+, os cards dizem com quem é e dá para filtrar a agenda por profissional. */
   protected readonly profissionais = this.agendaService.profissionais;
   protected readonly variosProfissionais = this.agendaService.variosProfissionais;
-  /**
-   * null = todos (na resumida; na completa do celular a linha do tempo mostra um profissional por vez; na do
-   * computador, todos lado a lado, um por coluna).
-   */
   protected readonly filtroProfissional = signal<string | null>(null);
   protected readonly profissionalVisivel = computed(() => {
     if (!this.variosProfissionais() || this.completaEmColunas()) {
@@ -251,10 +241,6 @@ export class AgendaPageComponent implements OnInit {
     this.agendamentosDoDia().filter((a) => a.status === 'CANCELADO'),
   );
 
-  /**
-   * Lista de espera do dia escolhido, na ordem da fila. Filtrando um profissional, aparece quem quer ele ou
-   * qualquer um (a posição continua a do dia).
-   */
   protected readonly listaEsperaDoDia = computed(() => {
     const data = this.diaSelecionado();
     const filtro = this.profissionalVisivel();
@@ -294,10 +280,6 @@ export class AgendaPageComponent implements OnInit {
     return montarColunas(periodos, this.profissionais(), this.confirmadosDoDia(), agora);
   });
 
-  /**
-   * A área das colunas rola sozinha (para o lado e para baixo). Rolada para o lado, a régua de horas presa à esquerda
-   * ganha o card com sombra; rolada para baixo, a linha dos nomes presa no topo também.
-   */
   /** Mouse em cima de um horário da régua: a altura dele (px), para a linha que atravessa a agenda inteira. */
   protected readonly horaEmFoco = signal<number | null>(null);
   protected readonly colunasRoladas = signal(false);
@@ -392,11 +374,6 @@ export class AgendaPageComponent implements OnInit {
     });
   }
 
-
-  /**
-   * Fim do onboarding (?fechamento=1, vindo do primeiro teste): a tela fica à vista alguns segundos e abre o
-   * "Agora é com você". O vídeo/convite da primeira visita fica para a próxima.
-   */
   protected readonly mostrarFechamento = signal(false);
   private readonly rotaAtualFechamento = inject(ActivatedRoute);
   private readonly routerFechamento = inject(Router);
@@ -492,7 +469,6 @@ export class AgendaPageComponent implements OnInit {
     this.menuAberto.set(false);
     window.scrollTo({ top: 0 });
   }
-
 
   protected escolherDia(data: string): void {
     this.diaSelecionado.set(data);
@@ -603,10 +579,6 @@ export class AgendaPageComponent implements OnInit {
 
   // ---------------------------------------------------------------- cancelar
 
-  /**
-   * Quantos esperam uma vaga no dia do horário e poderiam ficar com ele (querem esse profissional ou qualquer um).
-   * Com alguém, o cancelamento pergunta se o horário vai para a lista. Horário que já passou não vai.
-   */
   protected esperandoVaga(agendamento: Agendamento): number {
     if (!this.modoAutomatico() || this.configuracao()?.listaEsperaAtiva === false || this.jaPassou(agendamento)) {
       return 0;

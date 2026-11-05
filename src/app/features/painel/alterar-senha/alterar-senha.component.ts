@@ -13,10 +13,6 @@ function senhasIguais(grupo: AbstractControl): ValidationErrors | null {
   return nova && confirmacao && nova !== confirmacao ? { senhasDiferentes: true } : null;
 }
 
-/**
- * "Alterar senha" do painel (menu da conta). Quem entrou com a senha temporária do "Esqueci minha senha"
- * usa ela como senha atual e cria a sua.
- */
 @Component({
   selector: 'app-alterar-senha',
   imports: [ReactiveFormsModule, CarregandoComponent],
