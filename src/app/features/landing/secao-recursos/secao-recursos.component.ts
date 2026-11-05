@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, input, linkedSignal, signal } from '@angular/core';
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { FechamentoRecursosComponent } from './fechamento-recursos.component';
@@ -8,10 +8,10 @@ export type TipoNegocio = 'produtos' | 'servicos';
 /** O que cada tipo ganha, em checks verdes logo abaixo das abas (como no hero). */
 const DESTAQUES: Record<TipoNegocio, string[]> = {
   produtos: [
-    'Mantém o cliente por perto fora do seu horário',
+    'Faz a triagem e mantém o cliente por perto, até fora do horário',
     'Faz orçamentos e coleta os dados do pedido',
-    'Você confirma e resolve o pagamento',
-    'Gerencie e organize pedidos em uma tela própria para você',
+    'Você confirma cada pedido e combina o pagamento',
+    'Pedidos organizados numa tela própria, do confirmado ao entregue',
     'Ganhe uma página de portfólio',
   ],
   servicos: [
@@ -69,7 +69,19 @@ const TEMPO_POR_ETAPA_MS = 2800;
   styleUrls: ['./secao-recursos.component.css', './ilustracoes-recursos.css'],
 })
 export class SecaoRecursosComponent {
-  protected readonly tipo = signal<TipoNegocio>('produtos');
+  /** Landing de um tipo: fixo, sem as abas. Sem ele, as abas Produtos | Serviços. */
+  readonly tipoFixo = input<TipoNegocio | null>(null, { alias: 'tipo' });
+  protected readonly tipo = linkedSignal<TipoNegocio>(() => this.tipoFixo() ?? 'produtos');
+  protected readonly descricao = computed(() => {
+    switch (this.tipoFixo()) {
+      case 'produtos':
+        return 'Feito para quem vende por encomenda: do orçamento ao pedido entregue, com você no controle.';
+      case 'servicos':
+        return 'Feito para quem atende com hora marcada: da agenda cheia ao cliente que volta.';
+      default:
+        return 'Escolha o seu tipo de negócio e veja o que temos especialmente para você.';
+    }
+  });
   protected readonly destaques = computed(() => DESTAQUES[this.tipo()]);
 
   protected readonly etapasPedido = ETAPAS_PEDIDO;

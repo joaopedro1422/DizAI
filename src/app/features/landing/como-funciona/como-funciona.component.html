@@ -9,6 +9,7 @@
         <span class="como__titulo-destaque">O DizAI atende por você.</span>
       </h2>
 
+      @if (!tipoFixo()) {
       <div class="tipos" role="tablist" aria-label="Tipo de negócio">
         <button type="button" role="tab" class="tipos__aba" [class.tipos__aba--ativa]="tipo() === 'servicos'" [attr.aria-selected]="tipo() === 'servicos'" (click)="escolherTipo('servicos')">
           <app-icone nome="calendario" [tamanho]="16" [espessura]="2" />
@@ -19,6 +20,7 @@
           Produtos
         </button>
       </div>
+      }
 
       <ol class="passos">
         @for (item of passos(); track item.titulo; let i = $index) {

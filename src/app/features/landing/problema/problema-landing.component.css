@@ -1,0 +1,316 @@
+/* O problema: título e dores à esquerda, a tela de bloqueio cheia de mensagens sem resposta à direita. */
+:host {
+  display: block;
+}
+
+.problema {
+  padding: 112px 0;
+}
+
+.problema__grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+  align-items: center;
+  gap: 72px;
+}
+
+.problema__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.problema__sobretitulo {
+  color: #B4332C;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.problema__titulo {
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+.dores {
+  display: flex;
+  flex-direction: column;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dor {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 16px;
+  padding: 22px 0;
+  border-top: 1px solid var(--lp-linha, rgba(14, 21, 37, 0.08));
+}
+
+.dor:last-child {
+  border-bottom: 1px solid var(--lp-linha, rgba(14, 21, 37, 0.08));
+}
+
+.dor__numero {
+  color: color-mix(in srgb, #B4332C 70%, transparent);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.dor__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dor__textos strong {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.dor__textos > span:not(.dor__citacao) {
+  color: var(--lp-suave, rgba(14, 21, 37, 0.66));
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+/* a mensagem do cliente num balão cinza do WhatsApp, embaixo do texto */
+.dor__citacao {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-self: flex-start;
+  gap: 4px 8px;
+  margin-top: 6px;
+  padding: 8px 13px;
+  border: 1px solid var(--lp-linha, rgba(14, 21, 37, 0.08));
+  border-radius: 14px 14px 14px 4px;
+  background: #ffffff;
+  color: var(--lp-texto, #0E1525);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 10px 22px -16px rgba(15, 23, 42, 0.35);
+}
+
+.dor__citacao app-icone {
+  color: #B4332C;
+}
+
+.dor__citacao small {
+  color: var(--lp-fraco, rgba(14, 21, 37, 0.46));
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+/* A tela de bloqueio ---------------------------------------------------------- */
+
+/* o mesmo celular do hero: moldura de 10 px, cantos de 40 px, tela de 640 px com a câmera e a barrinha */
+.bloqueio {
+  justify-self: center;
+  width: 100%;
+  max-width: 360px;
+  padding: 10px;
+  border-radius: 40px;
+  background: #1f1f1f;
+  box-shadow:
+    inset 0 0 0 2px #3a3a3a,
+    0 24px 48px rgba(15, 23, 42, 0.18);
+}
+
+.bloqueio__tela {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 640px;
+  padding: 52px 14px 28px;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 31px;
+  background: linear-gradient(170deg, #2B2F45 0%, #1A1D2C 55%, #121420 100%);
+  color: #ffffff;
+}
+
+.bloqueio__tela::before,
+.bloqueio__tela::after {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  content: '';
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.bloqueio__tela::before {
+  top: 4px;
+  width: 76px;
+  height: 17px;
+  border-radius: 12px;
+  background: #151619;
+}
+
+.bloqueio__tela::after {
+  bottom: 7px;
+  width: 94px;
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.bloqueio__luz {
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  z-index: -1;
+  width: 140%;
+  height: 70%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--tom, #3C69E8) 45%, transparent), transparent 62%);
+  transform: translateX(-50%);
+}
+
+.bloqueio__hora {
+  font-size: 72px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.bloqueio__data {
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.bloqueio__contador {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 22px 0 16px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: #E5484D;
+  font-size: 13px;
+  font-weight: 800;
+  animation: problema-pulsar 2.4s ease-in-out infinite;
+}
+
+.avisos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.aviso {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  opacity: 0;
+}
+
+/* as mensagens caem uma a uma quando a seção aparece */
+:host(.visivel) .aviso {
+  opacity: 1;
+  animation: problema-chegar 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.2s + var(--i, 0) * 0.45s);
+}
+
+.aviso__app {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: #25D366;
+  color: #ffffff;
+}
+
+.aviso__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.aviso__topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13.5px;
+}
+
+.aviso__topo small {
+  flex: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+
+.aviso__texto {
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 13.5px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.aviso__avatar {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+@media (max-width: 960px) {
+  .problema {
+    padding: 72px 0;
+  }
+
+  .problema__grade {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+
+  .bloqueio__hora {
+    font-size: 60px;
+  }
+}
+
+@keyframes problema-chegar {
+  from { opacity: 0; translate: 0 -18px; scale: 0.96; }
+}
+
+@keyframes problema-pulsar {
+  50% { box-shadow: 0 0 0 8px rgba(229, 72, 77, 0.2); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aviso {
+    opacity: 1;
+  }
+
+  :host(.visivel) .aviso,
+  .bloqueio__contador {
+    animation: none;
+  }
+}

@@ -74,6 +74,8 @@ export interface SegmentoDemonstracao {
   loja: string;
   inicial: string;
   cor: string;
+  /** Logo da loja no avatar da conversa (sem logo, a inicial sobre a cor). */
+  logo?: string;
   dono: string;
   /** "no celular da Bia" / "no celular do Léo" */
   artigo: 'da' | 'do';
@@ -98,7 +100,7 @@ export const DEMONSTRACOES: Record<TipoNegocio, TipoDemonstracao> = {
     icone: 'calendario',
     segmentos: [
       {
-        id: 'manicure', rotulo: 'Manicure', loja: 'Studio Bella Unhas', inicial: 'B', cor: '#B8457A', dono: 'Bia', artigo: 'da', inicio: '10:12',
+        id: 'manicure', rotulo: 'Manicure', loja: 'Studio Bella Unhas', inicial: 'B', cor: '#B8457A', logo: '/landing/galeria/logos/studio-bella.webp', dono: 'Bia', artigo: 'da', inicio: '10:12',
         passos: [
           { de: 'cliente', texto: 'Oi! Quanto custa a esmaltação em gel?' },
           { de: 'assistente', texto: 'Bom dia! Seja bem-vinda ao Studio Bella Unhas 💅 Sou a assistente virtual e vou te ajudar por aqui.' },
@@ -140,7 +142,7 @@ export const DEMONSTRACOES: Record<TipoNegocio, TipoDemonstracao> = {
         ],
       },
       {
-        id: 'barbearia', rotulo: 'Barbearia', loja: 'Barbearia do Léo', inicial: 'L', cor: '#2B2B2B', dono: 'Léo', artigo: 'do', inicio: '14:02',
+        id: 'barbearia', rotulo: 'Barbearia', loja: 'Barbearia do Léo', inicial: 'L', cor: '#2B2B2B', logo: '/landing/galeria/logos/barbearia-do-leo.svg', dono: 'Léo', artigo: 'do', inicio: '14:02',
         passos: [
           { de: 'cliente', texto: 'Boa tarde! Vocês cortam cabelo infantil?' },
           { de: 'assistente', texto: 'Boa tarde! Aqui é o assistente virtual da Barbearia do Léo 💈' },
@@ -178,7 +180,7 @@ export const DEMONSTRACOES: Record<TipoNegocio, TipoDemonstracao> = {
         ],
       },
       {
-        id: 'estetica', rotulo: 'Estética', loja: 'Espaço Renova', inicial: 'R', cor: '#5F7F6E', dono: 'Carla', artigo: 'da', inicio: '22:41',
+        id: 'estetica', rotulo: 'Estética', loja: 'Espaço Renova', inicial: 'R', cor: '#5F7F6E', logo: '/landing/galeria/logos/espaco-renova.svg', dono: 'Carla', artigo: 'da', inicio: '22:41',
         passos: [
           { de: 'cliente', texto: 'Boa noite! Vocês fazem limpeza de pele? Minha pele é bem oleosa' },
           { de: 'assistente', texto: 'Boa noite! Bem-vinda ao Espaço Renova ✨ Sou a assistente virtual e te respondo a qualquer hora.' },
@@ -227,12 +229,12 @@ export const DEMONSTRACOES: Record<TipoNegocio, TipoDemonstracao> = {
     icone: 'caixa',
     segmentos: [
       {
-        id: 'doces', rotulo: 'Doces e bolos', loja: 'Doces da Ju', inicial: 'J', cor: '#C2185B', dono: 'Ju', artigo: 'da', inicio: '15:20',
+        id: 'doces', rotulo: 'Doces e bolos', loja: 'Pedacinho do Céu', inicial: 'P', cor: '#C2185B', logo: '/landing/galeria/logos/pedacinho-do-ceu.jpg', dono: 'Ju', artigo: 'da', inicio: '15:20',
         passos: [
           { de: 'cliente', texto: 'Oi! Vocês fazem bolo de aniversário?' },
-          { de: 'assistente', texto: 'Boa tarde! Aqui é o assistente virtual da Doces da Ju 🎂' },
+          { de: 'assistente', texto: 'Boa tarde! Aqui é o assistente virtual do Pedacinho do Céu 🎂' },
           { de: 'assistente', texto: 'Fazemos sim! Te mando o nosso cardápio com os sabores e tamanhos:' },
-          { de: 'documento', nome: 'Cardápio Doces da Ju.pdf', detalhe: '2 páginas · PDF', destaque: 'Envia o seu catálogo em PDF' },
+          { de: 'documento', nome: 'Cardápio Pedacinho do Céu.pdf', detalhe: '2 páginas · PDF', destaque: 'Envia o seu catálogo em PDF' },
           { de: 'cliente', texto: 'Quanto fica um bolo de ninho com morango pra 30 pessoas? E 100 brigadeiros' },
           { de: 'assistente', texto: 'Fica assim:\n- Bolo Ninho com Morango (30 fatias): R$ 180,00\n- 100 brigadeiros gourmet (R$ 1,80 cada): R$ 180,00\n\n*Total: R$ 360,00*\n\nPara quando seria?', destaque: 'Faz o orçamento com os seus preços' },
           { de: 'cliente', texto: 'Pra sexta agora! Vocês entregam?' },
@@ -263,10 +265,10 @@ export const DEMONSTRACOES: Record<TipoNegocio, TipoDemonstracao> = {
         ],
       },
       {
-        id: 'salgados', rotulo: 'Salgados', loja: 'Salgados da Rosa', inicial: 'R', cor: '#D9822B', dono: 'Rosa', artigo: 'da', inicio: '08:05',
+        id: 'salgados', rotulo: 'Salgados', loja: 'Rei dos Salgados', inicial: 'R', cor: '#E8730C', logo: '/landing/galeria/logos/rei-dos-salgados.svg', dono: 'Rosa', artigo: 'da', inicio: '08:05',
         passos: [
           { de: 'cliente', texto: 'Bom dia! Quanto fica o cento de salgado frito?' },
-          { de: 'assistente', texto: 'Bom dia! Aqui é o assistente virtual dos Salgados da Rosa 🥟' },
+          { de: 'assistente', texto: 'Bom dia! Aqui é o assistente virtual do Rei dos Salgados 🥟' },
           { de: 'assistente', texto: 'O cento de salgados fritos é *R$ 90*. O pedido mínimo é de 50 unidades. Os sabores estão no cardápio:' },
           { de: 'imagem', titulo: 'Cardápio de salgados', detalhe: 'Coxinha · Risole · Kibe · Bolinha de queijo · Enroladinho', destaque: 'Envia o cardápio em imagem' },
           { de: 'cliente', texto: 'Quero 300 pra sábado, metade coxinha e o resto sortido' },
@@ -281,7 +283,7 @@ export const DEMONSTRACOES: Record<TipoNegocio, TipoDemonstracao> = {
         ],
       },
       {
-        id: 'presentes', rotulo: 'Presentes', loja: 'Ateliê das Flores', inicial: 'A', cor: '#3F7D58', dono: 'Bia', artigo: 'do', inicio: '10:12',
+        id: 'presentes', rotulo: 'Presentes', loja: 'Ateliê das Flores', inicial: 'A', cor: '#3F7D58', logo: '/landing/galeria/logos/atelie-das-flores.svg', dono: 'Bia', artigo: 'do', inicio: '10:12',
         passos: [
           { de: 'cliente', texto: 'Oi! Vocês fazem buquê de rosas pra entregar hoje?' },
           { de: 'assistente', texto: 'Olá! Aqui é a assistente virtual do Ateliê das Flores 💐' },

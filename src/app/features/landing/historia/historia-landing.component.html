@@ -1,0 +1,173 @@
+@let h = historia();
+
+<!-- a cena de um passo: a mesma no palco fixo (computador) e embaixo do texto (celular) -->
+<ng-template #cartaoEtapas let-etapas="etapas" let-atual="atual">
+  <div class="peca peca--cartao">
+    <ol class="etapas">
+      @for (etapa of etapas; track etapa; let i = $index) {
+        <li class="etapas__item" [class.etapas__item--feita]="i < atual" [class.etapas__item--atual]="i === atual">
+          <span class="etapas__ponto">
+            @if (i < atual) { <app-icone nome="check" [tamanho]="12" [espessura]="3" /> } @else { {{ i + 1 }} }
+          </span>
+          {{ etapa }}
+        </li>
+      }
+    </ol>
+  </div>
+</ng-template>
+
+<ng-template #cenaDoPasso let-cena>
+  @switch (cena.tipo) {
+    @case ('conversa') {
+      <div class="peca peca--conversa">
+        @for (m of cena.mensagens; track $index) {
+          @if (m.de === 'arquivo') {
+            <span class="arquivo" [style.--i]="$index"><span class="arquivo__tipo">PDF</span><span><b>{{ m.texto }}</b><small>2 páginas · PDF</small></span></span>
+          } @else {
+            <span class="bolha" [class.bolha--cliente]="m.de === 'cliente'" [style.--i]="$index">{{ m.texto }}</span>
+          }
+        }
+      </div>
+      <span class="peca peca--selo"><app-icone nome="raio" [tamanho]="14" [espessura]="2.2" />{{ cena.selo }}</span>
+    }
+    @case ('resumo') {
+      <div class="peca peca--cartao">
+        <span class="cartao__topo"><b>Resumo do pedido</b><i>{{ cena.total }}</i></span>
+        @for (linha of cena.linhas; track linha.rotulo) {
+          <span class="cartao__linha" [style.--i]="$index"><small>{{ linha.rotulo }}</small><span>{{ linha.valor }}</span></span>
+        }
+      </div>
+      <span class="peca peca--selo"><app-icone nome="check" [tamanho]="14" [espessura]="2.6" />{{ cena.aviso }}</span>
+    }
+    @case ('confirmar') {
+      <span class="peca peca--aviso">
+        <span class="aviso__icone"><app-icone nome="sino" [tamanho]="16" [espessura]="2.2" /></span>
+        <span class="aviso__textos"><strong>Pedido para fechar</strong><small>{{ cena.itens }}</small></span>
+      </span>
+      <div class="peca peca--cartao peca--confirmar">
+        <span class="cliente"><span class="cliente__avatar">{{ cena.cliente.charAt(0) }}</span><span><b>{{ cena.cliente }}</b><small>{{ cena.itens }}</small></span></span>
+        <span class="cartao__topo cartao__topo--total"><small>Total</small><i>{{ cena.valor }}</i></span>
+        <span class="botoes">
+          <span class="botao botao--confirmar"><app-icone nome="check" [tamanho]="14" [espessura]="2.6" />Pedido confirmado</span>
+          <span class="botao">Falar no WhatsApp</span>
+        </span>
+      </div>
+    }
+    @case ('etapas') {
+      <!-- com "depois": a fase 1 (pronto) dá lugar sozinha à fase 2 (entregue, com o agradecimento) -->
+      <div class="fases" [class.fases--duas]="!!cena.depois">
+        <div class="fase fase--1">
+          <ng-container *ngTemplateOutlet="cartaoEtapas; context: { etapas: cena.etapas, atual: cena.atual }" />
+          <span class="peca peca--mensagem"><small><app-icone nome="checkDuplo" [tamanho]="13" [espessura]="2" />Enviada pelo WhatsApp</small>{{ cena.mensagem }}</span>
+        </div>
+        @if (cena.depois) {
+          <div class="fase fase--2" aria-hidden="true">
+            <ng-container *ngTemplateOutlet="cartaoEtapas; context: { etapas: cena.etapas, atual: cena.etapas.length }" />
+            <span class="peca peca--mensagem"><small><app-icone nome="checkDuplo" [tamanho]="13" [espessura]="2" />Enviada pelo WhatsApp</small>{{ cena.depois }}</span>
+          </div>
+        }
+      </div>
+    }
+    @case ('numeros') {
+      <div class="peca peca--cartao peca--numeros">
+        <small class="numeros__rotulo">{{ cena.rotulo }}</small>
+        <strong class="numeros__valor">{{ cena.valor }}</strong>
+        <span class="barras">
+          @for (altura of cena.barras; track $index) {
+            <span [style.height.%]="altura" [class.barras__maior]="altura === 100" [style.--i]="$index"></span>
+          }
+        </span>
+      </div>
+      <span class="peca peca--insights">
+        @for (insight of cena.insights; track insight) {
+          <span class="insight"><app-icone nome="lampada" [tamanho]="13" [espessura]="2.2" />{{ insight }}</span>
+        }
+      </span>
+    }
+    @case ('agenda') {
+      <div class="peca peca--cartao">
+        <span class="cartao__topo"><b>{{ cena.dia }}</b><i>{{ cena.livres }}</i></span>
+        @for (bloco of cena.blocos; track bloco.hora) {
+          <span class="bloco" [class.bloco--novo]="bloco.novo" [style.--i]="$index"><small>{{ bloco.hora }}</small>{{ bloco.texto }}</span>
+        }
+      </div>
+      <span class="peca peca--aviso peca--aviso-baixo">
+        <span class="aviso__icone"><app-icone nome="calendario" [tamanho]="16" [espessura]="2.2" /></span>
+        <span class="aviso__textos"><strong>{{ cena.aviso }}</strong><small>Pé e mão · amanhã, 14:00</small></span>
+      </span>
+    }
+    @case ('lembrete') {
+      <div class="peca peca--conversa">
+        <span class="quando">{{ cena.quando }}</span>
+        <span class="bolha" [style.--i]="0">{{ cena.lembrete }}</span>
+        <span class="bolha bolha--cliente" [style.--i]="1">{{ cena.resposta }}</span>
+      </div>
+      <span class="peca peca--selo peca--selo-verde"><app-icone nome="check" [tamanho]="14" [espessura]="2.6" />{{ cena.selo }}</span>
+    }
+    @case ('vaga') {
+      <span class="peca peca--aviso">
+        <span class="aviso__icone"><app-icone nome="retorno" [tamanho]="16" [espessura]="2.2" /></span>
+        <span class="aviso__textos"><strong>{{ cena.aviso }}</strong><small>1º da lista de espera avisado</small></span>
+      </span>
+      <div class="peca peca--conversa peca--vaga">
+        <span class="bolha" [style.--i]="0">{{ cena.mensagem }}</span>
+        <span class="respostas" [style.--i]="1">
+          <span class="resposta">Quero o horário</span>
+          <span class="resposta">Não posso</span>
+        </span>
+      </div>
+    }
+  }
+</ng-template>
+
+<section class="historia" aria-labelledby="historia-titulo">
+  <div class="container historia__cabeca">
+    <span class="historia__sobretitulo">{{ h.sobretitulo }}</span>
+    <h2 id="historia-titulo" class="historia__titulo">
+      {{ h.titulo[0] }}
+      <span class="historia__titulo-destaque">{{ h.titulo[1] }}</span>
+    </h2>
+  </div>
+
+  <div class="container historia__grade">
+    <ol class="passos">
+      @for (passo of h.passos; track passo.titulo; let i = $index) {
+        <li #passo class="passo" [class.passo--ativo]="ativo() === i" [class.passo--feito]="ativo() > i" [attr.data-indice]="i">
+          <span class="passo__numero">{{ numero(i) }}</span>
+          <div class="passo__corpo">
+            <span class="passo__icone"><app-icone [nome]="passo.icone" [tamanho]="18" [espessura]="2.1" /></span>
+            <h3 class="passo__titulo">{{ passo.titulo }}</h3>
+            <p class="passo__texto">{{ passo.texto }}</p>
+            <!-- celular: a cena logo embaixo do texto -->
+            <div class="passo__cena" aria-hidden="true">
+              <div class="palco palco--inline">
+                <ng-container *ngTemplateOutlet="cenaDoPasso; context: { $implicit: passo.cena }" />
+              </div>
+            </div>
+          </div>
+        </li>
+      }
+    </ol>
+
+    <!-- computador: o palco fixo, com a cena do passo ativo -->
+    <div class="historia__palco" aria-hidden="true">
+      <div class="palco">
+        <span class="palco__luz"></span>
+        @if (h.fotoLeque) {
+          <img class="palco__foto palco__foto--leque" [src]="h.fotoLeque" alt="" />
+        }
+        <img class="palco__foto" [src]="h.foto" alt="" />
+        @for (passo of h.passos; track passo.titulo; let i = $index) {
+          <div class="palco__cena" [class.palco__cena--ativa]="ativo() === i">
+            <ng-container *ngTemplateOutlet="cenaDoPasso; context: { $implicit: passo.cena }" />
+          </div>
+        }
+        <span class="palco__progresso">
+          @for (passo of h.passos; track passo.titulo; let i = $index) {
+            <span [class.ativo]="ativo() === i"></span>
+          }
+        </span>
+      </div>
+    </div>
+  </div>
+</section>

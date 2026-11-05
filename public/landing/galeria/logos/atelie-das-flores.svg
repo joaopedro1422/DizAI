@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <rect width="200" height="200" fill="#3F7D58"/>
+  <circle cx="100" cy="100" r="84" fill="none" stroke="#E8F3EA" stroke-opacity="0.35" stroke-width="1.5"/>
+  <!-- flor -->
+  <g transform="translate(100 72)" fill="#F6D6DA">
+    <ellipse cx="0" cy="-16" rx="9" ry="15"/>
+    <ellipse cx="0" cy="-16" rx="9" ry="15" transform="rotate(72)"/>
+    <ellipse cx="0" cy="-16" rx="9" ry="15" transform="rotate(144)"/>
+    <ellipse cx="0" cy="-16" rx="9" ry="15" transform="rotate(216)"/>
+    <ellipse cx="0" cy="-16" rx="9" ry="15" transform="rotate(288)"/>
+    <circle r="7" fill="#F2C14E"/>
+  </g>
+  <text x="100" y="136" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="30" fill="#FFFFFF">Ateliê</text>
+  <text x="100" y="156" text-anchor="middle" font-family="Georgia, serif" font-size="11" letter-spacing="4" fill="#E8F3EA">DAS FLORES</text>
+</svg>

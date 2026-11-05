@@ -4,6 +4,8 @@ import {
   Component,
   ElementRef,
   OnDestroy,
+  computed,
+  input,
   signal,
   viewChild,
 } from '@angular/core';
@@ -11,8 +13,9 @@ import {
 import { ArtePostComponent } from '../../posts/arte-post/arte-post.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { LogoComponent } from '../../../shared/components/logo/logo.component';
-import { EXEMPLOS_POSTS } from '../secao-posts/exemplos-posts';
+import { exemplosPostsDe } from '../secao-posts/exemplos-posts';
 import { NomeIcone } from '../../../shared/components/icone/icones';
+import type { TipoNegocio } from '../../demonstracao/conversas-demonstracao';
 
 /** A miniatura no pé do card (o pedacinho da tela de verdade que prova o ganho). */
 type DetalheGanho =
@@ -80,6 +83,44 @@ const GANHOS: Ganho[] = [
   },
 ];
 
+/** O que muda de um público para o outro (o hub, sem tipo, usa o geral). */
+interface TextosSolucao {
+  descricao: string[];
+  placar: { mais: string[]; menos: string[] };
+  conversa: string;
+  /** A resposta à nota de voz na miniatura do áudio. */
+  respostaAudio: string;
+  catalogo: string;
+  vitrine: { icone: NomeIcone; titulo: string; texto: string };
+}
+
+const TEXTOS: Record<TipoNegocio | 'geral', TextosSolucao> = {
+  geral: {
+    descricao: ['Recursos específicos para quem vende produtos e para quem presta serviços por agendamento.', 'Do atendimento inicial ao financeiro.'],
+    placar: { mais: ['Tempo para produzir', 'Vendas fechadas'], menos: ['Clientes perdidos', 'Horas no celular'] },
+    conversa: 'Preços, opções, formas de pagamento e tudo o que você cadastrar. Se não souber, te chama.',
+    respostaAudio: 'Temos sim! Amanhã às 14h ou às 16h30. Qual prefere?',
+    catalogo: 'Cardápio de outubro.pdf',
+    vitrine: { icone: 'calendario', titulo: 'Agendamento', texto: 'Para serviços, a sua agenda online' },
+  },
+  produtos: {
+    descricao: ['Do primeiro oi ao pedido anotado, enquanto você produz.', 'A confirmação e o pagamento continuam com você.'],
+    placar: { mais: ['Tempo para produzir', 'Pedidos anotados'], menos: ['Encomendas perdidas', 'Horas no celular'] },
+    conversa: 'Preços, sabores, tamanhos, prazos e tudo o que você cadastrar. Se não souber, te chama.',
+    respostaAudio: 'Temos sim! O cento sai R$ 90,00. Para qual dia seria?',
+    catalogo: 'Cardápio de outubro.pdf',
+    vitrine: { icone: 'link', titulo: 'Link na bio', texto: 'Para o Instagram e o WhatsApp' },
+  },
+  servicos: {
+    descricao: ['Do primeiro oi ao horário marcado, com lembrete antes e agradecimento depois.', 'Do atendimento inicial ao financeiro.'],
+    placar: { mais: ['Horários marcados', 'Tempo com o cliente'], menos: ['Faltas', 'Horas no celular'] },
+    conversa: 'Preços, duração, endereço e tudo o que você cadastrar. Se não souber, te chama.',
+    respostaAudio: 'Temos sim! Amanhã às 14h ou às 16h30. Qual prefere?',
+    catalogo: 'Tabela de serviços.pdf',
+    vitrine: { icone: 'calendario', titulo: 'Agendamento', texto: 'A sua agenda online, com os horários livres' },
+  },
+};
+
 /** Barras da miniatura do relatório (altura em %). */
 const BARRAS = [36, 52, 44, 70, 58, 100, 30];
 
@@ -91,7 +132,6 @@ const RECURSOS_VITRINE: { icone: NomeIcone; titulo: string; texto: string }[] = 
   { icone: 'imagem', titulo: 'Portfólio', texto: 'Suas fotos separadas por tema' },
   { icone: 'estrela', titulo: 'Feedbacks', texto: 'O que os clientes dizem, com estrelas' },
   { icone: 'local', titulo: 'Como chegar', texto: 'Endereço com mapa e rota' },
-  { icone: 'calendario', titulo: 'Agendamento', texto: 'Para serviços, a sua agenda online' },
 ];
 
 /**
@@ -106,11 +146,15 @@ const RECURSOS_VITRINE: { icone: NomeIcone; titulo: string; texto: string }[] = 
   styleUrls: ['../secao-landing.css', './secao-solucao.component.css', './ganho-vitrine.css', './ganho-posts.css', './ganho-placar.css'],
 })
 export class SecaoSolucaoComponent implements AfterViewInit, OnDestroy {
+  /** Landing de um tipo: textos e miniaturas daquele público; sem tipo (hub), o geral. */
+  readonly tipo = input<TipoNegocio | null>(null);
+  protected readonly textos = computed(() => TEXTOS[this.tipo() ?? 'geral']);
+
   /** O cartão azul: lado a lado, o que aumenta e o que diminui com o assistente atendendo. */
-  protected readonly placar = [
-    { tipo: 'mais', titulo: 'Mais', itens: ['Tempo para produzir', 'Vendas fechadas'] },
-    { tipo: 'menos', titulo: 'Menos', itens: ['Clientes perdidos', 'Horas no celular'] },
-  ] as const;
+  protected readonly placar = computed(() => [
+    { tipo: 'mais', titulo: 'Mais', itens: this.textos().placar.mais },
+    { tipo: 'menos', titulo: 'Menos', itens: this.textos().placar.menos },
+  ]);
   /** As linhas do placar sobem uma a uma na primeira vez que o card aparece na tela (e ficam paradas). */
   protected readonly placarVisivel = signal(false);
   private readonly cartaoPlacar = viewChild<ElementRef<HTMLElement>>('cartaoPlacar');
@@ -135,12 +179,23 @@ export class SecaoSolucaoComponent implements AfterViewInit, OnDestroy {
     this.observador?.disconnect();
   }
 
-  protected readonly ganhos = GANHOS;
+  protected readonly ganhos = computed(() =>
+    GANHOS.map((ganho) =>
+      ganho.detalhe === 'conversa'
+        ? { ...ganho, texto: this.textos().conversa }
+        : ganho.detalhe === 'catalogo' && this.tipo() === 'servicos'
+          ? { ...ganho, texto: 'Envia a tabela de preços ou o portfólio direto na conversa.' }
+          : ganho,
+    ),
+  );
   protected readonly barras = BARRAS;
   protected readonly ondas = ONDAS;
-  protected readonly recursosVitrine = RECURSOS_VITRINE;
+  protected readonly recursosVitrine = computed(() => [...RECURSOS_VITRINE, this.textos().vitrine]);
   /** Três artes do gerador de posts, de negócios diferentes (as mesmas da seção "Redes sociais"). */
-  protected readonly postsDeExemplo = [EXEMPLOS_POSTS[1], EXEMPLOS_POSTS[0], EXEMPLOS_POSTS[3]];
+  protected readonly postsDeExemplo = computed(() => {
+    const artes = exemplosPostsDe(this.tipo());
+    return this.tipo() ? [artes[1], artes[2], artes[0]] : [artes[1], artes[0], artes[3]];
+  });
 
   /** "Ver mais": desce até a seção da vitrine pública ou a de redes sociais, mais abaixo na landing. */
   protected verSecao(id: 'galeria' | 'posts'): void {

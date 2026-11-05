@@ -1,5 +1,6 @@
 <!-- serviços ou produtos, e o segmento -->
 <div class="escolha">
+  @if (!tipo()) {
   <div class="escolha__tipos" role="radiogroup" aria-label="Tipo de negócio">
     @for (tipo of tipos; track tipo) {
       <button
@@ -14,6 +15,7 @@
       </button>
     }
   </div>
+  }
   <div class="escolha__segmentos" role="radiogroup" aria-label="Segmento">
     @for (opcao of demonstracoes[reprodutor.tipo()].segmentos; track opcao.id) {
       <button
@@ -34,7 +36,7 @@
     <div class="celular__tela">
       <div class="whatsapp__topo">
         <app-icone nome="voltar" [tamanho]="20" [espessura]="2.2" />
-        <span class="whatsapp__avatar" [style.background]="segmento().cor" aria-hidden="true">{{ segmento().inicial }}</span>
+        <span class="whatsapp__avatar" [style.background]="segmento().cor" aria-hidden="true">@if (segmento().logo; as logo) {<img [src]="logo" alt="" />} @else { {{ segmento().inicial }} }</span>
         <span class="whatsapp__contato">
           <span class="whatsapp__nome">{{ segmento().loja }}</span>
           <span class="whatsapp__status">{{ reprodutor.digitando() ? 'digitando…' : 'online' }}</span>

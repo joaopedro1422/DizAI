@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -31,6 +31,8 @@ const TOTAL_ETAPAS = 3;
   styleUrl: './cadastro-page.component.css',
 })
 export class CadastroPageComponent {
+  /** ?tipo=produtos|servicos, vindo da landing de vendas ou de agendamentos: o passo do ramo já mostra os daquele tipo. */
+  readonly tipo = input<string | undefined>(undefined);
   private readonly autenticacaoService = inject(AutenticacaoService);
   private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);

@@ -5,7 +5,7 @@
 /* fundo suave, alternando com a Vitrine pública (branca) logo acima */
 .posts {
   overflow: hidden;
-  background: var(--cor-fundo-suave);
+  background: transparent;
 }
 
 .posts__grade {
@@ -31,7 +31,7 @@
 .posts__sobretitulo {
   font-size: 14px;
   font-weight: 700;
-  color: var(--cor-primaria);
+  color: var(--tom-forte, var(--cor-primaria));
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -179,4 +179,14 @@
   .leque__arte {
     transition: none;
   }
+}
+
+/* o botão no tom do público, em pílula (como no hero) */
+.posts__acao {
+  height: 56px;
+  padding: 0 28px;
+  border-color: var(--tom-forte, var(--cor-primaria));
+  border-radius: 999px;
+  background: var(--lp-botao, var(--tom-forte, var(--cor-primaria)));
+  box-shadow: 0 16px 32px -14px var(--tom-forte, var(--cor-primaria));
 }

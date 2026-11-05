@@ -5,7 +5,7 @@
 
 .como {
   padding: 112px 0;
-  background: var(--cor-fundo-suave);
+  background: transparent;
 }
 
 .como__grade {
@@ -41,7 +41,13 @@
 
 .como__titulo-destaque {
   display: block;
-  color: var(--cor-primaria);
+  /* o degradê acompanha o texto, não a largura da linha */
+  width: fit-content;
+  padding-bottom: 0.06em;
+  background: var(--lp-grad-texto, linear-gradient(90deg, #1E3A72, #2F63C2 52%, #14A37F));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 /* ---------- Serviços | Produtos ---------- */
@@ -74,7 +80,7 @@
 }
 
 .tipos__aba--ativa {
-  background: var(--cor-primaria);
+  background: var(--tom-forte, var(--cor-primaria));
   color: #ffffff;
 }
 
@@ -131,15 +137,15 @@
 }
 
 .passo--ativo .passo__numero {
-  border-color: var(--cor-primaria);
-  background: var(--cor-primaria);
+  border-color: var(--tom-forte, var(--cor-primaria));
+  background: var(--tom-forte, var(--cor-primaria));
   color: #ffffff;
 }
 
 .passo--feito .passo__numero {
-  border-color: #BFE8CF;
-  background: #E4F8EC;
-  color: #1F7A4A;
+  border-color: color-mix(in srgb, var(--tom, #1F7A4A) 30%, transparent);
+  background: var(--tom-claro, #E4F8EC);
+  color: var(--tom-forte, #1F7A4A);
 }
 
 .passo__textos { display: flex; flex-direction: column; justify-content: center; min-height: 44px; }
@@ -188,14 +194,14 @@
 .passo__barra i {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, var(--cor-primaria), #2FB57A);
+  background: linear-gradient(90deg, var(--tom-forte, var(--cor-primaria)), var(--tom, #2FB57A));
   transform: scaleX(0);
   transform-origin: left;
   animation: encher 4s linear forwards;
 }
 
 .passo:focus-visible,
-.tipos__aba:focus-visible { outline: 2px solid var(--cor-primaria); outline-offset: 2px; }
+.tipos__aba:focus-visible { outline: 2px solid var(--tom-forte, var(--cor-primaria)); outline-offset: 2px; }
 
 /* ---------- o palco ---------- */
 .palco {
@@ -236,8 +242,8 @@
   width: 34px;
   height: 34px;
   border-radius: 11px;
-  background: #E4F8EC;
-  color: #1F7A4A;
+  background: var(--tom-claro, #E4F8EC);
+  color: var(--tom-forte, #1F7A4A);
 }
 
 /*

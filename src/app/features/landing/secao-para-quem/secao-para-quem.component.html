@@ -2,15 +2,24 @@
   <div class="container secao">
     <div class="secao__cabecalho">
       <span class="secao__sobretitulo">Para quem é</span>
-      <h2 id="quem-titulo" class="secao__titulo">Para quem toca o negócio quase sozinho.</h2>
+      <h2 id="quem-titulo" class="secao__titulo">{{ titulo() }}</h2>
       <p class="secao__descricao">
-        Não é cardápio com carrinho: é conversa de verdade, do jeito que o seu cliente já pergunta.
+        {{ descricao() }}
       </p>
     </div>
 
     <div class="ramos">
-      @for (ramo of ramos; track ramo.rotulo) {
+      @for (ramo of ramos(); track ramo.rotulo) {
         <article class="ramo">
+          @if (tipo()) {
+            <div class="ramo__capa" [class.ramo__capa--dupla]="(ramo.fotos?.length ?? 0) > 1" aria-hidden="true">
+              @for (foto of ramo.fotos ?? []; track foto) {
+                <img [src]="foto" alt="" loading="lazy" />
+              } @empty {
+                <span class="ramo__capa-icone"><app-icone [nome]="ramo.icone ?? 'brilho'" [tamanho]="34" [espessura]="1.8" /></span>
+              }
+            </div>
+          }
           <h3 class="ramo__titulo">{{ ramo.rotulo }}</h3>
           <div class="ramo__quem">
             @for (quem of ramo.quem; track quem) {

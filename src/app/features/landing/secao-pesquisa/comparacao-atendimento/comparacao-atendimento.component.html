@@ -12,7 +12,7 @@
 
   <figure class="janela" [attr.aria-label]="'Conversa de exemplo no WhatsApp com ' + atual.loja">
     <div class="janela__topo">
-      <span class="janela__avatar" [style.background]="atual.cor" aria-hidden="true">{{ atual.inicial }}</span>
+      <span class="janela__avatar" [style.background]="atual.cor" aria-hidden="true">@if (atual.logo; as logo) {<img [src]="logo" alt="" />} @else { {{ atual.inicial }} }</span>
       <span class="janela__contato">
         <span class="janela__nome">{{ atual.loja }}</span>
         <span class="janela__status" [class.janela__status--digitando]="status() === 'digitando…'">{{ status() }}</span>

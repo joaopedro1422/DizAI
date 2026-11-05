@@ -1,0 +1,258 @@
+<div class="hub">
+  <!-- aurora: uma luz quente do lado de vendas, uma fria do lado de agendamentos -->
+  <div class="hub__aurora" aria-hidden="true"></div>
+  <div class="hub__grao" aria-hidden="true"></div>
+
+  <!-- topo: a mesma faixa das landings, com a marca, as duas landings e o Entrar -->
+  <header class="topo">
+    <div class="topo__barra">
+      <a routerLink="/" class="topo__marca" aria-label="DizAI, início">
+        <app-logo [variante]="tema() === 'escuro' ? 'claro' : 'escuro'" />
+      </a>
+      <nav class="topo__links" aria-label="Para quem é">
+        <a [routerLink]="rotaVendas" class="topo__link">Para quem vende</a>
+        <a [routerLink]="rotaAgenda" class="topo__link">Para quem agenda</a>
+      </nav>
+      <a routerLink="/entrar" class="topo__entrar"><app-icone nome="pessoa" [tamanho]="16" [espessura]="1.6" />Entrar</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- primeira dobra: a pergunta e os dois mundos -->
+    <section class="escolha" aria-labelledby="hub-titulo">
+      <div class="escolha__cabeca">
+        <h1 id="hub-titulo" class="escolha__titulo">
+          Um assistente de WhatsApp
+          <span class="escolha__titulo-suave">Adaptado para o seu negócio</span>
+        </h1>
+        <p class="escolha__sub">
+          Escolha o tipo de negócio e veja como podemos otimizar o tempo e a qualidade do seu atendimento.
+        </p>
+      </div>
+
+      <div class="mundos" [attr.data-foco]="emFoco()">
+        @for (mundo of mundos; track mundo.tipo; let i = $index) {
+          <a
+            class="mundo"
+            [class.mundo--produtos]="mundo.tipo === 'produtos'"
+            [class.mundo--servicos]="mundo.tipo === 'servicos'"
+            [routerLink]="mundo.rota"
+            [style.--ordem]="i"
+            (mouseenter)="emFoco.set(mundo.tipo)"
+            (mouseleave)="emFoco.set(null)"
+            (focus)="emFoco.set(mundo.tipo)"
+            (blur)="emFoco.set(null)"
+          >
+            <span class="mundo__luz" aria-hidden="true"></span>
+
+            <!-- o carrossel de cenas: cada uma com a foto, a mensagem do cliente, o resultado e o aviso que chega -->
+            @let atual = cenaAtual()[mundo.tipo];
+            <div class="cena" aria-hidden="true">
+              <div class="cena__trilho" [style.transform]="'translateX(calc(' + atual + ' * (-100% - var(--vao))))'">
+                @for (cena of mundo.cenas; track cena.id; let c = $index) {
+                  <div class="cena__lamina" [class.cena__lamina--ativa]="c === atual">
+                    @if (semFoto().has(cena.id)) {
+                      <span class="cena__foto cena__foto--capa">
+                        <app-icone [nome]="mundo.icone" [tamanho]="44" [espessura]="1.6" />
+                        <b>{{ cena.rotulo }}</b>
+                      </span>
+                    } @else {
+                      <img class="cena__foto" [src]="cena.foto" alt="" (error)="aoFalharFoto(cena)" />
+                    }
+                    <span class="cena__mensagem">{{ cena.pergunta }}</span>
+
+                    @if (cena.pedido; as pedido) {
+                      <span class="cena__cartao">
+                        <span class="cartao__linha cartao__linha--topo"><b>Resumo do pedido</b><i>{{ pedido.total }}</i></span>
+                        @for (linha of pedido.linhas; track linha.rotulo) {
+                          <span class="cartao__linha"><small>{{ linha.rotulo }}</small><span>{{ linha.valor }}</span></span>
+                        }
+                      </span>
+                    }
+                    @if (cena.agenda; as agenda) {
+                      <span class="cena__cartao">
+                        <span class="cartao__linha cartao__linha--topo"><b>{{ agenda.dia }}</b><i>{{ agenda.livres }}</i></span>
+                        @for (bloco of agenda.blocos; track bloco.hora) {
+                          <span class="agenda__bloco" [class.agenda__bloco--novo]="bloco.novo"><small>{{ bloco.hora }}</small><span>{{ bloco.texto }}</span></span>
+                        }
+                      </span>
+                    }
+
+                    <span class="cena__aviso">
+                      <span class="cena__aviso-icone"><app-icone [nome]="mundo.icone" [tamanho]="15" [espessura]="2.2" /></span>
+                      <span class="cena__aviso-textos"><strong>{{ cena.aviso.titulo }}</strong><small>{{ cena.aviso.texto }}</small></span>
+                    </span>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- os pontinhos: a cena à vista enche no tempo dela -->
+            <span class="pontos" aria-hidden="true">
+              @for (cena of mundo.cenas; track cena.id; let c = $index) {
+                <span class="pontos__ponto" [class.pontos__ponto--ativo]="c === atual" (click)="irPara(mundo, c, $event)"></span>
+              }
+            </span>
+
+            <div class="mundo__textos">
+              <span class="mundo__sobretitulo">
+                {{ mundo.sobretitulo }}
+                @if (ultimoVisto === mundo.tipo) {
+                  <span class="mundo__visto">Visto por último</span>
+                }
+              </span>
+              <h2 class="mundo__titulo">{{ mundo.titulo }}</h2>
+              <p class="mundo__texto">{{ mundo.texto }}</p>
+              <span class="mundo__rodape">
+                <span class="mundo__negocios">{{ mundo.negocios.join(' · ') }}</span>
+                <span class="mundo__ir">
+                  <span class="mundo__ir-texto">{{ mundo.chamada }}</span>
+                  <span class="mundo__ir-seta"><app-icone nome="seta" [tamanho]="20" [espessura]="2.2" /></span>
+                </span>
+              </span>
+            </div>
+          </a>
+        }
+      </div>
+    </section>
+
+    <!-- o que vale para os dois: uma vitrine própria, em cartões de vidro -->
+    <section class="comum" aria-labelledby="comum-titulo">
+      <div class="comum__cabeca">
+        <span class="comum__sobretitulo">Em qualquer negócio</span>
+        <h2 id="comum-titulo" class="comum__titulo">Tudo o que um bom atendente faz.<br /><span>Sem folga, sem demora.</span></h2>
+      </div>
+
+      <div class="vidros">
+        <article class="vidro vidro--largo vidro--resposta">
+          <div class="vidro__textos">
+            <h3>Resposta em segundos, 24 horas</h3>
+            <p>De madrugada, no domingo ou com as mãos ocupadas, no seu número de sempre.</p>
+          </div>
+          <div class="resposta" aria-hidden="true">
+            <span class="resposta__numero">3<small>s</small></span>
+            <span class="resposta__conversa">
+              <span class="bolha bolha--cliente">Vocês abrem amanhã?<i>02:14</i></span>
+              <span class="bolha">Abrimos sim, das 9h às 19h. Posso olhar um horário para você.<i>02:14</i></span>
+            </span>
+          </div>
+        </article>
+
+        <article class="vidro vidro--cara">
+          <div class="vidro__textos">
+            <h3>Com a sua cara</h3>
+            <p>Você cadastra as informações do seu negócio, ele responde. Se não souber responder, te chama.</p>
+          </div>
+          <span class="cara" aria-hidden="true">
+            <span class="cara__info">Preços</span>
+            <span class="cara__info">Pagamento</span>
+            <span class="cara__info">Endereço</span>
+            <span class="cara__info">Prazos</span>
+            <span class="cara__chama"><app-icone nome="sino" [tamanho]="13" [espessura]="2.2" />Não sabe? Te chama</span>
+          </span>
+        </article>
+
+        <article class="vidro">
+          <div class="vidro__textos">
+            <h3>Entende áudios</h3>
+            <p>O cliente manda voz, o assistente responde por escrito.</p>
+          </div>
+          <span class="audio" aria-hidden="true">
+            <span class="audio__play"><app-icone nome="reproduzir" [tamanho]="12" [espessura]="2.4" /></span>
+            <span class="audio__ondas">
+              @for (altura of ondas; track $index) {
+                <span [style.height.%]="altura"></span>
+              }
+            </span>
+            <small>0:12</small>
+          </span>
+        </article>
+
+        <article class="vidro">
+          <div class="vidro__textos">
+            <h3>Catálogo na conversa</h3>
+            <p>Cardápio, tabela de preços ou portfólio em PDF ou imagem.</p>
+          </div>
+          <span class="arquivo" aria-hidden="true">
+            <span class="arquivo__tipo">PDF</span>
+            <span class="arquivo__nome"><strong>Catálogo de novembro.pdf</strong><small>3 páginas · enviado agora</small></span>
+          </span>
+        </article>
+
+        <article class="vidro">
+          <div class="vidro__textos">
+            <h3>Você no controle</h3>
+            <p>Respondeu pelo celular? Ele sai daquela conversa na hora.</p>
+          </div>
+          <span class="chave" aria-hidden="true">
+            <span><strong>Assistente nesta conversa</strong><small>pausado: você respondeu</small></span>
+            <span class="chave__trilho"><span></span></span>
+          </span>
+        </article>
+
+        <article class="vidro vidro--largo vidro--vitrine">
+          <div class="vidro__textos">
+            <h3>Vitrine e artes com a cara do seu negócio</h3>
+            <p>Uma página com a sua logo e as suas fotos para a bio do Instagram, e posts prontos com os seus preços.</p>
+          </div>
+          <div class="galeria" aria-hidden="true">
+            <!-- a vitrine da Pedacinho do Céu (/l/pedacinho-do-ceu), o topo da página como ela é -->
+            <span class="vitrine">
+              <span class="vitrine__capa"></span>
+              <span class="vitrine__logo"><img src="/landing/galeria/logos/pedacinho-do-ceu.jpg" alt="" /></span>
+              <b class="vitrine__nome">Pedacinho do Céu</b>
+              <small class="vitrine__descricao">Doces e tortas personalizadas</small>
+              <span class="vitrine__menu">
+                <span class="vitrine__chip vitrine__chip--ativo">Frutas Vermelhas</span>
+                <span class="vitrine__chip">Chocolate com beijinho</span>
+                <span class="vitrine__chip">Red Velvet</span>
+              </span>
+              <span class="vitrine__topico"><b>Frutas Vermelhas</b><small>8 fotos</small></span>
+              <span class="vitrine__fotos">
+                @for (n of ['01', '04', '06']; track n) {
+                  <img [src]="'/landing/galeria/bolos/' + n + '.webp'" alt="" />
+                }
+              </span>
+            </span>
+            <span class="galeria__post galeria__post--1"><img src="/landing/galeria/bolos/03.webp" alt="" loading="lazy" /><b>Encomendas abertas</b></span>
+            <span class="galeria__post galeria__post--2"><img src="/landing/galeria/bolos/08.webp" alt="" loading="lazy" /><b>Novidade</b></span>
+          </div>
+        </article>
+
+        <article class="vidro vidro--relatorio">
+          <div class="vidro__textos">
+            <h3>Seus números, prontos</h3>
+            <p>Faturamento, dias que mais vendem e os clientes que mais voltam.</p>
+          </div>
+          <span class="barras" aria-hidden="true">
+            @for (altura of [38, 52, 46, 70, 58, 100, 32]; track $index) {
+              <span [style.height.%]="altura" [class.barras__maior]="altura === 100"></span>
+            }
+          </span>
+        </article>
+      </div>
+    </section>
+
+    <!-- fim: as duas portas de novo -->
+    <section class="fim" aria-labelledby="fim-titulo">
+      <h2 id="fim-titulo" class="fim__titulo">Qual é o seu negócio?</h2>
+      <div class="fim__portas">
+        @for (mundo of mundos; track mundo.tipo) {
+          <a class="porta" [class.porta--servicos]="mundo.tipo === 'servicos'" [routerLink]="mundo.rota">
+            <span class="porta__icone"><app-icone [nome]="mundo.icone" [tamanho]="20" [espessura]="2" /></span>
+            <span class="porta__textos"><small>{{ mundo.sobretitulo }}</small><strong>{{ mundo.titulo }}</strong></span>
+            <app-icone class="porta__seta" nome="seta" [tamanho]="20" [espessura]="2.2" />
+          </a>
+        }
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <span class="rodape__marca">© {{ anoAtual }} DizAI · Atendimento com IA para pequenos negócios</span>
+    <span class="rodape__links">
+      <a routerLink="/entrar">Já sou cliente</a>
+      <a routerLink="/privacidade">Privacidade</a>
+    </span>
+  </footer>
+</div>

@@ -2,38 +2,13 @@
   <div class="secao__cabecalho">
     <span class="secao__sobretitulo">Uma solução completa</span>
     <h2 id="solucao-titulo" class="secao__titulo">
-      <span class="solucao__marca"><app-logo class="solucao__logo" [mostrarNome]="false" [tamanhoSimbolo]="40" aria-hidden="true" />DizAI</span>: atendimento de empresa grande, sem contratar ninguém.
+      <span class="solucao__marca"><app-logo class="solucao__logo" [mostrarNome]="false" [tamanhoSimbolo]="40" aria-hidden="true" />Diz<span class="solucao__ai">AI</span></span>: diversas funções, sem contratar ninguém.
     </h2>
-    <p class="secao__descricao">
-      Recursos específicos para quem vende produtos e para quem presta serviços por agendamento.
-      <br>
-      Do atendimento inicial ao financeiro.
-    </p>
+    <p class="secao__descricao">Do atendimento personalizado e gerenciamento financeiro, à criação de posts para as redes sociais.</p>
   </div>
 
   <div class="ganhos">
-    <!-- o ganho principal, direto: o que aumenta e o que diminui, lado a lado -->
-    <article #cartaoPlacar class="ganho ganho--tempo placar" [class.placar--visivel]="placarVisivel()">
-      <h3 class="placar__rotulo">Com o DizAI no seu WhatsApp</h3>
-      <div class="placar__colunas">
-        @for (coluna of placar; track coluna.tipo; let c = $index) {
-          <div class="placar__coluna" [attr.data-tipo]="coluna.tipo">
-            <span class="placar__cabeca">
-              <span class="placar__sinal" aria-hidden="true">{{ coluna.tipo === 'mais' ? '+' : '−' }}</span>
-              {{ coluna.titulo }}
-            </span>
-            <ul class="placar__itens">
-              @for (item of coluna.itens; track item; let i = $index) {
-                <li class="placar__item" [style.--atraso.ms]="(c * 2 + i) * 120">{{ item }}</li>
-              }
-            </ul>
-          </div>
-        }
-      </div>
-      <p class="placar__fecho">Enquanto você trabalha, ele responde.</p>
-    </article>
-
-    @for (ganho of ganhos; track ganho.titulo) {
+    @for (ganho of ganhos(); track ganho.titulo) {
       <article class="ganho" [class.ganho--largo]="ganho.largo">
         <div class="ganho__cabeca">
           <span class="ganho__icone">
@@ -60,7 +35,7 @@
             @case ('catalogo') {
               <span class="arquivo">
                 <span class="arquivo__tipo">PDF</span>
-                <span class="arquivo__nome"><strong>Cardápio de outubro.pdf</strong><small>2 páginas · enviado na conversa</small></span>
+                <span class="arquivo__nome"><strong>{{ textos().catalogo }}</strong><small>2 páginas · enviado na conversa</small></span>
               </span>
             }
             @case ('audio') {
@@ -73,7 +48,7 @@
                 </span>
                 <span class="nota-voz__tempo">0:12</span>
               </span>
-              <span class="mini-balao">Temos sim! Amanhã às 14h ou às 16h30. Qual prefere?</span>
+              <span class="mini-balao">{{ textos().respostaAudio }}</span>
             }
             @case ('relatorios') {
               <span class="relatorio">
@@ -122,7 +97,7 @@
       </div>
 
       <div class="detalhe vitrine-recursos" aria-hidden="true">
-        @for (recurso of recursosVitrine; track recurso.titulo) {
+        @for (recurso of recursosVitrine(); track recurso.titulo) {
           <span class="vitrine-recursos__item">
             <span class="vitrine-recursos__icone"><app-icone [nome]="recurso.icone" [tamanho]="16" [espessura]="2" /></span>
             <strong>{{ recurso.titulo }}</strong>
@@ -150,7 +125,7 @@
       </div>
 
       <div class="detalhe mini-posts" aria-hidden="true">
-        @for (exemplo of postsDeExemplo; track exemplo.id; let i = $index) {
+        @for (exemplo of postsDeExemplo(); track exemplo.id; let i = $index) {
           <span class="mini-posts__arte" [style.--posicao]="i - 1">
             <app-arte-post [marca]="exemplo.marca" [conteudo]="exemplo.conteudo" [estilo]="exemplo.estilo" formato="feed" [largura]="132" />
           </span>

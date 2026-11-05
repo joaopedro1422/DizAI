@@ -237,6 +237,13 @@
   font-weight: 800;
 }
 
+.whats-topo__foto img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .whats-topo__textos { display: flex; flex-direction: column; min-width: 0; }
 .whats-topo__nome { font-size: 16px; font-weight: 700; }
 .whats-topo__status { font-size: 12px; color: rgba(255, 255, 255, 0.82); }

@@ -75,18 +75,20 @@
 
 /* no computador a vitrine fica no espaço ao lado de "Você assume", com a largura de 2 cards (como o relatório);
    o card de posts segue na largura toda, embaixo */
+/* a vitrine fecha a grade na largura toda (sem buraco ao lado), com os 4 recursos numa fileira */
 .ganho--vitrine:not(.ganho--posts) {
-  grid-column: span 2;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 20px;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 28px;
 }
 
 .ganho--vitrine:not(.ganho--posts) .vitrine-recursos {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 @media (max-width: 1023px) {
-  .vitrine-recursos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .vitrine-recursos,
+  .ganho--vitrine:not(.ganho--posts) .vitrine-recursos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* no celular, igual aos outros cards (o "Ver mais" fica embaixo do texto) */

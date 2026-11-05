@@ -6,6 +6,8 @@ import {
   afterNextRender,
   computed,
   inject,
+  input,
+  linkedSignal,
   signal,
 } from '@angular/core';
 
@@ -40,7 +42,9 @@ import { PASSOS_COMO_FUNCIONA, ROTEIROS_COMO_FUNCIONA, TipoComoFunciona } from '
   },
 })
 export class ComoFuncionaComponent {
-  protected readonly tipo = signal<TipoComoFunciona>('servicos');
+  /** Landing de um tipo: fixo, sem as abas Serviços | Produtos. */
+  readonly tipoFixo = input<TipoComoFunciona | null>(null, { alias: 'tipo' });
+  protected readonly tipo = linkedSignal<TipoComoFunciona>(() => this.tipoFixo() ?? 'servicos');
   protected readonly indice = signal(0);
 
   protected readonly passos = computed(() => PASSOS_COMO_FUNCIONA[this.tipo()]);

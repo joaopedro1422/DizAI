@@ -1,0 +1,309 @@
+/* A história em rolagem: passos à esquerda, o palco fixo à direita (no celular, a cena embaixo de cada passo). */
+:host {
+  display: block;
+}
+
+.historia {
+  padding: 112px 0 64px;
+}
+
+.historia__cabeca {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 40px;
+}
+
+.historia__sobretitulo {
+  color: var(--tom-forte, #2550C6);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.historia__titulo {
+  max-width: 900px;
+  font-size: clamp(34px, 5vw, 64px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+.historia__titulo-destaque {
+  display: block;
+  /* o degradê acompanha o texto, não a largura da linha */
+  width: fit-content;
+  padding-bottom: 0.06em;
+  background: var(--lp-grad-texto, linear-gradient(90deg, #1E3A72, #2F63C2 52%, #14A37F));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.historia__grade {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 56px;
+  align-items: start;
+}
+
+/* Os passos ---------------------------------------------------------------- */
+
+.passos {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* a linha de progresso atrás dos números */
+.passos::before {
+  content: '';
+  position: absolute;
+  top: 24px;
+  bottom: 24px;
+  left: 23px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--lp-linha, rgba(14, 21, 37, 0.08));
+}
+
+.passo {
+  position: relative;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  min-height: clamp(420px, 62vh, 620px);
+  padding: 32px 0;
+}
+
+.passo__numero {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1.5px solid var(--lp-linha, rgba(14, 21, 37, 0.1));
+  border-radius: 50%;
+  background: var(--lp-fundo, #F5F7FB);
+  color: var(--lp-fraco, rgba(14, 21, 37, 0.46));
+  font-size: 14px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  transition: all 0.4s ease;
+}
+
+.passo--feito .passo__numero {
+  border-color: color-mix(in srgb, var(--tom, #3C69E8) 40%, transparent);
+  color: var(--tom-forte, #2550C6);
+}
+
+.passo--ativo .passo__numero {
+  border-color: var(--tom-forte, #2550C6);
+  background: var(--tom-forte, #2550C6);
+  color: #ffffff;
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--tom, #3C69E8) 16%, transparent);
+}
+
+.passo__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 4px;
+  opacity: 0.38;
+  transition: opacity 0.5s ease;
+}
+
+.passo--ativo .passo__corpo {
+  opacity: 1;
+}
+
+.passo__icone {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--tom-claro, #E8EFFF);
+  color: var(--tom-forte, #2550C6);
+}
+
+.passo__titulo {
+  font-size: clamp(26px, 2.6vw, 36px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+}
+
+.passo__texto {
+  max-width: 440px;
+  color: var(--lp-suave, rgba(14, 21, 37, 0.66));
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+.passo__cena {
+  display: none;
+}
+
+/* O palco fixo ---------------------------------------------------------------- */
+
+.historia__palco {
+  position: sticky;
+  top: 96px;
+  height: min(620px, calc(100vh - 140px));
+}
+
+.palco {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid var(--lp-linha, rgba(14, 21, 37, 0.08));
+  border-radius: 36px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255, 255, 255, 0.85), transparent 45%),
+    linear-gradient(160deg, var(--tom-fundo-1, #E3EBFF) 0%, var(--tom-fundo-2, #F8FAFF) 85%);
+  box-shadow: var(--lp-sombra-tom, 0 40px 80px -50px rgba(37, 80, 198, 0.45));
+}
+
+.palco__luz {
+  position: absolute;
+  top: -30%;
+  right: -20%;
+  z-index: -1;
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--tom, #3C69E8) 24%, transparent), transparent 64%);
+}
+
+/* a foto do público, atrás das peças */
+.palco__foto {
+  position: absolute;
+  top: 9%;
+  right: 7%;
+  z-index: 0;
+  width: 42%;
+  aspect-ratio: 4 / 5;
+  border-radius: 24px;
+  object-fit: cover;
+  box-shadow: 0 30px 50px -22px rgba(15, 23, 42, 0.42);
+  transform: rotate(3deg);
+  animation: historia-boiar 8s ease-in-out infinite;
+}
+
+/* a segunda foto (salgados), sempre aberta em leque atrás da primeira */
+.palco__foto--leque {
+  transform: translate(-46%, 6%) rotate(-8deg);
+  animation: none;
+}
+
+.palco__cena {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.45s ease, visibility 0s 0.45s;
+}
+
+.palco__cena--ativa {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.45s ease, visibility 0s;
+}
+
+/* os pontinhos do progresso no pé do palco */
+.palco__progresso {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+  transform: translateX(-50%);
+}
+
+.palco__progresso span {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(14, 21, 37, 0.16);
+  transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease;
+}
+
+.palco__progresso span.ativo {
+  width: 28px;
+  background: var(--tom-forte, #2550C6);
+}
+
+/* Celular e tablet: sem palco fixo, a cena embaixo de cada passo ------------- */
+
+@media (max-width: 960px) {
+  .historia {
+    padding: 72px 0 32px;
+  }
+
+  .historia__grade {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .historia__palco {
+    display: none;
+  }
+
+  .passos::before {
+    left: 19px;
+  }
+
+  .passo {
+    grid-template-columns: 40px minmax(0, 1fr);
+    align-items: start;
+    gap: 16px;
+    min-height: 0;
+    padding: 0 0 48px;
+  }
+
+  .passo__numero {
+    width: 40px;
+    height: 40px;
+    font-size: 13px;
+  }
+
+  .passo__corpo {
+    opacity: 1;
+  }
+
+  .passo__titulo {
+    font-size: 26px;
+  }
+
+  .passo__texto {
+    font-size: 16.5px;
+  }
+
+  .passo__cena {
+    display: block;
+    margin-top: 10px;
+  }
+
+  .palco--inline {
+    border-radius: 26px;
+  }
+}
+
+@keyframes historia-boiar {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .palco__foto {
+    animation: none;
+  }
+}

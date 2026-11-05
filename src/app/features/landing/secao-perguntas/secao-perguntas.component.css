@@ -13,11 +13,23 @@
   display: flex;
   flex: 2 1 520px;
   flex-direction: column;
+  gap: 10px;
   min-width: 0;
 }
 
+/* cada pergunta num cartão branco, como os cartões do hub */
 .pergunta {
-  border-bottom: 1px solid var(--cor-borda-suave);
+  padding: 0 22px;
+  border: 1px solid var(--lp-linha, var(--cor-borda-suave));
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.pergunta:hover {
+  border-color: color-mix(in srgb, var(--tom, #3C69E8) 28%, transparent);
+  box-shadow: var(--lp-sombra, none);
 }
 
 .pergunta__titulo {
@@ -41,7 +53,7 @@
 }
 
 .pergunta__botao:hover {
-  color: var(--cor-primaria);
+  color: var(--tom-forte, var(--cor-primaria));
 }
 
 .pergunta__seta {
@@ -52,8 +64,8 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--cor-primaria-clara);
-  color: var(--cor-primaria);
+  background: var(--tom-claro, var(--cor-primaria-clara));
+  color: var(--tom-forte, var(--cor-primaria));
   transition: transform 0.2s ease;
 }
 

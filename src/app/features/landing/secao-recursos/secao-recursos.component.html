@@ -1,15 +1,14 @@
 <section id="recursos" class="recursos" aria-labelledby="recursos-titulo">
   <div class="container recursos__conteudo">
     <header class="recursos__cabecalho">
-      <span class="recursos__sobretitulo">Recursos</span>
+      <span class="recursos__sobretitulo">{{ tipoFixo() === 'servicos' ? 'Recursos da agenda' : 'Recursos' }}</span>
       <h2 id="recursos-titulo" class="recursos__titulo">
         Menos tempo no celular.<br>
         <span class="recursos__titulo-destaque">{{ tipo() === 'produtos' ? 'Mais pedidos fechados.' : 'Mais horários marcados.' }}</span>
       </h2>
-      <p class="recursos__descricao">
-        Escolha o seu tipo de negócio e veja o que temos especialmente para você.
-      </p>
+      <p class="recursos__descricao">{{ descricao() }}</p>
 
+      @if (!tipoFixo()) {
       <div class="abas" role="tablist" aria-label="Tipo de negócio">
         <button
           type="button"
@@ -38,6 +37,7 @@
           Serviços
         </button>
       </div>
+      }
     </header>
 
     <!-- @for com track no tipo: trocar de aba recria o conteúdo e as animações de entrada rodam de novo -->

@@ -1,81 +1,68 @@
+<!-- o fundo do hub: aurora no tom do público e uma textura de grão, atrás do topo -->
+<div class="lp-aurora" aria-hidden="true"></div>
+<div class="lp-grao" aria-hidden="true"></div>
+
 <div class="nav-faixa">
   <nav class="nav container" aria-label="Principal">
     <a routerLink="/" class="nav__marca" aria-label="DizAI, início">
       <app-logo />
     </a>
     <div class="nav__links">
-      <a routerLink="/" fragment="solucao" class="nav__link">Solução</a>
-      <a routerLink="/" fragment="recursos" class="nav__link">Recursos</a>
-      <a routerLink="/" fragment="como" class="nav__link">Como funciona</a>
-      <a routerLink="/" fragment="para-quem" class="nav__link">Para quem é</a>
-      <a routerLink="/" fragment="perguntas" class="nav__link">Perguntas</a>
+      <a [routerLink]="rota()" fragment="recursos" class="nav__link">{{ tipo() === 'servicos' ? 'Recursos da agenda' : 'Recursos' }}</a>
+      <a [routerLink]="rota()" fragment="como" class="nav__link">Como funciona</a>
+      <a [routerLink]="rota()" fragment="para-quem" class="nav__link">Para quem é</a>
+      <a [routerLink]="outra().rota" class="nav__link nav__link--outra">{{ outra().rotulo }}</a>
       <span class="nav__acoes">
-        <a routerLink="/entrar" class="btn btn--secundario nav__entrar">Entrar</a>
-        <a routerLink="/cadastro" class="btn btn--primario">Testar grátis</a>
+        <a routerLink="/entrar" class="nav__entrar"><app-icone nome="pessoa" [tamanho]="16" [espessura]="1.6" />Entrar</a>
       </span>
     </div>
   </nav>
 </div>
 
 <main>
-  <app-secao-hero />
-  <app-faixa-negocios />
+  <app-secao-hero [tipo]="tipo()" />
+  <app-faixa-negocios [negocios]="conteudo().negocios" />
 
-  <section class="faixa faixa--suave" aria-labelledby="dor-titulo">
-    <div class="container secao secao--depois-da-faixa">
-      <span class="secao__sobretitulo">
-        A rotina do microempreendedor
-      </span>
-      <h2 id="dor-titulo" class="secao__titulo secao__titulo--largo">Você faz tudo. O WhatsApp não espera.</h2>
-      <div class="grade grade--cards">
-        @for (dor of dores; track dor.titulo) {
-          <article class="cartao">
-            <app-icone [nome]="dor.icone" [tamanho]="26" [espessura]="1.7" />
-            <h3 class="cartao__titulo">{{ dor.titulo }}</h3>
-            <p class="cartao__texto">{{ dor.texto }}</p>
-            <span class="cartao__citacao">{{ dor.citacao }}</span>
-          </article>
-        }
-      </div>
-    </div>
-  </section>
+  <!-- as dores: a lista com a mensagem de cada cliente e a tela de bloqueio cheia de mensagens sem resposta -->
+  <app-problema-landing appRevelar [tipo]="tipo()" />
 
-  <app-secao-pesquisa />
+  <!-- o estudo do MIT: seção azul-marinho na largura toda, com a conversa com e sem o DizAI -->
+  <app-secao-pesquisa appRevelar [tipo]="tipo()" />
 
-  <app-secao-solucao />
+  <!-- a linha do tempo: do primeiro oi ao pedido entregue (ou ao cliente que volta), com o palco preso -->
+  <app-historia-landing id="rotina" appRevelar [tipo]="tipo()" />
 
-  <app-secao-recursos />
+  <app-secao-solucao appRevelar [tipo]="tipo()" />
+
+  <app-secao-recursos appRevelar [tipo]="tipo()" />
 
   <!-- como funciona: os 3 passos com o celular (cadastro, WhatsApp conectado e a conversa) -->
-  <app-como-funciona />
-  
+  <app-como-funciona appRevelar [tipo]="tipo()" />
 
-  <app-secao-galeria />
-  <app-secao-posts />
-  <app-secao-para-quem />
+  <app-secao-galeria appRevelar [tipo]="tipo()" />
+  <app-secao-posts appRevelar [tipo]="tipo()" />
+  <app-secao-para-quem appRevelar [tipo]="tipo()" />
 
-  <!-- cinza para separar de "Para quem é" (branca) -->
-  <div class="faixa--suave">
-    <app-secao-perguntas />
+  <div class="faixa--suave" appRevelar>
+    <app-secao-perguntas [tipo]="tipo()" />
   </div>
 
-  <section class="chamada-final" aria-labelledby="cta-titulo">
-    <div class="chamada-final__caixa">
-      <app-logo variante="claro" [mostrarNome]="false" [tamanhoSimbolo]="56" />
-      <span class="chamada-final__etiqueta">Feito para pequenos negócios</span>
-      <h2 id="cta-titulo" class="chamada-final__titulo">Deixe o DizAI responder enquanto você trabalha.</h2>
-      <p class="chamada-final__texto">
-        Cadastre o seu negócio em poucos minutos e veja o assistente conversando com os seus produtos e serviços
-        de verdade.
-      </p>
-      <div class="chamada-final__acoes">
-        <a routerLink="/cadastro" class="btn btn--hero btn--claro">
+  <!-- fim: um painel no tom do público, como os mundos do hub -->
+  <section class="final" aria-labelledby="cta-titulo">
+    <div class="final__painel">
+      <span class="final__luz" aria-hidden="true"></span>
+      @let final = conteudo().chamadaFinal;
+      <span class="final__selo"><app-logo [mostrarNome]="false" [tamanhoSimbolo]="22" />Feito para pequenos negócios</span>
+      <h2 id="cta-titulo" class="final__titulo">{{ final.titulo }}</h2>
+      <p class="final__texto">{{ final.texto }}</p>
+      <div class="final__acoes">
+        <a routerLink="/cadastro" [queryParams]="cadastro()" class="final__testar">
           Testar grátis
-          <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
+          <app-icone nome="seta" [tamanho]="18" [espessura]="2.2" />
         </a>
-        <a routerLink="/demonstracao" class="btn btn--hero chamada-final__ao-vivo">
-          <app-icone nome="reproduzir" [tamanho]="16" />
-          Ver demonstração completa
+        <a routerLink="/demonstracao" [queryParams]="cadastro()" class="final__demo">
+          <app-icone nome="reproduzir" [tamanho]="15" [espessura]="2.2" />
+          {{ final.demonstracao }}
         </a>
       </div>
     </div>
@@ -88,7 +75,7 @@
     © {{ anoAtual }} DizAI · Atendimento com IA para pequenos negócios
   </span>
   <span class="rodape__links">
-    <a routerLink="/" fragment="topo">Termos de uso</a>
+    <a [routerLink]="rota()" fragment="topo">Termos de uso</a>
     <a routerLink="/privacidade">Privacidade</a>
   </span>
 </footer>

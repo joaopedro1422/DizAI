@@ -1,31 +1,23 @@
+/*
+ * Hero da landing, na linguagem do hub claro: o fundo é a aurora da página (no tom do público), o título grande com a
+ * palavra-chave em degradê no tom, botões em pílula e as garantias como selos. O mock da conversa não muda: só ganha
+ * uma luz no tom atrás.
+ */
 .hero {
   position: relative;
-  overflow: hidden;
-  /* continua o branco do menu (topo e hero são uma peça só) e termina no cinza-claro da seção seguinte */
-  background: linear-gradient(180deg, var(--cor-fundo) 0%, var(--cor-fundo-suave) 100%);
 }
 
-/* Fundo com brilhos suaves e uma malha de pontos que some nas bordas */
+/* a luz no tom atrás do celular */
 .hero__fundo {
   position: absolute;
-  inset: 0;
+  top: 8%;
+  right: 4%;
   z-index: 0;
-  background:
-    radial-gradient(circle at 82% 40%, rgba(48, 77, 134, 0.12), transparent 42%),
-    radial-gradient(circle at 70% 75%, rgba(0, 168, 132, 0.05), transparent 38%);
-  /* os brilhos somem no alto e embaixo: sem emenda com o menu nem com a seção seguinte */
-  mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 70%, transparent 100%);
-  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 22%, #000 70%, transparent 100%);
-}
-
-.hero__fundo::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(rgba(30, 58, 114, 0.16) 1px, transparent 1px);
-  background-size: 22px 22px;
-  mask-image: radial-gradient(ellipse at 70% 45%, #000 0%, transparent 65%);
-  -webkit-mask-image: radial-gradient(ellipse at 70% 45%, #000 0%, transparent 65%);
+  width: 560px;
+  height: 560px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--tom, #3C69E8) 22%, transparent), transparent 66%);
+  pointer-events: none;
 }
 
 .hero__grade {
@@ -35,9 +27,8 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 64px;
-  padding-top: 64px;
-  /* menos espaço embaixo: a faixa dos tipos de negócio vem logo em seguida */
-  padding-bottom: 44px;
+  padding-top: 72px;
+  padding-bottom: 64px;
 }
 
 .hero__texto {
@@ -46,6 +37,7 @@
   display: flex;
   flex-direction: column;
   gap: 28px;
+  animation: hero-surgir 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .hero__etiqueta {
@@ -53,13 +45,14 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 14px 8px 12px;
-  border: 1px solid var(--cor-borda);
-  border-radius: var(--raio-pilula);
-  background: rgba(255, 255, 255, 0.8);
+  padding: 8px 15px 8px 12px;
+  border: 1px solid var(--lp-linha, var(--cor-borda));
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--lp-suave, var(--cor-texto-secundario));
   font-size: 14px;
-  font-weight: 600;
-  box-shadow: var(--sombra-card);
+  font-weight: 700;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
 }
 
 .hero__pulso {
@@ -67,7 +60,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #00a884;
+  background: var(--tom, #00a884);
 }
 
 .hero__pulso::after {
@@ -75,49 +68,56 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: #00a884;
+  background: var(--tom, #00a884);
   animation: pulsar 1.8s ease-out infinite;
 }
 
 .hero__titulo {
-  font-size: clamp(35px, 6vw, 70px);
+  font-size: clamp(40px, 5.4vw, 70px);
   font-weight: 800;
-  letter-spacing: -0.045em;
-  line-height: 1.02;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  text-wrap: balance;
 }
 
-/* Marca-texto atrás da palavra em destaque: no verde da landing (faixa do MIT), desenhado da esquerda ao abrir */
+/* a palavra-chave em degradê no tom, com um traço suave embaixo que se desenha ao abrir */
 .hero__destaque {
   position: relative;
   z-index: 0;
-  color: var(--cor-primaria);
+  display: inline-block;
+  padding-bottom: 0.06em;
+  background: var(--lp-grad-texto, linear-gradient(90deg, #1E3A72, #2F63C2 52%, #14A37F));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
   white-space: nowrap;
 }
 
 .hero__destaque::after {
   content: '';
   position: absolute;
-  left: -4px;
-  right: -4px;
-  bottom: 0.08em;
+  left: -2px;
+  right: -2px;
+  bottom: 0.06em;
   z-index: -1;
-  height: 0.32em;
-  border-radius: 6px;
-  background: #8fe3b0;
-  transform: skewX(-8deg) scaleX(0);
+  height: 0.16em;
+  border-radius: 99px;
+  /* o grifado no verde dos degradês */
+  background: color-mix(in srgb, var(--tom-verde, #14A37F) 30%, transparent);
+  transform: scaleX(0);
   transform-origin: left center;
   animation: grifar 0.8s 0.5s cubic-bezier(0.65, 0, 0.25, 1) forwards;
 }
 
 .hero__descricao {
   max-width: 560px;
+  color: var(--lp-suave, var(--cor-texto-secundario));
   font-size: 20px;
   line-height: 1.55;
-  color: var(--cor-texto-secundario);
 }
 
 .hero__descricao strong {
-  color: var(--cor-texto);
+  color: var(--lp-texto, var(--cor-texto));
   font-weight: 700;
 }
 
@@ -128,20 +128,36 @@
   gap: 12px;
 }
 
+.hero__acoes .btn {
+  height: 56px;
+  padding: 0 28px;
+  border-radius: 999px;
+  font-size: 16.5px;
+}
+
 .hero__acoes .btn--primario {
-  box-shadow: 0 10px 24px rgba(30, 58, 114, 0.28);
+  border-color: var(--tom-forte, var(--cor-primaria));
+  background: var(--lp-botao, var(--tom-forte, var(--cor-primaria)));
+  box-shadow: 0 16px 32px -14px var(--tom-forte, var(--cor-primaria));
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero__acoes .btn--primario:hover {
+  transform: translateY(-2px);
 }
 
 .hero__secundario {
-  background: rgba(255, 255, 255, 0.85);
-  color: var(--cor-texto);
-  font-weight: 600;
+  border: 1px solid var(--lp-linha, var(--cor-borda));
+  background: #ffffff;
+  color: var(--lp-texto, var(--cor-texto));
+  font-weight: 700;
 }
 
+/* as garantias como selos brancos */
 .hero__garantias {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 22px;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -151,9 +167,13 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--cor-texto-secundario);
+  padding: 7px 13px 7px 8px;
+  border: 1px solid var(--lp-linha, var(--cor-borda));
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--lp-suave, var(--cor-texto-secundario));
+  font-size: 13.5px;
+  font-weight: 600;
 }
 
 .hero__check {
@@ -163,9 +183,8 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  /* o verde dos ícones de "Uma solução completa" */
-  background: #E4F8EC;
-  color: #1F7A4A;
+  background: var(--tom-claro, #E4F8EC);
+  color: var(--tom-forte, #1F7A4A);
 }
 
 /* Celular com a conversa de exemplo */
@@ -174,6 +193,7 @@
   flex: 0 1 360px;
   min-width: 300px;
   margin: 0 auto;
+  animation: hero-surgir 1s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .hero__demonstracao {
@@ -182,14 +202,14 @@
 
 @keyframes grifar {
   to {
-    transform: skewX(-8deg) scaleX(1);
+    transform: scaleX(1);
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero__destaque::after {
-    animation: none;
-    transform: skewX(-8deg);
+@keyframes hero-surgir {
+  from {
+    opacity: 0;
+    translate: 0 20px;
   }
 }
 
@@ -204,11 +224,44 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .hero__destaque::after {
+    animation: none;
+    transform: none;
+  }
+
+  .hero__texto,
+  .hero__vitrine {
+    animation: none;
+  }
+}
+
 @media (max-width: 640px) {
+  .hero__fundo {
+    top: auto;
+    bottom: 10%;
+    right: -30%;
+  }
+
+  /* no celular: etiqueta, título, texto, botões, o mock e, por último, os checks */
   .hero__grade {
-    gap: 48px;
-    padding-top: 24px;
-    padding-bottom: 32px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 28px;
+    padding-top: 36px;
+    padding-bottom: 40px;
+  }
+
+  .hero__texto {
+    display: contents;
+  }
+
+  .hero__garantias {
+    order: 2;
+  }
+
+  .hero__vitrine {
+    order: 1;
   }
 
   .hero__descricao {
@@ -221,5 +274,7 @@
 
   .hero__vitrine {
     min-width: 0;
+    flex: none;
+    width: 100%;
   }
 }

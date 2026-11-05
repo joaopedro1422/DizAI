@@ -6,7 +6,7 @@
   </div>
 
   <div class="perguntas__lista">
-    @for (item of perguntas; track item.pergunta; let indice = $index) {
+    @for (item of perguntas(); track item.pergunta; let indice = $index) {
       @let aberta = abertas().has(indice);
       <div class="pergunta">
         <h3 class="pergunta__titulo">
@@ -33,5 +33,5 @@
     }
   </div>
 
-  <app-pergunte-dizai />
+  <app-pergunte-dizai [tipo]="tipo()" />
 </section>

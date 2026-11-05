@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 
 import { IconeComponent } from '../../shared/components/icone/icone.component';
-import { NomeIcone } from '../../shared/components/icone/icones';
 import { LogoComponent } from '../../shared/components/logo/logo.component';
 import { SecaoGaleriaComponent } from './secao-galeria/secao-galeria.component';
 import { SecaoPostsComponent } from './secao-posts/secao-posts.component';
@@ -14,14 +14,10 @@ import { SecaoHeroComponent } from './secao-hero/secao-hero.component';
 import { SecaoPesquisaComponent } from './secao-pesquisa/secao-pesquisa.component';
 import { SecaoSolucaoComponent } from './secao-solucao/secao-solucao.component';
 import { ComoFuncionaComponent } from './como-funciona/como-funciona.component';
-
-interface Dor {
-  icone: NomeIcone;
-  titulo: string;
-  texto: string;
-  /** Uma mensagem de cliente de verdade, para o lojista se reconhecer. */
-  citacao: string;
-}
+import { HistoriaLandingComponent } from './historia/historia-landing.component';
+import { ProblemaLandingComponent } from './problema/problema-landing.component';
+import { RevelarAoRolarDirective } from './revelar-ao-rolar.directive';
+import { CHAVE_TIPO_VISTO, CONTEUDO_LANDING, ROTA_LANDING, TipoLanding } from './conteudo-landing';
 
 @Component({
   selector: 'app-landing-page',
@@ -31,7 +27,9 @@ interface Dor {
     IconeComponent,
     SecaoHeroComponent,
     FaixaNegociosComponent,
+    ProblemaLandingComponent,
     SecaoPesquisaComponent,
+    HistoriaLandingComponent,
     SecaoSolucaoComponent,
     SecaoGaleriaComponent,
     SecaoPostsComponent,
@@ -39,32 +37,42 @@ interface Dor {
     SecaoRecursosComponent,
     SecaoParaQuemComponent,
     SecaoPerguntasComponent,
+    RevelarAoRolarDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.css',
+  host: { '[attr.data-tipo]': 'tipo()' },
 })
+/**
+ * Landing de um tipo de negócio (`/vendas` = produtos, `/agendamentos` = serviços; o tipo vem do `data` da rota):
+ * as mesmas seções, cada uma com o tipo fixo (sem abas) e os textos, exemplos e conversas daquele público. Ordem: hero,
+ * negócios, dores, MIT, linha do tempo, solução, recursos, como funciona, vitrine, redes sociais, para quem é, perguntas.
+ */
 export class LandingPageComponent {
-  protected readonly anoAtual = new Date().getFullYear();
+  readonly tipo = input.required<TipoLanding>();
 
-  protected readonly dores: Dor[] = [
-    {
-      icone: 'relogio',
-      titulo: 'Cliente que espera, procura em outro lugar',
-      texto: 'Enquanto você está com as mãos ocupadas ou descansando, a mensagem fica sem resposta e o cliente vai para o concorrente.',
-      citacao: '"Oi? Ainda tem horário hoje?" · enviada há 2 h',
-    },
-    {
-      icone: 'listaRepetida',
-      titulo: 'As mesmas perguntas, o dia inteiro',
-      texto: 'Horas respondendo o que já está decidido: preço, foto, prazo, entrega, horário.',
-      citacao: '"Quanto custa?" "Tem foto?" "Entrega no meu bairro?"',
-    },
-    {
-      icone: 'dispersao',
-      titulo: 'Produzir ou responder?',
-      texto: 'Parar o que está fazendo a cada notificação atrasa o trabalho. Ignorar o celular perde venda.',
-      citacao: '"Faz pra sábado?" · chegou no meio do atendimento',
-    },
-  ];
+  protected readonly anoAtual = new Date().getFullYear();
+  protected readonly conteudo = computed(() => CONTEUDO_LANDING[this.tipo()]);
+  protected readonly rota = computed(() => ROTA_LANDING[this.tipo()]);
+  /** O link para a landing do outro público, no fim da navegação. */
+  protected readonly outra = computed(() =>
+    this.tipo() === 'produtos'
+      ? { rota: ROTA_LANDING.servicos, rotulo: 'Para quem agenda' }
+      : { rota: ROTA_LANDING.produtos, rotulo: 'Para quem vende' },
+  );
+  /** O cadastro já abre com os ramos deste tipo. */
+  protected readonly cadastro = computed(() => ({ tipo: this.tipo() }));
+
+  constructor() {
+    const titulo = inject(Title);
+    effect(() => {
+      titulo.setTitle(`${this.conteudo().tituloPagina} | DizAI`);
+      try {
+        localStorage.setItem(CHAVE_TIPO_VISTO, this.tipo());
+      } catch {
+        // sem armazenamento: o hub só não destaca a última escolha
+      }
+    });
+  }
 }

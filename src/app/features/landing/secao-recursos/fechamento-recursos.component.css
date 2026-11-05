@@ -1,9 +1,9 @@
 :host {
   display: block;
-  --texto-claro: #FFFFFF;
-  --texto-claro-suave: #B9C4DA;
-  --vidro: rgba(255, 255, 255, 0.06);
-  --vidro-borda: rgba(255, 255, 255, 0.12);
+  --texto-claro: var(--lp-texto, #0E1525);
+  --texto-claro-suave: var(--lp-suave, rgba(14, 21, 37, 0.66));
+  --vidro: #ffffff;
+  --vidro-borda: var(--lp-linha, rgba(14, 21, 37, 0.08));
   --destaque: #8FB4FF;
 }
 
@@ -49,8 +49,9 @@
 }
 
 .comum:hover {
-  border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.09);
+  border-color: color-mix(in srgb, var(--tom, #3C69E8) 30%, transparent);
+  background: #ffffff;
+  box-shadow: var(--lp-sombra-tom, none);
 }
 
 .comum__icone {
@@ -60,7 +61,7 @@
   height: 38px;
   margin-bottom: 6px;
   border-radius: 12px;
-  background: rgba(143, 180, 255, 0.16);
+  background: var(--tom-claro, rgba(143, 180, 255, 0.16));
   color: var(--destaque);
 }
 
@@ -160,8 +161,10 @@
   .chamada__acoes .btn { width: 100%; }
 }
 
-@media (max-width: 420px) {
-  .comuns__lista { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+/* celular (qualquer largura até 720 px): sempre um card por linha */
+@media (max-width: 720px) {
+  .comuns__lista,
+  .comuns__lista--tres { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   /* no celular, ícone ao lado do texto: a lista fica curta */
   .comum { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 2px 12px; padding: 14px; }
   .comum__icone { grid-row: span 2; margin-bottom: 0; }
@@ -169,4 +172,21 @@
 
 @media (prefers-reduced-motion: reduce) {
   .entra { animation: none; }
+}
+
+/* a chamada no fim de Recursos: o botão no tom do público, em pílula */
+.chamada .btn--primario {
+  border-color: var(--tom-forte, var(--cor-primaria));
+  border-radius: 999px;
+  background: var(--lp-botao, var(--tom-forte, var(--cor-primaria)));
+  box-shadow: 0 16px 32px -14px var(--tom-forte, var(--cor-primaria));
+}
+
+.chamada {
+  border: 1px solid var(--lp-linha, rgba(14, 21, 37, 0.08));
+  box-shadow: var(--lp-sombra-tom, none);
+}
+
+.chamada__demo {
+  color: var(--tom-forte, var(--cor-primaria));
 }

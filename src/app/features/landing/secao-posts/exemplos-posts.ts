@@ -137,3 +137,106 @@ export const EXEMPLOS_POSTS: ExemploPost[] = [
     estilo: estilo({ layout: 'balao', paleta: 'escura', decor: 'geometrico', fonteApoio: 'Montserrat', caixaAlta: true }),
   },
 ];
+
+const BELLA = () => marca('Bella Studio', 'bella-studio', 'VINHO', 'METALICO', 'Dancing Script', '/landing/galeria/logos/bella-studio.svg');
+const PEDACINHO = () => marca('Pedacinho do Céu', 'pedacinho-do-ceu', 'ROSA_ESCURO', 'DEGRADE', 'Playfair Display', '/landing/galeria/logos/pedacinho-do-ceu.jpg');
+
+/** Artes que só aparecem na landing do tipo delas (as outras de cada tipo vêm de EXEMPLOS_POSTS). */
+const SO_PRODUTOS: ExemploPost[] = [
+  {
+    id: 'bolos-cardapio',
+    negocio: 'Tabela de preços',
+    marca: PEDACINHO(),
+    conteudo: conteudo({
+      tipo: 'CARDAPIO',
+      selo: 'Cardápio',
+      titulo: 'Bolos de festa',
+      chamada: 'Encomende pelo WhatsApp',
+      itens: [
+        { nome: 'Bolo P · 10 pessoas', preco: 'R$ 90' },
+        { nome: 'Bolo M · 20 pessoas', preco: 'R$ 150' },
+        { nome: 'Bolo G · 30 pessoas', preco: 'R$ 210' },
+        { nome: 'Cento de docinhos', preco: 'R$ 120' },
+      ],
+    }),
+    estilo: estilo({ layout: 'cardapio', paleta: 'creme', decor: 'pontos', fonteApoio: 'DM Sans' }),
+  },
+  {
+    id: 'cortinas',
+    negocio: 'Cortinas sob medida',
+    marca: marca('Casa & Cortina', 'casa-e-cortina', 'AZUL_PETROLEO', 'NORMAL', 'Marcellus', '/landing/galeria/logos/casa-e-cortina.svg'),
+    conteudo: conteudo({
+      tipo: 'NOVIDADE',
+      selo: 'Coleção nova',
+      titulo: 'Linho que filtra a luz',
+      apoio: 'Sob medida para a sua janela, com instalação',
+      chamada: 'Peça um orçamento',
+      fotos: [foto('cortinas', 2)],
+    }),
+    estilo: estilo({ layout: 'arco', paleta: 'clara', decor: 'linhas', fonteApoio: 'DM Sans' }),
+  },
+  {
+    id: 'bolos-promocao',
+    negocio: 'Promoção',
+    marca: PEDACINHO(),
+    conteudo: conteudo({
+      tipo: 'PROMOCAO',
+      selo: 'Só esta semana',
+      titulo: 'Cento de docinhos com 15% off',
+      apoio: 'Nas encomendas até sexta',
+      chamada: 'Garanta o seu',
+      preco: 'R$ 102',
+    }),
+    estilo: estilo({ layout: 'bilhete', paleta: 'cor', decor: 'confete', fonteApoio: 'Poppins' }),
+  },
+];
+
+const SO_SERVICOS: ExemploPost[] = [
+  {
+    id: 'unhas-precos',
+    negocio: 'Tabela de preços',
+    marca: BELLA(),
+    conteudo: conteudo({
+      tipo: 'CARDAPIO',
+      selo: 'Nossos serviços',
+      titulo: 'Tabela de preços',
+      chamada: 'Agende pelo WhatsApp',
+      itens: [
+        { nome: 'Manicure', preco: 'R$ 35' },
+        { nome: 'Pé e mão', preco: 'R$ 60' },
+        { nome: 'Esmaltação em gel', preco: 'R$ 80' },
+        { nome: 'Alongamento', preco: 'R$ 150' },
+      ],
+    }),
+    estilo: estilo({ layout: 'cardapio', paleta: 'escura', decor: 'brilhos', fonteApoio: 'Poppins' }),
+  },
+  {
+    id: 'unhas-promocao',
+    negocio: 'Promoção',
+    marca: BELLA(),
+    conteudo: conteudo({
+      tipo: 'PROMOCAO',
+      selo: 'Terça e quarta',
+      titulo: 'Pé e mão com 20% off',
+      apoio: 'Nos horários da manhã',
+      chamada: 'Agende o seu',
+      preco: 'R$ 48',
+      fotos: [foto('unhas', 3)],
+    }),
+    estilo: estilo({ layout: 'diagonal', paleta: 'foto', fonteApoio: 'Poppins' }),
+  },
+];
+
+/** As 5 artes do leque de cada landing (o hub usa EXEMPLOS_POSTS, de negócios dos dois tipos). */
+export function exemplosPostsDe(tipo: 'produtos' | 'servicos' | null): ExemploPost[] {
+  const de = (ids: string[]) => ids.map((id) => EXEMPLOS_POSTS.find((exemplo) => exemplo.id === id)!);
+  if (tipo === 'produtos') {
+    const [cardapio, cortinas, promocao] = SO_PRODUTOS;
+    return [cortinas, cardapio, ...de(['bolos']), promocao, ...de(['moveis'])];
+  }
+  if (tipo === 'servicos') {
+    const [precos, promocao] = SO_SERVICOS;
+    return [precos, ...de(['unhas']), ...de(['agenda']), promocao, ...de(['eletricista'])];
+  }
+  return EXEMPLOS_POSTS;
+}

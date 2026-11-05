@@ -4,7 +4,7 @@
 }
 
 .galeria {
-  background: var(--cor-fundo);
+  background: transparent;
 }
 
 .galeria__grade {
@@ -31,7 +31,7 @@
 .galeria__sobretitulo {
   font-size: 14px;
   font-weight: 700;
-  color: var(--cor-primaria);
+  color: var(--tom-forte, var(--cor-primaria));
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -77,8 +77,8 @@
   margin-top: 1px;
   border-radius: 50%;
   /* o verde dos checks do hero e do resto da landing */
-  background: #E4F8EC;
-  color: #1F7A4A;
+  background: var(--tom-claro, #E4F8EC);
+  color: var(--tom-forte, #1F7A4A);
 }
 
 .galeria__acao {
@@ -106,8 +106,8 @@
 }
 
 .setas__seta:hover {
-  border-color: var(--cor-primaria);
-  color: var(--cor-primaria);
+  border-color: var(--tom-forte, var(--cor-primaria));
+  color: var(--tom-forte, var(--cor-primaria));
 }
 
 .galeria__acao {
@@ -291,4 +291,14 @@
   .celular__tela {
     height: 560px;
   }
+}
+
+/* o botão no tom do público, em pílula (como no hero) */
+.galeria__acao {
+  height: 56px;
+  padding: 0 28px;
+  border-color: var(--tom-forte, var(--cor-primaria));
+  border-radius: 999px;
+  background: var(--lp-botao, var(--tom-forte, var(--cor-primaria)));
+  box-shadow: 0 16px 32px -14px var(--tom-forte, var(--cor-primaria));
 }

@@ -114,3 +114,22 @@
   font-size: 13px;
   color: var(--cor-texto-suave);
 }
+
+/* passo do ramo vindo de uma landing: os ramos daquele tipo e o link para ver todos */
+.etapa__ver-todos {
+  align-self: center;
+  margin-top: 14px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: var(--raio-pilula);
+  background: none;
+  color: var(--cor-primaria);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.etapa__ver-todos:hover {
+  background: var(--cor-primaria-clara);
+}

@@ -77,7 +77,7 @@
   <section class="celular" aria-label="Conversa de demonstração">
     <header class="whats-topo">
       <app-icone nome="voltar" [tamanho]="22" [espessura]="2.2" aria-hidden="true" />
-      <span class="whats-topo__foto" [style.background]="segmento().cor" aria-hidden="true">{{ segmento().inicial }}</span>
+      <span class="whats-topo__foto" [style.background]="segmento().cor" aria-hidden="true">@if (segmento().logo; as logo) {<img [src]="logo" alt="" />} @else { {{ segmento().inicial }} }</span>
       <span class="whats-topo__textos">
         <span class="whats-topo__nome">{{ segmento().loja }}</span>
         <span class="whats-topo__status">{{ reprodutor.digitando() ? 'digitando…' : 'online' }}</span>

@@ -8,7 +8,7 @@
       </p>
 
       <ul class="diferenciais">
-        @for (item of diferenciais; track item.titulo) {
+        @for (item of diferenciais(); track item.titulo) {
           <li class="diferencial">
             <span class="diferencial__icone"><app-icone [nome]="item.icone" [tamanho]="18" [espessura]="2" /></span>
             <span class="diferencial__textos">
@@ -19,7 +19,7 @@
         }
       </ul>
 
-      <a routerLink="/cadastro" class="btn btn--primario btn--hero posts__acao">
+      <a routerLink="/cadastro" [queryParams]="tipo() ? { tipo: tipo() } : null" class="btn btn--primario btn--hero posts__acao">
         Criar minhas artes grátis
         <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
       </a>
@@ -32,7 +32,7 @@
       (mouseenter)="pausado.set(true)"
       (mouseleave)="pausado.set(false)"
     >
-      @for (exemplo of exemplos; track exemplo.id; let i = $index) {
+      @for (exemplo of exemplos(); track exemplo.id; let i = $index) {
         <div
           class="leque__arte"
           [class.leque__arte--frente]="naFrente() === i"

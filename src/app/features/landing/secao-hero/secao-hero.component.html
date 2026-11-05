@@ -2,37 +2,36 @@
   <div class="hero__fundo" aria-hidden="true"></div>
 
   <div class="container hero__grade">
+    @let texto = hero();
     <div class="hero__texto">
       <span class="hero__etiqueta">
         <span class="hero__pulso" aria-hidden="true"></span>
-        Assistente de IA para WhatsApp
+        {{ texto.etiqueta }}
       </span>
 
       <h1 class="hero__titulo">
-        Pare de perder clientes por
-        <span class="hero__destaque">demora</span>
-        no WhatsApp.
+        {{ texto.titulo[0] }}
+        <span class="hero__destaque">{{ texto.titulo[1] }}</span>
+        {{ texto.titulo[2] }}
       </h1>
 
       <p class="hero__descricao">
-        <strong>Enquanto você trabalha, o seu assistente atende por você</strong>: tira dúvidas, faz orçamentos,
-        anota pedidos e marca horários com as informações do seu negócio.
+        <strong>{{ texto.descricaoForte }}</strong>{{ texto.descricao }}
       </p>
 
-
       <div class="hero__acoes">
-        <a routerLink="/cadastro" class="btn btn--primario btn--hero">
+        <a routerLink="/cadastro" [queryParams]="cadastro()" class="btn btn--primario btn--hero">
           Testar grátis
           <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
         </a>
-        <a routerLink="/demonstracao" class="btn btn--secundario btn--hero hero__secundario">
-          <app-icone nome="reproduzir" [tamanho]="16" [espessura]="2" />
-          Ver demonstração
+        <a [routerLink]="[]" fragment="recursos" class="btn btn--secundario btn--hero hero__secundario">
+          <app-icone nome="setaBaixo" [tamanho]="16" [espessura]="2.2" />
+          Ver recursos
         </a>
       </div>
 
       <ul class="hero__garantias">
-        @for (garantia of garantias; track garantia) {
+        @for (garantia of texto.garantias; track garantia) {
           <li class="hero__garantia">
             <span class="hero__check"><app-icone nome="check" [tamanho]="12" [espessura]="3" /></span>
             {{ garantia }}
@@ -42,7 +41,7 @@
     </div>
 
     <div class="hero__vitrine">
-      <app-demonstracao-conversa class="hero__demonstracao" />
+      <app-demonstracao-conversa class="hero__demonstracao" [tipo]="tipo()" />
     </div>
   </div>
 </header>

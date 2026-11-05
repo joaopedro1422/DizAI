@@ -40,7 +40,7 @@
           <app-etapa-dados-negocio [grupo]="formulario.controls.dadosNegocio" />
         }
         @case (2) {
-          <app-etapa-ramo [controle]="formulario.controls.ramo" />
+          <app-etapa-ramo [controle]="formulario.controls.ramo" [tipo]="tipo()" />
         }
         @case (3) {
           <app-etapa-acesso [grupo]="formulario.controls.acesso" />

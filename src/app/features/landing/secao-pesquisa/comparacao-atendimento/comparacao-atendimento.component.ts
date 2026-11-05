@@ -4,12 +4,15 @@ import {
   Component,
   ElementRef,
   OnDestroy,
+  computed,
   inject,
+  input,
   signal,
   viewChild,
 } from '@angular/core';
 
 import { IconeComponent } from '../../../../shared/components/icone/icone.component';
+import type { TipoNegocio } from '../../../demonstracao/conversas-demonstracao';
 
 type Modo = 'com' | 'sem';
 
@@ -41,8 +44,11 @@ Se precisar remarcar ou cancelar, é só me avisar por aqui.`;
 
 /** Um atendimento da janela: a loja, com ou sem o DizAI, e o resultado que aparece no fim. */
 interface Roteiro {
+  tipo: TipoNegocio;
   modo: Modo;
   loja: string;
+  /** Logo no avatar da janela (sem logo, a inicial sobre a cor). */
+  logo?: string;
   inicial: string;
   cor: string;
   status: string;
@@ -50,25 +56,11 @@ interface Roteiro {
   resultado: string;
 }
 
-const BARBEARIA = { loja: 'Barbearia do Léo', inicial: 'L', cor: '#2F6B4F' };
-const CONFEITARIA = { loja: 'Doce Encanto', inicial: 'D', cor: '#B4466A' };
+const BARBEARIA = { tipo: 'servicos' as const, loja: 'Barbearia do Léo', inicial: 'L', cor: '#2F6B4F', logo: '/landing/galeria/logos/barbearia-do-leo.svg' };
+const CONFEITARIA = { tipo: 'produtos' as const, loja: 'Pedacinho do Céu', inicial: 'P', cor: '#B4466A', logo: '/landing/galeria/logos/pedacinho-do-ceu.jpg' };
 
-/** Na ordem: serviços com e sem o DizAI, depois produtos com e sem; e volta ao início. */
+/** Na ordem: serviços sem e com o DizAI, depois produtos sem e com; e volta ao início. */
 const ROTEIROS: Roteiro[] = [
-  {
-    ...BARBEARIA,
-    modo: 'com',
-    status: 'online',
-    passos: [
-      { de: 'cliente', texto: 'Boa tarde, gostaria de agendar corte de cabelo para amanhã', hora: '14:02', esperaMs: 600 },
-      { de: 'loja', texto: 'Boa tarde!! Perfeito, para qual horário você deseja agendar?', hora: '14:02', esperaMs: 900 },
-      { de: 'cliente', texto: 'Pode ser às 15:00?', hora: '14:03', esperaMs: 1600 },
-      { de: 'loja', texto: 'Pode sim, está livre. Qual o nome para o agendamento?', hora: '14:03', esperaMs: 900 },
-      { de: 'cliente', texto: 'Pedro Almeida', hora: '14:04', esperaMs: 1500 },
-      { de: 'loja', texto: CONFIRMACAO, hora: '14:04', esperaMs: 900 },
-    ],
-    resultado: 'Horário marcado em 2 minutos',
-  },
   {
     ...BARBEARIA,
     modo: 'sem',
@@ -85,6 +77,37 @@ const ROTEIROS: Roteiro[] = [
       { de: 'loja', texto: 'Olá?', hora: '17:52', esperaMs: 700 },
     ],
     resultado: '1h45 até a primeira resposta. O cliente já foi embora.',
+  },
+  {
+    ...BARBEARIA,
+    modo: 'com',
+    status: 'online',
+    passos: [
+      { de: 'cliente', texto: 'Boa tarde, gostaria de agendar corte de cabelo para amanhã', hora: '14:02', esperaMs: 600 },
+      { de: 'loja', texto: 'Boa tarde!! Perfeito, para qual horário você deseja agendar?', hora: '14:02', esperaMs: 900 },
+      { de: 'cliente', texto: 'Pode ser às 15:00?', hora: '14:03', esperaMs: 1600 },
+      { de: 'loja', texto: 'Pode sim, está livre. Qual o nome para o agendamento?', hora: '14:03', esperaMs: 900 },
+      { de: 'cliente', texto: 'Pedro Almeida', hora: '14:04', esperaMs: 1500 },
+      { de: 'loja', texto: CONFIRMACAO, hora: '14:04', esperaMs: 900 },
+    ],
+    resultado: 'Horário marcado em 2 minutos',
+  },
+  {
+    ...CONFEITARIA,
+    modo: 'sem',
+    status: 'visto por último ontem',
+    passos: [
+      { de: 'cliente', texto: 'Boa tarde! Vocês fazem bolo de aniversário para sábado?', hora: '10:15', esperaMs: 600 },
+      { de: 'tempo', texto: '22 minutos depois', esperaMs: 1400 },
+      { de: 'cliente', texto: 'Quanto fica um para 20 pessoas?', hora: '10:37', esperaMs: 700 },
+      { de: 'tempo', texto: '40 minutos depois', esperaMs: 1400 },
+      { de: 'cliente', texto: '??', hora: '11:17', esperaMs: 700 },
+      { de: 'tempo', texto: '2 horas depois', esperaMs: 1600 },
+      { de: 'loja', texto: 'Oi! Fazemos sim, para quantas pessoas?', hora: '13:25', esperaMs: 700 },
+      { de: 'tempo', texto: '5 minutos depois', esperaMs: 1300 },
+      { de: 'cliente', texto: 'Já encomendei em outro lugar, obrigado.', hora: '13:30', esperaMs: 700 },
+    ],
+    resultado: '3h10 até a primeira resposta. A venda foi para outra loja.',
   },
   {
     ...CONFEITARIA,
@@ -117,23 +140,6 @@ Enquanto isso, envie uma foto do modelo que você quer.`,
     ],
     resultado: 'Pedido anotado em 2 minutos',
   },
-  {
-    ...CONFEITARIA,
-    modo: 'sem',
-    status: 'visto por último ontem',
-    passos: [
-      { de: 'cliente', texto: 'Boa tarde! Vocês fazem bolo de aniversário para sábado?', hora: '10:15', esperaMs: 600 },
-      { de: 'tempo', texto: '22 minutos depois', esperaMs: 1400 },
-      { de: 'cliente', texto: 'Quanto fica um para 20 pessoas?', hora: '10:37', esperaMs: 700 },
-      { de: 'tempo', texto: '40 minutos depois', esperaMs: 1400 },
-      { de: 'cliente', texto: '??', hora: '11:17', esperaMs: 700 },
-      { de: 'tempo', texto: '2 horas depois', esperaMs: 1600 },
-      { de: 'loja', texto: 'Oi! Fazemos sim, para quantas pessoas?', hora: '13:25', esperaMs: 700 },
-      { de: 'tempo', texto: '5 minutos depois', esperaMs: 1300 },
-      { de: 'cliente', texto: 'Já encomendei em outro lugar, obrigado.', hora: '13:30', esperaMs: 700 },
-    ],
-    resultado: '3h10 até a primeira resposta. A venda foi para outra loja.',
-  },
 ];
 
 /** Quanto a loja fica "digitando…" antes da mensagem dela entrar. */
@@ -154,6 +160,9 @@ const RESULTADO_MS = 4200;
   styleUrl: './comparacao-atendimento.component.css',
 })
 export class ComparacaoAtendimentoComponent implements AfterViewInit, OnDestroy {
+  /** Landing de um tipo: só os atendimentos dele (com e sem); sem tipo, os quatro. */
+  readonly tipo = input<TipoNegocio | null>(null);
+  private readonly roteiros = computed(() => ROTEIROS.filter((r) => !this.tipo() || r.tipo === this.tipo()));
   protected readonly roteiro = signal(ROTEIROS[0]);
   protected readonly mensagens = signal<Mensagem[]>([]);
   protected readonly digitando = signal(false);
@@ -169,6 +178,9 @@ export class ComparacaoAtendimentoComponent implements AfterViewInit, OnDestroy 
   private retomar?: () => void;
 
   ngAfterViewInit(): void {
+    // a janela já abre na loja do tipo da página (antes de começar a tocar)
+    this.roteiro.set(this.roteiros()[0]);
+    this.status.set(this.roteiros()[0].status);
     this.observador = new IntersectionObserver(([entrada]) => {
       this.visivel = entrada.isIntersecting;
       if (this.visivel) {
@@ -189,7 +201,7 @@ export class ComparacaoAtendimentoComponent implements AfterViewInit, OnDestroy 
   private async tocar(): Promise<void> {
     this.tocando = true;
     while (!this.encerrado) {
-      for (const roteiro of ROTEIROS) {
+      for (const roteiro of this.roteiros()) {
         if (!(await this.tocarRoteiro(roteiro))) return;
       }
     }

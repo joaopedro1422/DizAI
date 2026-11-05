@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, computed, inject, input, signal, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { mensagemDoErro } from '../../../../core/api/erro-api';
@@ -18,6 +18,20 @@ const SUGESTOES = [
   'Preciso trocar o número do meu WhatsApp?',
 ];
 
+const SUGESTOES_DO_TIPO = {
+  geral: SUGESTOES,
+  produtos: [
+    'Tenho uma confeitaria e vendo por encomenda. O DizAI serve para mim?',
+    'Quem confirma o pedido e recebe o pagamento?',
+    'Preciso trocar o número do meu WhatsApp?',
+  ],
+  servicos: [
+    'Tenho um studio de manicure. O DizAI serve para mim?',
+    'Como o assistente marca os horários da minha agenda?',
+    'Preciso trocar o número do meu WhatsApp?',
+  ],
+};
+
 /** Abaixo das perguntas frequentes: o visitante pergunta o que quiser e a IA do DizAI responde logo abaixo. */
 @Component({
   selector: 'app-pergunte-dizai',
@@ -33,7 +47,9 @@ export class PergunteDizaiComponent {
   private digitacao?: number;
 
   protected readonly limiteLetras = LIMITE_LETRAS;
-  protected readonly sugestoes = SUGESTOES;
+  /** Landing de um tipo: perguntas prontas daquele público. */
+  readonly tipo = input<'produtos' | 'servicos' | null>(null);
+  protected readonly sugestoes = computed(() => SUGESTOES_DO_TIPO[this.tipo() ?? 'geral']);
   protected readonly texto = signal('');
   protected readonly trocas = signal<TrocaDizai[]>([]);
   /** Quantas letras da última resposta já apareceram. */

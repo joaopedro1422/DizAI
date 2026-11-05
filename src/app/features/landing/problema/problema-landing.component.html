@@ -1,0 +1,52 @@
+@let d = dores();
+@let p = problema();
+<section class="problema" aria-labelledby="problema-titulo">
+  <div class="container problema__grade">
+    <div class="problema__textos">
+      <span class="problema__sobretitulo">{{ d.sobretitulo }}</span>
+      <h2 id="problema-titulo" class="problema__titulo">{{ d.titulo }}</h2>
+      <ol class="dores">
+        @for (dor of d.itens; track dor.titulo; let i = $index) {
+          <li class="dor">
+            <span class="dor__numero">{{ '0' + (i + 1) }}</span>
+            @let partes = dor.citacao.split(' · ');
+            <span class="dor__textos">
+              <strong>{{ dor.titulo }}</strong>
+              <span>{{ dor.texto }}</span>
+              <!-- a mensagem do cliente, como chega no WhatsApp -->
+              <span class="dor__citacao">
+                <app-icone [nome]="dor.icone" [tamanho]="14" [espessura]="2.1" />
+                <span>{{ partes[0] }}</span>
+                @if (partes[1]) {
+                  <small>· {{ partes[1] }}</small>
+                }
+              </span>
+            </span>
+          </li>
+        }
+      </ol>
+    </div>
+
+    <!-- a tela de bloqueio do lojista: as mensagens chegam e ninguém responde -->
+    <div class="bloqueio" aria-hidden="true">
+      <div class="bloqueio__tela">
+        <span class="bloqueio__luz"></span>
+        <span class="bloqueio__hora">14:37</span>
+        <span class="bloqueio__data">sábado, 24 de outubro</span>
+        <span class="bloqueio__contador"><app-icone nome="sino" [tamanho]="14" [espessura]="2.2" />{{ p.contador }}</span>
+        <div class="avisos">
+          @for (aviso of p.avisos; track aviso.nome; let i = $index) {
+            <div class="aviso" [style.--i]="i">
+              <span class="aviso__app"><app-icone nome="conversa" [tamanho]="13" [espessura]="2.2" /></span>
+              <span class="aviso__corpo">
+                <span class="aviso__topo"><b>{{ aviso.nome }}</b><small>{{ aviso.quando }}</small></span>
+                <span class="aviso__texto">{{ aviso.texto }}</span>
+              </span>
+              <span class="aviso__avatar" [style.background]="aviso.cor">{{ aviso.nome.charAt(0) }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

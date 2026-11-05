@@ -1,0 +1,104 @@
+@let t = textos();
+<section class="inclui" aria-labelledby="inclui-titulo">
+  <div class="container">
+    <div class="inclui__cabeca">
+      <span class="inclui__sobretitulo">Tudo incluso</span>
+      <h2 id="inclui-titulo" class="inclui__titulo">Tudo o que um bom atendente faz.<br /><span>Sem folga, sem demora.</span></h2>
+    </div>
+
+    <div class="vidros">
+      <article class="vidro vidro--largo vidro--resposta">
+        <div class="vidro__textos">
+          <h3>Resposta em segundos, 24 horas</h3>
+          <p>De madrugada, no domingo ou com as mãos ocupadas, no seu número de sempre.</p>
+        </div>
+        <div class="resposta" aria-hidden="true">
+          <span class="resposta__numero">3<small>s</small></span>
+          <span class="resposta__conversa">
+            <span class="bolha bolha--cliente">Vocês abrem amanhã?<i>02:14</i></span>
+            <span class="bolha">{{ t.resposta }}<i>02:14</i></span>
+          </span>
+        </div>
+      </article>
+
+      <article class="vidro">
+        <div class="vidro__textos">
+          <h3>Com a sua cara</h3>
+          <p>Você cadastra as informações do seu negócio, ele responde. Se não souber responder, te chama.</p>
+        </div>
+        <span class="cara" aria-hidden="true">
+          <span class="cara__info">Preços</span>
+          <span class="cara__info">Pagamento</span>
+          <span class="cara__info">Endereço</span>
+          <span class="cara__chama"><app-icone nome="sino" [tamanho]="13" [espessura]="2.2" />Não sabe? Te chama</span>
+        </span>
+      </article>
+
+      <article class="vidro">
+        <div class="vidro__textos">
+          <h3>Entende áudios</h3>
+          <p>O cliente manda voz, o assistente responde por escrito.</p>
+        </div>
+        <span class="audio" aria-hidden="true">
+          <span class="audio__play"><app-icone nome="reproduzir" [tamanho]="12" [espessura]="2.4" /></span>
+          <span class="audio__ondas">
+            @for (altura of ondas; track $index) {
+              <span [style.height.%]="altura"></span>
+            }
+          </span>
+          <small>0:12</small>
+        </span>
+      </article>
+
+      <article class="vidro">
+        <div class="vidro__textos">
+          <h3>Catálogo na conversa</h3>
+          <p>Cardápio, tabela de preços ou portfólio em PDF ou imagem.</p>
+        </div>
+        <span class="arquivo" aria-hidden="true">
+          <span class="arquivo__tipo">PDF</span>
+          <span class="arquivo__nome"><strong>{{ t.catalogo }}</strong><small>3 páginas · enviado agora</small></span>
+        </span>
+      </article>
+
+      <article class="vidro">
+        <div class="vidro__textos">
+          <h3>Você no controle</h3>
+          <p>Respondeu pelo celular? Ele sai daquela conversa na hora.</p>
+        </div>
+        <span class="chave" aria-hidden="true">
+          <span><strong>Assistente nesta conversa</strong><small>pausado: você respondeu</small></span>
+          <span class="chave__trilho"><span></span></span>
+        </span>
+      </article>
+
+      <article class="vidro vidro--largo vidro--vitrine">
+        <div class="vidro__textos">
+          <h3>Vitrine e artes com a cara do seu negócio</h3>
+          <p>Uma página com a sua logo e as suas fotos para a bio do Instagram, e posts prontos com os seus preços.</p>
+        </div>
+        <div class="galeria" aria-hidden="true">
+          <span class="vitrine" [style.--destaque-vitrine]="t.vitrine.destaque">
+            <span class="vitrine__capa" [style.background]="t.vitrine.capa"></span>
+            <span class="vitrine__logo"><img [src]="t.vitrine.logo" alt="" /></span>
+            <b class="vitrine__nome">{{ t.vitrine.loja }}</b>
+            <small class="vitrine__descricao">{{ t.vitrine.descricao }}</small>
+            <span class="vitrine__menu">
+              @for (item of t.vitrine.menu; track item; let i = $index) {
+                <span class="vitrine__chip" [class.vitrine__chip--ativo]="i === 0">{{ item }}</span>
+              }
+            </span>
+            <span class="vitrine__fotos">
+              @for (foto of t.vitrine.fotos; track foto) {
+                <img [src]="foto" alt="" loading="lazy" />
+              }
+            </span>
+          </span>
+          @for (post of t.posts; track post.titulo; let i = $index) {
+            <span class="post" [class.post--2]="i === 1"><img [src]="post.foto" alt="" loading="lazy" /><b>{{ post.titulo }}</b></span>
+          }
+        </div>
+      </article>
+    </div>
+  </div>
+</section>

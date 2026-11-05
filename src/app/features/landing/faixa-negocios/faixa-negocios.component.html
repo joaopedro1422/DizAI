@@ -1,10 +1,10 @@
 <section class="faixa-negocios" aria-label="Para quem é o DizAI">
-  <p class="somente-leitor-tela">Para {{ negocios.join(', ') }}.</p>
+  <p class="somente-leitor-tela">Para {{ negocios().join(', ') }}.</p>
   <div class="faixa-negocios__janela" aria-hidden="true">
     <div class="faixa-negocios__trilho">
       @for (copia of [1, 2]; track copia) {
         <ul class="faixa-negocios__lista">
-          @for (negocio of negocios; track negocio) {
+          @for (negocio of negocios(); track negocio) {
             <li class="faixa-negocios__item">{{ negocio }}</li>
           }
         </ul>

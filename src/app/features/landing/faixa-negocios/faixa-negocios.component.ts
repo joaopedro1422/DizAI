@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 /** Os tipos de negócio que passam na faixa logo abaixo do hero. */
 const NEGOCIOS = [
@@ -24,5 +24,6 @@ const NEGOCIOS = [
   styleUrl: './faixa-negocios.component.css',
 })
 export class FaixaNegociosComponent {
-  protected readonly negocios = NEGOCIOS;
+  /** Cada landing passa os negócios do seu público; o hub usa a lista geral. */
+  readonly negocios = input<readonly string[]>(NEGOCIOS);
 }

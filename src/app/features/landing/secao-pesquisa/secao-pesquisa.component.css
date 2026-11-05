@@ -1,36 +1,62 @@
-/* Faixa azul de impacto: o número grande e a frase do estudo à esquerda, a conversa com e sem o DizAI à direita */
+/* Seção azul-marinho de impacto: o número grande e a frase do estudo à esquerda, a conversa com e sem o DizAI à direita */
 :host {
   display: block;
 }
 
+/*
+ * Seção na largura toda, num azul-marinho profundo (quebra o ritmo das seções claras): o 21x e a frase em texto claro
+ * à esquerda, a janela do WhatsApp branca à direita. Os destaques em degradê azul-claro → verde.
+ */
 .pesquisa {
+  --texto-faixa: #ffffff;
+  --suave-faixa: rgba(255, 255, 255, 0.74);
+  --fraco-faixa: rgba(255, 255, 255, 0.54);
+  --destaque-faixa: linear-gradient(90deg, #B9CCF2, #7FD9BC);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: 128px 0;
   background:
-    radial-gradient(520px 260px at 12% 50%, rgba(255, 255, 255, 0.1), transparent 70%),
-    var(--cor-primaria);
-  color: #ffffff;
+    radial-gradient(55% 75% at 88% 18%, rgba(45, 80, 150, 0.32), transparent 70%),
+    radial-gradient(45% 60% at 4% 100%, rgba(20, 163, 127, 0.12), transparent 70%),
+    linear-gradient(180deg, #14295A 0%, var(--tom-forte, #1E3A72) 100%);
+  color: var(--texto-faixa);
 }
 
-.pesquisa__grade {
+/* pontos de luz bem leves, como uma textura */
+.pesquisa::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
+  pointer-events: none;
+}
+
+.pesquisa .pesquisa__grade {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 520px);
   align-items: center;
-  gap: 64px;
-  padding-top: 72px;
-  padding-bottom: 72px;
+  gap: 80px;
 }
 
 .pesquisa__numero {
-  margin-bottom: 6px;
-  font-size: clamp(88px, 10vw, 140px);
+  margin-bottom: 4px;
+  background: linear-gradient(180deg, #ffffff 30%, #B9CCF2 85%, #9FE3CB 115%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: clamp(96px, 11vw, 160px);
   font-weight: 800;
-  letter-spacing: -0.06em;
+  letter-spacing: -0.07em;
   line-height: 0.9;
-  color: #ffffff;
 }
 
 .pesquisa__numero span {
   font-size: 0.5em;
-  color: #8fe3b0;
 }
 
 .pesquisa__textos {
@@ -41,32 +67,36 @@
 }
 
 .pesquisa__sobretitulo {
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  color: #B9CCF2;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--cor-texto-sobre-escuro);
 }
 
 .pesquisa__frase {
-  font-size: clamp(22px, 2.6vw, 30px);
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.25;
+  color: var(--texto-faixa);
+  font-size: clamp(24px, 2.8vw, 34px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.18;
 }
 
 .pesquisa__frase strong {
-  color: #8fe3b0;
+  background: var(--destaque-faixa);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .pesquisa__detalhe {
-  font-size: 16px;
+  color: var(--suave-faixa);
+  font-size: 16.5px;
   line-height: 1.6;
-  color: var(--cor-texto-sobre-escuro);
 }
 
 .pesquisa__detalhe strong {
-  color: #ffffff;
+  color: var(--texto-faixa);
 }
 
 .pesquisa__fonte {
@@ -74,25 +104,28 @@
   align-items: center;
   align-self: flex-start;
   gap: 6px;
-  font-size: 14px;
+  color: var(--fraco-faixa);
+  font-size: 13.5px;
   font-weight: 600;
-  color: #ffffff;
   text-decoration: underline;
-  text-decoration-color: rgba(255, 255, 255, 0.4);
+  text-decoration-color: rgba(255, 255, 255, 0.24);
   text-underline-offset: 4px;
 }
 
 .pesquisa__fonte:hover {
-  text-decoration-color: #ffffff;
+  color: var(--texto-faixa);
 }
 
 @media (max-width: 960px) {
-  .pesquisa__grade {
+  .pesquisa {
+    padding: 80px 0;
+  }
+
+  .pesquisa .pesquisa__grade {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 28px;
-    padding-top: 56px;
-    padding-bottom: 56px;
+    gap: 40px;
   }
 }
+

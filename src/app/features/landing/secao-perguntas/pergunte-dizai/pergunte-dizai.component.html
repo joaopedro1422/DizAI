@@ -16,7 +16,7 @@
   <!-- só no computador: perguntas prontas para começar com um toque -->
   <div class="pergunte__sugestoes">
     <span class="pergunte__sugestoes-titulo">Experimente perguntar</span>
-    @for (sugestao of sugestoes; track sugestao) {
+    @for (sugestao of sugestoes(); track sugestao) {
       <button type="button" class="pergunte__sugestao" [disabled]="!!perguntaPendente()" (click)="perguntar(sugestao)">
         {{ sugestao }}
         <app-icone nome="seta" [tamanho]="15" [espessura]="2.2" />
@@ -35,7 +35,7 @@
       name="pergunta"
       class="pergunte__campo"
       rows="3"
-      placeholder="Tenho uma confeitaria e vendo por encomenda. O DizAI serve para mim?"
+      [placeholder]="sugestoes()[0]"
       [maxlength]="limiteLetras"
       [ngModel]="texto()"
       (ngModelChange)="texto.set($event)"

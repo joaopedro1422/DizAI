@@ -2,13 +2,13 @@
   <div class="container galeria__grade">
     <div class="galeria__texto">
       <span class="galeria__sobretitulo">Vitrine pública</span>
-      <h2 id="galeria-titulo" class="galeria__titulo">Seus trabalhos vendem por você.</h2>
+      <h2 id="galeria-titulo" class="galeria__titulo">{{ textos().titulo }}</h2>
       <p class="galeria__descricao">
-        Uma página da sua loja, com a sua logo e as fotos do que você já fez, pronta para enviar aos clientes.
+        {{ textos().descricao }}
       </p>
 
       <ul class="beneficios">
-        @for (beneficio of beneficios; track beneficio) {
+        @for (beneficio of textos().beneficios; track beneficio) {
           <li class="beneficios__item">
             <span class="beneficios__icone">
               <app-icone nome="check" [tamanho]="14" [espessura]="3" />
@@ -18,7 +18,7 @@
         }
       </ul>
 
-      <a routerLink="/cadastro" class="btn btn--primario btn--hero galeria__acao">
+      <a routerLink="/cadastro" [queryParams]="tipo() ? { tipo: tipo() } : null" class="btn btn--primario btn--hero galeria__acao">
         Criar minha vitrine grátis
         <app-icone nome="seta" [tamanho]="18" [espessura]="2" />
       </a>

@@ -1,14 +1,15 @@
 /*
- * Recursos: faixa no azul da marca (a seção que fecha a venda), cards brancos com a ilustração da tela de
+ * Recursos: faixa cinza-azulada da marca (a seção que fecha a venda), cards brancos com a ilustração da tela de
  * verdade, recursos comuns em vidro e a conta do tempo economizado com o "Testar grátis".
  */
 :host {
   display: block;
-  --texto-claro: #FFFFFF;
-  --texto-claro-suave: #B9C4DA;
-  --vidro: rgba(255, 255, 255, 0.06);
-  --vidro-borda: rgba(255, 255, 255, 0.12);
-  --destaque: #8FB4FF;
+  /* tema claro do hub: textos escuros, "vidro" branco e o destaque no tom do público */
+  --texto-claro: var(--lp-texto, #0E1525);
+  --texto-claro-suave: var(--lp-suave, rgba(14, 21, 37, 0.66));
+  --vidro: #ffffff;
+  --vidro-borda: var(--lp-linha, rgba(14, 21, 37, 0.08));
+  --destaque: var(--tom-forte, #2550C6);
   /* as mesmas cores dos Números do painel (validadas para daltonismo) */
   --serie-1: #2a78d6;
   --serie-2: #eb6834;
@@ -19,8 +20,12 @@
 .recursos {
   position: relative;
   overflow: hidden;
-  padding: 112px 0;
-  background: var(--cor-primaria);
+  padding: 120px 0;
+  /* uma faixa cinza-azulada da marca, com uma luz azul e uma verde bem leves nos cantos */
+  background:
+    radial-gradient(40% 30% at 100% 0%, rgba(47, 99, 194, 0.12), transparent 70%),
+    radial-gradient(40% 30% at 0% 100%, rgba(20, 163, 127, 0.08), transparent 70%),
+    linear-gradient(180deg, #EAEEF6 0%, #E1E7F1 100%);
   color: var(--texto-claro);
 }
 
@@ -41,23 +46,23 @@
 }
 
 .recursos__sobretitulo {
-  color: var(--texto-claro-suave);
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  color: var(--tom-forte, var(--cor-primaria));
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .recursos__titulo {
-  font-size: clamp(30px, 4vw, 48px);
+  font-size: clamp(32px, 4.4vw, 56px);
   font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
 }
 
 .recursos__titulo-destaque {
   /* o mesmo verde da faixa do MIT (#8fe3b0) */
-  background: linear-gradient(90deg, #B9CEFF, #8FE3B0 60%);
+  background: var(--lp-grad-texto, linear-gradient(90deg, #1E3A72, #2F63C2 52%, #14A37F));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -148,8 +153,9 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: rgba(143, 227, 176, 0.18);
-  color: #8FE3B0;
+  background: #ffffff;
+  color: var(--tom-forte, #1F7A4A);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
 }
 
 /* Bento ------------------------------------------------------------------- */
@@ -166,10 +172,11 @@
   gap: 22px;
   min-width: 0;
   padding: 28px;
+  border: 1px solid var(--lp-linha, rgba(14, 21, 37, 0.08));
   border-radius: 28px;
   background: #FFFFFF;
   color: var(--cor-texto);
-  box-shadow: 0 24px 60px rgba(4, 10, 25, 0.35);
+  box-shadow: var(--lp-sombra-tom, 0 24px 60px rgba(4, 10, 25, 0.2));
 }
 
 .card--largo {
@@ -210,8 +217,8 @@
   gap: 6px;
   padding: 5px 11px;
   border-radius: var(--raio-pilula);
-  background: var(--cor-primaria-clara);
-  color: var(--cor-primaria);
+  background: var(--tom-claro, var(--cor-primaria-clara));
+  color: var(--tom-forte, var(--cor-primaria));
   font-size: 12.5px;
   font-weight: 700;
 }

@@ -118,8 +118,8 @@ export const ROTEIROS_COMO_FUNCIONA: Record<TipoComoFunciona, RoteiroComoFuncion
     aviso: { titulo: 'Novo horário na agenda', texto: 'Fernanda · amanhã às 16:30' },
   },
   produtos: {
-    loja: 'Doce Encanto',
-    inicial: 'D',
+    loja: 'Pedacinho do Céu',
+    inicial: 'P',
     cor: '#B4466A',
     numero: '(83) 99812-0000',
     tituloCadastro: 'Novo produto',

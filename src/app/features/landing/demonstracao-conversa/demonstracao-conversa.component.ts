@@ -6,6 +6,7 @@ import {
   afterNextRender,
   computed,
   inject,
+  input,
   signal,
   viewChild,
 } from '@angular/core';
@@ -37,6 +38,8 @@ const PAUSA_ENTRE_CONVERSAS_MS = 4500;
   styleUrl: './demonstracao-conversa.component.css',
 })
 export class DemonstracaoConversaComponent {
+  /** Na landing de um tipo, a conversa fica nele: some a escolha Serviços | Produtos e sobram os segmentos. */
+  readonly tipo = input<TipoNegocio | null>(null);
   private readonly elemento = inject(ElementRef<HTMLElement>);
   private readonly rolagem = viewChild<ElementRef<HTMLElement>>('rolagem');
 
@@ -64,7 +67,7 @@ export class DemonstracaoConversaComponent {
 
   constructor() {
     afterNextRender(() => {
-      this.reprodutor.escolher('servicos');
+      this.reprodutor.escolher(this.tipo() ?? 'servicos');
       // fora da tela, a conversa espera o visitante voltar
       const observador = new IntersectionObserver(([entrada]) => this.reprodutor.pausar(!entrada.isIntersecting));
       observador.observe(this.elemento.nativeElement);

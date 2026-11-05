@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, input, signal } from '@angular/core';
+
+import type { TipoNegocio } from '../../demonstracao/conversas-demonstracao';
 import { RouterLink } from '@angular/router';
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
@@ -20,12 +22,42 @@ function momentos(exemplo: ExemploGaleria): { fase: FaseVitrine; ms: number }[] 
   return lista;
 }
 
-const BENEFICIOS = [
-  'Fotos separadas em tópicos, feedbacks dos clientes e o mapa de como chegar',
-  'Personalize do seu jeito, com a sua cor e a sua logo',
-  'Link para colocar na bio do Instagram',
-  'Para serviços: agenda e horários livres na própria página, para o cliente agendar',
-];
+/** Os textos da seção por público (o hub, sem tipo, usa o geral). */
+const TEXTOS: Record<TipoNegocio | 'geral', { titulo: string; descricao: string; beneficios: string[]; lojas: string[] | null }> = {
+  geral: {
+    titulo: 'Seus trabalhos vendem por você.',
+    descricao: 'Uma página da sua loja, com a sua logo e as fotos do que você já fez, pronta para enviar aos clientes.',
+    beneficios: [
+      'Fotos separadas em tópicos, feedbacks dos clientes e o mapa de como chegar',
+      'Personalize do seu jeito, com a sua cor e a sua logo',
+      'Link para colocar na bio do Instagram',
+      'Para serviços: agenda e horários livres na própria página, para o cliente agendar',
+    ],
+    lojas: null,
+  },
+  produtos: {
+    titulo: 'Seus produtos vendem por você.',
+    descricao: 'Uma página da sua loja, com a sua logo e as fotos dos seus produtos, pronta para mostrar antes do cliente perguntar.',
+    beneficios: [
+      'Fotos separadas por categoria, feedbacks dos clientes e o mapa de como chegar',
+      'Personalize do seu jeito, com a sua cor e a sua logo',
+      'Link para colocar na bio do Instagram',
+      'Grátis, mesmo sem ligar o assistente',
+    ],
+    lojas: ['bolos', 'moveis', 'cortinas'],
+  },
+  servicos: {
+    titulo: 'Seus trabalhos lotam a sua agenda.',
+    descricao: 'Uma página com a sua logo, as fotos do que você já fez e a sua agenda online, para o cliente escolher o horário.',
+    beneficios: [
+      'Portfólio por tópicos, feedbacks dos clientes e o mapa de como chegar',
+      'Agenda online com os horários livres, para o cliente agendar',
+      'Personalize do seu jeito, com a sua cor e a sua logo',
+      'Link para colocar na bio do Instagram',
+    ],
+    lojas: ['unhas', 'eletricista'],
+  },
+};
 
 /**
  * "Vitrine pública" da landing: o texto com os checks à esquerda e, à direita, a página da loja (/l/{slug}) dentro
@@ -42,12 +74,18 @@ const BENEFICIOS = [
 export class SecaoGaleriaComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly beneficios = BENEFICIOS;
+  /** Landing de um tipo: só as lojas e os textos daquele público. */
+  readonly tipo = input<TipoNegocio | null>(null);
+  protected readonly textos = computed(() => TEXTOS[this.tipo() ?? 'geral']);
+  private readonly exemplos = computed(() => {
+    const lojas = this.textos().lojas;
+    return lojas ? EXEMPLOS_GALERIA.filter((exemplo) => lojas.includes(exemplo.id)) : EXEMPLOS_GALERIA;
+  });
   protected readonly indiceAtual = signal(0);
   protected readonly fase = signal<FaseVitrine>('trabalhos');
   protected readonly pausado = signal(false);
 
-  protected readonly exemploAtual = computed(() => EXEMPLOS_GALERIA[this.indiceAtual()]);
+  protected readonly exemploAtual = computed(() => this.exemplos()[this.indiceAtual() % this.exemplos().length]);
 
   private temporizador: ReturnType<typeof setTimeout> | undefined;
   private etapa = 0;
@@ -73,11 +111,11 @@ export class SecaoGaleriaComponent implements OnInit {
 
   /** Setas embaixo do celular: a loja de exemplo anterior ou a próxima (dá a volta nas pontas). */
   protected anterior(): void {
-    this.escolher((this.indiceAtual() - 1 + EXEMPLOS_GALERIA.length) % EXEMPLOS_GALERIA.length);
+    this.escolher((this.indiceAtual() - 1 + this.exemplos().length) % this.exemplos().length);
   }
 
   protected proximo(): void {
-    this.escolher((this.indiceAtual() + 1) % EXEMPLOS_GALERIA.length);
+    this.escolher((this.indiceAtual() + 1) % this.exemplos().length);
   }
 
   /** Mostra aquela loja do começo e recomeça a contagem. */
@@ -96,7 +134,7 @@ export class SecaoGaleriaComponent implements OnInit {
       this.etapa += 1;
     } else {
       this.etapa = 0;
-      this.indiceAtual.update((indice) => (indice + 1) % EXEMPLOS_GALERIA.length);
+      this.indiceAtual.update((indice) => (indice + 1) % this.exemplos().length);
     }
     this.fase.set(momentos(this.exemploAtual())[this.etapa].fase);
   }
