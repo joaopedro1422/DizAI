@@ -21,7 +21,6 @@
   height: auto;
 }
 
-/* Destaque: a 1ª foto grande (2×2) e as outras em volta */
 .albuns[data-layout='DESTAQUE'] .album__botao-foto:first-child {
   position: relative;
   grid-column: span 2;

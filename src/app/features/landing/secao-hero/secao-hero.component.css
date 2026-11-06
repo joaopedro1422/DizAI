@@ -187,7 +187,6 @@
   color: var(--tom-forte, #1F7A4A);
 }
 
-/* Celular com a conversa de exemplo */
 .hero__vitrine {
   position: relative;
   flex: 0 1 360px;

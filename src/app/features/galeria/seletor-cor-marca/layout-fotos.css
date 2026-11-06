@@ -45,12 +45,10 @@
   background: color-mix(in srgb, var(--cor-primaria) 35%, #ffffff);
 }
 
-/* mosaico: alturas diferentes */
 .layout__previa--mosaico i:nth-child(1) { grid-row: span 2; }
 .layout__previa--mosaico i:nth-child(3) { grid-row: span 2; }
 .layout__previa--mosaico i:nth-child(5) { grid-row: span 2; }
 
-/* destaque: a 1ª grande */
 .layout__previa--destaque i:nth-child(1) { grid-column: span 2; grid-row: span 3; }
 
 /* carrossel: uma linha só, em retrato, cortada na direita */

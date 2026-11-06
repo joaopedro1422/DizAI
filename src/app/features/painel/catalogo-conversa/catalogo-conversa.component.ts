@@ -27,7 +27,6 @@ const TIPO_PDF = 'application/pdf';
 interface ItemCatalogo {
   chave: string;
   pdf: boolean;
-  /** Endereço para a miniatura ou para abrir o PDF. */
   url: string | null;
   nome: string;
   detalhe: string;
@@ -63,7 +62,6 @@ export class CatalogoConversaComponent {
   protected readonly avisoFechado = signal(true);
   protected readonly ligado = computed(() => this.modo() !== 'NAO');
   protected readonly tituloItens = computed(() => this.conteudo().tituloItens);
-  /** Exemplos dos catálogos por assunto, do segmento da loja. */
   protected readonly exemploCatalogo = computed(() => this.conteudo().catalogo);
   protected readonly totalProdutos = computed(() => this.produtoService.produtos().length);
   protected readonly resumoProdutos = computed(() =>

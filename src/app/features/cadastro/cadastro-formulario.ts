@@ -39,7 +39,6 @@ export function criarGrupoPagamentoEntrega(fb: FormBuilder) {
   });
 }
 
-/** Formulário completo do cadastro, com um grupo por passo. */
 export function criarFormularioCadastro(fb: FormBuilder) {
   return fb.nonNullable.group({
     dadosNegocio: criarGrupoDadosNegocio(fb),

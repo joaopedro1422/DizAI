@@ -292,7 +292,6 @@ export class SeletorServicoComponent {
     return minutos > 0 ? formatarDuracao(minutos) : '—';
   }
 
-  /** Tocou fora do seletor: fecha a lista. */
   protected fecharSeForFora(evento: Event): void {
     if (this.aberto() && !this.elemento.nativeElement.contains(evento.target as Node)) {
       this.aberto.set(false);

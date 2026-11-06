@@ -109,7 +109,6 @@ export class SecaoPerguntasComponent {
   protected readonly perguntas = computed(() =>
     this.tipo() === 'produtos' ? PERGUNTAS_PRODUTOS : this.tipo() === 'servicos' ? PERGUNTAS_SERVICOS : PERGUNTAS,
   );
-  /** Índices das respostas abertas. */
   protected readonly abertas = signal<ReadonlySet<number>>(new Set());
 
   protected alternar(indice: number): void {

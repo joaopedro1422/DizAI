@@ -13,7 +13,6 @@
   </header>
 
   <main class="conteudo-tela posts corpo-pc">
-    <!-- o que o post vai divulgar -->
     <section class="criar" aria-label="Criar post">
       <div class="etapa">
         <h2 class="etapa__titulo"><span class="etapa__numero">1</span>O que você quer divulgar?</h2>
@@ -179,7 +178,6 @@
       }
     </section>
 
-    <!-- as artes geradas -->
     <section #resultados class="resultados" aria-label="Artes" aria-live="polite">
       @if (gerando()) {
         <div class="grade" [attr.data-formato]="formato()">
@@ -220,7 +218,6 @@
   </main>
 </div>
 
-<!-- lista dos serviços/produtos (Destaque e Promoção) -->
 <ng-template #listaProdutos let-opcional="opcional">
   @if (opcional) {
     <span class="campo__rotulo">Item da oferta <span class="campo__rotulo-opcional">(opcional, para a foto)</span></span>

@@ -205,7 +205,6 @@
   animation: ativar 0.3s var(--atraso, 0s) ease both;
 }
 
-/* Horários da agenda (serviços) */
 .horario {
   display: flex;
   gap: 1.6cqw;
@@ -339,7 +338,6 @@
   animation-delay: 0.3s;
 }
 
-/* Tela final */
 .final {
   display: flex;
   flex-direction: column;

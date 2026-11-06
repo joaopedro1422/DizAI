@@ -68,7 +68,6 @@
 
 .zap__hora app-icone { color: #53BDEB; }
 
-/* a barra de digitar, no pé */
 .zap__rodape {
   display: flex;
   flex: none;

@@ -26,7 +26,6 @@ export class ConteudoRamoService {
 
   /** O segmento dos exemplos dos tutoriais: o escolhido ou, sem escolha, um negócio típico do ramo. */
   readonly segmentoDosExemplos = computed(() => segmentoOuPadrao(this.perfil().ramo, this.perfil().segmento));
-  /** Exemplos dos tutoriais e das prévias do onboarding. */
   readonly exemplos = computed(() => this.segmentoDosExemplos().exemplos);
 
   /** Ex.: "Ex.: Olá! Que bom te ver aqui na Doce Ana 🎂" */

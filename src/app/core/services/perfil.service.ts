@@ -74,7 +74,6 @@ export class PerfilService {
   /** Caminho da galeria pública dentro do app, ex.: /l/bella-studio */
   readonly caminhoPaginaPublica = computed(() => `/l/${this.perfilAtual().slug}`);
 
-  /** Endereço completo para copiar e compartilhar. */
   readonly linkPaginaPublica = computed(() => `${window.location.origin}${this.caminhoPaginaPublica()}`);
 
   /** Endereço sem "https://", para exibir na tela. */

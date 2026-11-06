@@ -48,7 +48,6 @@ export interface MensagemExemplo {
 export interface ItemExemplo {
   emoji: string;
   nome: string;
-  /** Categoria (e a duração, nos serviços). */
   detalhe: string;
   /** "R$ 35" ou um texto como "ver tamanhos". */
   preco: string;
@@ -76,7 +75,6 @@ export interface ExemplosProdutos {
   };
   /** Variações e opções no mesmo produto. */
   combinado: { item: string; variacoes: [string, string][]; opcao: string; valores: string[] };
-  /** Um produto com antecedência própria. */
   antecedencia: { item: string; preco: string; prazo: string; outro: string; prazoLoja: string };
   /** Tutorial do formulário: as opções (exatamente 1, até 2, adicional), a conversa e o adicional por tamanho. */
   guia: {
@@ -86,7 +84,6 @@ export interface ExemplosProdutos {
   };
 }
 
-/** Exemplos dos tutoriais de quem presta serviços. */
 export interface ExemplosServicos {
   itens: [ItemExemplo, ItemExemplo, ItemExemplo];
   placeholderNome: string;
@@ -96,7 +93,6 @@ export interface ExemplosServicos {
   conversaAgenda: { cliente: string; antes: string; duracao: string; depois: string; escolha: string; confirmacao: string };
   /** Preço que muda com o tipo: os valores na descrição e o preço em branco. */
   tipos: { item: string; linhas: string[]; duracao: string };
-  /** Uma escolha do cliente (opção). */
   escolhas: { item: string; preco: string; duracao: string; opcao: string; valores: string[] };
   /** Vídeo da agenda (só serviços com agenda): os horários do dia, as conversas e a página de agendamento. */
   agenda?: {

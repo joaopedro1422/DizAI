@@ -30,7 +30,8 @@
   display: flex;
   flex-direction: column;
   width: min(100%, 760px);
-  max-height: min(90vh, 880px);
+  /* a mesma altura em todos os passos: o conteúdo rola por dentro e os botões não saem do lugar */
+  height: min(90vh, 730px);
   overflow: hidden;
   border-radius: 28px;
   background:
@@ -88,6 +89,8 @@
 /* Corpo ---------------------------------------------------------------------- */
 
 .corpo {
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -232,7 +235,7 @@
   }
 
   .janela {
-    max-height: calc(100dvh - 24px);
+    height: min(calc(100dvh - 24px), 730px);
     border-radius: 24px;
   }
 

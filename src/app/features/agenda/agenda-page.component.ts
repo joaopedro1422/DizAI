@@ -111,7 +111,6 @@ export class AgendaPageComponent implements OnInit {
 
   protected readonly carregando = signal(true);
   protected readonly aba = signal<SecaoAgenda>('agendamentos');
-  /** Gaveta do menu aberta (celular). */
   protected readonly menuAberto = signal(false);
   /** Computador: o calendário abre num modal pelo botão ao lado do dia. */
   protected readonly calendarioAberto = signal(false);

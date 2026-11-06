@@ -43,7 +43,6 @@ const CHAVE_FECHAMENTO_VISTO = 'dizai:fechamento-visto:';
 /** Tempo que o painel fica à mostra antes do fechamento do dia abrir. */
 const ESPERA_FECHAMENTO_MS = 700;
 
-/** Tela inicial do painel do lojista. */
 @Component({
   selector: 'app-painel-page',
   imports: [

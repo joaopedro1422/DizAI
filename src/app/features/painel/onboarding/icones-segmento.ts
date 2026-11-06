@@ -8,7 +8,6 @@ import { ICONES } from '../../../shared/components/icone/icones';
 const circulo = (x: number, y: number, r: number) => `M${x - r} ${y}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0`;
 
 export const ICONES_SEGMENTO: Record<SegmentoNegocio, readonly string[]> = {
-  // doces e salgados
   DOCES: [circulo(12, 12, 3.5), 'M8.5 12L4 8.5v7z', 'M15.5 12L20 8.5v7z'],
   BOLOS_TORTAS: [
     'M4 20h16',
@@ -19,7 +18,6 @@ export const ICONES_SEGMENTO: Record<SegmentoNegocio, readonly string[]> = {
   ],
   SALGADOS: ['M12 3.5c-3 3.5-6 7.5-6 10.5a6 6 0 0 0 12 0c0-3-3-7-6-10.5z', 'M10 14h.01M14 15h.01M12 17.5h.01'],
   LANCHES: ['M4 11c0-3.9 3.6-7 8-7s8 3.1 8 7z', 'M3 14.5h18', 'M4.5 18.5h15a1.5 1.5 0 0 0 1.5-1.5H3a1.5 1.5 0 0 0 1.5 1.5z'],
-  // produtos personalizados
   CESTAS_PRESENTES: [
     'M4 9h16v3H4z',
     'M5.5 12v8h13v-8',
@@ -41,7 +39,6 @@ export const ICONES_SEGMENTO: Record<SegmentoNegocio, readonly string[]> = {
     'M8.5 4L4 6.5l1.5 4 2-.8V20h9V9.7l2 .8 1.5-4L15.5 4c-.5 1.3-1.8 2-3.5 2s-3-.7-3.5-2z',
     circulo(12, 13.5, 1.8),
   ],
-  // produtos em geral
   ROUPAS_ACESSORIOS: [
     'M10.2 5.7a1.8 1.8 0 1 1 2.6 1.6c-.5.3-.8.8-.8 1.3v.9',
     'M12 9.5l-8.2 6.2a.8.8 0 0 0 .5 1.5h15.4a.8.8 0 0 0 .5-1.5z',
@@ -49,7 +46,6 @@ export const ICONES_SEGMENTO: Record<SegmentoNegocio, readonly string[]> = {
   COSMETICOS_PERFUMARIA: [circulo(12, 15, 5), 'M10.5 10.2V7.5h3v2.7', 'M10 5.5h4', 'M16.5 5.5h2M16.5 3.5l1.5-.8'],
   CASA_DECORACAO: ['M8 4h8l3 7H5z', 'M12 11v8', 'M8.5 20h7'],
   VARIEDADES: ['M4 4h7v7H4z', 'M13 13h7v7h-7z', circulo(16.5, 7.5, 3.5), 'M7.5 13l3.5 7H4z'],
-  // serviços presenciais
   BARBEARIA: [
     'M12 12c-1.5-2.5-4.5-3-6.5-1.5-1 .8-1.5 2-2.5 2.5 2 1.5 5.5 1.5 9-1 3.5 2.5 7 2.5 9 1-1-.5-1.5-1.7-2.5-2.5-2-1.5-5-1-6.5 1.5z',
   ],
@@ -59,7 +55,6 @@ export const ICONES_SEGMENTO: Record<SegmentoNegocio, readonly string[]> = {
     'M10 11V4.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1V11',
   ],
   ESTETICA: ICONES.brilho,
-  // serviços personalizados
   DECORACAO_EVENTOS: [
     'M9 3.5c-2.5 0-4 2.2-4 4.5 0 2.7 2 5 4 5s4-2.3 4-5c0-2.3-1.5-4.5-4-4.5z',
     'M16 6.5c-2.2 0-3.5 1.9-3.5 3.9 0 2.4 1.7 4.4 3.5 4.4s3.5-2 3.5-4.4c0-2-1.3-3.9-3.5-3.9z',
@@ -73,7 +68,6 @@ export const ICONES_SEGMENTO: Record<SegmentoNegocio, readonly string[]> = {
     'M11 15h2v6h-2z',
   ],
   AULAS_CONSULTORIA: ['M3 4h18', 'M4 4v11h16V4', 'M12 15v3', 'M8.5 21l3.5-3 3.5 3', 'M8 11l3-3 2 2 3-3'],
-  // outros
   PET_SHOP: [
     circulo(6.5, 10.5, 1.6),
     circulo(9.8, 6.5, 1.6),

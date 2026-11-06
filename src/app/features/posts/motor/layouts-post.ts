@@ -48,7 +48,6 @@ export const LAYOUTS: DefinicaoLayout[] = [
   { id: 'liso-cartao', nome: 'Fundo liso com cartão', tipos: SEM_FOTO, fotosMinimo: 0, fotosMaximo: 0, paletas: ['cor', 'escura', 'creme'], variantes: 2 },
 ];
 
-/** Os layouts que servem para este post (tipo, fotos disponíveis e preço). */
 export function layoutsPara(tipo: TipoPost, fotosDisponiveis: number, temPreco: boolean): DefinicaoLayout[] {
   return LAYOUTS.filter(
     (layout) =>

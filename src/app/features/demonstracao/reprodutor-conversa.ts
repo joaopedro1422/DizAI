@@ -53,7 +53,6 @@ export class ReprodutorConversa {
 
   constructor(private readonly opcoes: OpcoesReprodutor = {}) {}
 
-  /** Troca de conversa e começa do início. */
   escolher(tipo: TipoNegocio, idSegmento?: string | null): void {
     this.tipo.set(tipo);
     this.segmento.set(acharSegmento(tipo, idSegmento));

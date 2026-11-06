@@ -31,15 +31,15 @@ export interface DadosClienteAutomatico {
   roteiro?: string[];
 }
 
-/** Salgados: a conversa típica, do preço do cento à retirada. */
-export function roteiroDoSegmento(segmento: string | null | undefined, nome: string): string[] | undefined {
+/** Salgados: a conversa típica, do preço do cento à retirada, no próximo dia em que a loja pode atender. */
+export function roteiroDoSegmento(segmento: string | null | undefined, dados: DadosClienteAutomatico): string[] | undefined {
   if (segmento === 'SALGADOS') {
     return [
       'Olá! Quanto custa o cento de salgados?',
-      'Pode ser para amanhã de manhã?',
+      `Pode ser para ${proximoDiaDaLoja(dados)}?`,
       'OK, vou querer 50 coxinhas e 50 risoles',
       'Está sim',
-      `Vou retirar aí mesmo, me chamo ${nome}`,
+      `Vou retirar aí mesmo, me chamo ${dados.nome}`,
     ];
   }
   return undefined;
@@ -56,7 +56,6 @@ export class ClienteAutomatico {
     this.dataDoPedido = dados.servico ? '' : quandoPedir(dados);
   }
 
-  /** A mensagem que abre a conversa. */
   primeira(): string {
     this.enviadas++;
     if (this.dados.roteiro?.length) {
@@ -245,6 +244,44 @@ export function quandoPedir(dados: DadosClienteAutomatico): string {
     const hora = horaNoDia(dia, minimo, horarios);
     if (hora !== null) {
       return `${diaFalado(dia, agora)} às ${hora}h`;
+    }
+  }
+  return 'a próxima semana';
+}
+
+/**
+ * "amanhã de manhã", "sábado de manhã", "segunda à tarde": a partir de amanhã, o primeiro dia aberto em que o pedido
+ * cabe na antecedência (a maior entre a do produto e a da loja, contada a partir da abertura, como no backend).
+ */
+export function proximoDiaDaLoja(dados: DadosClienteAutomatico): string {
+  const agora = dados.agora ?? new Date();
+  const antecedencia = Math.max(dados.produto?.antecedenciaMinutos ?? 0, dados.antecedenciaLojaMinutos ?? 0);
+  const horarios = dados.horarioLivre ? [] : dados.horarios ?? [];
+  // os trechos abertos dos próximos dias (hoje incluído), em ordem; sem horário fixo, das 9h às 18h todo dia
+  const trechos = Array.from({ length: 22 }, (_, dias) => {
+    const dia = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate() + dias);
+    const semana = DIAS_SEMANA[(dia.getDay() + 6) % 7].valor;
+    const periodos = horarios.length ? horarios.filter((periodo) => periodo.diaSemana === semana) : [{ inicio: '09:00', fim: '18:00' }];
+    return periodos
+      .map((periodo) => ({
+        dias,
+        nome: DIAS_SEMANA[(dia.getDay() + 6) % 7].nome,
+        inicio: dia.getTime() + minutosDe(periodo.inicio) * 60_000,
+        fim: dia.getTime() + minutosDe(periodo.fim) * 60_000,
+      }))
+      .sort((a, b) => a.inicio - b.inicio);
+  }).flat();
+  // a antecedência conta de agora, se a loja está aberta, ou da próxima abertura (JanelaPedido.inicioDaContagem)
+  const contagem = horarios.length
+    ? trechos.find((trecho) => trecho.fim > agora.getTime())?.inicio ?? agora.getTime()
+    : agora.getTime();
+  const minimo = Math.max(contagem, agora.getTime()) + antecedencia * 60_000;
+  for (const trecho of trechos) {
+    const pronto = Math.max(trecho.inicio, minimo);
+    if (trecho.dias >= 1 && pronto < trecho.fim) {
+      const hora = new Date(pronto).getHours();
+      const parte = hora < 12 ? 'de manhã' : hora < 18 ? 'à tarde' : 'à noite';
+      return `${trecho.dias === 1 ? 'amanhã' : trecho.nome} ${parte}`;
     }
   }
   return 'a próxima semana';

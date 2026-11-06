@@ -178,7 +178,6 @@ import { NomeIcone } from '../icone/icones';
 export class CabecalhoPaginaComponent {
   readonly titulo = input.required<string>();
   readonly subtitulo = input('');
-  /** Ícone opcional à esquerda do título. */
   readonly icone = input<NomeIcone | null>(null);
   /** Sem valor, volta para a tela inicial do painel da loja logada. */
   readonly linkVoltar = input<string | null>(null);

@@ -59,7 +59,6 @@
 
         @if (tipoAtual === 'produtos') {
           <div class="bento bento--produtos">
-            <!-- 1. coleta do pedido -->
             <article class="card card--largo entra">
               <div class="card__textos">
                 <span class="card__etiqueta"><app-icone nome="prancheta" [tamanho]="14" [espessura]="2.2" />Coleta de pedidos</span>
@@ -95,7 +94,6 @@
               </div>
             </article>
 
-            <!-- 2. gerenciador de pedidos -->
             <article class="card card--alto entra" [style.--atraso]="'80ms'">
               <div class="card__textos">
                 <span class="card__etiqueta"><app-icone nome="caixa" [tamanho]="14" [espessura]="2.2" />Gerenciador de pedidos</span>
@@ -139,7 +137,6 @@
               </div>
             </article>
 
-            <!-- 3. números -->
             <article class="card card--largo entra" [style.--atraso]="'160ms'">
               <div class="card__textos">
                 <span class="card__etiqueta"><app-icone nome="grafico" [tamanho]="14" [espessura]="2.2" />Relatórios e insights</span>
@@ -178,7 +175,6 @@
           </div>
         } @else {
           <div class="bento bento--servicos">
-            <!-- 1. agendamento pela conversa -->
             <article class="card card--largo entra">
               <div class="card__textos">
                 <span class="card__etiqueta"><app-icone nome="calendario" [tamanho]="14" [espessura]="2.2" />Agendamento automático</span>
@@ -200,7 +196,6 @@ Horário: 14:00 às 15:45</span>
               </div>
             </article>
 
-            <!-- 2. mensagens automáticas -->
             <article class="card card--alto entra" [style.--atraso]="'80ms'">
               <div class="card__textos">
                 <span class="card__etiqueta"><app-icone nome="raio" [tamanho]="14" [espessura]="2.2" />Mensagens automáticas</span>
@@ -229,7 +224,6 @@ Horário: 14:00 às 15:45</span>
               </div>
             </article>
 
-            <!-- 3. vários profissionais -->
             <article class="card entra" [style.--atraso]="'160ms'">
               <div class="card__textos">
                 <span class="card__etiqueta"><app-icone nome="pessoas" [tamanho]="14" [espessura]="2.2" />Vários profissionais</span>
@@ -259,7 +253,6 @@ Horário: 14:00 às 15:45</span>
               </div>
             </article>
 
-            <!-- 4. página de horários -->
             <article class="card entra" [style.--atraso]="'200ms'">
               <div class="card__textos">
                 <span class="card__etiqueta"><app-icone nome="link" [tamanho]="14" [espessura]="2.2" />Agenda online</span>
@@ -282,7 +275,6 @@ Horário: 14:00 às 15:45</span>
               </div>
             </article>
 
-            <!-- 5. números -->
             <article class="card card--inteiro entra" [style.--atraso]="'240ms'">
               <div class="card__textos">
                 <span class="card__etiqueta"><app-icone nome="grafico" [tamanho]="14" [espessura]="2.2" />Relatórios e insights</span>

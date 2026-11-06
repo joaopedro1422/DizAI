@@ -199,7 +199,6 @@
     height: 100%;
     padding: 18px 16px 20px;
     border-right: 2px solid var(--cor-borda);
-    /* barra de rolagem fina e clara */
     scrollbar-width: thin;
     scrollbar-color: var(--cor-borda) transparent;
     box-shadow: none;

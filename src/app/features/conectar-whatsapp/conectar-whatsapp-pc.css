@@ -93,7 +93,6 @@
     background: var(--cor-fundo);
   }
 
-  /* Lista de passos */
   .passos {
     position: relative;
     margin: 0;
@@ -180,7 +179,6 @@
     color: var(--cor-texto-suave);
   }
 
-  /* O passo atual num cartão */
   .etapa {
     gap: 14px;
     padding: 36px 40px 32px;

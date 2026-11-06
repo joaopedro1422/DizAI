@@ -59,7 +59,6 @@ export class SecaoPostsComponent implements OnInit {
           },
     ),
   );
-  /** A arte que está na frente do leque. */
   protected readonly naFrente = signal(2);
   protected readonly pausado = signal(false);
   /** Lugar de cada arte no leque em relação à da frente (0 = centro, -2 e 2 = as pontas). */

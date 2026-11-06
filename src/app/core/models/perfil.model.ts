@@ -95,7 +95,6 @@ export interface Perfil {
   estiloMenu?: EstiloMenu | null;
   estiloAbas?: EstiloAbas | null;
   layoutFotos?: LayoutFotos | null;
-  /** Referência da imagem de capa no Storage. */
   capaUrl?: string | null;
   ramo: RamoNegocio;
   formasPagamento: FormaPagamento[];

@@ -22,7 +22,6 @@ export type AlvoTour =
   | 'agenda-agendar-pc'
   | 'agenda-semana'
   | 'agenda-mensagens'
-  // tour dos pedidos
   | 'pedidos-menu'
   | 'pedidos-secoes'
   | 'pedidos-chats'

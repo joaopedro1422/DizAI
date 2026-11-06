@@ -212,7 +212,6 @@
 
 .palco__telefone { position: relative; z-index: 1; }
 
-/* o selo do passo, flutuando à esquerda do celular */
 .selo-flutuante {
   position: absolute;
   z-index: 2;

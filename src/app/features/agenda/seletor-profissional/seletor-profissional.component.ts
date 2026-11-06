@@ -226,7 +226,6 @@ export class SeletorProfissionalComponent {
     return ((partes[0]?.[0] ?? '') + (partes.length > 1 ? partes[partes.length - 1][0] : '')).toUpperCase();
   }
 
-  /** Tocou fora do seletor: fecha a lista. */
   protected fecharSeForFora(evento: Event): void {
     if (this.aberto() && !this.elemento.nativeElement.contains(evento.target as Node)) {
       this.aberto.set(false);

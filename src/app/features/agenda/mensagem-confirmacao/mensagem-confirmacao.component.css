@@ -165,7 +165,6 @@
   color: var(--cor-erro);
 }
 
-/* Prévia no jeito do WhatsApp */
 .previa {
   display: flex;
   flex-direction: column;

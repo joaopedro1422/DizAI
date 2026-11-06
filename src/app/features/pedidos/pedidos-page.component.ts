@@ -90,7 +90,6 @@ export class PedidosPageComponent implements OnInit {
   protected readonly grupos = [{ itens: SECOES_DOS_PEDIDOS, alvoTour: 'pedidos-secoes' as const }];
   protected readonly secao = signal<SecaoPedidos>('pedidos');
   protected readonly infoSecao = computed(() => infoDaSecaoDosPedidos(this.secao()));
-  /** Gaveta do menu aberta (celular). */
   protected readonly menuAberto = signal(false);
 
   // ---------------------------------------------------------------- pedido de exemplo do tour (só na tela)

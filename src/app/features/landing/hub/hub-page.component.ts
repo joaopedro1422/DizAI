@@ -13,9 +13,7 @@ interface Cena {
   rotulo: string;
   foto: string;
   pergunta: string;
-  /** Vendas: o resumo do pedido. */
   pedido?: { total: string; linhas: { rotulo: string; valor: string }[] };
-  /** Agendamentos: o dia com o horário novo em destaque. */
   agenda?: { dia: string; livres: string; blocos: { hora: string; texto: string; novo?: boolean }[] };
   aviso: { titulo: string; texto: string };
 }
@@ -178,7 +176,6 @@ export class HubPageComponent {
   protected readonly ultimoVisto = lerUltimoVisto();
   /** O mundo com o mouse em cima (cresce, o outro recua, e o carrossel dele pausa). */
   protected readonly emFoco = signal<TipoLanding | null>(null);
-  /** A cena à vista em cada mundo. */
   protected readonly cenaAtual = signal<Record<TipoLanding, number>>({ produtos: 0, servicos: 0 });
   /** Fotos que ainda não existem em public/: a cena mostra a capa com o ícone no lugar. */
   protected readonly semFoto = signal<ReadonlySet<string>>(new Set());

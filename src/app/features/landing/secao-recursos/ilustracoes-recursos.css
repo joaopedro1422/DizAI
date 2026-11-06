@@ -35,7 +35,6 @@
   color: var(--cor-ativo);
 }
 
-/* resumo do pedido (card do Chats) */
 .resumo {
   display: flex;
   flex-direction: column;
@@ -550,7 +549,6 @@
   animation-delay: 2.7s;
 }
 
-/* linha do tempo das mensagens automáticas */
 .linha-tempo {
   display: flex;
   flex-direction: column;
@@ -644,7 +642,6 @@
   font-weight: 700;
 }
 
-/* agenda com vários profissionais */
 .grade-agenda {
   display: grid;
   grid-template-columns: 28px repeat(3, minmax(0, 1fr));
@@ -710,7 +707,6 @@
   color: var(--cor-rosa);
 }
 
-/* página de horários */
 .pagina-horarios {
   display: flex;
   flex-direction: column;

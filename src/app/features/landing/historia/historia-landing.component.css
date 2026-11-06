@@ -218,7 +218,6 @@
   transition: opacity 0.45s ease, visibility 0s;
 }
 
-/* os pontinhos do progresso no pé do palco */
 .palco__progresso {
   position: absolute;
   bottom: 22px;

@@ -76,7 +76,6 @@ const GANHOS: Ganho[] = [
 /** O que muda de um público para o outro (o hub, sem tipo, usa o geral). */
 interface TextosSolucao {
   conversa: string;
-  /** A resposta à nota de voz na miniatura do áudio. */
   respostaAudio: string;
   catalogo: string;
   vitrine: { icone: NomeIcone; titulo: string; texto: string };

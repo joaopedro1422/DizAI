@@ -1,6 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
 
-/** O que o backend devolve no login e no cadastro. */
 export interface RespostaAutenticacao {
   token: string;
   /** Data/hora ISO em que o token expira. */

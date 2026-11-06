@@ -127,7 +127,6 @@ ul { margin: 0; padding: 0; }
 
 .profissional__detalhe { color: var(--cor-texto-suave); font-size: 12.5px; }
 
-/* ranking */
 .ranking { display: flex; flex-direction: column; list-style: none; }
 
 .ranking__item {

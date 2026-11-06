@@ -31,7 +31,6 @@ interface Rascunho {
   divisao: Record<string, Record<string, number>>;
 }
 
-/** Um item já no pedido. */
 interface ItemPedido {
   chave: number;
   nome: string;

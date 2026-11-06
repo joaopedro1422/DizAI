@@ -13,7 +13,6 @@
   border-top: 1px solid var(--cor-borda-suave);
 }
 
-/* Os 7 dias da semana */
 .semana {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
@@ -62,7 +61,6 @@
   background: #7FD3A2;
 }
 
-/* Editor do dia escolhido */
 .dia-aberto {
   display: flex;
   flex-direction: column;
@@ -160,7 +158,6 @@
   color: var(--cor-texto-suave);
 }
 
-/* Resumo da semana */
 .resumo-semana {
   display: flex;
   flex-direction: column;
@@ -200,7 +197,6 @@
   font-style: italic;
 }
 
-/* Copiar horários */
 .copiar {
   display: flex;
   flex-direction: column;

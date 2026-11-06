@@ -4,7 +4,6 @@ import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
 import { ProdutoService } from '../../../core/services/produto.service';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 
-/** A partir de quantos produtos aparece a busca. */
 const BUSCA_A_PARTIR_DE = 7;
 
 @Component({
@@ -283,7 +282,6 @@ export class SeletorProdutoComponent implements OnInit {
     this.aberto.set(false);
   }
 
-  /** Tocou fora do seletor: fecha a lista. */
   protected fecharSeForFora(evento: Event): void {
     if (this.aberto() && !this.elemento.nativeElement.contains(evento.target as Node)) {
       this.aberto.set(false);

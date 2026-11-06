@@ -193,7 +193,6 @@ export class SeletorEstiloCorComponent {
     this.aberto.set(false);
   }
 
-  /** Tocou fora do seletor: fecha a lista. */
   protected fecharSeForFora(evento: Event): void {
     if (this.aberto() && !this.elemento.nativeElement.contains(evento.target as Node)) {
       this.aberto.set(false);

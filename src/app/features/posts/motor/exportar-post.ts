@@ -152,7 +152,6 @@ async function carregarImagem(src: string): Promise<HTMLImageElement> {
   return imagem;
 }
 
-/** Salva o PNG no aparelho. */
 export function baixarArquivo(blob: Blob, nome: string): void {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');

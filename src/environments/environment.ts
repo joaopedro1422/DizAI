@@ -18,7 +18,7 @@ export const environment = {
   meta: {
     appId: '28999328156373119',
     /** ID da configuração do "Login do Facebook para Empresas" criada para o WhatsApp. */
-    configId: '4603845649846497',
+    configId: '1441580931483580',
     versaoGraphApi: 'v24.0',
   },
 };

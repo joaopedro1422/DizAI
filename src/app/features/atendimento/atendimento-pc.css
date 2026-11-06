@@ -60,7 +60,6 @@
     padding: 0 24px;
   }
 
-  /* índice das configurações, preso ao rolar */
   .atalhos {
     grid-column: 2;
     grid-row: 2;

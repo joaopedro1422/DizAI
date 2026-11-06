@@ -19,7 +19,6 @@ export const SELOS: Record<TipoPost, string[]> = {
   CONVITE: ['Vem pra cá', 'Te esperamos', 'Fale com a gente', 'Bora?'],
 };
 
-/** O título dos tipos na tela e o que cada um faz. */
 export const TIPOS_POST: { tipo: TipoPost; nome: string; descricao: string; icone: string }[] = [
   { tipo: 'DESTAQUE', nome: 'Destaque', descricao: 'Um serviço ou produto com foto e preço', icone: 'estrela' },
   { tipo: 'AGENDA', nome: 'Agenda aberta', descricao: 'Os próximos horários livres', icone: 'calendario' },

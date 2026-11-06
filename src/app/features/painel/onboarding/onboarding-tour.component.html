@@ -47,7 +47,6 @@
         <p id="tour-texto" class="balao__texto">{{ passoAtual().texto }}</p>
       </div>
 
-      <!-- o efeito daquele card no WhatsApp -->
       @if (passoAtual().previa.length > 0) {
         <app-previa-whatsapp [linhas]="passoAtual().previa" aria-hidden="true" />
       }

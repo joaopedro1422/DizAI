@@ -4,7 +4,6 @@ import { firstValueFrom, map } from 'rxjs';
 
 import { urlApi } from '../api/api-url';
 
-/** Uma pergunta do visitante e a resposta do assistente. */
 export interface TrocaDizai {
   pergunta: string;
   resposta: string;

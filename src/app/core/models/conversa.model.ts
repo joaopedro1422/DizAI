@@ -25,7 +25,6 @@ export interface MensagemConversa {
 }
 
 export interface Conversa {
-  /** UUID da conversa no backend. */
   id: string;
   /** Nome do perfil do WhatsApp do cliente (pode vir vazio). */
   nomeCliente: string;

@@ -185,15 +185,15 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
       }
       const item = this.produtos.produtos().find((produto) => !produto.produtoAVenda) ?? null;
       if (!servico) {
-        return new ClienteAutomatico({
+        const dados = {
           servico,
           nome,
           produto: item,
           horarios: perfil.horariosFuncionamento,
           horarioLivre: perfil.horarioLivre,
           antecedenciaLojaMinutos: perfil.antecedenciaMinutos,
-          roteiro: roteiroDoSegmento(perfil.segmento, nome),
-        });
+        };
+        return new ClienteAutomatico({ ...dados, roteiro: roteiroDoSegmento(perfil.segmento, dados) });
       }
       let primeiroHorario: { data: string; hora: string } | null = null;
       try {

@@ -151,7 +151,6 @@ export const MODOS_CATALOGO: OpcaoDescrita<ModoCatalogo>[] = [
   },
 ];
 
-/** Busca o rótulo de um valor em uma lista de opções. */
 export function obterRotulo<T extends string>(opcoes: OpcaoSelecao<T>[], valor: T): string {
   return opcoes.find((opcao) => opcao.valor === valor)?.rotulo ?? valor;
 }

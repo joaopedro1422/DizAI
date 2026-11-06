@@ -3,7 +3,6 @@
   display: contents;
 }
 
-/* Agenda online, no pé do menu */
 .online {
   display: flex;
   flex-direction: column;

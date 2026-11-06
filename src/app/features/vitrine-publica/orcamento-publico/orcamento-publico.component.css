@@ -106,7 +106,6 @@
   color: #ffffff;
 }
 
-/* Painel para montar o item */
 .montar {
   display: flex;
   flex-direction: column;
@@ -261,7 +260,6 @@
   color: #b42318;
 }
 
-/* Seu pedido */
 .pedido {
   display: flex;
   flex-direction: column;

@@ -149,7 +149,6 @@ export class BolhaPedidosComponent {
     { initialValue: this.router.url },
   );
 
-  /** Está numa tela do painel (logado). */
   private readonly noPainel = computed(() => !!this.sessao.perfilId() && /^\/painel\/[^/?#]+/.test(this.url()));
   private readonly noChats = computed(() => /^\/painel\/[^/?#]+\/chats/.test(this.url()));
 

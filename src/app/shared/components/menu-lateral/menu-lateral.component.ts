@@ -38,7 +38,6 @@ export class MenuLateralComponent {
   readonly subtitulo = input('');
   readonly icone = input.required<NomeIcone>();
   readonly grupos = input.required<GrupoMenuLateral[]>();
-  /** O valor da página aberta. */
   readonly ativo = input.required<string>();
   /** Gaveta aberta (só no celular; no computador o menu está sempre à vista). */
   readonly aberto = input(false);

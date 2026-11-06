@@ -169,7 +169,6 @@ import { SeletorServicoComponent } from '../seletor-servico/seletor-servico.comp
   `,
 })
 export class NovoAgendamentoComponent implements OnInit {
-  /** Dia que estava aberto na agenda. */
   readonly dataInicial = input(hojeIso());
   readonly salvando = input(false);
   /** Com 2+ profissionais, o lojista escolhe com quem (começa no filtrado na agenda ou no primeiro). */

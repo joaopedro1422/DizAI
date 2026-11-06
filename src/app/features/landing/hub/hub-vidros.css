@@ -176,7 +176,6 @@
   font-weight: 700;
 }
 
-/* áudio: as ondas dançam */
 .audio {
   display: flex;
   align-items: center;
@@ -221,7 +220,6 @@
   font-size: 12px;
 }
 
-/* catálogo */
 .arquivo {
   display: flex;
   align-items: center;
@@ -484,7 +482,6 @@
 .vidro--vitrine:hover .galeria__post--1 { transform: rotate(-7deg) translateY(-6px); }
 .vidro--vitrine:hover .galeria__post--2 { transform: rotate(8deg) translateY(-4px); }
 
-/* relatório */
 .barras {
   display: flex;
   align-items: flex-end;

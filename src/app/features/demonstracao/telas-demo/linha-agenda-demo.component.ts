@@ -13,7 +13,6 @@ export interface HorarioLinhaDemo {
   servicos: string;
   whatsapp: string;
   valor: number;
-  /** Marcado pelo assistente (a estrelinha). */
   assistente?: boolean;
   /** O horário que acabou de entrar: aparece com animação (`.bloco--novo`). */
   novo?: boolean;

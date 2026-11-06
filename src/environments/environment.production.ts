@@ -9,7 +9,7 @@ export const environment = {
   meta: {
     /** App da Meta e configuração do "Login do Facebook para Empresas" (IDs públicos, os mesmos do desenvolvimento). */
     appId: '28999328156373119',
-    configId: '4603845649846497',
+    configId: '1441580931483580',
     versaoGraphApi: 'v24.0',
   },
 };

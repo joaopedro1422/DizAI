@@ -60,7 +60,6 @@ a.faixa-aviso {
   color: var(--cor-primaria);
 }
 
-/* Cabeçalho do dia escolhido */
 .dia {
   display: flex;
   flex-direction: column;
@@ -102,7 +101,6 @@ a.faixa-aviso {
   color: var(--cor-texto-secundario);
 }
 
-/* Lista de horários do dia (linha do tempo) */
 .lista-horarios {
   display: flex;
   flex-direction: column;
@@ -554,7 +552,6 @@ a.faixa-aviso {
   font-variant-numeric: tabular-nums;
 }
 
-/* linha do agora */
 .linha__agora {
   position: absolute;
   z-index: 2;

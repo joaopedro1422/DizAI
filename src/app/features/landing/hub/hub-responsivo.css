@@ -202,7 +202,6 @@
   opacity: 0.035;
 }
 
-/* topo: o selo em vidro claro e o Entrar no azul-marinho da marca */
 :host(.tema-claro) .topo__selo {
   background: rgba(255, 255, 255, 0.75);
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);

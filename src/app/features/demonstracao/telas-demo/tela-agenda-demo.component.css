@@ -80,7 +80,6 @@
   padding-top: 14px;   /* a faixa de dias fica logo abaixo do topo */
 }
 
-/* Cabeçalho do dia escolhido */
 .dia {
   display: flex;
   flex-direction: column;

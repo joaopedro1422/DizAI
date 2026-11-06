@@ -8,7 +8,6 @@
   color: var(--cor-texto-sobre-escuro);
 }
 
-/* busca dentro do topo azul */
 .busca {
   display: flex;
   align-items: center;

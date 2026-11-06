@@ -2,7 +2,6 @@
   display: block;
 }
 
-/* Card de Chats (destaque) */
 .atalho-chats {
   display: flex;
   flex-direction: column;

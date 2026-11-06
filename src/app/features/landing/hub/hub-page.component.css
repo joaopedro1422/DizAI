@@ -495,7 +495,6 @@ main,
   font-weight: 800;
 }
 
-/* as linhas do cartão entram uma a uma */
 .cena__lamina--ativa .cena__cartao > * {
   animation: hub-entrar 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -569,7 +568,6 @@ main,
   font-size: 12px;
 }
 
-/* os textos do mundo, no pé do cartão */
 .mundo__textos {
   position: relative;
   z-index: 2;

@@ -39,7 +39,6 @@ export interface ConteudoLanding {
     etiqueta: string;
     /** O título em três partes: antes, a palavra destacada (sublinhada em verde) e depois. */
     titulo: [string, string, string];
-    /** A descrição com o trecho em negrito na frente. */
     descricaoForte: string;
     descricao: string;
     garantias: string[];

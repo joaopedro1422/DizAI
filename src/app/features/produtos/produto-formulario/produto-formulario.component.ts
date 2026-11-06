@@ -59,7 +59,6 @@ export class ProdutoFormularioComponent implements OnInit {
   protected readonly enviandoFoto = signal(false);
   protected readonly erroFoto = signal('');
 
-  /** Placeholders e textos do ramo da loja. */
   protected readonly conteudo = inject(ConteudoRamoService).conteudo;
 
   protected readonly valorNovaCategoria = NOVA_CATEGORIA;

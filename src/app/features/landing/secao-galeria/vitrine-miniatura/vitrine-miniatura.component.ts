@@ -115,7 +115,6 @@ export class VitrineMiniaturaComponent {
     ].filter((album) => !!album.nome);
   });
 
-  /** Os feedbacks no formato do carrossel da vitrine. */
   protected readonly feedbacks = computed<FeedbackPublico[]>(() =>
     (this.exemplo().feedbacks ?? []).map((feedback, indice) => ({ id: indice + 1, ...feedback })),
   );
@@ -139,7 +138,6 @@ export class VitrineMiniaturaComponent {
       };
     }),
   );
-  /** O primeiro dia livre. */
   protected readonly diaEscolhido = computed(() => this.dias().find((dia) => !dia.desativado)?.data ?? '');
   protected readonly quando = computed(() => {
     const agenda = this.exemplo().agenda;

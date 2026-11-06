@@ -35,7 +35,6 @@
   font-weight: 700;
 }
 
-/* prévia de até 3 linhas */
 .mensagem__texto {
   display: -webkit-box;
   overflow: hidden;

@@ -147,7 +147,6 @@
   line-height: 1.45;
 }
 
-/* Cards claros */
 .atalho {
   display: flex;
   flex-direction: column;
@@ -193,7 +192,6 @@
   color: var(--cor-texto-suave);
 }
 
-/* Miniaturas empilhadas da galeria */
 .miniaturas {
   display: flex;
   align-items: center;

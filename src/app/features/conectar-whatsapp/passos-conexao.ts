@@ -117,7 +117,6 @@ export function etapasDaSituacao(situacao: SituacaoWhatsapp): EtapaConexao[] {
   return situacao === 'NAO_USA_BUSINESS' ? [...ETAPAS_PREPARAR_BUSINESS, ...ETAPAS_CONECTAR] : ETAPAS_CONECTAR;
 }
 
-/** Problemas mais comuns e como resolver. */
 export const PROBLEMAS_COMUNS: string[] = [
   'A janela da Meta não abriu? Libere as janelas pop-up no navegador e tente de novo.',
   'O número já esteve ligado a outro chatbot ou plataforma? Desconecte por lá antes de começar.',

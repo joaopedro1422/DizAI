@@ -51,7 +51,6 @@ export interface HorarioDemo {
   duracao: string;
   whatsapp: string;
   valor: number;
-  /** Marcado pelo assistente (a estrelinha). */
   assistente?: boolean;
   /** O horário que acabou de entrar: aparece com animação. */
   novo?: boolean;
@@ -329,7 +328,6 @@ export function acharSegmento(tipo: TipoNegocio, id?: string | null): SegmentoDe
   return segmentos.find((segmento) => segmento.id === id) ?? segmentos[0];
 }
 
-/** Os destaques do segmento, na ordem em que aparecem. */
 export function destaquesDe(segmento: SegmentoDemonstracao): string[] {
   return segmento.passos.flatMap((passo) => (passo.destaque ? [passo.destaque] : []));
 }

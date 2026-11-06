@@ -32,10 +32,8 @@ const ITENS: Record<'produtos' | 'servicos', ItemDica[]> = {
       titulo="Agora é com você"
       descricao="O seu assistente já sabe atender. Agora, deixe ele com a cara do seu negócio:"
       [itens]="itens()"
-      rotuloBotao="Começar a configurar"
-      rotuloSecundario="Ficar aqui"
+      rotuloBotao="Voltar para o painel"
       (confirmar)="irParaOPainel()"
-      (secundario)="fechar.emit()"
     />
   `,
 })

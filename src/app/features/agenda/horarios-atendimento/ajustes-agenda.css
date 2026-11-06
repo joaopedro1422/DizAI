@@ -52,7 +52,6 @@
   border-top: 1px solid var(--cor-borda-suave);
 }
 
-/* A linha de um ajuste */
 .ajuste {
   display: flex;
   align-items: center;
@@ -180,7 +179,6 @@
   pointer-events: none;
 }
 
-/* Ativa / Desativada */
 .selo-estado {
   display: inline-flex;
   flex: none;

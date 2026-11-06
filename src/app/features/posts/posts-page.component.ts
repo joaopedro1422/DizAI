@@ -50,7 +50,6 @@ import {
   TipoPost,
 } from './motor/tipos-post';
 
-/** Quantas artes cada geração mostra. */
 const OPCOES = 4;
 /** Quantas combinações já vistas a loja guarda para não repetir. */
 const HISTORICO_MAXIMO = 24;

@@ -51,7 +51,6 @@ export interface ConteudoRamo {
   exemploAntecedencia: string;
   /** Catálogos por assunto: o assunto, do que ele fala e o exemplo de quem vende mais de um tipo. */
   catalogo: { assunto: string; contexto: string; varios: string };
-  /** Placeholder do texto de um feedback na vitrine. */
   feedback: string;
   /** Placeholder dos itens em "Registrar pedido". */
   itensPedidoManual: string;
