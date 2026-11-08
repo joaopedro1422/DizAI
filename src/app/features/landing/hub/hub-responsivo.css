@@ -118,10 +118,6 @@
     justify-content: flex-start;
   }
 
-  .resposta__numero {
-    font-size: 72px;
-  }
-
   .vitrine {
     left: 0;
   }
@@ -308,10 +304,6 @@
 
 :host(.tema-claro) .vidro:hover {
   border-color: rgba(14, 21, 37, 0.14);
-}
-
-:host(.tema-claro) .resposta__numero {
-  background-image: linear-gradient(180deg, #0E1525, rgba(14, 21, 37, 0.34));
 }
 
 :host(.tema-claro) .bolha {

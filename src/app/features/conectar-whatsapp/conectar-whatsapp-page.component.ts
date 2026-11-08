@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import { environment } from '../../../environments/environment';
 
 import { mensagemDoErro } from '../../core/api/erro-api';
 import { SessaoService } from '../../core/auth/sessao.service';
@@ -65,7 +64,8 @@ export class ConectarWhatsappPageComponent implements OnInit {
   protected readonly conectando = signal(false);
 
   /** Atalho para testar com o número de teste da Meta. Some no build de produção. */
-  protected readonly modoDesenvolvimento = !environment.production;
+  // TEMPORÁRIO: aberta em produção durante a análise do app da Meta; depois, volte para !environment.production
+  protected readonly modoDesenvolvimento = true;
   protected readonly conectandoManualmente = signal(false);
   protected readonly formularioManual = inject(FormBuilder).nonNullable.group({
     phoneNumberId: ['', [Validators.required, Validators.pattern(/^\d{10,20}$/)]],
@@ -166,9 +166,9 @@ export class ConectarWhatsappPageComponent implements OnInit {
     try {
       await this.perfilService.conectarWhatsappManualmente(this.formularioManual.getRawValue());
       this.formularioManual.reset();
-      this.toastService.mostrar('Número de teste conectado! Mande uma mensagem para ele pelo seu WhatsApp.', 5000);
+      this.toastService.mostrar('Número conectado! Mande uma mensagem para ele pelo seu WhatsApp.', 5000);
     } catch (erro) {
-      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível conectar o número de teste.'), 6000);
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível conectar o número.'), 6000);
     } finally {
       this.conectandoManualmente.set(false);
     }

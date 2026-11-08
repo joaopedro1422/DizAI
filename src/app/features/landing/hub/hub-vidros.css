@@ -96,23 +96,6 @@
   gap: 24px;
 }
 
-.resposta__numero {
-  flex: none;
-  padding-right: 0.06em;
-  background: linear-gradient(180deg, #ffffff, rgba(255, 255, 255, 0.32));
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  font-size: 96px;
-  font-weight: 800;
-  letter-spacing: -0.06em;
-  line-height: 1;
-}
-
-.resposta__numero small {
-  font-size: 40px;
-}
-
 .resposta__conversa {
   display: flex;
   flex: 0 1 300px;
