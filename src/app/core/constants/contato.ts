@@ -1,2 +1,2 @@
 /** E-mail de suporte do DizAI, usado nos pedidos de ajuda do lojista. */
-export const EMAIL_SUPORTE = 'suporte@dizai.com.br';
+export const EMAIL_SUPORTE = 'jpcros40414@gmail.com';
