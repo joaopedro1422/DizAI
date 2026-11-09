@@ -1,0 +1,162 @@
+.detalhe {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.selo {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: var(--raio-pilula);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.selo--presenca {
+  background: var(--cor-ativo);
+  color: #ffffff;
+}
+
+.selo--lembrete {
+  background: var(--cor-ambar-fundo);
+  color: var(--cor-ambar);
+}
+
+.selo--cancelado {
+  background: #FCEEEE;
+  color: var(--cor-erro);
+}
+
+.dados {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.dado {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--cor-borda-suave);
+}
+
+.dado:first-child {
+  padding-top: 0;
+}
+
+.dado:last-child {
+  border-bottom: none;
+}
+
+.dado dt {
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dado dd {
+  margin: 0;
+  color: var(--cor-texto);
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.dado dd.dado__forte {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.dado__whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cor-ativo);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+}
+
+.dado__whatsapp:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.dado dd.dado__valor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.dado__editar {
+  padding: 2px 0;
+  border: none;
+  background: none;
+  color: var(--cor-primaria);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reservados {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reservados__titulo {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.reservados__texto {
+  color: var(--cor-texto-secundario);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.reservados__lista {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.reservado {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reservado__foto {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--raio-grande);
+  object-fit: cover;
+  background: var(--cor-fundo-suave);
+}
+
+.reservado__foto--vazia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cor-texto-suave);
+}
+
+.reservado__nome {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.reservado__preco {
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+}

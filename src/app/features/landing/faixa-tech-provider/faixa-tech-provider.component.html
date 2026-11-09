@@ -1,0 +1,14 @@
+<section class="faixa" aria-labelledby="tech-provider-titulo">
+  <div class="cartao">
+    <span class="selo" aria-hidden="true"><app-icone nome="escudo" [tamanho]="26" [espessura]="1.8" /></span>
+    <div class="texto">
+      <h2 id="tech-provider-titulo" class="titulo">Somos Tech Provider da Meta</h2>
+      <p class="apoio">O seu número é conectado pela API oficial do WhatsApp Business, com a verificação e as regras da própria Meta.</p>
+    </div>
+    <ul class="garantias">
+      @for (garantia of garantias; track garantia) {
+        <li><app-icone nome="check" [tamanho]="16" [espessura]="2.4" />{{ garantia }}</li>
+      }
+    </ul>
+  </div>
+</section>

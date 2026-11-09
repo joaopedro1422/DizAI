@@ -42,6 +42,9 @@
   <app-secao-galeria appRevelar [tipo]="tipo()" />
   <app-secao-posts appRevelar [tipo]="tipo()" />
   <app-secao-para-quem appRevelar [tipo]="tipo()" />
+  @if (techProviderAprovado) {
+    <app-faixa-tech-provider appRevelar />
+  }
 
   <div class="faixa--suave" appRevelar>
     <app-secao-perguntas [tipo]="tipo()" />

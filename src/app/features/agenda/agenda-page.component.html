@@ -154,6 +154,7 @@
             @for (agendamento of confirmadosDoDia(); track agendamento.id) {
               @let cancelado = agendamento.status === 'CANCELADO';
               <article class="horario" [class.horario--cancelado]="cancelado" [class.horario--passou]="!cancelado && jaPassou(agendamento)">
+                <button type="button" class="card-abrir" [attr.aria-label]="'Ver o agendamento de ' + agendamento.nomeCliente + ' às ' + agendamento.inicio" (click)="agendamentoAbertoId.set(agendamento.id)"></button>
                 <div class="horario__tempo">
                   <span class="horario__inicio">{{ agendamento.inicio }}</span>
                   <span class="horario__fim">{{ agendamento.fim }}</span>
@@ -166,10 +167,10 @@
                   @if (agendamento.produtos.length || mostraEtiqueta) {
                     <span class="horario__marcas">
                       @if (agendamento.produtos.length) {
-                        <button type="button" class="link-produtos" (click)="vendoProdutos.set(agendamento)">
+                        <span class="marca-produtos">
                           <app-icone nome="caixa" [tamanho]="13" />
                           {{ rotuloProdutos(agendamento) }}
-                        </button>
+                        </span>
                       }
                       <!-- depois que o horário acaba, a presença e o lembrete não importam mais -->
                       @if (mostraEtiqueta) {
@@ -191,10 +192,10 @@
                     <!-- WhatsApp à esquerda e o valor à direita, sempre na mesma linha -->
                     <span class="horario__contato">
                       @if (agendamento.whatsapp) {
-                        <a class="horario__whatsapp" [href]="linkWhatsapp(agendamento)" target="_blank" rel="noopener" [attr.aria-label]="'Abrir a conversa com ' + agendamento.nomeCliente + ' no WhatsApp'">
+                        <span class="horario__whatsapp">
                           <app-icone nome="conversa" [tamanho]="14" />
                           {{ agendamento.whatsapp }}
-                        </a>
+                        </span>
                       }
                       @if (!cancelado) {
                         <button type="button" class="horario__valor" [class.horario__valor--vazio]="agendamento.valor === null" [attr.aria-label]="'Valor do atendimento de ' + agendamento.nomeCliente" (click)="abrirValor(agendamento)">
@@ -441,30 +442,14 @@
   </app-bottom-sheet>
 }
 
-@if (vendoProdutos(); as agendamento) {
-  <app-bottom-sheet titulo="Produtos reservados" (fechar)="vendoProdutos.set(null)">
-    <div class="reservados">
-      <p class="reservados__texto">
-        {{ agendamento.nomeCliente }} reservou pela agenda online para levar no dia do horário. Separe antes do atendimento.
-      </p>
-      <div class="reservados__lista">
-        @for (produto of agendamento.produtos; track produto.nome) {
-          <div class="reservado">
-            @if (produto.fotoUrl) {
-              <img class="reservado__foto" [src]="produto.fotoUrl | urlImagem" [alt]="produto.nome">
-            } @else {
-              <span class="reservado__foto reservado__foto--vazia" aria-hidden="true">
-                <app-icone nome="caixa" [tamanho]="22" />
-              </span>
-            }
-            <span class="reservado__nome">{{ produto.nome }}</span>
-            @if (precoReservado(produto.preco, produto.precoAPartirDe); as preco) {
-              <span class="reservado__preco">{{ preco }}</span>
-            }
-          </div>
-        }
-      </div>
-    </div>
+@if (agendamentoAberto(); as agendamento) {
+  <app-bottom-sheet titulo="Agendamento" (fechar)="agendamentoAbertoId.set(null)">
+    <app-detalhe-agendamento
+      [agendamento]="agendamento"
+      [variosProfissionais]="variosProfissionais()"
+      (editarValor)="editarValorDoAberto(agendamento)"
+      (cancelar)="cancelarOAberto(agendamento)"
+    />
   </app-bottom-sheet>
 }
 
@@ -608,6 +593,7 @@
         [style.height.px]="bloco.altura - 2"
         role="listitem"
       >
+        <button type="button" class="card-abrir" [attr.aria-label]="'Ver o agendamento de ' + agendamento.nomeCliente + ' às ' + bloco.textoInicio" (click)="agendamentoAbertoId.set(agendamento.id)"></button>
         <div class="bloco__linha">
           <span class="bloco__horario">{{ bloco.textoInicio }} – {{ bloco.textoFim }}</span>
           @if (bloco.altura < 70) {
@@ -648,9 +634,7 @@
           <span class="bloco__detalhe">
             <span class="bloco__servico">{{ agendamento.servicos }}</span>
             @if (agendamento.whatsapp) {
-              <a class="bloco__whatsapp" [href]="linkWhatsapp(agendamento)" target="_blank" rel="noopener" [attr.aria-label]="'Abrir a conversa com ' + agendamento.nomeCliente + ' no WhatsApp'">
-                {{ agendamento.whatsapp }}
-              </a>
+              <span class="bloco__whatsapp">{{ agendamento.whatsapp }}</span>
             }
           </span>
         }
@@ -682,9 +666,7 @@
 <ng-template #produtoEValor let-agendamento>
   <span class="bloco__extras">
     @if (agendamento.produtos.length) {
-      <button type="button" class="link-produtos link-produtos--bloco" (click)="vendoProdutos.set(agendamento)">
-        {{ rotuloProdutos(agendamento) }}
-      </button>
+      <span class="marca-produtos marca-produtos--bloco">{{ rotuloProdutos(agendamento) }}</span>
     }
     <button type="button" class="bloco__valor" [class.bloco__valor--vazio]="agendamento.valor === null" [attr.aria-label]="'Valor do atendimento de ' + agendamento.nomeCliente" (click)="abrirValor(agendamento)">
       {{ agendamento.valor === null ? 'Sem valor' : real(agendamento.valor) }}

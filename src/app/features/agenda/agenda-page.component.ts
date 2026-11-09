@@ -32,6 +32,7 @@ import { CarregandoComponent } from '../../shared/components/carregando/carregan
 import { EstadoVazioComponent } from '../../shared/components/estado-vazio/estado-vazio.component';
 import { FaixaDiasComponent, ItemFaixaDia } from '../../shared/components/faixa-dias/faixa-dias.component';
 import { IconeComponent } from '../../shared/components/icone/icone.component';
+import { DetalheAgendamentoComponent } from './detalhe-agendamento/detalhe-agendamento.component';
 import { HorariosAtendimentoComponent } from './horarios-atendimento/horarios-atendimento.component';
 import { montarColunas, montarLinhaDoTempo } from './linha-do-tempo';
 import { NovoAgendamentoComponent } from './novo-agendamento/novo-agendamento.component';
@@ -74,6 +75,7 @@ import { ESPERA_FECHAMENTO_MS, FechamentoOnboardingComponent } from '../painel/o
     FaixaDiasComponent,
     IconeComponent,
     BottomSheetComponent,
+    DetalheAgendamentoComponent,
     HorariosAtendimentoComponent,
     NovoAgendamentoComponent,
     OnboardingTourComponent,
@@ -91,6 +93,7 @@ import { ESPERA_FECHAMENTO_MS, FechamentoOnboardingComponent } from '../painel/o
   styleUrls: [
     './agenda-page.component.css',
     './agenda-colunas.css',
+    './agendamento-clicavel.css',
     './lista-espera.css',
     './agenda-pc.css',
     '../../shared/estilos-tela-com-menu.css',
@@ -146,8 +149,11 @@ export class AgendaPageComponent implements OnInit {
     this.produtoService.produtos().some((produto) => produto.produtoAVenda && produto.disponivel),
   );
 
-  /** Agendamento cujo "1 produto" foi tocado: abre os produtos que o cliente reservou pela agenda online. */
-  protected readonly vendoProdutos = signal<Agendamento | null>(null);
+  /** Card tocado: o modal lê da lista, então acompanha as atualizações e fecha se o agendamento sair dela. */
+  protected readonly agendamentoAbertoId = signal<string | null>(null);
+  protected readonly agendamentoAberto = computed(
+    () => this.agendaService.agendamentos().find((a) => a.id === this.agendamentoAbertoId()) ?? null,
+  );
   protected readonly editandoValor = signal<Agendamento | null>(null);
   protected readonly valorDigitado = signal('');
   protected readonly salvandoValor = signal(false);
@@ -502,8 +508,14 @@ export class AgendaPageComponent implements OnInit {
     return pluralizar(agendamento.produtos.length, 'produto', 'produtos');
   }
 
-  protected precoReservado(preco: number | null, aPartirDe: boolean): string {
-    return preco === null ? '' : (aPartirDe ? 'a partir de ' : '') + formatarReal(Number(preco));
+  protected editarValorDoAberto(agendamento: Agendamento): void {
+    this.agendamentoAbertoId.set(null);
+    this.abrirValor(agendamento);
+  }
+
+  protected cancelarOAberto(agendamento: Agendamento): void {
+    this.agendamentoAbertoId.set(null);
+    this.paraCancelar.set(agendamento);
   }
 
   protected duracao(agendamento: Agendamento): string {

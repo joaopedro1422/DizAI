@@ -1,0 +1,68 @@
+/* o card inteiro abre o agendamento: um botão invisível por cima, com o valor e o X acima dele */
+.card-abrir {
+  position: absolute;
+  inset: 0;
+  padding: 0;
+  border: none;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.card-abrir:focus-visible {
+  outline: 2px solid var(--cor-primaria);
+  outline-offset: -2px;
+}
+
+.horario__valor,
+.horario__cancelar,
+.bloco__valor,
+.bloco__cancelar {
+  position: relative;
+  z-index: 1;
+}
+
+.horario__lateral {
+  z-index: 1;
+  pointer-events: none;
+}
+
+.horario__cancelar {
+  pointer-events: auto;
+}
+
+.horario,
+.bloco--agendamento {
+  transition: background-color 0.15s ease;
+}
+
+.horario:hover {
+  background: #F8FAFD;
+}
+
+.horario--passou:hover,
+.horario--cancelado:hover {
+  background: #F8F9FB;
+}
+
+.bloco--agendamento:hover {
+  background: #F9FAFC;
+}
+
+.bloco--confirmado:hover {
+  background: #F2FAF5;
+}
+
+/* "1 produto" no card: o detalhe fica no modal */
+.marca-produtos {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--cor-texto-secundario);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.marca-produtos--bloco {
+  font-size: 11.5px;
+}

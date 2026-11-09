@@ -10,6 +10,7 @@ import { SecaoParaQuemComponent } from './secao-para-quem/secao-para-quem.compon
 import { SecaoPerguntasComponent } from './secao-perguntas/secao-perguntas.component';
 import { SecaoRecursosComponent } from './secao-recursos/secao-recursos.component';
 import { FaixaNegociosComponent } from './faixa-negocios/faixa-negocios.component';
+import { FaixaTechProviderComponent } from './faixa-tech-provider/faixa-tech-provider.component';
 import { SecaoHeroComponent } from './secao-hero/secao-hero.component';
 import { SecaoPesquisaComponent } from './secao-pesquisa/secao-pesquisa.component';
 import { SecaoSolucaoComponent } from './secao-solucao/secao-solucao.component';
@@ -18,6 +19,9 @@ import { HistoriaLandingComponent } from './historia/historia-landing.component'
 import { ProblemaLandingComponent } from './problema/problema-landing.component';
 import { RevelarAoRolarDirective } from './revelar-ao-rolar.directive';
 import { CHAVE_TIPO_VISTO, CONTEUDO_LANDING, ROTA_LANDING, TipoLanding } from './conteudo-landing';
+
+/** Liga a faixa "Somos Tech Provider da Meta": só depois que a Meta aprovar a análise do app. */
+const TECH_PROVIDER_APROVADO = false;
 
 @Component({
   selector: 'app-landing-page',
@@ -36,6 +40,7 @@ import { CHAVE_TIPO_VISTO, CONTEUDO_LANDING, ROTA_LANDING, TipoLanding } from '.
     ComoFuncionaComponent,
     SecaoRecursosComponent,
     SecaoParaQuemComponent,
+    FaixaTechProviderComponent,
     SecaoPerguntasComponent,
     RevelarAoRolarDirective,
   ],
@@ -47,6 +52,7 @@ import { CHAVE_TIPO_VISTO, CONTEUDO_LANDING, ROTA_LANDING, TipoLanding } from '.
 export class LandingPageComponent {
   readonly tipo = input.required<TipoLanding>();
 
+  protected readonly techProviderAprovado = TECH_PROVIDER_APROVADO;
   protected readonly anoAtual = new Date().getFullYear();
   protected readonly conteudo = computed(() => CONTEUDO_LANDING[this.tipo()]);
   protected readonly rota = computed(() => ROTA_LANDING[this.tipo()]);

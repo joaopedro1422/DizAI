@@ -1,0 +1,86 @@
+@let dados = agendamento();
+<div class="detalhe">
+  @if (dados.status === 'CANCELADO') {
+    <span class="selo selo--cancelado">Cancelado</span>
+  } @else if (dados.presencaConfirmada) {
+    <span class="selo selo--presenca">
+      <app-icone nome="check" [tamanho]="12" [espessura]="3" />
+      Presença confirmada
+    </span>
+  } @else if (dados.lembreteEnviado) {
+    <span class="selo selo--lembrete">Lembrete enviado</span>
+  }
+
+  <dl class="dados">
+    <div class="dado">
+      <dt>Cliente</dt>
+      <dd class="dado__forte">{{ dados.nomeCliente }}</dd>
+    </div>
+    @if (dados.whatsapp) {
+      <div class="dado">
+        <dt>WhatsApp</dt>
+        <dd>
+          <a class="dado__whatsapp" [href]="linkWhatsapp()" target="_blank" rel="noopener" [attr.aria-label]="'Abrir a conversa com ' + dados.nomeCliente + ' no WhatsApp'">
+            <app-icone nome="conversa" [tamanho]="16" />
+            {{ dados.whatsapp }}
+          </a>
+        </dd>
+      </div>
+    }
+    <div class="dado">
+      <dt>Serviço</dt>
+      <dd>{{ dados.servicos }} · {{ duracao() }}</dd>
+    </div>
+    <div class="dado">
+      <dt>Valor</dt>
+      <dd class="dado__valor">
+        {{ valor() }}
+        @if (dados.status !== 'CANCELADO') {
+          <button type="button" class="dado__editar" (click)="editarValor.emit()">Editar</button>
+        }
+      </dd>
+    </div>
+    <div class="dado">
+      <dt>Dia e horário</dt>
+      <dd>{{ dia() }}, das {{ dados.inicio }} às {{ dados.fim }}</dd>
+    </div>
+    @if (variosProfissionais()) {
+      <div class="dado">
+        <dt>Profissional</dt>
+        <dd>{{ dados.profissionalNome }}</dd>
+      </div>
+    }
+    <div class="dado">
+      <dt>Agendado em</dt>
+      <dd>{{ agendadoEm() }} · {{ dados.origem === 'WHATSAPP' ? 'pelo assistente' : 'por você' }}</dd>
+    </div>
+  </dl>
+
+  @if (dados.produtos.length) {
+    <section class="reservados" aria-labelledby="titulo-reservados">
+      <h3 id="titulo-reservados" class="reservados__titulo">Produtos reservados</h3>
+      <p class="reservados__texto">Reservados pela agenda online para levar no dia do horário. Separe antes do atendimento.</p>
+      <div class="reservados__lista">
+        @for (produto of dados.produtos; track produto.nome) {
+          <div class="reservado">
+            @if (produto.fotoUrl) {
+              <img class="reservado__foto" [src]="produto.fotoUrl | urlImagem" [alt]="produto.nome">
+            } @else {
+              <span class="reservado__foto reservado__foto--vazia" aria-hidden="true">
+                <app-icone nome="caixa" [tamanho]="22" />
+              </span>
+            }
+            <span class="reservado__nome">{{ produto.nome }}</span>
+            @if (precoDoProduto(produto.preco, produto.precoAPartirDe); as preco) {
+              <span class="reservado__preco">{{ preco }}</span>
+            }
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+  @if (dados.status !== 'CANCELADO') {
+    <button type="button" class="btn btn--secundario btn--bloco" (click)="cancelar.emit()">Cancelar horário</button>
+  }
+</div>

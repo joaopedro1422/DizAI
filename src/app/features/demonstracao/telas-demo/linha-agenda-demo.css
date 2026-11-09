@@ -189,18 +189,13 @@
   white-space: nowrap;
 }
 
-/* número do cliente: abre a escolha de mensagem pronta */
+/* número do cliente: só texto no card; o link da conversa fica no modal */
 .bloco__whatsapp {
   flex: none;
   margin-left: auto;
-  padding: 0;
-  border: none;
-  background: transparent;
   font-size: 12px;
   font-weight: 700;
-  color: var(--cor-primaria);
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  color: var(--cor-texto-secundario);
   font-variant-numeric: tabular-nums;
 }
 

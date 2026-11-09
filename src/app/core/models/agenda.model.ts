@@ -94,6 +94,8 @@ export interface Agendamento {
   valor: number | null;
   /** Produtos à venda que o cliente reservou pela agenda online ("Também temos"); vazio = nenhum. */
   produtos: ProdutoReservado[];
+  /** Quando o agendamento foi feito (ISO). */
+  criadoEm: string;
 }
 
 /** Produto reservado no agendamento, com a foto e o preço do cadastro (o que saiu do cadastro vem só com o nome). */
