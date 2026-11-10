@@ -1,0 +1,573 @@
+/* Landing de vendas: "E ainda vem junto" (a vitrine no layout novo e o leque de artes). */
+
+.lv .vp__bloco {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 64px;
+  align-items: center;
+  padding-block: 24px;
+}
+
+.lv .vp__bloco + .vp__bloco {
+  margin-top: 56px;
+  padding-top: 72px;
+  border-top: 1px solid var(--linha);
+}
+
+.lv .vp__bloco--invertido .vp__texto {
+  order: 2;
+}
+
+.lv .vp__texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.lv .vp__texto h3 {
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.lv .vp__texto > p {
+  max-width: 44ch;
+  color: var(--suave);
+  font-size: 18px;
+}
+
+.lv .etiqueta-vp {
+  padding: 5px 12px;
+  border: 1px solid var(--gema-linha);
+  border-radius: 999px;
+  background: var(--gema-clara);
+  color: var(--noite);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.lv .vp__lista {
+  margin: 4px 0 8px;
+  font-size: 17px;
+}
+
+.lv .vp__visual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.lv .vp__visual::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 8% 6%;
+  border-radius: 40px;
+  background: var(--nevoa);
+}
+
+.lv .vp__visual > * {
+  position: relative;
+  z-index: 1;
+}
+
+.lv .diferenciais {
+  display: grid;
+  gap: 14px;
+  margin: 4px 0 8px;
+}
+
+.lv .diferencial {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.lv .diferencial i {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--noite);
+  color: var(--gema);
+  font-family: var(--f-mono);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.lv .diferencial b {
+  display: block;
+  font-size: 17px;
+}
+
+.lv .diferencial small {
+  color: var(--suave);
+  font-size: 15.5px;
+}
+
+/* ---------- a vitrine no layout novo (cópia de /l/{slug}) ---------- */
+.lv .vt {
+  --vt-destaque: #8a6200;
+  --vt-fundo: #fffaf3;
+  --vt-borda: #eee3d6;
+  --vt-suave: #8a7666;
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background: var(--vt-fundo);
+  color: #2b1d14;
+  font-family: 'Manrope', var(--f-texto);
+}
+
+.lv .vt__rolagem {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 70px;
+  animation: lv-vt-rola 18s ease-in-out infinite;
+}
+
+.lv .vt:hover .vt__rolagem {
+  animation-play-state: paused;
+}
+
+.lv .vt__capa {
+  flex: none;
+  height: 128px;
+  background: #f4d9df center / cover;
+}
+
+.lv .vt__cartao {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: -42px 12px 0;
+  padding: 0 12px 14px;
+  border: 1px solid var(--vt-borda);
+  border-radius: 18px;
+  background: #ffffff;
+  text-align: center;
+  box-shadow: 0 14px 30px -22px rgba(0, 0, 0, 0.45);
+}
+
+.lv .vt__logo {
+  width: 66px;
+  height: 66px;
+  margin-top: -33px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.35);
+}
+
+.lv .vt__nome {
+  font-family: 'Dancing Script', cursive;
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.lv .vt__desc {
+  color: var(--vt-suave);
+  font-size: 11.5px;
+}
+
+.lv .vt__selos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+
+.lv .vt__selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #f5ede4;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.lv .vt__selo i {
+  color: #e2a400;
+  font-style: normal;
+}
+
+.lv .vt__selo--aberta::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #1fa67a;
+}
+
+.lv .vt__atendimento {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--vt-suave);
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.lv .vt__digitando {
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px 5px;
+  border-radius: 7px 7px 7px 2px;
+  background: var(--vt-destaque);
+}
+
+.lv .vt__digitando i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #ffffff;
+  animation: marca-pulo 1.2s ease-in-out infinite;
+}
+
+.lv .vt__digitando i:nth-child(2) { animation-delay: 0.15s; }
+.lv .vt__digitando i:nth-child(3) { animation-delay: 0.3s; }
+
+.lv .vt__menu {
+  display: flex;
+  gap: 5px;
+  overflow: hidden;
+  padding: 14px 12px 6px;
+}
+
+.lv .vt__chip {
+  flex: none;
+  padding: 6px 10px;
+  border: 1px solid #e6dccf;
+  border-radius: 999px;
+  background: #f3ebe1;
+  font-family: 'Dancing Script', cursive;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.lv .vt__chip--ativa {
+  border-color: var(--vt-destaque);
+  background: var(--vt-destaque);
+  color: #ffffff;
+}
+
+.lv .vt__topico {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 14px 14px 8px;
+}
+
+.lv .vt__topico b {
+  font-family: 'Dancing Script', cursive;
+  font-size: 20px;
+}
+
+.lv .vt__topico small {
+  color: var(--vt-suave);
+  font-size: 10.5px;
+}
+
+.lv .vt__fotos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+  padding: 0 14px;
+}
+
+.lv .vt__fotos img {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.lv .vt__nota {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px 8px;
+}
+
+.lv .vt__nota strong {
+  font-family: 'Dancing Script', cursive;
+  font-size: 32px;
+  line-height: 1;
+}
+
+.lv .vt__nota span {
+  display: flex;
+  flex-direction: column;
+}
+
+.lv .vt__nota i,
+.lv .vt__depoimento i {
+  color: #e2a400;
+  font-style: normal;
+  letter-spacing: 1px;
+  font-size: 11px;
+}
+
+.lv .vt__nota small {
+  color: var(--vt-suave);
+  font-size: 10px;
+}
+
+.lv .vt__depoimentos {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 82%;
+  gap: 6px;
+  overflow: hidden;
+  padding: 0 14px;
+}
+
+.lv .vt__depoimento {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid var(--vt-borda);
+  border-radius: 12px;
+  background: #ffffff;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.lv .vt__depoimento small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.lv .vt__depoimento small b {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--vt-destaque);
+  color: #ffffff;
+  font-size: 10px;
+}
+
+.lv .vt__infos {
+  margin: 0 14px;
+  overflow: hidden;
+  border: 1px solid var(--vt-borda);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.lv .vt__info {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  gap: 8px;
+  padding: 9px 10px;
+  border-top: 1px solid var(--vt-borda);
+  color: var(--vt-suave);
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
+.lv .vt__info:first-child {
+  border-top: none;
+}
+
+.lv .vt__info b {
+  display: block;
+  color: #2b1d14;
+  font-size: 11px;
+}
+
+.lv .vt__info-icone {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: #f5ede4;
+  color: var(--vt-destaque);
+}
+
+.lv .vt__semana {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: start;
+  gap: 1px 10px;
+  margin-top: 3px;
+}
+
+.lv .vt__semana em {
+  font-style: normal;
+}
+
+.lv .vt__semana .hoje {
+  color: #2b1d14;
+  font-weight: 700;
+}
+
+.lv .vt__credito {
+  padding: 16px 0 6px;
+  text-align: center;
+  color: #a39488;
+  font-size: 10px;
+}
+
+.lv .vt__whats {
+  position: absolute;
+  z-index: 2;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px;
+  border-radius: 12px;
+  background: var(--vt-destaque);
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 700;
+  box-shadow: 0 10px 20px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* ---------- o leque de artes (a da frente troca sozinha) ---------- */
+.lv .leque {
+  position: relative;
+  width: min(520px, 100%);
+  height: 440px;
+}
+
+.lv .arte {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  width: 230px;
+  aspect-ratio: 4 / 5;
+  margin-left: -115px;
+  padding: 18px;
+  overflow: hidden;
+  border: none;
+  border-radius: 18px;
+  background-color: var(--noite);
+  background-position: center;
+  background-size: cover;
+  color: #ffffff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 24px 40px -22px rgba(19, 32, 74, 0.6);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease, top 0.6s ease;
+}
+
+.lv .arte::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 30%, rgba(0, 0, 0, 0.75));
+}
+
+.lv .arte > * {
+  position: relative;
+}
+
+.lv .arte small {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.lv .arte b {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--f-titulo);
+  font-size: 22px;
+  line-height: 1.05;
+}
+
+.lv .arte span {
+  margin-top: 10px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.lv .arte--amarelo span { background: #e2a400; color: #2a1a00; }
+.lv .arte--claro span { background: #ffffff; color: #6b3a48; }
+.lv .arte--escuro span { background: #1e1e1e; color: #ffffff; }
+
+.lv .arte--centro {
+  z-index: 3;
+  top: 0;
+  transform: none;
+}
+
+.lv .arte--direita {
+  z-index: 2;
+  transform: translateX(46%) rotate(8deg) scale(0.92);
+  opacity: 0.92;
+}
+
+.lv .arte--esquerda {
+  z-index: 1;
+  transform: translateX(-46%) rotate(-8deg) scale(0.92);
+  opacity: 0.92;
+}
+
+.lv .leque:hover .arte--direita { transform: translateX(54%) rotate(11deg) scale(0.92); }
+.lv .leque:hover .arte--esquerda { transform: translateX(-54%) rotate(-11deg) scale(0.92); }
+
+@keyframes lv-vt-rola {
+  0%, 12% { transform: none; }
+  32%, 46% { transform: translateY(calc(-50% + 280px)); }
+  66%, 84% { transform: translateY(calc(-100% + 620px)); }
+  100% { transform: none; }
+}
+
+@media (max-width: 1000px) {
+  .lv .vp__bloco {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
+  }
+
+  .lv .vp__bloco--invertido .vp__texto {
+    order: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .lv .leque {
+    height: 330px;
+  }
+
+  .lv .arte {
+    width: 170px;
+    margin-left: -85px;
+    padding: 14px;
+  }
+
+  .lv .arte b {
+    font-size: 17px;
+  }
+}

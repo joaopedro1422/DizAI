@@ -1,0 +1,661 @@
+/* Landing de vendas: como funciona, na prática (palco preso), mensagens de status e "o que ele faz". */
+
+/* ======================= COMO FUNCIONA ======================= */
+.lv .passos-curtos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.lv .curto {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-cartao);
+  background: var(--papel);
+}
+
+.lv .curto__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 26px 26px 18px;
+}
+
+.lv .curto__num {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--marinho);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.lv .curto__num b {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--gema);
+  color: var(--noite);
+  font-family: var(--f-mono);
+  font-size: 14px;
+}
+
+.lv .curto h3 {
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.lv .curto p {
+  color: var(--suave);
+  font-size: 16.5px;
+}
+
+.lv .curto__tela {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  min-height: 220px;
+  margin-top: auto;
+  padding: 20px;
+  background: var(--nevoa);
+}
+
+.lv .curto__tela--wpp {
+  background: var(--wpp-fundo);
+}
+
+.lv .campo-mock {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 11px 13px;
+  border: 1px solid var(--linha);
+  border-radius: 12px;
+  background: var(--papel);
+  font-size: 15px;
+}
+
+.lv .campo-mock small {
+  color: var(--fraco);
+  font-size: 14px;
+}
+
+.lv .opcao-mock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 11px 13px;
+  border: 1px solid var(--linha);
+  border-radius: 12px;
+  background: var(--papel);
+}
+
+.lv .opcao-mock__topo {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.lv .opcao-mock__topo span {
+  padding: 2px 9px;
+  border: 1px solid var(--gema-linha);
+  border-radius: 999px;
+  background: var(--gema-clara);
+  color: var(--noite);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.lv .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.lv .chips span {
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--nevoa);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.lv .conectado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.lv .conectado__ok {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--enviado);
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 800;
+  animation: lv-respira 2.4s ease-in-out infinite;
+}
+
+.lv .conectado small {
+  color: var(--suave);
+  font-size: 14.5px;
+}
+
+.lv .selo-ok {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--noite);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* os exemplos que trocam juntos (bolo, salgados, buquê) */
+.lv .slides {
+  position: relative;
+  height: 250px;
+}
+
+.lv .slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  opacity: 0;
+  transform: translateX(14px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+  pointer-events: none;
+}
+
+.lv .slide.ativo {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.lv .slide--wpp .msg {
+  max-width: 90%;
+}
+
+.lv .pontos-slide {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.lv .pontos-slide i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c9d0de;
+  transition: background-color 0.3s ease, width 0.3s ease;
+}
+
+.lv .pontos-slide i.ativo {
+  width: 20px;
+  border-radius: 4px;
+  background: var(--noite);
+}
+
+.lv .tempo-total {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 17px;
+  color: var(--suave);
+}
+
+.lv .tempo-total b {
+  color: var(--tinta);
+}
+
+/* ======================= NA PRÁTICA (palco preso) ======================= */
+.lv .historia__grade {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 56px;
+}
+
+.lv .passo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  min-height: 58vh;
+  padding-block: 24px;
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+}
+
+.lv .passo.ativo {
+  opacity: 1;
+}
+
+.lv .passo__num {
+  font-family: var(--f-mono);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--marinho);
+}
+
+.lv .passo h3 {
+  font-size: clamp(26px, 2.8vw, 34px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.lv .passo p {
+  max-width: 34ch;
+  color: var(--suave);
+  font-size: 19px;
+}
+
+.lv .passo .cena-inline {
+  display: none;
+}
+
+.lv .palco {
+  position: sticky;
+  top: 90px;
+  height: calc(100vh - 140px);
+  max-height: 560px;
+}
+
+.lv .palco__moldura {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 32px;
+  background: var(--papel);
+  box-shadow: 0 24px 50px -36px rgba(19, 32, 74, 0.45);
+}
+
+.lv .palco .cena {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+  pointer-events: none;
+}
+
+.lv .palco .cena.ativa {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* cada peça da cena entra em sequência quando ela fica à vista */
+.lv .palco .cena.ativa .cena__largura > * {
+  animation: marca-entra 0.5s ease both;
+}
+
+.lv .palco .cena.ativa .cena__largura > :nth-child(2) { animation-delay: 0.15s; }
+.lv .palco .cena.ativa .cena__largura > :nth-child(3) { animation-delay: 0.3s; }
+.lv .palco .cena.ativa .cena__largura > :nth-child(4) { animation-delay: 0.45s; }
+
+.lv .palco__progresso {
+  position: absolute;
+  z-index: 2;
+  left: 28px;
+  bottom: 22px;
+  display: flex;
+  gap: 6px;
+}
+
+.lv .palco__progresso i {
+  width: 22px;
+  height: 5px;
+  border-radius: 4px;
+  background: #d3d9e6;
+  transition: background-color 0.3s ease, width 0.3s ease;
+}
+
+.lv .palco__progresso i.ativo {
+  width: 40px;
+  background: var(--noite);
+}
+
+.lv .cena {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 34px;
+}
+
+.lv .cena--wpp {
+  background: var(--wpp-fundo);
+}
+
+.lv .cena__largura {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(400px, 100%);
+}
+
+.lv .cena__selo {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--noite);
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.lv .cena__selo b {
+  color: var(--gema);
+  font-weight: 600;
+}
+
+.lv .cena__selo--verde {
+  background: var(--enviado);
+}
+
+.lv .cartao {
+  padding: 16px 18px;
+  border: 1px solid var(--linha);
+  border-radius: 16px;
+  background: var(--papel);
+  box-shadow: 0 12px 26px -18px rgba(19, 32, 74, 0.45);
+}
+
+.lv .cartao__topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.lv .cartao__legenda {
+  color: var(--fraco);
+  font-weight: 600;
+}
+
+.lv .cartao__fone {
+  color: var(--fraco);
+  font-weight: 500;
+}
+
+.lv .linha-dado {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+  border-top: 1px solid var(--linha);
+  font-size: 15px;
+}
+
+.lv .linha-dado span:first-child {
+  color: var(--fraco);
+}
+
+.lv .acoes-cartao {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.lv .acoes-cartao .btn {
+  width: auto;
+}
+
+/* o botão que o lojista toca: um anel que pulsa */
+.lv .btn--toque {
+  position: relative;
+}
+
+.lv .btn--toque::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--gema);
+  border-radius: 16px;
+  animation: lv-anel 2.2s ease-out infinite;
+}
+
+.lv .status {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--nevoa);
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.lv .status--pronto {
+  background: var(--gema-clara);
+  color: #7a5a00;
+}
+
+.lv .status--ok {
+  background: #d8f3e8;
+  color: #0e6e4f;
+}
+
+.lv .valor-grande {
+  font-family: var(--f-mono);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.lv .barras {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 100px;
+  margin-top: 8px;
+}
+
+.lv .barras i {
+  flex: 1;
+  border-radius: 6px 6px 2px 2px;
+  background: #d9deea;
+  transform-origin: bottom;
+}
+
+.lv .barras i.alta {
+  background: var(--gema-forte);
+}
+
+/* as barras crescem quando aparecem (na cena ativa e nos recursos) */
+.lv .palco .cena.ativa .barras i,
+.lv .revelado .barras--crescem i {
+  animation: lv-cresce 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.2s + var(--i, 0) * 0.07s);
+}
+
+.lv .insight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--suave);
+  font-size: 15px;
+}
+
+.lv .insight::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--gema-forte);
+}
+
+/* ======================= MENSAGENS AUTOMÁTICAS DE STATUS ======================= */
+.lv .etapas-aviso {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lv .etapas-aviso__etapas {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lv .etapas-aviso__etapas li {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  overflow: hidden;
+  padding: 10px 6px;
+  border: 1px solid var(--linha);
+  border-radius: 10px;
+  background: var(--papel);
+  color: var(--fraco);
+  font-size: 14px;
+  font-weight: 700;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.lv .etapas-aviso__etapas li .mono {
+  font-size: 12px;
+}
+
+.lv .etapas-aviso__etapas li.feita {
+  border-color: var(--gema-linha);
+  background: var(--gema-clara);
+  color: var(--noite);
+}
+
+.lv .etapas-aviso__etapas li.atual {
+  border-color: var(--noite);
+  background: var(--noite);
+  color: #ffffff;
+}
+
+/* a barrinha da etapa atual enche no tempo dela */
+.lv .etapas-aviso__tempo {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background: var(--gema);
+  transform-origin: left;
+  animation: lv-enche linear both;
+}
+
+.lv .etapas-aviso__conversa {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 132px;
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--wpp-fundo);
+}
+
+.lv .cena--wpp .etapas-aviso__conversa {
+  padding: 0;
+  background: none;
+}
+
+.lv .etapas-aviso__rotulo {
+  color: var(--suave);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.lv .etapas-aviso__enviada {
+  align-self: flex-start;
+  color: #3a8ed0;
+  font-size: 12.5px;
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.lv .etapas-aviso__enviada.visivel {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes lv-enche {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes lv-cresce {
+  from { transform: scaleY(0.05); }
+  to { transform: none; }
+}
+
+@keyframes lv-anel {
+  0% { opacity: 0.9; transform: scale(0.96); }
+  70%, 100% { opacity: 0; transform: scale(1.08); }
+}
+
+@keyframes lv-respira {
+  0%, 100% { box-shadow: 0 0 0 10px rgba(26, 155, 113, 0.14); }
+  50% { box-shadow: 0 0 0 16px rgba(26, 155, 113, 0.06); }
+}
+
+@media (max-width: 1000px) {
+  .lv .historia__grade,
+  .lv .passos-curtos {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lv .palco {
+    display: none;
+  }
+
+  .lv .passo {
+    min-height: 0;
+    padding-block: 16px;
+    opacity: 1;
+  }
+
+  .lv .passo .cena-inline {
+    display: flex;
+    margin-top: 8px;
+    padding: 22px;
+    border-radius: 24px;
+    background: var(--papel);
+  }
+
+  .lv .passo .cena-inline.cena--wpp {
+    background: var(--wpp-fundo);
+  }
+}

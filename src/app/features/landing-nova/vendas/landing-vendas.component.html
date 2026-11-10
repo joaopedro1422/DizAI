@@ -1,0 +1,219 @@
+<header class="topo faixa">
+  <div class="miolo">
+    <a routerLink="/" class="topo__marca" aria-label="DizAI, início"><app-logo [tamanhoSimbolo]="32" [tamanhoTexto]="24" /></a>
+    <nav class="topo__links" aria-label="Principal">
+      <a routerLink="/vendas" fragment="recursos">Recursos</a>
+      <a routerLink="/vendas" fragment="como">Como funciona</a>
+      <a routerLink="/vendas" fragment="duvidas">Dúvidas</a>
+      <a routerLink="/agendamentos">Para quem agenda</a>
+      <a class="btn btn--forte btn--pequeno" routerLink="/entrar">Entrar</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <app-hero-vendas />
+
+  <div class="negocios" aria-label="Tipos de negócio atendidos">
+    <div class="negocios__trilho">
+      @for (negocio of negociosEmDobro; track $index) {
+        <span>{{ negocio }}</span>
+      }
+    </div>
+  </div>
+
+  <!-- o problema: as dores com a mensagem de cada cliente e a tela de bloqueio cheia de mensagens sem resposta -->
+  <section class="secao faixa dores" appRevelar>
+    <div class="miolo">
+      <div>
+        <span class="rotulo">O problema</span>
+        <h2 class="titulo dores__titulo">Você trabalha,<br /><span class="grifo">o WhatsApp não espera.</span></h2>
+        <div class="dores__lista">
+          @for (dor of dores; track dor.titulo; let i = $index) {
+            <div class="dor">
+              <span class="dor__num">0{{ i + 1 }}</span>
+              <div>
+                <h3>{{ dor.titulo }}</h3>
+                <p>{{ dor.texto }}</p>
+                <span class="dor__citacao">{{ dor.citacao }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+      <app-celular-mock class="bloqueio" style="--celular-largura: 330px; --celular-altura: 600px" aria-label="Celular com mensagens sem resposta">
+        <div class="bloqueio__tela">
+          <div class="bloqueio__hora">14:37</div>
+          <div class="bloqueio__dia">sábado, 24 de outubro</div>
+          <span class="bloqueio__contador">{{ bloqueio.contador }}</span>
+          @for (aviso of bloqueio.avisos; track aviso.nome; let i = $index) {
+            <div class="notif" [style.--i]="i">
+              <span class="notif__av" [style.background]="aviso.cor">{{ aviso.nome[0] }}</span>
+              <span class="notif__textos"><b>{{ aviso.nome }}<small>{{ aviso.quando }}</small></b><p>{{ aviso.texto }}</p></span>
+            </div>
+          }
+        </div>
+      </app-celular-mock>
+    </div>
+  </section>
+
+  <app-prova-vendas appRevelar />
+  <app-como-funciona-vendas appRevelar />
+  <app-na-pratica-vendas />
+
+  <!-- o que ele faz por você: um recurso por cartão -->
+  <section class="secao faixa" appRevelar>
+    <div class="miolo">
+      <div class="cabeca">
+        <span class="rotulo">O que ele faz por você</span>
+        <p class="apoio">Um atendente a mais na equipe, sem folga e sem salário.</p>
+      </div>
+      <div class="grade-dia">
+        @for (item of dia; track item.titulo; let i = $index) {
+          <article class="hora" [style.--i]="i">
+            <span class="hora__momento">{{ item.momento }}</span>
+            <h3>{{ item.titulo }}</h3>
+            <p>{{ item.texto }}</p>
+            <div class="hora__visual">
+              @switch (item.visual) {
+                @case ('conversa') {
+                  <span class="msg msg--cliente">Vocês abrem amanhã?<time>02:14</time></span>
+                  <span class="msg msg--loja">Abrimos sim, das 9h às 19h!<time>02:14</time></span>
+                }
+                @case ('audio') {
+                  <div class="onda">
+                    <b></b>
+                    <span>
+                      @for (altura of ondas; track $index) {
+                        <i [style.height.%]="altura" [style.--i]="$index"></i>
+                      }
+                    </span>
+                    <small class="mono">0:40</small>
+                  </div>
+                }
+                @case ('arquivo') {
+                  <span class="msg msg--arquivo"><span class="pdf">PDF</span><span><b>Cardápio de novembro.pdf</b><small>enviado agora</small></span></span>
+                }
+                @case ('chama') {
+                  <div class="push"><span class="push__icone"></span><span><b>Um cliente quer falar com você</b><small>"Fazem sem lactose?"</small></span></div>
+                }
+                @case ('chave') {
+                  <div class="chave"><span>Assistente nesta conversa</span><i></i></div>
+                }
+                @case ('jeito') {
+                  <div class="chips"><span>Saudação</span><span>Regras da loja</span><span>Pagamento</span></div>
+                }
+                @case ('posts') {
+                  <div class="chips"><span>Feed</span><span>Story</span><span>Legenda pronta</span></div>
+                }
+                @case ('numeros') {
+                  <div class="valor-grande">R$ 4.820</div>
+                }
+              }
+            </div>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <app-recursos-vendas appRevelar />
+  <app-vitrine-posts-vendas appRevelar />
+
+  <!-- você no controle -->
+  <section class="secao faixa confianca sobre-noite" appRevelar>
+    <div class="miolo">
+      <div class="cabeca">
+        <span class="rotulo">Você no controle</span>
+        <h2 class="titulo">O assistente trabalha. <span class="grifo">Você continua no comando.</span></h2>
+      </div>
+      <div class="grade-confianca">
+        @for (item of confianca; track item[0]) {
+          <article class="garantia"><span class="check">✓</span><h3>{{ item[0] }}</h3><p>{{ item[1] }}</p></article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- para quem é: cartões com fotos reais -->
+  <section class="secao faixa" id="para-quem" appRevelar>
+    <div class="miolo">
+      <div class="cabeca">
+        <span class="rotulo">Para quem é</span>
+        <h2 class="titulo">Feito para o seu tipo de negócio.</h2>
+      </div>
+      <div class="grade-ramos">
+        @for (ramo of ramos; track ramo.titulo) {
+          <article class="ramo">
+            <div class="ramo__fotos">
+              @for (foto of ramo.fotos; track foto) {
+                <img [src]="foto" alt="" loading="lazy" />
+              }
+            </div>
+            <div class="ramo__corpo">
+              <div><h3>{{ ramo.titulo }}</h3><small>{{ ramo.quem }}</small></div>
+              <ul class="lista-checks">
+                @for (faz of ramo.faz; track faz) {
+                  <li><span class="check">✓</span><span>{{ faz }}</span></li>
+                }
+              </ul>
+            </div>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  @if (techProviderAprovado) {
+    <app-faixa-tech-provider appRevelar />
+  }
+
+  <section class="secao faixa nevoa perguntas" id="duvidas" appRevelar>
+    <div class="miolo">
+      <div>
+        <div class="cabeca cabeca--perguntas">
+          <span class="rotulo">Dúvidas</span>
+          <h2 class="titulo">Perguntas frequentes</h2>
+          <p class="apoio">O que todo dono de negócio pergunta antes de começar.</p>
+        </div>
+        <div class="contato">
+          <b>Ficou alguma dúvida?</b>
+          <span>Fale com a gente por e-mail. Quem responde é uma pessoa.</span>
+          <a class="btn btn--linha btn--pequeno" [href]="'mailto:' + emailSuporte">Falar com a equipe</a>
+        </div>
+      </div>
+      <div class="lista-perguntas">
+        @for (pergunta of perguntas; track pergunta[0]) {
+          <details>
+            <summary>{{ pergunta[0] }}</summary>
+            <p>{{ pergunta[1] }}</p>
+          </details>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="final faixa nevoa">
+    <div class="miolo">
+      <div class="final__painel" appRevelar>
+        <h2>{{ final.titulo }}</h2>
+        <p>{{ final.texto }}</p>
+        <div class="final__acoes">
+          <a class="btn btn--escuro" routerLink="/cadastro" [queryParams]="{ tipo: 'produtos' }">Testar de graça →</a>
+          <a class="final__demo" routerLink="/demonstracao" [queryParams]="{ tipo: 'produtos' }">Ver uma demonstração</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="rodape faixa">
+  <div class="miolo">
+    <app-logo [tamanhoSimbolo]="30" [tamanhoTexto]="22" />
+    <span class="rodape__assinatura">Nenhum cliente sem resposta.</span>
+    <span class="rodape__links">
+      <span>© {{ anoAtual }} DizAI</span>
+      <a routerLink="/privacidade">Privacidade</a>
+    </span>
+  </div>
+</footer>

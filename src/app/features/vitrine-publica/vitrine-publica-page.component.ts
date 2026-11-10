@@ -1,4 +1,5 @@
-import { CarrosselFeedbacksComponent } from './carrossel-feedbacks/carrossel-feedbacks.component';
+import { AvaliacoesVitrineComponent } from './avaliacoes-vitrine/avaliacoes-vitrine.component';
+import { semana, situacaoAgora } from './horario-loja';
 import { MapaLojaComponent } from '../../shared/components/mapa-loja/mapa-loja.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '@angular/common';
@@ -39,10 +40,10 @@ type AbaVitrine = 'galeria' | 'agenda' | 'orcamento';
 /** Página pública com os trabalhos da loja, aberta pelo cliente a partir do link enviado no WhatsApp. */
 @Component({
   selector: 'app-vitrine-publica-page',
-  imports: [RouterLink, IconeComponent, LogoComponent, VisualizadorFotoComponent, CarregandoComponent, UrlImagemPipe, AgendaPublicaComponent, OrcamentoPublicoComponent, CarrosselFeedbacksComponent, MapaLojaComponent, DicaSobrepostaComponent],
+  imports: [RouterLink, IconeComponent, LogoComponent, VisualizadorFotoComponent, CarregandoComponent, UrlImagemPipe, AgendaPublicaComponent, OrcamentoPublicoComponent, AvaliacoesVitrineComponent, MapaLojaComponent, DicaSobrepostaComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './vitrine-publica-page.component.html',
-  styleUrls: ['./vitrine-publica-page.component.css', './layout-fotos-vitrine.css', './abas-vitrine.css'],
+  styleUrls: ['./vitrine-publica-page.component.css', './cartao-loja-vitrine.css', './layout-fotos-vitrine.css', './abas-vitrine.css'],
 })
 export class VitrinePublicaPageComponent implements OnInit {
   /** Vem da rota /l/:slug */
@@ -84,6 +85,38 @@ export class VitrinePublicaPageComponent implements OnInit {
   protected readonly descricao = computed(() => this.loja()?.descricao ?? '');
   protected readonly fotoPerfilUrl = computed(() => this.loja()?.fotoPerfilUrl ?? null);
   protected readonly capaUrl = computed(() => this.loja()?.capaUrl ?? null);
+  /** Sem capa: um degradê liso da cor da loja para um tom mais claro (o mesmo da capa automática). */
+  protected readonly capaDegrade = computed(() => {
+    const cor = this.corDaMarca() ?? '#1c1a19';
+    return `linear-gradient(135deg, ${cor}, color-mix(in srgb, ${cor} 55%, #ffffff))`;
+  });
+
+  private readonly informacoes = computed(() => this.loja()?.informacoes ?? null);
+  private readonly horarios = computed(() => {
+    const info = this.informacoes();
+    return info && !info.horarioLivre ? info.horarios : [];
+  });
+  /** Selo do cartão: "Aberto agora · fecha às 19h" / "Fechado · abre amanhã às 9h" (null sem horário). */
+  protected readonly statusLoja = computed(() => situacaoAgora(this.horarios()));
+  protected readonly semanaDaLoja = computed(() => (this.horarios().length ? semana(this.horarios()) : []));
+  protected readonly horarioLivre = computed(() => this.informacoes()?.horarioLivre === true);
+  protected readonly pagamento = computed(() => listaComE(this.informacoes()?.formasPagamento ?? []));
+  protected readonly recebimento = computed(() => listaComE(this.informacoes()?.formasRecebimento ?? []));
+  protected readonly taxaEntrega = computed(() => this.informacoes()?.taxaEntrega ?? null);
+  /** "Entrega e retirada" nas lojas de produtos; "Atendimento" quando só há atendimento no local. */
+  protected readonly tituloRecebimento = computed(() => {
+    const formas = this.informacoes()?.formasRecebimento ?? [];
+    return formas.some((f) => f === 'Entrega' || f.startsWith('Retirada')) ? 'Entrega e retirada' : 'Atendimento';
+  });
+  protected readonly temInformacoes = computed(
+    () => this.semanaDaLoja().length > 0 || this.horarioLivre() || !!this.pagamento() || !!this.recebimento(),
+  );
+
+  /** Selo de avaliações do cartão, com todos os feedbacks publicados (null sem nenhum). */
+  protected readonly seloAvaliacoes = computed(() => {
+    const feedbacks = this.albuns().flatMap((a) => (a.tipo === 'FEEDBACKS' ? (a.feedbacks ?? []) : []));
+    return feedbacks.length ? resumoDeFeedbacks(feedbacks.map((f) => f.estrelas)) : null;
+  });
   protected readonly linkWhatsapp = computed(() => gerarLinkWhatsapp(this.loja()?.numeroWhatsapp ?? ''));
   protected readonly fonteSelecionada = computed<FonteVitrine>(
     () => this.loja()?.fonteGaleria ?? 'Poppins',
@@ -272,14 +305,6 @@ export class VitrinePublicaPageComponent implements OnInit {
     return this.albunsExpandidos().has(album.slug);
   }
 
-  /** Cabeçalho do tópico de feedbacks: "★ 4,8 · 12 avaliações". */
-  protected resumoFeedbacks(album: AlbumPublico): string {
-    const feedbacks = album.feedbacks ?? [];
-    const media = feedbacks.reduce((soma, f) => soma + f.estrelas, 0) / Math.max(1, feedbacks.length);
-    const nota = media.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-    return `★ ${nota} · ${feedbacks.length} ${feedbacks.length === 1 ? 'avaliação' : 'avaliações'}`;
-  }
-
   protected contagemFotos(album: AlbumPublico): string {
     return pluralizar(album.quantidadeFotos, 'foto', 'fotos');
   }
@@ -351,6 +376,18 @@ export class VitrinePublicaPageComponent implements OnInit {
   }
 
   protected readonly fonteCss = computed(() => fonteComFamilia(this.fonteSelecionada()));
+}
+
+/** "4,9 · 32 avaliações" */
+function resumoDeFeedbacks(estrelas: number[]): string {
+  const media = estrelas.reduce((soma, e) => soma + e, 0) / estrelas.length;
+  const nota = media.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  return `${nota} · ${estrelas.length} ${estrelas.length === 1 ? 'avaliação' : 'avaliações'}`;
+}
+
+/** ["Pix", "Dinheiro", "Cartão"] -> "Pix, Dinheiro e Cartão"; vazio = "". */
+function listaComE(itens: string[]): string {
+  return itens.length <= 1 ? (itens[0] ?? '') : `${itens.slice(0, -1).join(', ')} e ${itens.at(-1)}`;
 }
 
 function tituloDaAba(aba: AbaVitrine, loja: LojaPublica | null): string {

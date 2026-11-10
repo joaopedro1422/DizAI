@@ -1,6 +1,6 @@
 /**
- * Capa pronta da vitrine: um degradê na diagonal com a cor de destaque da loja e duas formas claras
- * bem suaves. Sai do tamanho do cartão de compartilhamento (1200×630), então serve também para a prévia do link.
+ * Capa pronta da vitrine: um degradê liso na diagonal, da cor de destaque da loja para um tom mais claro dela.
+ * Sai do tamanho do cartão de compartilhamento (1200×630), então serve também para a prévia do link.
  * É desenhada no navegador e sobe como uma capa comum (uma imagem de verdade no armazenamento).
  */
 const LARGURA = 1200;
@@ -17,18 +17,12 @@ export function desenharCapaDegrade(hex: string): string {
   }
   const cor = paraRgb(hex);
 
-  // mais escuro no canto de cima, a cor da loja no meio e mais claro embaixo
+  // degradê liso na diagonal: a cor da loja no canto de cima e um tom mais claro dela embaixo
   const degrade = contexto.createLinearGradient(0, 0, LARGURA, ALTURA);
-  degrade.addColorStop(0, css(misturar(cor, PRETO, 0.22)));
-  degrade.addColorStop(0.55, css(cor));
-  degrade.addColorStop(1, css(misturar(cor, BRANCO, 0.42)));
+  degrade.addColorStop(0, css(cor));
+  degrade.addColorStop(1, css(misturar(cor, BRANCO, 0.45)));
   contexto.fillStyle = degrade;
   contexto.fillRect(0, 0, LARGURA, ALTURA);
-
-  // formas claras e translúcidas, só para dar profundidade
-  circulo(contexto, LARGURA * 0.86, ALTURA * 0.12, 300, 'rgba(255, 255, 255, 0.10)');
-  circulo(contexto, LARGURA * 0.08, ALTURA * 1.02, 340, 'rgba(255, 255, 255, 0.07)');
-  circulo(contexto, LARGURA * 0.62, ALTURA * 0.95, 140, 'rgba(255, 255, 255, 0.05)');
 
   return canvas.toDataURL('image/jpeg', 0.92);
 }
@@ -40,15 +34,7 @@ export async function arquivoDaCapa(dataUrl: string): Promise<File> {
 }
 
 type Rgb = [number, number, number];
-const PRETO: Rgb = [0, 0, 0];
 const BRANCO: Rgb = [255, 255, 255];
-
-function circulo(contexto: CanvasRenderingContext2D, x: number, y: number, raio: number, cor: string): void {
-  contexto.beginPath();
-  contexto.arc(x, y, raio, 0, Math.PI * 2);
-  contexto.fillStyle = cor;
-  contexto.fill();
-}
 
 function paraRgb(hex: string): Rgb {
   const limpo = hex.replace('#', '');

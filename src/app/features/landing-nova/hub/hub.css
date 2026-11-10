@@ -1,0 +1,453 @@
+/* Hub (/): a abertura azul-noite e os dois mundos com as cenas em stories. Preso a .hb (ViewEncapsulation.None). */
+
+.hb .hb-abertura {
+  position: relative;
+  padding-block: 56px 0;
+  background: var(--noite);
+  text-align: center;
+}
+
+/* brilho amarelo suave atrás do título */
+.hb .hb-abertura::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  width: 760px;
+  height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 200, 61, 0.12), transparent);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.hb .hb-abertura .miolo {
+  position: relative;
+}
+
+.hb .hb-selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.hb .hb-selo i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gema);
+  box-shadow: 0 0 0 4px rgba(255, 200, 61, 0.22);
+}
+
+.hb .hb-titulo {
+  margin-top: 22px;
+  color: #ffffff;
+  font-size: clamp(44px, 6.6vw, 84px);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.hb .hb-desc {
+  max-width: 34em;
+  margin: 22px auto 0;
+  color: #dce1ef;
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+/* ---------- os dois mundos (descem para a faixa branca) ---------- */
+.hb .mundos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 44px;
+  transform: translateY(96px);
+  text-align: left;
+}
+
+.hb .mundo {
+  --mundo-tom: var(--gema-forte);
+  --mundo-tom-claro: var(--gema-clara);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 30px;
+  background: var(--papel);
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 34px 60px -40px rgba(19, 32, 74, 0.7), 0 0 0 1px rgba(19, 32, 74, 0.06);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+}
+
+.hb .mundo--agenda {
+  --mundo-tom: var(--enviado);
+  --mundo-tom-claro: #dcf4ea;
+}
+
+.hb .mundo:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 44px 70px -40px rgba(19, 32, 74, 0.75), 0 0 0 1px rgba(19, 32, 74, 0.08);
+}
+
+.hb .mundo:hover .mundo__seta {
+  transform: translateX(4px);
+}
+
+.hb .mundo__cena {
+  position: relative;
+  height: 340px;
+  overflow: hidden;
+  background: var(--wpp-fundo);
+}
+
+/* as barrinhas como stories */
+.hb .mundo__barras {
+  position: absolute;
+  z-index: 4;
+  top: 14px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  gap: 5px;
+}
+
+.hb .mundo__barra {
+  flex: 1;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgba(19, 32, 74, 0.16);
+}
+
+.hb .mundo__barra i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--noite);
+  transform-origin: left;
+}
+
+.hb .mundo__enche {
+  animation: hb-enche 5.5s linear both;
+}
+
+.hb .mundo:hover .mundo__enche,
+.hb .mundo:hover .hb-cena--ativa * {
+  animation-play-state: paused;
+}
+
+/* cada cena: a conversa à esquerda e a foto à direita, uma por cima da outra */
+.hb .hb-cena {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42%;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.hb .hb-cena--ativa {
+  z-index: 1;
+  opacity: 1;
+}
+
+.hb .hb-cena__foto {
+  grid-column: 2;
+  grid-row: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hb .hb-cena__conversa {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 34px 18px 18px;
+}
+
+.hb .hb-cena__conversa .msg {
+  max-width: 100%;
+  font-size: 14px;
+}
+
+.hb .hb-cena__resposta {
+  display: grid;
+}
+
+.hb .hb-cena__resposta > * {
+  grid-area: 1 / 1;
+}
+
+.hb .hb-cena__digitando {
+  align-self: start;
+  justify-self: start;
+  opacity: 0;
+}
+
+.hb .hb-cartao {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  border: 1px solid var(--linha);
+  border-radius: 14px;
+  background: var(--papel);
+  box-shadow: 0 14px 26px -20px rgba(19, 32, 74, 0.55);
+  font-size: 13.5px;
+}
+
+.hb .hb-cartao__topo {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.hb .hb-cartao__topo i {
+  font-style: normal;
+  font-weight: 600;
+}
+
+.hb .hb-cartao__livres {
+  color: var(--enviado);
+}
+
+.hb .hb-cartao__linha {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 5px 0;
+  border-top: 1px solid var(--linha);
+}
+
+.hb .hb-cartao__linha small {
+  color: var(--fraco);
+  font-size: 13px;
+}
+
+.hb .hb-bloco {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.hb .hb-bloco small {
+  color: var(--fraco);
+  font-size: 12px;
+}
+
+.hb .hb-bloco span {
+  padding: 6px 9px;
+  border-left: 3px solid #c3cada;
+  border-radius: 8px;
+  background: var(--nevoa);
+  font-weight: 600;
+}
+
+.hb .hb-bloco--novo span {
+  border-left-color: var(--mundo-tom);
+  background: var(--mundo-tom-claro);
+}
+
+.hb .hb-cena__aviso {
+  position: absolute;
+  z-index: 3;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(58% + 30px);
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--noite);
+  color: #ffffff;
+  box-shadow: 0 16px 30px -16px rgba(10, 18, 48, 0.8);
+}
+
+.hb .hb-cena__aviso b {
+  display: block;
+  font-size: 13.5px;
+}
+
+.hb .hb-cena__aviso small {
+  color: #c9d0e4;
+  font-size: 12px;
+}
+
+.hb .hb-cena__aviso-icone {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 9px;
+  background: var(--mundo-tom);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+/* a cena que entra se monta: foto, pergunta, "digitando…", o resultado e o aviso */
+.hb .hb-cena--ativa .hb-cena__foto { animation: hb-zoom 6s ease-out both; }
+.hb .hb-cena--ativa .hb-cena__pergunta { animation: marca-entra 0.45s ease 0.2s both; }
+.hb .hb-cena--ativa .hb-cena__digitando { animation: hb-digita 1.1s ease 0.75s both; }
+.hb .hb-cena--ativa .hb-cartao { animation: hb-cartao 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1.8s both; }
+.hb .hb-cena--ativa .hb-bloco--novo span { animation: hb-destaca 1.2s ease 2.3s both; }
+.hb .hb-cena--ativa .hb-cena__aviso { animation: hb-aviso 0.5s cubic-bezier(0.22, 1, 0.36, 1) 2.7s both; }
+
+.hb .mundo__corpo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 26px 28px 28px;
+}
+
+.hb .mundo__sobre {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--marinho);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.hb .mundo__visto {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--mundo-tom-claro);
+  color: var(--noite);
+  font-size: 12px;
+}
+
+.hb .mundo__corpo h2 {
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.hb .mundo__corpo p {
+  color: var(--suave);
+}
+
+.hb .mundo__negocios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hb .mundo__negocios span {
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--nevoa);
+  color: var(--suave);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.hb .mundo__ir {
+  margin-top: 8px;
+  border-radius: var(--raio) var(--raio) var(--raio) 4px;
+}
+
+.hb .mundo__seta {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+@keyframes hb-enche {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes hb-zoom {
+  from { transform: scale(1.08); }
+  to { transform: none; }
+}
+
+@keyframes hb-digita {
+  0% { opacity: 0; transform: translateY(6px); }
+  15%, 80% { opacity: 1; transform: none; }
+  100% { opacity: 0; }
+}
+
+@keyframes hb-cartao {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes hb-destaca {
+  0%, 100% { box-shadow: none; }
+  40% { box-shadow: 0 0 0 4px var(--mundo-tom-claro); }
+}
+
+@keyframes hb-aviso {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 1000px) {
+  .hb .mundos {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 560px;
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .hb .hb-desc {
+    font-size: 18px;
+  }
+
+  .hb .mundos {
+    transform: translateY(72px);
+  }
+
+  .hb .mundo__cena {
+    height: 440px;
+  }
+
+  .hb .hb-cena {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 150px minmax(0, 1fr);
+  }
+
+  .hb .hb-cena__foto {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .hb .hb-cena__conversa {
+    grid-row: 2;
+    justify-content: flex-start;
+    padding: 14px 16px 76px;
+  }
+
+  .hb .hb-cena__aviso {
+    max-width: calc(100% - 32px);
+  }
+
+  .hb .mundo__corpo h2 {
+    font-size: 32px;
+  }
+
+  .hb .mundo__ir {
+    width: 100%;
+  }
+}

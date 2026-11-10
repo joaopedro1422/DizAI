@@ -49,8 +49,10 @@
         <div class="vitrine__capa">
           <img [src]="capa | urlImagem" alt="">
         </div>
+      } @else {
+        <div class="vitrine__capa vitrine__capa--degrade" [style.background]="capaDegrade()"></div>
       }
-      <header class="loja animacao-entrada animacao-entrada--1" [class.loja--com-capa]="!!capaUrl()">
+      <header class="loja loja--com-capa animacao-entrada animacao-entrada--1">
         @if (fotoPerfilUrl(); as foto) {
           @if (fotoPerfilFalhou()) {
             <span class="loja__inicial" aria-hidden="true">{{ inicial() }}</span>
@@ -66,6 +68,20 @@
             <p class="loja__descricao">{{ descricao() }}</p>
           }
         </div>
+        @if (statusLoja() || seloAvaliacoes()) {
+          <div class="loja__selos">
+            @if (statusLoja(); as status) {
+              <span class="loja__selo" [class.loja__selo--aberta]="status.aberta" [class.loja__selo--fechada]="!status.aberta">{{ status.texto }}</span>
+            }
+            @if (seloAvaliacoes(); as avaliacoes) {
+              <span class="loja__selo"><span class="loja__estrela" aria-hidden="true">★</span> {{ avaliacoes }}</span>
+            }
+          </div>
+        }
+        <span class="loja__atendimento">
+          <span class="loja__digitando" aria-hidden="true"><i></i><i></i><i></i></span>
+          Atendimento 24 horas
+        </span>
       </header>
 
       @if (temAgenda() || temOrcamento()) {
@@ -144,8 +160,8 @@
         <section class="album" [id]="idSecao(album)" [attr.aria-labelledby]="idSecao(album) + '-titulo'">
           <div class="album__cabecalho">
             <h2 class="album__nome" [id]="idSecao(album) + '-titulo'">{{ album.nome }}</h2>
-            @if (album.tipo !== 'LOCALIZACAO') {
-              <span class="album__contagem">{{ album.tipo === 'FEEDBACKS' ? resumoFeedbacks(album) : contagemFotos(album) }}</span>
+            @if (album.tipo === 'FOTOS' || !album.tipo) {
+              <span class="album__contagem">{{ contagemFotos(album) }}</span>
             }
           </div>
 
@@ -154,7 +170,7 @@
               <app-mapa-loja [endereco]="endereco" />
             }
           } @else if (album.tipo === 'FEEDBACKS') {
-            <app-carrossel-feedbacks [feedbacks]="album.feedbacks ?? []" />
+            <app-avaliacoes-vitrine [feedbacks]="album.feedbacks ?? []" />
           } @else {
           <div class="album__grade">
             @for (foto of fotosParaExibir(album); track foto.id; let indice = $index) {
@@ -185,6 +201,53 @@
         </section>
       } @empty {
         <p class="sem-fotos">Esta loja ainda não publicou fotos.</p>
+      }
+
+      @if (temInformacoes()) {
+        <section class="album informacoes" aria-labelledby="informacoes-titulo">
+          <div class="album__cabecalho">
+            <h2 class="album__nome" id="informacoes-titulo">Informações</h2>
+          </div>
+          <div class="informacoes__lista">
+            @if (semanaDaLoja().length) {
+              <div class="informacao">
+                <span class="informacao__icone"><app-icone nome="relogio" [tamanho]="18" /></span>
+                <div class="informacao__textos">
+                  <strong>Horário de funcionamento</strong>
+                  <dl class="informacao__semana">
+                    @for (dia of semanaDaLoja(); track dia.nome) {
+                      <dt [class.hoje]="dia.hoje">{{ dia.nome }}</dt>
+                      <dd [class.hoje]="dia.hoje" [class.fechado]="dia.horario === 'Fechado'">{{ dia.horario }}</dd>
+                    }
+                  </dl>
+                </div>
+              </div>
+            } @else if (horarioLivre()) {
+              <div class="informacao">
+                <span class="informacao__icone"><app-icone nome="relogio" [tamanho]="18" /></span>
+                <div class="informacao__textos"><strong>Horário de funcionamento</strong><span>Todos os dias, a qualquer hora</span></div>
+              </div>
+            }
+            @if (pagamento()) {
+              <div class="informacao">
+                <span class="informacao__icone"><app-icone nome="cartao" [tamanho]="18" /></span>
+                <div class="informacao__textos"><strong>Formas de pagamento</strong><span>{{ pagamento() }}</span></div>
+              </div>
+            }
+            @if (recebimento()) {
+              <div class="informacao">
+                <span class="informacao__icone"><app-icone nome="caixa" [tamanho]="18" /></span>
+                <div class="informacao__textos">
+                  <strong>{{ tituloRecebimento() }}</strong>
+                  <span>{{ recebimento() }}</span>
+                  @if (taxaEntrega()) {
+                    <span>Taxa de entrega: {{ taxaEntrega() }}</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </section>
       }
     </main>
     }

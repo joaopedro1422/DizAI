@@ -1,0 +1,635 @@
+/*
+ * Base da marca nova (landing de vendas e hub): azul-noite + amarelo-gema, títulos em Bricolage Grotesque, texto em
+ * Hanken Grotesk e números em Geist Mono. Os componentes de página usam ViewEncapsulation.None, então TUDO aqui fica
+ * preso à classe .marca do host (nada vaza para o painel). As @keyframes têm o prefixo "marca-".
+ */
+.marca {
+  --gema: #ffc83d;
+  --gema-forte: #e9a800;
+  --gema-clara: #fff6da;
+  --gema-linha: #f3de9c;
+  --noite: #13204a;
+  --noite-funda: #0a1230;
+  --marinho: #1e3a72;
+  --tinta: #111a33;
+  --suave: #44506b;
+  --fraco: #6e7891;
+  --ai: #8a94ab;
+  --ai-claro: #f7eccd;
+  --nevoa: #f3f5fa;
+  --linha: #dfe4ee;
+  --papel: #ffffff;
+  --enviado: #1a9b71;
+  --alerta: #c93c3c;
+  --wpp-fundo: #efe9e1;
+  --wpp-cliente: #d9fdd3;
+  --f-titulo: 'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif;
+  --f-texto: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --raio: 14px;
+  --raio-cartao: 24px;
+  display: block;
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: var(--f-texto);
+  font-size: 17.5px;
+  line-height: 1.6;
+  color-scheme: light;
+  overflow-x: clip;
+}
+
+.marca *,
+.marca *::before,
+.marca *::after {
+  box-sizing: border-box;
+}
+
+.marca img {
+  max-width: 100%;
+  display: block;
+}
+
+.marca h1,
+.marca h2,
+.marca h3,
+.marca h4,
+.marca p,
+.marca blockquote,
+.marca figure {
+  margin: 0;
+}
+
+.marca h1,
+.marca h2,
+.marca h3 {
+  font-family: var(--f-titulo);
+  text-wrap: balance;
+}
+
+.marca a {
+  color: inherit;
+}
+
+.marca :focus-visible {
+  outline: 3px solid var(--marinho);
+  outline-offset: 3px;
+}
+
+.marca .mono {
+  font-family: var(--f-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.marca .faixa {
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+
+.marca .miolo {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.marca .secao {
+  padding-block: 96px;
+}
+
+.marca .nevoa {
+  background: var(--nevoa);
+}
+
+/* ---------- logo: o símbolo de sempre, "DizAI" junto e o "AI" em cinza (no azul, creme) ---------- */
+.marca app-logo {
+  --logo-balao: var(--noite);
+  --logo-pontos: var(--gema);
+  --logo-texto: var(--noite);
+  --logo-ai: var(--ai);
+  gap: 6px;
+}
+
+.marca .sobre-noite app-logo,
+.marca .topo app-logo,
+.marca .rodape app-logo {
+  --logo-balao: var(--gema);
+  --logo-pontos: var(--noite);
+  --logo-texto: #ffffff;
+  --logo-ai: var(--ai-claro);
+}
+
+/* ---------- topo (azul-noite) e rodapé ---------- */
+.marca .topo {
+  background: var(--noite);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.marca .topo .miolo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 18px;
+}
+
+.marca .topo__marca {
+  display: inline-flex;
+  text-decoration: none;
+}
+
+.marca .topo__links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.marca .topo__links a:not(.btn) {
+  color: #e4e8f2;
+  text-decoration: none;
+}
+
+.marca .topo__links a:not(.btn):hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.marca .rodape {
+  background: var(--noite);
+  color: #a9b2cc;
+  padding-block: 44px;
+  font-size: 15px;
+}
+
+.marca .rodape .miolo {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.marca .rodape__assinatura {
+  font-family: var(--f-titulo);
+  font-weight: 700;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.marca .rodape__links {
+  display: flex;
+  gap: 22px;
+}
+
+.marca .rodape__links a {
+  color: #a9b2cc;
+  text-decoration: none;
+}
+
+/* ---------- botões: cantos normais; o principal tem a pontinha de balão da logo ---------- */
+.marca .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 16px 26px;
+  border-radius: var(--raio);
+  border: 2px solid transparent;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+}
+
+.marca .btn:hover {
+  transform: translateY(-1px);
+}
+
+.marca .btn--forte {
+  background: var(--gema);
+  color: var(--noite);
+  border-radius: var(--raio) var(--raio) var(--raio) 4px;
+}
+
+.marca .btn--forte:hover {
+  background: #ffd45f;
+}
+
+.marca .btn--escuro {
+  background: var(--noite);
+  color: #ffffff;
+}
+
+.marca .btn--escuro:hover {
+  background: var(--marinho);
+}
+
+.marca .btn--linha {
+  border-color: var(--noite);
+  color: var(--noite);
+  background: transparent;
+}
+
+.marca .btn--claro {
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #ffffff;
+  background: transparent;
+}
+
+.marca .btn--claro:hover {
+  border-color: #ffffff;
+}
+
+.marca .btn--pequeno {
+  padding: 10px 16px;
+  font-size: 15px;
+}
+
+/* ---------- títulos das seções ---------- */
+.marca .rotulo {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--marinho);
+}
+
+.marca .sobre-noite .rotulo {
+  color: var(--gema);
+}
+
+.marca .titulo {
+  font-size: clamp(32px, 4.4vw, 52px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.marca .grifo {
+  color: var(--marinho);
+}
+
+.marca .sobre-noite .grifo {
+  color: var(--gema);
+}
+
+.marca .apoio {
+  font-size: 19px;
+  color: var(--suave);
+  max-width: 56ch;
+}
+
+.marca .cabeca {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 48px;
+  max-width: 760px;
+}
+
+.marca .cabeca--centro {
+  margin-inline: auto;
+  text-align: center;
+  align-items: center;
+}
+
+.marca .check {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 3px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--enviado);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.marca .lista-checks {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.marca .lista-checks li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+/* ---------- o título que digita ("Nenhum cliente sem resposta") ---------- */
+.marca .troca {
+  display: inline-grid;
+  white-space: nowrap;
+  color: var(--ai-claro);
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.marca .troca > * {
+  grid-area: 1 / 1;
+}
+
+.marca .troca__reserva {
+  visibility: hidden;
+}
+
+.marca .digita {
+  display: inline-flex;
+  gap: 0.09em;
+  margin-left: 0.05em;
+  transition: opacity 0.15s ease;
+}
+
+.marca .digita.oculto {
+  opacity: 0;
+}
+
+.marca .digita i {
+  width: 0.13em;
+  height: 0.13em;
+  border-radius: 50%;
+  background: var(--gema);
+  animation: marca-pulo 1.3s infinite ease-in-out;
+}
+
+.marca .digita i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.marca .digita i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* ---------- mensagens do WhatsApp: o cliente em verde à direita, a loja em branco à esquerda ---------- */
+.marca .msg {
+  max-width: 84%;
+  padding: 7px 10px 5px;
+  border-radius: 10px;
+  color: #111b21;
+  font-size: 14.5px;
+  line-height: 1.4;
+  white-space: pre-line;
+  box-shadow: 0 1px 0.5px rgba(11, 20, 26, 0.13);
+}
+
+.marca .msg time {
+  display: block;
+  margin-top: 2px;
+  text-align: right;
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  color: #667781;
+}
+
+.marca .msg--cliente {
+  align-self: flex-end;
+  background: var(--wpp-cliente);
+  border-top-right-radius: 2px;
+}
+
+.marca .msg--loja {
+  align-self: flex-start;
+  background: #ffffff;
+  border-top-left-radius: 2px;
+}
+
+.marca .msg--arquivo {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: #ffffff;
+  border-top-left-radius: 2px;
+  white-space: normal;
+}
+
+.marca .msg--arquivo .pdf {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 40px;
+  flex: none;
+  border-radius: 4px;
+  background: var(--alerta);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.marca .msg--arquivo b {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.marca .msg--arquivo small {
+  font-size: 11.5px;
+  color: #667781;
+}
+
+.marca .msg--digitando {
+  align-self: flex-start;
+  display: inline-flex;
+  gap: 5px;
+  padding: 12px 14px;
+  background: #ffffff;
+  border-top-left-radius: 2px;
+}
+
+.marca .msg--digitando i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--noite);
+  animation: marca-pulo 1.1s infinite ease-in-out;
+}
+
+.marca .msg--digitando i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.marca .msg--digitando i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.marca .msg--entra {
+  animation: marca-entra 0.35s ease both;
+}
+
+/* ---------- a moldura de celular (todos os mocks) ---------- */
+.marca .celular {
+  display: block;
+  width: min(var(--celular-largura, 340px), 100%);
+  padding: 10px;
+  border-radius: 46px;
+  background: var(--noite-funda);
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.14), 0 34px 60px -30px rgba(10, 18, 48, 0.6);
+}
+
+.marca .celular__tela {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: var(--celular-altura, 640px);
+  overflow: hidden;
+  border-radius: 36px;
+  background: var(--wpp-fundo);
+}
+
+.marca .celular__camera {
+  position: absolute;
+  z-index: 6;
+  top: 10px;
+  left: 50%;
+  width: 88px;
+  height: 24px;
+  border-radius: 14px;
+  background: var(--noite-funda);
+  transform: translateX(-50%);
+}
+
+.marca .celular--cortado {
+  padding-bottom: 0;
+  border-radius: 46px 46px 0 0;
+}
+
+.marca .celular--cortado .celular__tela {
+  border-radius: 36px 36px 0 0;
+}
+
+/* o WhatsApp dentro do celular */
+.marca .wpp-topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 44px 14px 10px;
+  background: #f7f5f2;
+  border-bottom: 1px solid #e4ded6;
+}
+
+.marca .wpp-topo img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ffffff;
+  border: 1px solid #e4ded6;
+}
+
+.marca .wpp-topo b {
+  display: block;
+  font-size: 15px;
+  line-height: 1.2;
+  color: #111b21;
+}
+
+.marca .wpp-topo small {
+  font-size: 12.5px;
+  color: #667781;
+}
+
+.marca .wpp-topo small.dig {
+  color: var(--enviado);
+  font-weight: 600;
+}
+
+.marca .wpp-msgs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.marca .wpp-campo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px 14px;
+}
+
+.marca .wpp-campo span {
+  flex: 1;
+  padding: 9px 14px;
+  border-radius: 20px;
+  background: #ffffff;
+  font-size: 13.5px;
+  color: #8696a0;
+}
+
+.marca .wpp-campo i {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--enviado);
+}
+
+/* ---------- entrada das seções ao rolar (RevelarAoRolarDirective) ---------- */
+.marca .revelar {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.marca .revelar.revelado {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes marca-pulo {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+  30% { transform: translateY(-30%); opacity: 1; }
+}
+
+@keyframes marca-entra {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 1000px) {
+  .marca .topo__links a:not(.btn) {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .marca {
+    font-size: 17px;
+  }
+
+  .marca .secao {
+    padding-block: 64px;
+  }
+
+  .marca .btn {
+    width: 100%;
+  }
+
+  .marca .topo .btn {
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marca *,
+  .marca *::before,
+  .marca *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .marca .revelar {
+    opacity: 1;
+    transform: none;
+  }
+}

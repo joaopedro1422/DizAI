@@ -1,0 +1,134 @@
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, afterNextRender, inject, signal } from '@angular/core';
+
+import { CelularMockComponent } from '../celular-mock.component';
+import { esperar, quandoAparecer, semMovimento } from '../movimento';
+import { FOTOS, PROVA_VENDAS } from './conteudo-vendas';
+
+interface ItemProva {
+  id: number;
+  tipo: 'c' | 'l' | 't' | 'fim';
+  texto: string;
+  hora: string;
+}
+
+/**
+ * A prova (estudo do MIT) na faixa azul-noite: o 21× e, ao lado, um celular só que mostra a conversa SEM o DizAI
+ * (o cliente esperando e indo embora) e depois COM o DizAI (respondido e anotado), repetindo. Começa quando entra
+ * na tela.
+ */
+@Component({
+  selector: 'app-prova-vendas',
+  imports: [CelularMockComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <section class="secao faixa mit sobre-noite">
+      <div class="miolo">
+        <div class="mit__texto">
+          <div class="mit__numero">21<small>×</small></div>
+          <h2>Responder em até <span class="grifo">5 minutos</span> deixa a chance de fechar a venda <span class="grifo">21 vezes maior</span>.</h2>
+          <p>E a chance de o cliente ainda estar lá para conversar é <strong>100 vezes maior</strong>. O estudo analisou mais de 15 mil contatos ao longo de 3 anos.</p>
+          <cite>Fonte: "Lead Response Management Study", Dr. James Oldroyd (MIT) e InsideSales, 2007.</cite>
+        </div>
+
+        <div class="mit__palco">
+          <span class="mit__selo" [class.mit__selo--com]="comDizai()">{{ comDizai() ? '✓ Com o DizAI' : '✕ Sem o DizAI' }}</span>
+          <app-celular-mock style="--celular-largura: 340px; --celular-altura: 560px">
+            <div class="wpp-topo">
+              <img [src]="logo" alt="" />
+              <span>
+                <b>Pedacinho do Céu</b>
+                <small [class.dig]="digitando()">{{ digitando() ? 'digitando…' : comDizai() ? 'online' : 'visto por último hoje' }}</small>
+              </span>
+            </div>
+            <div class="wpp-msgs" aria-live="polite">
+              @for (item of itens(); track item.id) {
+                @switch (item.tipo) {
+                  @case ('t') {
+                    <span class="marca-tempo msg--entra">{{ item.texto }}</span>
+                  }
+                  @case ('fim') {
+                    <span class="mit__fim msg--entra" [class.mit__fim--com]="comDizai()">{{ item.texto }}</span>
+                  }
+                  @default {
+                    <span class="msg msg--entra" [class.msg--cliente]="item.tipo === 'c'" [class.msg--loja]="item.tipo === 'l'">{{ item.texto }}<time>{{ item.hora }}</time></span>
+                  }
+                }
+              }
+              @if (digitando()) {
+                <span class="msg msg--digitando"><i></i><i></i><i></i></span>
+              }
+            </div>
+            <div class="wpp-campo" aria-hidden="true"><span>Mensagem</span><i></i></div>
+          </app-celular-mock>
+        </div>
+      </div>
+    </section>
+  `,
+})
+export class ProvaVendasComponent {
+  protected readonly logo = FOTOS.logoPedacinho;
+  protected readonly comDizai = signal(false);
+  protected readonly digitando = signal(false);
+  protected readonly itens = signal<ItemProva[]>([]);
+
+  private ativo = true;
+  private proximoId = 0;
+
+  constructor() {
+    const elemento = inject<ElementRef<HTMLElement>>(ElementRef).nativeElement;
+    let parar = () => undefined as void;
+    inject(DestroyRef).onDestroy(() => {
+      this.ativo = false;
+      parar();
+    });
+    afterNextRender(() => {
+      if (semMovimento()) {
+        this.comDizai.set(true);
+        this.itens.set([...PROVA_VENDAS.com.map(([de, t, h]) => this.item(de, t, h)), this.item('fim', PROVA_VENDAS.fimCom)]);
+        return;
+      }
+      parar = quandoAparecer(elemento, () => void this.tocar());
+    });
+  }
+
+  private async tocar(): Promise<void> {
+    while (this.ativo) {
+      this.comDizai.set(false);
+      this.itens.set([]);
+      for (const [de, texto, hora] of PROVA_VENDAS.sem) {
+        await esperar(de === 't' ? 900 : 1200);
+        if (!this.ativo) return;
+        this.adicionar(this.item(de, texto, hora));
+      }
+      await esperar(900);
+      this.adicionar(this.item('fim', PROVA_VENDAS.fimSem));
+      await esperar(3200);
+      if (!this.ativo) return;
+
+      this.comDizai.set(true);
+      this.itens.set([]);
+      for (const [de, texto, hora] of PROVA_VENDAS.com) {
+        if (de === 'l') {
+          this.digitando.set(true);
+          await esperar(1200);
+          this.digitando.set(false);
+        } else {
+          await esperar(1000);
+        }
+        if (!this.ativo) return;
+        this.adicionar(this.item(de, texto, hora));
+      }
+      await esperar(800);
+      this.adicionar(this.item('fim', PROVA_VENDAS.fimCom));
+      await esperar(4200);
+    }
+  }
+
+  private adicionar(item: ItemProva): void {
+    this.itens.update((lista) => [...lista, item]);
+  }
+
+  private item(tipo: ItemProva['tipo'], texto: string, hora = ''): ItemProva {
+    return { id: this.proximoId++, tipo, texto, hora };
+  }
+}

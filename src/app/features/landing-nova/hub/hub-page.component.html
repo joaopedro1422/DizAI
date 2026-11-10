@@ -1,0 +1,237 @@
+<header class="topo faixa">
+  <div class="miolo">
+    <a routerLink="/" class="topo__marca" aria-label="DizAI, início"><app-logo [tamanhoSimbolo]="32" [tamanhoTexto]="24" /></a>
+    <nav class="topo__links" aria-label="Para quem é">
+      <a [routerLink]="rotaVendas">Para quem vende</a>
+      <a [routerLink]="rotaAgenda">Para quem agenda</a>
+      <a class="btn btn--forte btn--pequeno" routerLink="/entrar">Entrar</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- primeira dobra: o título e os dois mundos, que descem para a faixa branca -->
+  <section class="hb-abertura faixa" aria-labelledby="hub-titulo">
+    <div class="miolo">
+      <span class="hb-selo"><i></i>Assistente de IA para o seu WhatsApp</span>
+      <h1 id="hub-titulo" class="hb-titulo" aria-label="Nenhum cliente sem resposta"><app-titulo-digitando [quebra]="true" /></h1>
+      <p class="hb-desc">O DizAI responde os clientes do seu WhatsApp na hora, do jeito do seu negócio. Escolha o seu tipo de negócio e veja como ele trabalha.</p>
+
+      <div class="mundos">
+        @for (mundo of mundos; track mundo.tipo) {
+          @let atual = cenaAtual()[mundo.tipo];
+          <a class="mundo" [class.mundo--agenda]="mundo.tipo === 'servicos'" [routerLink]="mundo.rota">
+            <div class="mundo__cena" aria-hidden="true">
+              <!-- as barrinhas como stories: a da cena atual enche e, no fim, passa para a próxima -->
+              <span class="mundo__barras">
+                @for (cena of mundo.cenas; track cena.id; let c = $index) {
+                  <span class="mundo__barra">
+                    @if (c === atual) {
+                      <i
+                        class="mundo__enche"
+                        [style.animation-delay]="mundo.tipo === 'servicos' && primeiraVolta() ? '2.4s' : '0s'"
+                        (animationend)="avancar(mundo, $event)"
+                      ></i>
+                    } @else if (c < atual) {
+                      <i class="mundo__cheia"></i>
+                    }
+                  </span>
+                }
+              </span>
+
+              @for (cena of mundo.cenas; track cena.id; let c = $index) {
+                <div class="hb-cena" [class.hb-cena--ativa]="c === atual">
+                  <img class="hb-cena__foto" [src]="cena.foto" alt="" />
+                  <div class="hb-cena__conversa">
+                    <span class="msg msg--cliente hb-cena__pergunta">{{ cena.pergunta }}</span>
+                    <span class="hb-cena__resposta">
+                      <span class="msg msg--digitando hb-cena__digitando"><i></i><i></i><i></i></span>
+                      @if (cena.pedido; as pedido) {
+                        <span class="hb-cartao">
+                          <span class="hb-cartao__topo"><b>Resumo do pedido</b><i class="mono">{{ pedido.total }}</i></span>
+                          @for (linha of pedido.linhas; track linha.rotulo) {
+                            <span class="hb-cartao__linha"><small>{{ linha.rotulo }}</small><span>{{ linha.valor }}</span></span>
+                          }
+                        </span>
+                      }
+                      @if (cena.agenda; as agenda) {
+                        <span class="hb-cartao">
+                          <span class="hb-cartao__topo"><b>{{ agenda.dia }}</b><i class="mono hb-cartao__livres">{{ agenda.livres }}</i></span>
+                          @for (bloco of agenda.blocos; track bloco.hora) {
+                            <span class="hb-bloco" [class.hb-bloco--novo]="bloco.novo"><small class="mono">{{ bloco.hora }}</small><span>{{ bloco.texto }}</span></span>
+                          }
+                        </span>
+                      }
+                    </span>
+                  </div>
+                  <span class="hb-cena__aviso">
+                    <span class="hb-cena__aviso-icone">✓</span>
+                    <span><b>{{ cena.aviso.titulo }}</b><small>{{ cena.aviso.texto }}</small></span>
+                  </span>
+                </div>
+              }
+            </div>
+
+            <div class="mundo__corpo">
+              <span class="mundo__sobre">
+                {{ mundo.sobretitulo }}
+                @if (ultimoVisto === mundo.tipo) {
+                  <span class="mundo__visto">Visto por último</span>
+                }
+              </span>
+              <h2>{{ mundo.titulo }}</h2>
+              <p>{{ mundo.texto }}</p>
+              <span class="mundo__negocios">
+                @for (negocio of mundo.negocios; track negocio) {
+                  <span>{{ negocio }}</span>
+                }
+              </span>
+              <span class="btn btn--escuro mundo__ir">Ver como funciona <span class="mundo__seta">→</span></span>
+            </div>
+          </a>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- o que vale para os dois -->
+  <section class="secao faixa hb-comum" aria-labelledby="comum-titulo">
+    <div class="miolo">
+      <div class="cabeca cabeca--centro">
+        <span class="rotulo">Em qualquer negócio</span>
+        <h2 id="comum-titulo" class="titulo">Tudo o que um bom atendente faz.<br /><span class="grifo">Sem folga, sem demora.</span></h2>
+      </div>
+
+      <div class="hb-bento">
+        <article class="hb-item hb-item--largo">
+          <div class="hb-item__textos">
+            <h3>Resposta em segundos, 24 horas</h3>
+            <p>De madrugada, no domingo ou com as mãos ocupadas, no seu número de sempre.</p>
+          </div>
+          <div class="hb-item__visual hb-item__visual--wpp">
+            <span class="msg msg--cliente">Vocês abrem amanhã?<time>02:14</time></span>
+            <span class="msg msg--loja">Abrimos sim, das 9h às 19h. Posso olhar um horário para você.<time>02:14</time></span>
+          </div>
+        </article>
+
+        <article class="hb-item">
+          <div class="hb-item__textos">
+            <h3>Com a sua cara</h3>
+            <p>Você cadastra as informações do seu negócio e ele responde. Se não souber, te chama.</p>
+          </div>
+          <div class="hb-item__visual">
+            <span class="hb-chips"><span>Preços</span><span>Pagamento</span><span>Endereço</span><span>Prazos</span></span>
+            <span class="hb-chama"><app-icone nome="sino" [tamanho]="14" [espessura]="2.2" />Não sabe? Te chama</span>
+          </div>
+        </article>
+
+        <article class="hb-item">
+          <div class="hb-item__textos">
+            <h3>Entende áudios</h3>
+            <p>O cliente manda voz, o assistente responde por escrito.</p>
+          </div>
+          <div class="hb-item__visual">
+            <span class="hb-audio">
+              <span class="hb-audio__play"><app-icone nome="reproduzir" [tamanho]="12" [espessura]="2.4" /></span>
+              <span class="hb-audio__ondas">
+                @for (altura of ondas; track $index) {
+                  <i [style.height.%]="altura" [style.--i]="$index"></i>
+                }
+              </span>
+              <small class="mono">0:12</small>
+            </span>
+          </div>
+        </article>
+
+        <article class="hb-item">
+          <div class="hb-item__textos">
+            <h3>Catálogo na conversa</h3>
+            <p>Cardápio, tabela de preços ou portfólio em PDF ou imagem.</p>
+          </div>
+          <div class="hb-item__visual hb-item__visual--wpp">
+            <span class="msg msg--arquivo"><span class="pdf">PDF</span><span><b>Catálogo de novembro.pdf</b><small>3 páginas · enviado agora</small></span></span>
+          </div>
+        </article>
+
+        <article class="hb-item">
+          <div class="hb-item__textos">
+            <h3>Você no controle</h3>
+            <p>Respondeu pelo celular? Ele sai daquela conversa na hora.</p>
+          </div>
+          <div class="hb-item__visual">
+            <span class="hb-chave"><span><b>Assistente nesta conversa</b><small>pausa quando você responde</small></span><i></i></span>
+          </div>
+        </article>
+
+        <article class="hb-item hb-item--largo">
+          <div class="hb-item__textos">
+            <h3>Vitrine e artes com a cara do seu negócio</h3>
+            <p>Uma página com a sua logo, as suas fotos, o horário e as avaliações para a bio do Instagram, e posts prontos com os seus preços.</p>
+          </div>
+          <div class="hb-item__visual hb-galeria">
+            <!-- o topo da vitrine no layout novo (a Pedacinho do Céu) -->
+            <span class="hb-vitrine">
+              <span class="hb-vitrine__capa"></span>
+              <span class="hb-vitrine__cartao">
+                <img src="/landing/galeria/logos/pedacinho-do-ceu.jpg" alt="" />
+                <b>Pedacinho do Céu</b>
+                <small>Doces e tortas personalizadas</small>
+                <span class="hb-vitrine__selos"><em class="hb-vitrine__aberta">Aberto agora</em><em><i>★</i> 4,9</em></span>
+              </span>
+              <span class="hb-vitrine__fotos">
+                @for (n of ['01', '04', '06']; track n) {
+                  <img [src]="'/landing/galeria/bolos/' + n + '.webp'" alt="" loading="lazy" />
+                }
+              </span>
+            </span>
+            <span class="hb-post hb-post--1"><img src="/landing/galeria/bolos/03.webp" alt="" loading="lazy" /><b>Encomendas abertas</b></span>
+            <span class="hb-post hb-post--2"><img src="/landing/galeria/bolos/08.webp" alt="" loading="lazy" /><b>Novidade</b></span>
+          </div>
+        </article>
+
+        <article class="hb-item">
+          <div class="hb-item__textos">
+            <h3>Seus números, prontos</h3>
+            <p>Faturamento, dias que mais vendem e os clientes que mais voltam.</p>
+          </div>
+          <div class="hb-item__visual">
+            <span class="hb-valor mono">R$ 4.820,00</span>
+            <span class="hb-barras">
+              @for (altura of [38, 52, 46, 70, 58, 100, 32]; track $index) {
+                <i [style.height.%]="altura" [class.alta]="altura === 100" [style.--i]="$index"></i>
+              }
+            </span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="hb-fim faixa" aria-labelledby="fim-titulo">
+    <div class="miolo">
+      <div class="hb-fim__painel">
+        <h2 id="fim-titulo">Qual é o seu negócio?</h2>
+        <p>Veja o DizAI trabalhando no seu tipo de negócio e teste de graça.</p>
+        <div class="hb-portas">
+          @for (mundo of mundos; track mundo.tipo) {
+            <a class="hb-porta" [routerLink]="mundo.rota">
+              <span><small>{{ mundo.sobretitulo }}</small><b>{{ mundo.titulo }}</b></span>
+              <span class="hb-porta__seta">→</span>
+            </a>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="rodape faixa">
+  <div class="miolo">
+    <app-logo [tamanhoSimbolo]="30" [tamanhoTexto]="22" />
+    <span class="rodape__assinatura">Nenhum cliente sem resposta.</span>
+    <span class="rodape__links">
+      <span>© {{ anoAtual }} DizAI</span>
+      <a routerLink="/privacidade">Privacidade</a>
+    </span>
+  </div>
+</footer>

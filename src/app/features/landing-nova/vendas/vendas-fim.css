@@ -1,0 +1,289 @@
+/* Landing de vendas: confiança, para quem é, perguntas e o fim. */
+
+/* os componentes das seções são elementos próprios: sem isto, a entrada ao rolar (transform) não funciona */
+.lv app-hero-vendas,
+.lv app-prova-vendas,
+.lv app-como-funciona-vendas,
+.lv app-na-pratica-vendas,
+.lv app-recursos-vendas,
+.lv app-vitrine-posts-vendas,
+.lv app-faixa-tech-provider {
+  display: block;
+}
+
+.lv .dores__titulo {
+  margin-top: 12px;
+}
+
+/* ======================= CONFIANÇA ======================= */
+.lv .confianca {
+  background: var(--noite);
+  color: #ffffff;
+}
+
+.lv .grade-confianca {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.lv .garantia {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--raio-cartao);
+  background: rgba(255, 255, 255, 0.06);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.lv .garantia:hover {
+  border-color: rgba(255, 200, 61, 0.45);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.lv .garantia .check {
+  width: 30px;
+  height: 30px;
+  margin: 0 0 6px;
+  background: var(--gema);
+  color: var(--noite);
+  font-size: 15px;
+}
+
+.lv .garantia h3 {
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.lv .garantia p {
+  color: #c9d0e4;
+  font-size: 16px;
+}
+
+/* ======================= PARA QUEM É ======================= */
+.lv .grade-ramos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.lv .ramo {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-cartao);
+  background: var(--papel);
+}
+
+.lv .ramo__fotos {
+  display: flex;
+  height: 180px;
+  overflow: hidden;
+}
+
+.lv .ramo__fotos img {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.lv .ramo:hover .ramo__fotos img {
+  transform: scale(1.04);
+}
+
+.lv .ramo__corpo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+}
+
+.lv .ramo h3 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.lv .ramo small {
+  color: var(--fraco);
+  font-size: 14.5px;
+}
+
+.lv .ramo ul {
+  color: var(--suave);
+  font-size: 16px;
+}
+
+/* ======================= PERGUNTAS ======================= */
+.lv .perguntas .miolo {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  gap: 56px;
+  align-items: start;
+}
+
+.lv .cabeca--perguntas {
+  margin-bottom: 0;
+}
+
+.lv .contato {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 24px;
+  padding: 20px 22px;
+  border-radius: 18px;
+  background: var(--papel);
+}
+
+.lv .contato b {
+  font-size: 17px;
+}
+
+.lv .contato span {
+  color: var(--suave);
+}
+
+.lv .contato .btn {
+  align-self: flex-start;
+  width: auto;
+}
+
+.lv .lista-perguntas {
+  border-top: 1px solid var(--linha);
+}
+
+.lv .lista-perguntas details {
+  border-bottom: 1px solid var(--linha);
+}
+
+.lv .lista-perguntas summary {
+  position: relative;
+  padding: 22px 48px 22px 0;
+  font-size: 19px;
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+}
+
+.lv .lista-perguntas summary::-webkit-details-marker {
+  display: none;
+}
+
+.lv .lista-perguntas summary::after {
+  content: '+';
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--papel);
+  color: var(--noite);
+  font-size: 20px;
+  font-weight: 700;
+  transform: translateY(-50%);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.lv .lista-perguntas details[open] summary::after {
+  content: '−';
+  background: var(--noite);
+  color: #ffffff;
+}
+
+.lv .lista-perguntas details p {
+  max-width: 62ch;
+  padding: 0 48px 22px 0;
+  color: var(--suave);
+  font-size: 17.5px;
+  animation: marca-entra 0.3s ease both;
+}
+
+/* ======================= FIM ======================= */
+.lv .final {
+  padding-block: 0 96px;
+}
+
+.lv .final__painel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  overflow: hidden;
+  padding: 80px 32px;
+  border-radius: 36px;
+  background: var(--gema);
+  text-align: center;
+}
+
+/* uma luz azul bem suave no canto do painel */
+.lv .final__painel::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(19, 32, 74, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.lv .final__painel h2 {
+  max-width: 15em;
+  color: var(--noite);
+  font-size: clamp(34px, 4.8vw, 56px);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.lv .final__painel p {
+  max-width: 46ch;
+  color: var(--noite);
+  font-size: 19px;
+}
+
+.lv .final__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.lv .final__acoes .btn--escuro {
+  border-radius: var(--raio) var(--raio) var(--raio) 4px;
+}
+
+.lv .final__demo {
+  color: var(--noite);
+  font-weight: 700;
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 1000px) {
+  .lv .grade-confianca,
+  .lv .grade-ramos,
+  .lv .perguntas .miolo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .lv .final__painel {
+    padding: 56px 22px;
+    border-radius: 28px;
+  }
+}

@@ -1,0 +1,480 @@
+/* Landing de vendas: "o que ele faz por você" e os Recursos (bento, além disso, antes e depois, chamada). */
+
+/* ======================= O QUE ELE FAZ ======================= */
+.lv .grade-dia {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.lv .hora {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-cartao);
+  background: var(--papel);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lv .hora:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 30px -24px rgba(19, 32, 74, 0.5);
+}
+
+/* os cartões entram em sequência quando a seção aparece */
+.lv .revelado .hora {
+  animation: marca-entra 0.5s ease both;
+  animation-delay: calc(var(--i, 0) * 0.06s);
+}
+
+.lv .hora__momento {
+  color: var(--fraco);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.lv .hora h3 {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.lv .hora p {
+  color: var(--suave);
+  font-size: 15.5px;
+}
+
+.lv .hora__visual {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.lv .hora__visual .msg {
+  max-width: 100%;
+  font-size: 13px;
+}
+
+.lv .onda {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--nevoa);
+}
+
+.lv .onda b {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--enviado);
+}
+
+.lv .onda span {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 22px;
+}
+
+/* a nota de voz "toca": as ondas sobem e descem */
+.lv .onda span i {
+  flex: 1;
+  border-radius: 2px;
+  background: var(--fraco);
+  opacity: 0.55;
+  animation: lv-onda 1.4s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.08s);
+}
+
+.lv .push {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--noite);
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.lv .push b {
+  display: block;
+  font-size: 13.5px;
+}
+
+.lv .push small {
+  opacity: 0.75;
+}
+
+.lv .push__icone {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border-radius: 8px;
+  background: var(--gema);
+}
+
+/* a chave liga e desliga sozinha */
+.lv .chave {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 13px;
+  border-radius: 12px;
+  background: var(--nevoa);
+  font-size: 14px;
+}
+
+.lv .chave i {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  flex: none;
+  border-radius: 999px;
+  background: #c3cada;
+  animation: lv-chave-trilho 4s ease-in-out infinite;
+}
+
+.lv .chave i::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  animation: lv-chave-bola 4s ease-in-out infinite;
+}
+
+/* ======================= RECURSOS ======================= */
+.lv .destaques-rec {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 28px;
+  margin: 0 0 40px;
+  padding: 0;
+  list-style: none;
+  color: var(--noite);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.lv .destaques-rec li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.lv .bento {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-areas: 'a b' 'c b';
+  gap: 18px;
+}
+
+.lv .rec {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 28px;
+  border: 1px solid var(--linha);
+  border-radius: 26px;
+  background: var(--papel);
+}
+
+.lv .rec--a { grid-area: a; }
+.lv .rec--b { grid-area: b; }
+.lv .rec--c { grid-area: c; }
+
+.lv .rec .etiqueta {
+  align-self: flex-start;
+  padding: 5px 12px;
+  border: 1px solid var(--gema-linha);
+  border-radius: 999px;
+  background: var(--gema-clara);
+  color: var(--noite);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.lv .rec h3 {
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+}
+
+.lv .rec p {
+  color: var(--suave);
+  font-size: 16.5px;
+}
+
+.lv .rec__visual {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.lv .fila {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lv .fila .cartao {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  box-shadow: none;
+}
+
+.lv .fila .cartao--destaque {
+  border-color: var(--noite);
+  box-shadow: 0 10px 22px -18px rgba(19, 32, 74, 0.6);
+}
+
+.lv .fila .cartao b {
+  display: block;
+  font-size: 15px;
+}
+
+.lv .fila .cartao small {
+  color: var(--fraco);
+  font-size: 13.5px;
+}
+
+.lv .indicadores {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.lv .indicadores span {
+  display: flex;
+  flex-direction: column;
+}
+
+.lv .indicadores small {
+  color: var(--fraco);
+  font-size: 12.5px;
+}
+
+.lv .indicadores b {
+  font-size: 16px;
+}
+
+.lv .alem {
+  margin-top: 48px;
+}
+
+.lv .alem h3 {
+  margin-bottom: 18px;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.lv .alem ul {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lv .alem li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 20px;
+  border: 1px solid var(--linha);
+  border-radius: 20px;
+  background: var(--papel);
+  color: var(--suave);
+  font-size: 15.5px;
+}
+
+.lv .alem li b {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--tinta);
+  font-size: 17px;
+}
+
+.lv .comparacao {
+  margin-top: 64px;
+}
+
+.lv .tabela {
+  overflow: hidden;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-cartao);
+  background: var(--papel);
+}
+
+.lv .tabela__linha {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr);
+  border-top: 1px solid var(--linha);
+}
+
+.lv .tabela__linha > * {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 22px;
+}
+
+.lv .tabela__linha:first-child {
+  border-top: none;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.lv .tabela__linha > :first-child {
+  font-weight: 600;
+}
+
+.lv .tabela__linha > :nth-child(2) {
+  background: #fff9f9;
+  color: var(--suave);
+}
+
+.lv .tabela__linha > :nth-child(3) {
+  background: var(--gema-clara);
+  color: var(--noite);
+  font-weight: 700;
+}
+
+.lv .tabela__linha:first-child > :nth-child(2) {
+  background: #fceded;
+  color: var(--alerta);
+}
+
+.lv .tabela__linha:first-child > :nth-child(3) {
+  background: var(--noite);
+  color: #ffffff;
+}
+
+.lv .tabela .check {
+  margin-top: 0;
+}
+
+.lv .x {
+  color: var(--alerta);
+  font-weight: 800;
+}
+
+.lv .chamada-recursos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 48px;
+  padding: 32px 36px;
+  border-radius: 28px;
+  background: var(--noite);
+  color: #ffffff;
+}
+
+.lv .chamada-recursos h3 {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.lv .chamada-recursos p {
+  max-width: 56ch;
+  margin-top: 6px;
+  color: #c9d0e4;
+}
+
+@keyframes lv-onda {
+  0%, 100% { transform: scaleY(0.55); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes lv-chave-trilho {
+  0%, 45%, 100% { background: var(--enviado); }
+  55%, 90% { background: #c3cada; }
+}
+
+@keyframes lv-chave-bola {
+  0%, 45%, 100% { transform: translateX(18px); }
+  55%, 90% { transform: none; }
+}
+
+@media (max-width: 1000px) {
+  .lv .grade-dia {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .lv .bento {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: none;
+  }
+
+  .lv .rec {
+    grid-area: auto !important;
+  }
+
+  .lv .alem ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .lv .grade-dia,
+  .lv .destaques-rec,
+  .lv .alem ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lv .rec {
+    padding: 22px;
+  }
+
+  .lv .chamada-recursos {
+    padding: 26px 22px;
+  }
+
+  .lv .tabela__linha {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .lv .tabela__linha > :first-child {
+    grid-column: 1 / -1;
+    padding-bottom: 6px;
+  }
+
+  .lv .tabela__linha > :nth-child(2),
+  .lv .tabela__linha > :nth-child(3) {
+    padding-top: 10px;
+    padding-bottom: 14px;
+    font-size: 15px;
+  }
+
+  .lv .tabela__linha:first-child > :first-child {
+    display: none;
+  }
+}

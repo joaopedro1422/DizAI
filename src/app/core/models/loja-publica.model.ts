@@ -51,6 +51,26 @@ export interface LojaPublica {
   agendaAtiva?: boolean;
   /** Mostra a aba "Orçamento" (lojas de produtos com produtos cadastrados). */
   orcamentoAtivo?: boolean;
+  /** Horário, pagamento e entrega (selo "Aberto agora" e seção Informações). Sem o campo = backend antigo. */
+  informacoes?: InformacoesLoja;
+}
+
+export type DiaSemana = 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+
+/** Um período de um dia: inicio e fim em "08:00". */
+export interface HorarioLoja {
+  diaSemana: DiaSemana;
+  inicio: string;
+  fim: string;
+}
+
+/** O que o lojista cadastrou em Dados da loja (listas vazias = não aparece). horarioLivre = "Sempre". */
+export interface InformacoesLoja {
+  horarioLivre: boolean;
+  horarios: HorarioLoja[];
+  formasPagamento: string[];
+  formasRecebimento: string[];
+  taxaEntrega: string | null;
 }
 
 export interface FotoPublica {

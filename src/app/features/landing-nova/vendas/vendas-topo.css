@@ -1,0 +1,548 @@
+/* Landing de vendas: hero, faixa dos negócios, dores e a prova (MIT). Tudo preso a .lv (ViewEncapsulation.None). */
+
+/* ======================= HERO ======================= */
+.lv .hero {
+  background: var(--noite);
+  padding-top: 36px;
+  overflow: hidden;
+}
+
+.lv .hero .miolo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 40px;
+  align-items: end;
+}
+
+.lv .hero__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding-bottom: 64px;
+}
+
+.lv .hero__selo {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.lv .hero__selo i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gema);
+  box-shadow: 0 0 0 4px rgba(255, 200, 61, 0.22);
+  animation: lv-pulso 2s ease-in-out infinite;
+}
+
+.lv .hero__titulo {
+  font-size: clamp(44px, 6.6vw, 84px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  color: #ffffff;
+}
+
+.lv .hero__desc {
+  max-width: 30em;
+  font-size: 21px;
+  line-height: 1.5;
+  color: #dce1ef;
+}
+
+.lv .hero__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.lv .hero__garantias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.lv .hero__garantias li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lv .hero__garantias .check {
+  margin-top: 0;
+  background: var(--gema);
+  color: var(--noite);
+}
+
+.lv .palco-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* brilho amarelo suave atrás do celular */
+.lv .palco-hero::before {
+  content: '';
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  width: 560px;
+  height: 560px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 200, 61, 0.16) 0%, rgba(255, 200, 61, 0.05) 40%, transparent 68%);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.lv .palco-hero > * {
+  position: relative;
+}
+
+.lv .aviso-flutuante {
+  position: absolute;
+  left: -24px;
+  bottom: 120px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 250px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: var(--papel);
+  color: var(--noite);
+  box-shadow: 0 16px 32px -14px rgba(19, 32, 74, 0.5);
+  opacity: 0;
+  transform: translateY(8px) scale(0.97);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lv .aviso-flutuante.visivel {
+  opacity: 1;
+  transform: none;
+}
+
+.lv .aviso-flutuante__icone {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 10px;
+  background: var(--enviado);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.lv .aviso-flutuante b {
+  display: block;
+  font-size: 14.5px;
+}
+
+.lv .aviso-flutuante small {
+  font-size: 13px;
+  color: var(--suave);
+}
+
+/* os segmentos embaixo do celular: só o texto, com a barrinha (a escolhida em amarelo) */
+.lv .seg {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 22px;
+  width: 100%;
+  padding: 14px 0 20px;
+}
+
+.lv .seg button {
+  position: relative;
+  padding: 6px 2px 8px;
+  border: none;
+  background: none;
+  color: #a9b2cc;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lv .seg button::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.18);
+  transition: background-color 0.25s ease;
+}
+
+.lv .seg button[aria-pressed='true'] {
+  color: #ffffff;
+}
+
+.lv .seg button[aria-pressed='true']::after {
+  background: var(--gema);
+}
+
+/* ======================= OS NEGÓCIOS PASSANDO (linha única, para com o mouse) ======================= */
+.lv .negocios {
+  overflow: hidden;
+  padding-block: 18px;
+  background: var(--gema);
+  color: var(--noite);
+}
+
+.lv .negocios__trilho {
+  display: flex;
+  width: max-content;
+  animation: lv-corre 40s linear infinite;
+}
+
+.lv .negocios:hover .negocios__trilho {
+  animation-play-state: paused;
+}
+
+.lv .negocios__trilho span {
+  display: inline-flex;
+  align-items: center;
+  gap: 22px;
+  padding-right: 22px;
+  font-family: var(--f-titulo);
+  font-weight: 700;
+  font-size: 21px;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+}
+
+.lv .negocios__trilho span::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--noite);
+}
+
+/* ======================= DORES ======================= */
+.lv .dores .miolo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 64px;
+  align-items: center;
+}
+
+.lv .dores__lista {
+  display: flex;
+  flex-direction: column;
+  margin-top: 36px;
+}
+
+.lv .dor {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 16px;
+  padding: 22px 0;
+  border-top: 1px solid var(--linha);
+}
+
+.lv .dor__num {
+  padding-top: 3px;
+  font-family: var(--f-mono);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--alerta);
+}
+
+.lv .dor h3 {
+  margin-bottom: 4px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.lv .dor p {
+  color: var(--suave);
+}
+
+.lv .dor__citacao {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 8px 13px;
+  border: 1px solid var(--linha);
+  border-radius: 14px 14px 14px 4px;
+  background: var(--nevoa);
+  color: var(--tinta);
+  font-size: 15.5px;
+}
+
+.lv .dor__citacao::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--alerta);
+}
+
+.lv .bloqueio {
+  justify-self: center;
+}
+
+.lv .bloqueio__tela {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 52px 14px 24px;
+  background: linear-gradient(180deg, #24335f 0%, #0e1838 100%);
+  color: #ffffff;
+}
+
+.lv .bloqueio__hora {
+  text-align: center;
+  font-family: var(--f-titulo);
+  font-weight: 600;
+  font-size: 62px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.lv .bloqueio__dia {
+  margin-bottom: 8px;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.lv .bloqueio__contador {
+  align-self: center;
+  margin-bottom: 4px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--alerta);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.lv .notif {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* as notificações chegam uma a uma quando a seção aparece */
+.lv .revelado .notif {
+  animation: lv-notif 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.35s + var(--i, 0) * 0.35s);
+}
+
+.lv .notif__av {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.lv .notif b {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 13.5px;
+}
+
+.lv .notif b small {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.lv .notif p {
+  overflow: hidden;
+  font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  opacity: 0.88;
+}
+
+/* ======================= PROVA (MIT) ======================= */
+.lv .mit {
+  background: var(--noite);
+  color: #ffffff;
+}
+
+.lv .mit .miolo {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 56px;
+  align-items: center;
+}
+
+.lv .mit__numero {
+  font-family: var(--f-titulo);
+  font-weight: 800;
+  font-size: clamp(104px, 14vw, 180px);
+  line-height: 0.82;
+  letter-spacing: -0.06em;
+  color: var(--gema);
+}
+
+.lv .mit__numero small {
+  font-size: 0.4em;
+  color: #fce7a8;
+}
+
+.lv .mit h2 {
+  margin: 18px 0 14px;
+  font-size: clamp(26px, 3vw, 34px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.lv .mit p {
+  max-width: 46ch;
+  color: #c9d0e4;
+}
+
+.lv .mit p strong {
+  color: #ffffff;
+}
+
+.lv .mit cite {
+  display: block;
+  margin-top: 18px;
+  font-size: 13.5px;
+  font-style: normal;
+  color: #8e98b8;
+}
+
+.lv .mit__palco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.lv .mit__selo {
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--alerta);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+
+.lv .mit__selo--com {
+  background: var(--enviado);
+}
+
+.lv .marca-tempo {
+  align-self: center;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: #fff3c4;
+  color: #6b5300;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.lv .mit__fim {
+  margin-top: 6px;
+  padding: 9px;
+  border-radius: 10px;
+  background: #fbe3e3;
+  color: var(--alerta);
+  text-align: center;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.lv .mit__fim--com {
+  background: #d8f3e8;
+  color: #0e6e4f;
+}
+
+@keyframes lv-corre {
+  to { transform: translateX(-50%); }
+}
+
+@keyframes lv-pulso {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(255, 200, 61, 0.22); }
+  50% { box-shadow: 0 0 0 7px rgba(255, 200, 61, 0.08); }
+}
+
+@keyframes lv-notif {
+  from { opacity: 0; transform: translateY(-10px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 1000px) {
+  .lv .dores .miolo,
+  .lv .mit .miolo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* celular e tablet: texto e botões → o celular → os checks */
+  .lv .hero .miolo {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 22px;
+  }
+
+  .lv .hero__texto {
+    display: contents;
+  }
+
+  .lv .palco-hero {
+    order: 1;
+    margin-top: 10px;
+  }
+
+  .lv .hero__garantias {
+    order: 2;
+    justify-content: flex-start;
+    padding-bottom: 36px;
+  }
+
+  .lv .aviso-flutuante {
+    left: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .lv .hero__desc {
+    font-size: 19px;
+  }
+
+  .lv .palco-hero::before {
+    width: 380px;
+    height: 380px;
+  }
+}
