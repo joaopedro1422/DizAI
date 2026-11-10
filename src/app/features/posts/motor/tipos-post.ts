@@ -40,7 +40,13 @@ export type LayoutPost =
   | 'tira'
   | 'balao'
   | 'liso'
-  | 'liso-cartao';
+  | 'liso-cartao'
+  | 'revista'
+  | 'carimbo'
+  | 'dupla'
+  | 'sangrada'
+  | 'mosaico'
+  | 'poster';
 
 /** De onde vêm as cores: fundo claro tingido, a cor da loja, escuro, creme ou a foto dominando. */
 export type PaletaPost = 'clara' | 'cor' | 'escura' | 'creme' | 'foto';

@@ -74,9 +74,9 @@ const BOTOES: BotaoPost[] = ['pilula', 'quadrado', 'contorno', 'sublinhado'];
 const SELOS_ESTILO: SeloPost[] = ['pilula', 'texto', 'tarja', 'contorno'];
 
 /** A foto cobre a arte inteira: o acabamento do fundo não aparece. */
-const FOTO_CHEIA: LayoutPost[] = ['moldura', 'janela', 'diagonal'];
+const FOTO_CHEIA: LayoutPost[] = ['moldura', 'janela', 'diagonal', 'revista'];
 /** Layouts que desenham o próprio selo ou o próprio botão (traços do cardápio, faixa da diagonal...). */
-const SELO_PROPRIO: LayoutPost[] = ['minimal', 'cardapio', 'lateral', 'diagonal', 'etiqueta', 'editorial'];
+const SELO_PROPRIO: LayoutPost[] = ['minimal', 'cardapio', 'lateral', 'diagonal', 'etiqueta', 'editorial', 'carimbo'];
 const BOTAO_PROPRIO: LayoutPost[] = ['minimal', 'etiqueta'];
 const FILTROS: FiltroFoto[] = ['natural', 'quente', 'pb', 'duotone'];
 const RAIOS: RaioPost[] = ['reto', 'suave', 'redondo'];
@@ -192,7 +192,7 @@ export function gerarEstilos(pedido: PedidoEstilos): EstiloPost[] {
 function escolherDecor(layout: LayoutPost, paleta: PaletaPost, dna: DnaVisual, sorte: () => number): DecorPost {
   // fundo liso é liso: só a cor, sem enfeite nenhum
   if (layout === 'liso' || layout === 'liso-cartao') return 'nenhum';
-  if (paleta === 'foto' || layout === 'moldura' || layout === 'janela' || layout === 'diagonal') {
+  if (paleta === 'foto' || FOTO_CHEIA.includes(layout)) {
     return sorte() < 0.6 ? 'nenhum' : 'linhas';
   }
   if (layout === 'minimal') return sorte() < 0.5 ? 'linhas' : 'nenhum';

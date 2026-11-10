@@ -435,16 +435,15 @@ a.faixa-aviso {
   color: var(--cor-ativo);
 }
 
-/* os ícones e o X vão para a direita quando o nome não está na mesma linha */
+/* os ícones vão para a direita quando o nome não está na mesma linha */
 .bloco__horario + .bloco__profissional,
 .bloco__horario + .bloco__presenca,
 .bloco__horario + .bloco__assistente,
-.bloco__horario + .bloco__cancelar,
 .bloco__horario + .bloco__valor {
   margin-left: auto;
 }
 
-/* valor do atendimento (toque para ajustar), antes do X */
+/* valor do atendimento (toque para ajustar), no fim da linha */
 .bloco__valor {
   flex: none;
   padding: 0 2px;
@@ -461,24 +460,6 @@ a.faixa-aviso {
 .bloco__valor--vazio {
   color: var(--cor-texto-suave);
   font-weight: 600;
-}
-
-.bloco__cancelar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-  width: 24px;
-  height: 22px;
-  margin: -2px -4px -2px 0;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--cor-texto-suave);
-}
-
-.bloco__cancelar:hover {
-  background: rgba(15, 23, 42, 0.06);
 }
 
 .bloco__detalhe {

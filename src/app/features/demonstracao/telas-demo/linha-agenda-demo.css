@@ -132,7 +132,6 @@
 .bloco__horario + .bloco__profissional,
 .bloco__horario + .bloco__presenca,
 .bloco__horario + .bloco__assistente,
-.bloco__horario + .bloco__cancelar,
 .bloco__horario + .bloco__valor {
   margin-left: auto;
 }
@@ -154,24 +153,6 @@
 .bloco__valor--vazio {
   color: var(--cor-texto-suave);
   font-weight: 600;
-}
-
-.bloco__cancelar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: none;
-  width: 24px;
-  height: 22px;
-  margin: -2px -4px -2px 0;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--cor-texto-suave);
-}
-
-.bloco__cancelar:hover {
-  background: rgba(15, 23, 42, 0.06);
 }
 
 .bloco__detalhe {

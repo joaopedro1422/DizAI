@@ -619,9 +619,7 @@
           @if (bloco.altura < 70) {
             <ng-container *ngTemplateOutlet="produtoEValor; context: { $implicit: agendamento }" />
           }
-          <button type="button" class="bloco__cancelar" [attr.aria-label]="'Cancelar o horário de ' + agendamento.nomeCliente" (click)="paraCancelar.set(agendamento)">
-            <app-icone nome="fechar" [tamanho]="15" [espessura]="2" />
-          </button>
+          <!-- sem o "x" de cancelar: o cancelamento fica no modal de detalhes (toque no card) -->
         </div>
         @if (bloco.altura >= 70) {
           <!-- nome à esquerda; "1 produto" e o valor na mesma linha, no fim -->

@@ -2,8 +2,10 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 
 import { ERRO_AO_CARREGAR, mensagemDoErro } from '../../../core/api/erro-api';
 import { Cliente } from '../../../core/models/cliente.model';
+import { Produto } from '../../../core/models/produto.model';
 import { RetornoCliente, mensagemDoRetorno } from '../../../core/models/retorno-cliente.model';
 import { ClienteService } from '../../../core/services/cliente.service';
+import { ProdutoService } from '../../../core/services/produto.service';
 import { RetornoClienteService } from '../../../core/services/retorno-cliente.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { diaPorExtenso, hojeIso, somarDias } from '../../../core/utils/datas-agenda';
@@ -11,6 +13,7 @@ import { AvatarComponent } from '../../../shared/components/avatar/avatar.compon
 import { BottomSheetComponent } from '../../../shared/components/bottom-sheet/bottom-sheet.component';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
+import { SeletorServicoComponent } from '../seletor-servico/seletor-servico.component';
 
 /** Atalhos de data no modal: o intervalo de retorno mais comum (o gel volta em 21 dias, o corte em 30). */
 const ATALHOS_DIAS = [15, 21, 30, 45];
@@ -32,7 +35,7 @@ interface ClienteDoRetorno {
 
 @Component({
   selector: 'app-retornos-agenda',
-  imports: [AvatarComponent, BottomSheetComponent, CarregandoComponent, IconeComponent],
+  imports: [AvatarComponent, BottomSheetComponent, CarregandoComponent, IconeComponent, SeletorServicoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './retornos-agenda.component.html',
   styleUrl: './retornos-agenda.component.css',
@@ -41,6 +44,8 @@ export class RetornosAgendaComponent implements OnInit {
   private readonly clienteService = inject(ClienteService);
   private readonly retornoService = inject(RetornoClienteService);
   private readonly toast = inject(ToastService);
+  private readonly produtos = inject(ProdutoService).produtos;
+  private readonly produtoService = inject(ProdutoService);
 
   protected readonly carregando = signal(true);
   protected readonly busca = signal('');
@@ -77,6 +82,16 @@ export class RetornosAgendaComponent implements OnInit {
     const cliente = this.aberto();
     return cliente ? (this.pendentePorCliente().get(chaveCliente(cliente.numero)) ?? null) : null;
   });
+  /** Os serviços que dá para agendar (os mesmos do "Agendar horário"): o retorno é escolhido entre eles. */
+  protected readonly servicos = computed(() =>
+    this.produtoService.produtos().filter((p) => p.disponivel && !p.produtoAVenda && p.duracaoMinutos),
+  );
+  /** O serviço da descrição (retorno marcado antes, em texto livre, pode não bater com nenhum). */
+  protected readonly idsEscolhidos = computed(() => {
+    const nome = this.descricao().trim().toLowerCase();
+    const servico = this.servicos().find((s) => s.nome.trim().toLowerCase() === nome);
+    return servico ? [servico.id] : [];
+  });
   protected readonly previa = computed(() => mensagemDoRetorno(this.aberto()?.nome ?? null, this.descricao()));
   /** "O lembrete sai quinta, 19/11, às 10:00". */
   protected readonly quandoSai = computed(() =>
@@ -85,7 +100,7 @@ export class RetornosAgendaComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     try {
-      await Promise.all([this.clienteService.carregar(), this.retornoService.carregar()]);
+      await Promise.all([this.clienteService.carregar(), this.retornoService.carregar(), this.produtoService.carregar()]);
     } catch (erro) {
       this.toast.mostrar(mensagemDoErro(erro, ERRO_AO_CARREGAR));
     } finally {
@@ -114,6 +129,12 @@ export class RetornosAgendaComponent implements OnInit {
     this.erro.set(null);
   }
 
+  /** O nome do serviço escolhido vai para a mensagem do lembrete ("…do seu retorno para Esmaltação em gel."). */
+  protected escolherServico(servico: Produto): void {
+    this.descricao.set(servico.nome);
+    this.erro.set(null);
+  }
+
   protected escolherAtalho(dias: number): void {
     this.data.set(somarDias(hojeIso(), dias));
   }
@@ -136,7 +157,7 @@ export class RetornosAgendaComponent implements OnInit {
       return;
     }
     if (!this.descricao().trim()) {
-      this.erro.set('Escreva para que é o retorno.');
+      this.erro.set(this.servicos().length ? 'Escolha o serviço do retorno.' : 'Escreva para que é o retorno.');
       return;
     }
     this.salvando.set(true);

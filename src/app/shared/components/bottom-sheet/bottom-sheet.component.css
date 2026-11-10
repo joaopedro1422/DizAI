@@ -20,7 +20,9 @@
   flex-direction: column;
   gap: 18px;
   width: 100%;
-  max-width: var(--largura-tela-app);
+  /* largura própria do modal: as telas que usam a largura toda no computador zeram a --largura-tela-app, e o modal
+     herdava esse "sem limite" (abria esticado na Agenda, Pedidos, Painel...) */
+  max-width: 480px;
   max-height: 92dvh;
   overflow-y: auto;
   padding: 10px 24px 24px;

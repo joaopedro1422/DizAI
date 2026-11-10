@@ -23,6 +23,7 @@ const HORAS_POR_DIA = 6;
     './arte-layouts-liso.css',
     './arte-variacoes.css',
     './arte-decor-extra.css',
+    './arte-layouts-novos.css',
   ],
 })
 export class ArtePostComponent {
@@ -66,10 +67,11 @@ export class ArtePostComponent {
   /** Cor da loja clara (laranja, verde-limão): o fundo na cor pede texto e cartão escuros/brancos. */
   protected readonly fundoClaro = computed(() => luminancia(this.marcaDaArte().cor) > 0.42);
 
-  /** Só as fotos que o layout usa (a colagem usa 3, os outros 1). */
+  /** Só as fotos que o layout usa (colagem, tira e mosaico 3; dupla 2; os outros 1). */
   protected readonly fotos = computed(() => {
     const fotos = this.conteudo().fotos;
-    const limite = this.estilo().layout === 'colagem' || this.estilo().layout === 'tira' ? 3 : 1;
+    const layout = this.estilo().layout;
+    const limite = layout === 'colagem' || layout === 'tira' || layout === 'mosaico' ? 3 : layout === 'dupla' ? 2 : 1;
     // o cartão com depoimento fica só com o texto (a foto espremida virava uma tira)
     const semFoto = this.estilo().layout === 'tipografico'
       || this.estilo().layout === 'liso'

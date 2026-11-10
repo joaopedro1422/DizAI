@@ -16,8 +16,7 @@
 
 .horario__valor,
 .horario__cancelar,
-.bloco__valor,
-.bloco__cancelar {
+.bloco__valor {
   position: relative;
   z-index: 1;
 }

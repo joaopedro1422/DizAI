@@ -33,7 +33,6 @@
               @if (bloco.altura < 70) {
                 <span class="bloco__extras"><span class="bloco__valor">{{ real(agendamento.valor ?? 0) }}</span></span>
               }
-              <span class="bloco__cancelar"><app-icone nome="fechar" [tamanho]="15" [espessura]="2" /></span>
             </div>
             @if (bloco.altura >= 70) {
               <div class="bloco__linha-nome">

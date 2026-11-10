@@ -46,6 +46,13 @@ export const LAYOUTS: DefinicaoLayout[] = [
   { id: 'balao', nome: 'Balão', tipos: ['DEPOIMENTO'], fotosMinimo: 0, fotosMaximo: 1, paletas: ['cor', 'escura', 'creme', 'clara'], variantes: 2 },
   { id: 'liso', nome: 'Fundo liso', tipos: SEM_FOTO, fotosMinimo: 0, fotosMaximo: 0, paletas: ['cor', 'creme', 'escura'], variantes: 2 },
   { id: 'liso-cartao', nome: 'Fundo liso com cartão', tipos: SEM_FOTO, fotosMinimo: 0, fotosMaximo: 0, paletas: ['cor', 'escura', 'creme'], variantes: 2 },
+  // novos (nov/2026), desenho em arte-layouts-novos.css
+  { id: 'revista', nome: 'Capa de revista', tipos: [...QUASE_TODOS], fotosMinimo: 1, fotosMaximo: 1, paletas: ['foto'], variantes: 2 },
+  { id: 'carimbo', nome: 'Carimbo', tipos: ['DESTAQUE', 'NOVIDADE', 'PROMOCAO'], fotosMinimo: 1, fotosMaximo: 1, paletas: ['clara', 'creme', 'cor', 'escura'], variantes: 2 },
+  { id: 'dupla', nome: 'Dupla', tipos: ['DESTAQUE', 'NOVIDADE', 'CONVITE'], fotosMinimo: 2, fotosMaximo: 2, paletas: ['clara', 'creme', 'escura', 'cor'], variantes: 2 },
+  { id: 'sangrada', nome: 'Foto sangrada', tipos: [...QUASE_TODOS], fotosMinimo: 1, fotosMaximo: 1, paletas: ['cor', 'escura', 'creme', 'clara'], variantes: 2 },
+  { id: 'mosaico', nome: 'Mosaico', tipos: ['NOVIDADE', 'CONVITE', 'DESTAQUE'], fotosMinimo: 3, fotosMaximo: 3, paletas: ['clara', 'creme', 'escura', 'cor'], variantes: 2 },
+  { id: 'poster', nome: 'Pôster', tipos: [...QUASE_TODOS], fotosMinimo: 1, fotosMaximo: 1, paletas: ['cor', 'escura', 'creme', 'clara'], variantes: 2 },
 ];
 
 export function layoutsPara(tipo: TipoPost, fotosDisponiveis: number, temPreco: boolean): DefinicaoLayout[] {

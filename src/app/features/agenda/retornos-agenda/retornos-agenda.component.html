@@ -102,9 +102,20 @@
       </div>
 
       <div class="campo">
-        <label for="retorno-descricao" class="campo__rotulo">Para quê</label>
-        <input id="retorno-descricao" class="campo__entrada" type="text" maxlength="80" placeholder="Ex.: manutenção do gel"
-               [value]="descricao()" (input)="digitar('descricao', $event)">
+        @if (servicos().length > 0) {
+          <span class="campo__rotulo">Serviço do retorno</span>
+          <app-seletor-servico
+            [servicos]="servicos()"
+            [escolhidos]="idsEscolhidos()"
+            [textoVazio]="descricao() || 'Selecione o serviço'"
+            (escolher)="escolherServico($event)"
+          />
+        } @else {
+          <!-- sem serviço cadastrado, o texto livre de antes -->
+          <label for="retorno-descricao" class="campo__rotulo">Para quê</label>
+          <input id="retorno-descricao" class="campo__entrada" type="text" maxlength="80" placeholder="Ex.: manutenção do gel"
+                 [value]="descricao()" (input)="digitar('descricao', $event)">
+        }
       </div>
 
       <div class="previa">
