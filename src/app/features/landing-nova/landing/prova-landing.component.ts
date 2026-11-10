@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, afterNextRender, inject, input, signal } from '@angular/core';
 
-import { CelularMockComponent } from '../celular-mock.component';
 import { esperar, quandoAparecer, semMovimento } from '../movimento';
 import { ConteudoLandingNova } from './conteudo-landing-nova';
 
@@ -12,13 +11,12 @@ interface ItemProva {
 }
 
 /**
- * A prova (estudo do MIT) na faixa azul-noite: o 21× e, ao lado, um celular só que mostra a conversa SEM o DizAI
+ * A prova (estudo do MIT) na faixa azul-noite: o 21× e, ao lado, uma janelinha do WhatsApp que mostra a conversa SEM o DizAI
  * (o cliente esperando e indo embora) e depois COM o DizAI (respondido e anotado), repetindo. Começa quando entra
  * na tela.
  */
 @Component({
   selector: 'app-prova-landing',
-  imports: [CelularMockComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="secao faixa mit sobre-noite">
@@ -32,7 +30,7 @@ interface ItemProva {
 
         <div class="mit__palco">
           <span class="mit__selo" [class.mit__selo--com]="comDizai()">{{ comDizai() ? '✓ Com o DizAI' : '✕ Sem o DizAI' }}</span>
-          <app-celular-mock style="--celular-largura: 340px; --celular-altura: 560px">
+          <div class="mit__janela">
             <div class="wpp-topo">
               <img [src]="conteudo().prova.logo" alt="" />
               <span>
@@ -59,7 +57,7 @@ interface ItemProva {
               }
             </div>
             <div class="wpp-campo" aria-hidden="true"><span>Mensagem</span><i></i></div>
-          </app-celular-mock>
+          </div>
         </div>
       </div>
     </section>

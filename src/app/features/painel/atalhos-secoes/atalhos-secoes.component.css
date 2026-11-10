@@ -187,6 +187,11 @@
   font-weight: 700;
 }
 
+/* "Serviços /" em cima e "Produtos" embaixo (com a fonte da marca, mais estreita, ficava numa linha só) */
+.atalho__quebra {
+  display: block;
+}
+
 .atalho__resumo {
   font-size: 13px;
   color: var(--cor-texto-suave);
