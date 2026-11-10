@@ -165,10 +165,7 @@ export class RecursosAgendaComponent {
   protected readonly recursos = RECURSOS_AGENDA;
   protected readonly tabela = TABELA_AGENDA;
   protected readonly etapasAgenda = ETAPAS_AGENDA;
-  protected readonly confirmacao = 'Agendado! ✅
-Serviços: Manicure + Pedicure
-Data: sexta, 25/10
-Horário: 14:00 às 15:45';
+  protected readonly confirmacao = 'Agendado! ✅\nServiços: Manicure + Pedicure\nData: sexta, 25/10\nHorário: 14:00 às 15:45';
   protected readonly fatias = [
     { nome: 'Gel', parte: 42, cor: 'var(--noite)' },
     { nome: 'Manicure', parte: 27, cor: 'var(--gema-forte)' },
