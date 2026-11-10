@@ -40,7 +40,7 @@
   color: #FFFFFF;
   font-family: var(--fonte-titulo);
   font-size: 26px;
-  font-weight: 500;
+  font-weight: 700;
   box-shadow: 0 6px 16px rgba(30, 58, 114, 0.22);
   transition: transform 0.15s ease;
 }
@@ -113,7 +113,7 @@
   white-space: nowrap;
   font-family: var(--fonte-titulo);
   font-size: 26px;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.15;
 }

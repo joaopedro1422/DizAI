@@ -4,14 +4,24 @@
    ========================================================================== */
 
 :root {
-  /* Cores da marca */
+  /* Cores da marca ("Pontinhos", a mesma das landings): azul-marinho nos acentos, azul-noite nos botões principais
+     e nas faixas azuis, e o amarelo-gema só nos detalhes (números de passo, progresso, item ativo, selos). */
   --cor-primaria: #1E3A72;
   --cor-primaria-hover: #274A8C;
   --cor-primaria-clara: #EAF0FA;
   --cor-selecionado: #F3F6FD;
+  --cor-noite: #13204A;
+  --cor-noite-hover: #1E3A72;
+  --cor-gema: #FFC83D;
+  --cor-gema-forte: #E9A800;
+  --cor-gema-clara: #FFF6DA;
+  --cor-gema-linha: #F3DE9C;
+  --cor-texto-gema: #6B4E00;
+  /* As faixas azuis (topo das telas de gestão, cartões em destaque): o azul-noite com um leve brilho no marinho */
+  --fundo-marca: linear-gradient(160deg, #13204A 0%, #182A5C 55%, #1E3A72 100%);
 
   /* Texto */
-  --cor-texto: #141A26;
+  --cor-texto: #111A33;
   --cor-texto-secundario: #4A5366;
   --cor-texto-suave: #5B6475;
   --cor-texto-sobre-escuro: #C3CBDA;
@@ -41,8 +51,9 @@
   --cor-rosa: #A3385A;
 
   /* Tipografia */
-  --fonte-base: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --fonte-titulo: 'Fraunces', Georgia, serif;
+  --fonte-base: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fonte-titulo: 'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif;
+  --fonte-numero: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
   /* Formas */
   --raio-pequeno: 10px;
@@ -157,9 +168,9 @@ body:has(.barra-fixa-inferior) app-toast-host .regiao {
 
 .titulo-pagina {
   font-family: var(--fonte-titulo);
-  font-weight: 500;
+  font-weight: 700;
   font-size: 28px;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.025em;
 }
 
 .titulo-secao {
@@ -216,13 +227,15 @@ body:has(.barra-fixa-inferior) app-toast-host .regiao {
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
+/* o principal é azul-noite com a pontinha de balão da logo (o canto de baixo à esquerda), como na landing */
 .btn--primario {
-  background: var(--cor-primaria);
+  background: var(--cor-noite);
   color: #FFFFFF;
+  border-radius: var(--raio-medio) var(--raio-medio) var(--raio-medio) 4px;
 }
 
 .btn--primario:hover {
-  background: var(--cor-primaria-hover);
+  background: var(--cor-noite-hover);
   color: #FFFFFF;
 }
 
@@ -281,6 +294,16 @@ body:has(.barra-fixa-inferior) app-toast-host .regiao {
   padding: 0 12px;
   border-radius: var(--raio-pequeno);
   font-size: 13px;
+}
+
+.btn--primario.btn--pequeno {
+  border-radius: var(--raio-pequeno) var(--raio-pequeno) var(--raio-pequeno) 3px;
+}
+
+/* seleção de texto no amarelo bem claro da marca */
+::selection {
+  background: var(--cor-gema-clara);
+  color: var(--cor-texto);
 }
 
 /* Botão ocupado (aria-busy) continua com a cor normal e mostra o carregando */

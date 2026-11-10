@@ -25,21 +25,22 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
     }
   `,
   styles: `
+    /* a marca: no claro, balão azul-noite com os pontinhos amarelos; no escuro, balão amarelo e o "AI" creme */
     :host {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      --logo-balao: var(--cor-primaria);
-      --logo-pontos: #ffffff;
-      --logo-texto: var(--cor-texto);
-      --logo-ai: #7d8ba6;
+      gap: 6px;
+      --logo-balao: var(--cor-noite, #13204a);
+      --logo-pontos: var(--cor-gema, #ffc83d);
+      --logo-texto: var(--cor-noite, #13204a);
+      --logo-ai: #8a94ab;
     }
 
     :host(.logo--claro) {
-      --logo-balao: #ffffff;
-      --logo-pontos: var(--cor-primaria);
+      --logo-balao: var(--cor-gema, #ffc83d);
+      --logo-pontos: var(--cor-noite, #13204a);
       --logo-texto: #ffffff;
-      --logo-ai: #9aa6bd;
+      --logo-ai: #f7eccd;
     }
 
     .logo__balao {

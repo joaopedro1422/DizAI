@@ -87,7 +87,7 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: var(--cor-primaria);
+  background: var(--cor-gema);
   transition: width 0.4s ease;
 }
 
@@ -99,7 +99,7 @@
 
 .balao__titulo {
   font-family: var(--fonte-titulo);
-  font-weight: 500;
+  font-weight: 700;
   font-size: 21px;
   letter-spacing: -0.01em;
 }

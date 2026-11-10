@@ -45,6 +45,7 @@
 }
 
 .metrica__valor {
+  font-family: var(--fonte-numero);
   font-size: 26px;
   font-weight: 700;
   color: var(--cor-primaria);

@@ -114,6 +114,7 @@
 }
 
 .rodape__valor {
+  font-family: var(--fonte-numero);
   font-size: 18px;
   font-weight: 800;
   font-variant-numeric: tabular-nums;

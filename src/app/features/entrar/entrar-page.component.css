@@ -26,6 +26,7 @@
 }
 
 .titulo {
+  font-family: var(--fonte-titulo);
   font-size: 28px;
   font-weight: 800;
   letter-spacing: -0.04em;

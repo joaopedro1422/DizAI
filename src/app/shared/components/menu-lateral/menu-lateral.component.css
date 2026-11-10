@@ -108,7 +108,7 @@
 .menu__marca-textos b {
   font-family: var(--fonte-titulo);
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .menu__marca-textos small {
@@ -167,6 +167,7 @@
   background: var(--cor-primaria-clara);
   color: var(--cor-primaria);
   font-weight: 700;
+  box-shadow: inset 3px 0 0 var(--cor-gema);
 }
 
 /* Ajuda (ex.: "Como usar a agenda"): no pé do menu, acima do conteúdo projetado */

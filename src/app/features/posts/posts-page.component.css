@@ -40,8 +40,8 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: var(--cor-primaria);
-  color: #ffffff;
+  background: var(--cor-gema);
+  color: var(--cor-noite);
   font-size: 13px;
   font-weight: 800;
 }

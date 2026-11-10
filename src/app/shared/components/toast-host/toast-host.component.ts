@@ -39,7 +39,7 @@ import { IconeComponent } from '../icone/icone.component';
       max-width: 448px;
       padding: 14px 16px;
       border-radius: var(--raio-medio);
-      background: var(--cor-primaria);
+      background: var(--cor-noite);
       color: #ffffff;
       font-size: 14px;
       font-weight: 600;

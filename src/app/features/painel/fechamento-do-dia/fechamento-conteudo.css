@@ -42,6 +42,7 @@ ul { margin: 0; padding: 0; }
 }
 
 .indicador__valor {
+  font-family: var(--fonte-numero);
   overflow: hidden;
   color: var(--cor-texto);
   font-size: 20px;
@@ -187,7 +188,7 @@ ul { margin: 0; padding: 0; }
   color: var(--cor-texto);
   font-family: var(--fonte-titulo);
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.15;
 }
 

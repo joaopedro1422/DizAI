@@ -6,7 +6,7 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="O DizAI responde seus clientes no WhatsApp na hora, com os produtos, preços e regras da sua loja.">
-  <meta name="theme-color" content="#1E3A72">
+  <meta name="theme-color" content="#13204A">
   <!-- favicon: o ícone do DizAI (fundo azul, logo branca); o .ico tem 16, 32 e 48 px -->
   <link rel="icon" type="image/png" sizes="32x32" href="icones/favicon-32.png">
   <link rel="icon" type="image/png" sizes="96x96" href="icones/favicon-96.png">
@@ -30,7 +30,7 @@
       align-items: center;
       justify-content: center;
       gap: 18px;
-      background: #1E3A72;
+      background: #13204A;
       transition: opacity 0.35s ease, transform 0.35s ease;
     }
     @media (display-mode: standalone) {
@@ -39,8 +39,8 @@
     .abertura--ios { display: flex; }
     .abertura--saindo { opacity: 0; transform: scale(1.04); pointer-events: none; }
     .abertura__simbolo { width: 92px; height: 92px; animation: abertura-entrada 0.5s ease both; }
-    .abertura__balao { fill: #ffffff; }
-    .abertura__ponto { fill: #1E3A72; animation: abertura-digitando 1.2s ease-in-out infinite; }
+    .abertura__balao { fill: #FFC83D; }
+    .abertura__ponto { fill: #13204A; animation: abertura-digitando 1.2s ease-in-out infinite; }
     .abertura__ponto:nth-of-type(2) { animation-delay: 0.15s; }
     .abertura__ponto:nth-of-type(3) { animation-delay: 0.3s; }
     .abertura__nome {
@@ -49,7 +49,7 @@
       color: #ffffff;
       animation: abertura-entrada 0.5s 0.1s ease both;
     }
-    .abertura__nome span { color: #9aa6bd; }
+    .abertura__nome span { color: #F7ECCD; }
     @keyframes abertura-entrada { from { opacity: 0; transform: translateY(8px) scale(0.96); } }
     @keyframes abertura-digitando { 0%, 60%, 100% { opacity: 1; } 30% { opacity: 0.35; } }
     @media (prefers-reduced-motion: reduce) {
@@ -58,9 +58,9 @@
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500&display=swap" rel="stylesheet">
-  <!-- marca nova (landing de vendas e hub): títulos, texto e números -->
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- a marca (landings e painel): títulos, texto e números; o Manrope fica para a vitrine pública -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 

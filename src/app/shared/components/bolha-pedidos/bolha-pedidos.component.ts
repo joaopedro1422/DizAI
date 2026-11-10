@@ -44,7 +44,7 @@ const CONFERIR_A_CADA_MS = 20_000;
       padding: 0;
       border: none;
       border-radius: 50%;
-      background: linear-gradient(150deg, var(--cor-primaria) 0%, #2c4f9e 100%);
+      background: var(--fundo-marca);
       color: #ffffff;
       box-shadow: 0 10px 26px rgba(30, 58, 114, 0.38), 0 2px 6px rgba(15, 23, 42, 0.18);
       cursor: pointer;

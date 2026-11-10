@@ -97,6 +97,7 @@
 }
 
 .conectado__titulo {
+  font-family: var(--fonte-titulo);
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.03em;
@@ -137,6 +138,7 @@
 }
 
 .etapa__titulo {
+  font-family: var(--fonte-titulo);
   font-size: 23px;
   font-weight: 800;
   letter-spacing: -0.03em;

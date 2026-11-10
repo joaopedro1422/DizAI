@@ -32,8 +32,22 @@ import { LogoComponent } from '../logo/logo.component';
         min-height: 640px;
         padding: 40px clamp(40px, 5vw, 72px);
         overflow: hidden;
-        background: linear-gradient(160deg, #1E3A72 0%, #19325F 60%, #142849 100%);
+        background: var(--fundo-marca);
         color: #ffffff;
+      }
+
+      /* o brilho amarelo bem suave, como atrás do celular do hero da landing */
+      :host::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 620px;
+        height: 620px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 200, 61, 0.12) 0%, rgba(255, 200, 61, 0.04) 40%, transparent 68%);
+        transform: translate(-50%, -50%);
+        pointer-events: none;
       }
     }
 
@@ -44,7 +58,7 @@ import { LogoComponent } from '../logo/logo.component';
       bottom: -90px;
       width: 460px;
       height: 460px;
-      fill: rgba(255, 255, 255, 0.04);
+      fill: rgba(255, 200, 61, 0.07);
       pointer-events: none;
     }
 
@@ -57,6 +71,7 @@ import { LogoComponent } from '../logo/logo.component';
     .marca__titulo {
       position: relative;
       max-width: 520px;
+      font-family: var(--fonte-titulo);
       font-size: clamp(34px, 3.2vw, 46px);
       font-weight: 800;
       letter-spacing: -0.04em;

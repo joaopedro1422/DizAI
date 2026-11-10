@@ -15,7 +15,7 @@
   gap: 4px;
   padding: 22px 20px;
   border-radius: var(--raio-grande);
-  background: linear-gradient(135deg, var(--cor-primaria) 0%, #2C4F9E 100%);
+  background: var(--fundo-marca);
   color: #ffffff;
   box-shadow: 0 10px 24px rgba(30, 58, 114, 0.25);
   transition: opacity 0.2s ease;
@@ -33,7 +33,7 @@
 .economia__valor {
   font-family: var(--fonte-titulo);
   font-size: 44px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.01em;
 }
@@ -131,6 +131,7 @@
 }
 
 .indicador__valor {
+  font-family: var(--fonte-numero);
   font-size: 26px;
   font-weight: 800;
   line-height: 1.1;

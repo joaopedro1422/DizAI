@@ -33,7 +33,7 @@
 .topo {
   flex-shrink: 0;
   padding: 18px 22px 24px;
-  background: var(--cor-primaria);
+  background: var(--fundo-marca);
   color: #fff;
 }
 
@@ -91,7 +91,7 @@
   color: #fff;
   font-family: var(--fonte-titulo);
   font-size: 19px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .topo__textos { display: flex; flex-direction: column; min-width: 0; }
@@ -100,7 +100,7 @@
   margin: 0;
   font-family: var(--fonte-titulo);
   font-size: 21px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.2;
 }
 
@@ -126,7 +126,7 @@
 .destaque__valor {
   font-family: var(--fonte-titulo);
   font-size: 44px;
-  font-weight: 600;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
   line-height: 1.05;
@@ -182,12 +182,13 @@
 .acoes__fechar:hover { background: var(--cor-fundo-suave); }
 
 .acoes__ir {
-  border: 1px solid var(--cor-primaria);
-  background: var(--cor-primaria);
+  border: 1px solid var(--cor-noite);
+  background: var(--cor-noite);
   color: #fff;
+  border-radius: var(--raio-medio) var(--raio-medio) var(--raio-medio) 4px;
 }
 
-.acoes__ir:hover { background: var(--cor-primaria-hover); }
+.acoes__ir:hover { background: var(--cor-noite-hover); }
 .acoes__fechar:focus-visible,
 .acoes__ir:focus-visible { outline: 2px solid var(--cor-primaria); outline-offset: 2px; }
 

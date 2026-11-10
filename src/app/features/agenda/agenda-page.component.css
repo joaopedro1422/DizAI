@@ -74,6 +74,7 @@ a.faixa-aviso {
 }
 
 .dia__titulo {
+  font-family: var(--fonte-titulo);
   font-size: 18px;
   font-weight: 800;
 }
