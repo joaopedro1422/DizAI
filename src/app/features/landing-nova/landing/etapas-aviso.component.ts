@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 
 import { esperar, quandoAparecer, semMovimento } from '../movimento';
-import { EtapaAviso } from './conteudo-vendas';
+import { EtapaAviso } from './conteudo-landing-nova';
 
 /** Tempo de cada etapa à vista (a barrinha da etapa atual enche nesse tempo). */
 const TEMPO_POR_ETAPA_MS = 3800;

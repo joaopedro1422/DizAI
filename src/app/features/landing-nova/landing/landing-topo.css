@@ -502,6 +502,13 @@
   to { opacity: 1; transform: none; }
 }
 
+/* no computador o título fica 2 px menor (no celular, o tamanho de sempre) */
+@media (min-width: 1001px) {
+  .lv .hero__titulo {
+    font-size: clamp(42px, calc(6.6vw - 2px), 82px);
+  }
+}
+
 @media (max-width: 1000px) {
   .lv .dores .miolo,
   .lv .mit .miolo {

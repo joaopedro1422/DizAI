@@ -168,7 +168,7 @@
 }
 
 .lv .vt__nome {
-  font-family: 'Dancing Script', cursive;
+  font-family: var(--vt-fonte, 'Dancing Script', cursive);
   font-size: 25px;
   font-weight: 700;
   line-height: 1.1;
@@ -192,7 +192,7 @@
   gap: 4px;
   padding: 3px 8px;
   border-radius: 999px;
-  background: #f5ede4;
+  background: var(--vt-selo, #f5ede4);
   font-size: 10px;
   font-weight: 700;
 }
@@ -248,10 +248,10 @@
 .lv .vt__chip {
   flex: none;
   padding: 6px 10px;
-  border: 1px solid #e6dccf;
+  border: 1px solid var(--vt-borda);
   border-radius: 999px;
-  background: #f3ebe1;
-  font-family: 'Dancing Script', cursive;
+  background: var(--vt-selo, #f3ebe1);
+  font-family: var(--vt-fonte, 'Dancing Script', cursive);
   font-size: 14px;
   font-weight: 600;
 }
@@ -270,7 +270,7 @@
 }
 
 .lv .vt__topico b {
-  font-family: 'Dancing Script', cursive;
+  font-family: var(--vt-fonte, 'Dancing Script', cursive);
   font-size: 20px;
 }
 
@@ -301,7 +301,7 @@
 }
 
 .lv .vt__nota strong {
-  font-family: 'Dancing Script', cursive;
+  font-family: var(--vt-fonte, 'Dancing Script', cursive);
   font-size: 32px;
   line-height: 1;
 }
@@ -398,7 +398,7 @@
   width: 26px;
   height: 26px;
   border-radius: 7px;
-  background: #f5ede4;
+  background: var(--vt-selo, #f5ede4);
   color: var(--vt-destaque);
 }
 
@@ -424,6 +424,53 @@
   text-align: center;
   color: #a39488;
   font-size: 10px;
+}
+
+.lv .vt__capa--degrade {
+  background: linear-gradient(135deg, var(--vt-destaque), color-mix(in srgb, var(--vt-destaque) 55%, #ffffff));
+}
+
+.lv .vt__logo--inicial {
+  display: grid;
+  place-items: center;
+  background: var(--vt-destaque);
+  color: #ffffff;
+  font-family: var(--vt-fonte, var(--f-titulo));
+  font-size: 30px;
+}
+
+/* os botões das duas lojas embaixo do celular */
+.lv .vt-palco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.lv .vt-lojas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.lv .vt-lojas button {
+  padding: 8px 14px;
+  border: 1px solid var(--linha);
+  border-radius: 999px;
+  background: var(--papel);
+  color: var(--suave);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.lv .vt-lojas button[aria-pressed='true'] {
+  border-color: var(--noite);
+  background: var(--noite);
+  color: #ffffff;
 }
 
 .lv .vt__whats {

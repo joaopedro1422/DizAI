@@ -100,17 +100,18 @@ export const routes: Routes = [
     title: 'DizAI — atendente com IA no WhatsApp para pequenos negócios',
     loadComponent: () => import('./features/landing-nova/hub/hub-page.component').then((m) => m.HubPageComponent),
   },
-  // vendas na marca nova (landing-nova); agendamentos ainda no LandingPageComponent (o tipo vai no data)
+  // as duas landings na marca nova (landing-nova): o tipo vai no data e chega como input (withComponentInputBinding)
   {
     path: 'vendas',
+    data: { tipo: 'produtos' },
     loadComponent: () =>
-      import('./features/landing-nova/vendas/landing-vendas.component').then((m) => m.LandingVendasComponent),
+      import('./features/landing-nova/landing/landing-nova.component').then((m) => m.LandingNovaComponent),
   },
   {
     path: 'agendamentos',
     data: { tipo: 'servicos' },
     loadComponent: () =>
-      import('./features/landing/landing-page.component').then((m) => m.LandingPageComponent),
+      import('./features/landing-nova/landing/landing-nova.component').then((m) => m.LandingNovaComponent),
   },
   {
     path: 'demonstracao',

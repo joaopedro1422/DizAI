@@ -1,17 +1,17 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, afterNextRender, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, afterNextRender, inject, input, signal } from '@angular/core';
 
 import { semMovimento } from '../movimento';
-import { SLIDES_COMO } from './conteudo-vendas';
+import { ConteudoLandingNova } from './conteudo-landing-nova';
 
 const TEMPO_POR_SLIDE_MS = 3800;
 
 /**
  * "Pronto em 3 passos": cadastro → WhatsApp conectado → ele atende. Os exemplos do passo 1 (o produto cadastrado)
- * e do passo 3 (a pergunta respondida com o que foi cadastrado) trocam juntos: bolo, salgados e buquê.
+ * e do passo 3 (a pergunta respondida com o que foi cadastrado) trocam juntos: bolo, salgados e buquê | gel, barbearia e estética.
  */
 @Component({
-  selector: 'app-como-funciona-vendas',
+  selector: 'app-como-funciona-landing',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="secao faixa" id="como">
@@ -26,12 +26,12 @@ const TEMPO_POR_SLIDE_MS = 3800;
           <article class="curto">
             <div class="curto__texto">
               <span class="curto__num"><b>1</b>Passo 1</span>
-              <h3>Cadastre os seus produtos e informações</h3>
-              <p>Preços, opções, tamanhos, sabores, prazos e muito mais.</p>
+              <h3>{{ conteudo().como.cadastro[0] }}</h3>
+              <p>{{ conteudo().como.cadastro[1] }}</p>
             </div>
             <div class="curto__tela">
               <div class="slides">
-                @for (s of slides; track s.produto; let i = $index) {
+                @for (s of conteudo().como.slides; track s.produto; let i = $index) {
                   <div class="slide" [class.ativo]="i === atual()" [attr.aria-hidden]="i !== atual()">
                     <div class="campo-mock"><b>{{ s.produto }}</b><small class="mono">{{ s.preco }}</small></div>
                     <div class="opcao-mock">
@@ -68,16 +68,16 @@ const TEMPO_POR_SLIDE_MS = 3800;
           <article class="curto">
             <div class="curto__texto">
               <span class="curto__num"><b>3</b>Passo 3</span>
-              <h3>Ele atende por você</h3>
-              <p>Mantém o cliente por perto desde o primeiro minuto, até você aparecer para confirmar o pedido.</p>
+              <h3>{{ conteudo().como.atende[0] }}</h3>
+              <p>{{ conteudo().como.atende[1] }}</p>
             </div>
             <div class="curto__tela curto__tela--wpp">
               <div class="slides">
-                @for (s of slides; track s.produto; let i = $index) {
+                @for (s of conteudo().como.slides; track s.produto; let i = $index) {
                   <div class="slide slide--wpp" [class.ativo]="i === atual()" [attr.aria-hidden]="i !== atual()">
                     <span class="msg msg--cliente">{{ s.pergunta }}</span>
                     <span class="msg msg--loja">{{ s.resposta }}</span>
-                    <span class="selo-ok">✓ Respondido em segundos</span>
+                    <span class="selo-ok">{{ conteudo().como.selo }}</span>
                   </div>
                 }
               </div>
@@ -91,7 +91,7 @@ const TEMPO_POR_SLIDE_MS = 3800;
 
     <ng-template #pontos>
       <div class="pontos-slide" aria-hidden="true">
-        @for (s of slides; track s.produto; let i = $index) {
+        @for (s of conteudo().como.slides; track s.produto; let i = $index) {
           <i [class.ativo]="i === atual()"></i>
         }
       </div>
@@ -99,8 +99,8 @@ const TEMPO_POR_SLIDE_MS = 3800;
   `,
   imports: [NgTemplateOutlet],
 })
-export class ComoFuncionaVendasComponent {
-  protected readonly slides = SLIDES_COMO;
+export class ComoFuncionaLandingComponent {
+  readonly conteudo = input.required<ConteudoLandingNova>();
   protected readonly atual = signal(0);
 
   constructor() {
@@ -109,7 +109,7 @@ export class ComoFuncionaVendasComponent {
     afterNextRender(() => {
       if (semMovimento()) return;
       relogio = setInterval(() => {
-        if (!document.hidden) this.atual.update((i) => (i + 1) % SLIDES_COMO.length);
+        if (!document.hidden) this.atual.update((i) => (i + 1) % this.conteudo().como.slides.length);
       }, TEMPO_POR_SLIDE_MS);
     });
   }

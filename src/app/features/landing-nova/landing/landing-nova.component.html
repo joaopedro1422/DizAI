@@ -1,22 +1,23 @@
+@let c = conteudo();
 <header class="topo faixa">
   <div class="miolo">
     <a routerLink="/" class="topo__marca" aria-label="DizAI, início"><app-logo [tamanhoSimbolo]="32" [tamanhoTexto]="24" /></a>
     <nav class="topo__links" aria-label="Principal">
-      <a routerLink="/vendas" fragment="recursos">Recursos</a>
-      <a routerLink="/vendas" fragment="como">Como funciona</a>
-      <a routerLink="/vendas" fragment="duvidas">Dúvidas</a>
-      <a routerLink="/agendamentos">Para quem agenda</a>
+      <a [routerLink]="c.rota" fragment="recursos">{{ c.rotuloRecursos }}</a>
+      <a [routerLink]="c.rota" fragment="como">Como funciona</a>
+      <a [routerLink]="c.rota" fragment="duvidas">Dúvidas</a>
+      <a [routerLink]="c.outra.rota">{{ c.outra.rotulo }}</a>
       <a class="btn btn--forte btn--pequeno" routerLink="/entrar">Entrar</a>
     </nav>
   </div>
 </header>
 
 <main>
-  <app-hero-vendas />
+  <app-hero-landing [conteudo]="c" />
 
   <div class="negocios" aria-label="Tipos de negócio atendidos">
     <div class="negocios__trilho">
-      @for (negocio of negociosEmDobro; track $index) {
+      @for (negocio of negociosEmDobro(); track $index) {
         <span>{{ negocio }}</span>
       }
     </div>
@@ -27,9 +28,9 @@
     <div class="miolo">
       <div>
         <span class="rotulo">O problema</span>
-        <h2 class="titulo dores__titulo">Você trabalha,<br /><span class="grifo">o WhatsApp não espera.</span></h2>
+        <h2 class="titulo dores__titulo">{{ c.dores.titulo[0] }}<br /><span class="grifo">{{ c.dores.titulo[1] }}</span></h2>
         <div class="dores__lista">
-          @for (dor of dores; track dor.titulo; let i = $index) {
+          @for (dor of c.dores.itens; track dor.titulo; let i = $index) {
             <div class="dor">
               <span class="dor__num">0{{ i + 1 }}</span>
               <div>
@@ -45,8 +46,8 @@
         <div class="bloqueio__tela">
           <div class="bloqueio__hora">14:37</div>
           <div class="bloqueio__dia">sábado, 24 de outubro</div>
-          <span class="bloqueio__contador">{{ bloqueio.contador }}</span>
-          @for (aviso of bloqueio.avisos; track aviso.nome; let i = $index) {
+          <span class="bloqueio__contador">{{ c.bloqueio.contador }}</span>
+          @for (aviso of c.bloqueio.avisos; track aviso.nome; let i = $index) {
             <div class="notif" [style.--i]="i">
               <span class="notif__av" [style.background]="aviso.cor">{{ aviso.nome[0] }}</span>
               <span class="notif__textos"><b>{{ aviso.nome }}<small>{{ aviso.quando }}</small></b><p>{{ aviso.texto }}</p></span>
@@ -57,9 +58,13 @@
     </div>
   </section>
 
-  <app-prova-vendas appRevelar />
-  <app-como-funciona-vendas appRevelar />
-  <app-na-pratica-vendas />
+  <app-prova-landing appRevelar [conteudo]="c" />
+  <app-como-funciona-landing appRevelar [conteudo]="c" />
+  @if (c.tipo === 'servicos') {
+    <app-na-pratica-agenda />
+  } @else {
+    <app-na-pratica-vendas />
+  }
 
   <!-- o que ele faz por você: um recurso por cartão -->
   <section class="secao faixa" appRevelar>
@@ -69,7 +74,7 @@
         <p class="apoio">Um atendente a mais na equipe, sem folga e sem salário.</p>
       </div>
       <div class="grade-dia">
-        @for (item of dia; track item.titulo; let i = $index) {
+        @for (item of c.dia; track item.titulo; let i = $index) {
           <article class="hora" [style.--i]="i">
             <span class="hora__momento">{{ item.momento }}</span>
             <h3>{{ item.titulo }}</h3>
@@ -77,8 +82,10 @@
             <div class="hora__visual">
               @switch (item.visual) {
                 @case ('conversa') {
-                  <span class="msg msg--cliente">Vocês abrem amanhã?<time>02:14</time></span>
-                  <span class="msg msg--loja">Abrimos sim, das 9h às 19h!<time>02:14</time></span>
+                  @if (item.conversa; as conversa) {
+                    <span class="msg msg--cliente">{{ conversa[0] }}<time>02:14</time></span>
+                    <span class="msg msg--loja">{{ conversa[1] }}<time>02:14</time></span>
+                  }
                 }
                 @case ('audio') {
                   <div class="onda">
@@ -92,10 +99,10 @@
                   </div>
                 }
                 @case ('arquivo') {
-                  <span class="msg msg--arquivo"><span class="pdf">PDF</span><span><b>Cardápio de novembro.pdf</b><small>enviado agora</small></span></span>
+                  <span class="msg msg--arquivo"><span class="pdf">PDF</span><span><b>{{ item.detalhe }}</b><small>enviado agora</small></span></span>
                 }
                 @case ('chama') {
-                  <div class="push"><span class="push__icone"></span><span><b>Um cliente quer falar com você</b><small>"Fazem sem lactose?"</small></span></div>
+                  <div class="push"><span class="push__icone"></span><span><b>Um cliente quer falar com você</b><small>{{ item.detalhe }}</small></span></div>
                 }
                 @case ('chave') {
                   <div class="chave"><span>Assistente nesta conversa</span><i></i></div>
@@ -107,7 +114,7 @@
                   <div class="chips"><span>Feed</span><span>Story</span><span>Legenda pronta</span></div>
                 }
                 @case ('numeros') {
-                  <div class="valor-grande">R$ 4.820</div>
+                  <div class="valor-grande">{{ item.detalhe }}</div>
                 }
               }
             </div>
@@ -117,8 +124,13 @@
     </div>
   </section>
 
-  <app-recursos-vendas appRevelar />
-  <app-vitrine-posts-vendas appRevelar />
+  <!-- os Recursos de cada tipo, no mesmo lugar da página -->
+  @if (c.tipo === 'servicos') {
+    <app-recursos-agenda appRevelar />
+  } @else {
+    <app-recursos-vendas appRevelar />
+  }
+  <app-vitrine-posts-landing appRevelar [conteudo]="c" />
 
   <!-- você no controle -->
   <section class="secao faixa confianca sobre-noite" appRevelar>
@@ -128,7 +140,7 @@
         <h2 class="titulo">O assistente trabalha. <span class="grifo">Você continua no comando.</span></h2>
       </div>
       <div class="grade-confianca">
-        @for (item of confianca; track item[0]) {
+        @for (item of c.confianca; track item[0]) {
           <article class="garantia"><span class="check">✓</span><h3>{{ item[0] }}</h3><p>{{ item[1] }}</p></article>
         }
       </div>
@@ -143,13 +155,17 @@
         <h2 class="titulo">Feito para o seu tipo de negócio.</h2>
       </div>
       <div class="grade-ramos">
-        @for (ramo of ramos; track ramo.titulo) {
+        @for (ramo of c.ramos; track ramo.titulo) {
           <article class="ramo">
-            <div class="ramo__fotos">
-              @for (foto of ramo.fotos; track foto) {
-                <img [src]="foto" alt="" loading="lazy" />
-              }
-            </div>
+            @if (ramo.fotos.length) {
+              <div class="ramo__fotos">
+                @for (foto of ramo.fotos; track foto) {
+                  <img [src]="foto" alt="" loading="lazy" />
+                }
+              </div>
+            } @else {
+              <div class="ramo__capa">{{ ramo.titulo }}</div>
+            }
             <div class="ramo__corpo">
               <div><h3>{{ ramo.titulo }}</h3><small>{{ ramo.quem }}</small></div>
               <ul class="lista-checks">
@@ -183,7 +199,7 @@
         </div>
       </div>
       <div class="lista-perguntas">
-        @for (pergunta of perguntas; track pergunta[0]) {
+        @for (pergunta of c.perguntas; track pergunta[0]) {
           <details>
             <summary>{{ pergunta[0] }}</summary>
             <p>{{ pergunta[1] }}</p>
@@ -196,11 +212,11 @@
   <section class="final faixa nevoa">
     <div class="miolo">
       <div class="final__painel" appRevelar>
-        <h2>{{ final.titulo }}</h2>
-        <p>{{ final.texto }}</p>
+        <h2>{{ c.final.titulo }}</h2>
+        <p>{{ c.final.texto }}</p>
         <div class="final__acoes">
-          <a class="btn btn--escuro" routerLink="/cadastro" [queryParams]="{ tipo: 'produtos' }">Testar de graça →</a>
-          <a class="final__demo" routerLink="/demonstracao" [queryParams]="{ tipo: 'produtos' }">Ver uma demonstração</a>
+          <a class="btn btn--escuro" routerLink="/cadastro" [queryParams]="{ tipo: c.tipo }">Testar de graça →</a>
+          <a class="final__demo" routerLink="/demonstracao" [queryParams]="{ tipo: c.tipo }">Ver uma demonstração</a>
         </div>
       </div>
     </div>

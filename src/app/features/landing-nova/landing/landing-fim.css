@@ -1,12 +1,15 @@
 /* Landing de vendas: confiança, para quem é, perguntas e o fim. */
 
 /* os componentes das seções são elementos próprios: sem isto, a entrada ao rolar (transform) não funciona */
-.lv app-hero-vendas,
-.lv app-prova-vendas,
-.lv app-como-funciona-vendas,
+.lv app-hero-landing,
+.lv app-prova-landing,
+.lv app-como-funciona-landing,
 .lv app-na-pratica-vendas,
+.lv app-na-pratica-agenda,
 .lv app-recursos-vendas,
-.lv app-vitrine-posts-vendas,
+.lv app-recursos-agenda,
+.lv app-vitrine-posts-landing,
+.lv app-etapas-aviso,
 .lv app-faixa-tech-provider {
   display: block;
 }

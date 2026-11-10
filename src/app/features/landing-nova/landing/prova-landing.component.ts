@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, afterNextRender, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, afterNextRender, inject, input, signal } from '@angular/core';
 
 import { CelularMockComponent } from '../celular-mock.component';
 import { esperar, quandoAparecer, semMovimento } from '../movimento';
-import { FOTOS, PROVA_VENDAS } from './conteudo-vendas';
+import { ConteudoLandingNova } from './conteudo-landing-nova';
 
 interface ItemProva {
   id: number;
@@ -17,7 +17,7 @@ interface ItemProva {
  * na tela.
  */
 @Component({
-  selector: 'app-prova-vendas',
+  selector: 'app-prova-landing',
   imports: [CelularMockComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -25,7 +25,7 @@ interface ItemProva {
       <div class="miolo">
         <div class="mit__texto">
           <div class="mit__numero">21<small>×</small></div>
-          <h2>Responder em até <span class="grifo">5 minutos</span> deixa a chance de fechar a venda <span class="grifo">21 vezes maior</span>.</h2>
+          <h2>Responder em até <span class="grifo">5 minutos</span> deixa a chance de {{ conteudo().prova.objetivo }} <span class="grifo">21 vezes maior</span>.</h2>
           <p>E a chance de o cliente ainda estar lá para conversar é <strong>100 vezes maior</strong>. O estudo analisou mais de 15 mil contatos ao longo de 3 anos.</p>
           <cite>Fonte: "Lead Response Management Study", Dr. James Oldroyd (MIT) e InsideSales, 2007.</cite>
         </div>
@@ -34,9 +34,9 @@ interface ItemProva {
           <span class="mit__selo" [class.mit__selo--com]="comDizai()">{{ comDizai() ? '✓ Com o DizAI' : '✕ Sem o DizAI' }}</span>
           <app-celular-mock style="--celular-largura: 340px; --celular-altura: 560px">
             <div class="wpp-topo">
-              <img [src]="logo" alt="" />
+              <img [src]="conteudo().prova.logo" alt="" />
               <span>
-                <b>Pedacinho do Céu</b>
+                <b>{{ conteudo().prova.loja }}</b>
                 <small [class.dig]="digitando()">{{ digitando() ? 'digitando…' : comDizai() ? 'online' : 'visto por último hoje' }}</small>
               </span>
             </div>
@@ -65,8 +65,8 @@ interface ItemProva {
     </section>
   `,
 })
-export class ProvaVendasComponent {
-  protected readonly logo = FOTOS.logoPedacinho;
+export class ProvaLandingComponent {
+  readonly conteudo = input.required<ConteudoLandingNova>();
   protected readonly comDizai = signal(false);
   protected readonly digitando = signal(false);
   protected readonly itens = signal<ItemProva[]>([]);
@@ -84,7 +84,8 @@ export class ProvaVendasComponent {
     afterNextRender(() => {
       if (semMovimento()) {
         this.comDizai.set(true);
-        this.itens.set([...PROVA_VENDAS.com.map(([de, t, h]) => this.item(de, t, h)), this.item('fim', PROVA_VENDAS.fimCom)]);
+        const prova = this.conteudo().prova;
+        this.itens.set([...prova.com.map(([de, t, h]) => this.item(de, t, h)), this.item('fim', prova.fimCom)]);
         return;
       }
       parar = quandoAparecer(elemento, () => void this.tocar());
@@ -92,22 +93,23 @@ export class ProvaVendasComponent {
   }
 
   private async tocar(): Promise<void> {
+    const prova = this.conteudo().prova;
     while (this.ativo) {
       this.comDizai.set(false);
       this.itens.set([]);
-      for (const [de, texto, hora] of PROVA_VENDAS.sem) {
+      for (const [de, texto, hora] of prova.sem) {
         await esperar(de === 't' ? 900 : 1200);
         if (!this.ativo) return;
         this.adicionar(this.item(de, texto, hora));
       }
       await esperar(900);
-      this.adicionar(this.item('fim', PROVA_VENDAS.fimSem));
+      this.adicionar(this.item('fim', prova.fimSem));
       await esperar(3200);
       if (!this.ativo) return;
 
       this.comDizai.set(true);
       this.itens.set([]);
-      for (const [de, texto, hora] of PROVA_VENDAS.com) {
+      for (const [de, texto, hora] of prova.com) {
         if (de === 'l') {
           this.digitando.set(true);
           await esperar(1200);
@@ -119,7 +121,7 @@ export class ProvaVendasComponent {
         this.adicionar(this.item(de, texto, hora));
       }
       await esperar(800);
-      this.adicionar(this.item('fim', PROVA_VENDAS.fimCom));
+      this.adicionar(this.item('fim', prova.fimCom));
       await esperar(4200);
     }
   }

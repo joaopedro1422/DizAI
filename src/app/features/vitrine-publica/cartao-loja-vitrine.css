@@ -16,6 +16,15 @@
   box-shadow: 0 18px 40px -26px rgba(0, 0, 0, 0.45);
 }
 
+/* o que vem logo abaixo do cartão (abas Vitrine | Agendar horário ou o menu das categorias) ganha um respiro */
+.loja--com-capa + .alternar {
+  margin-top: 18px;
+}
+
+.loja--com-capa + .categorias {
+  margin-top: 14px;
+}
+
 .loja--com-capa .loja__foto,
 .loja--com-capa .loja__inicial {
   width: 96px;
