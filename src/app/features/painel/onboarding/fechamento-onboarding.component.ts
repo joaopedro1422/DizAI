@@ -6,6 +6,8 @@ import { DicaSobrepostaComponent, ItemDica } from '../../../shared/components/di
 
 /** Quanto tempo a tela fica à vista (o pedido no Chats, o horário na Agenda) antes do fechamento. */
 export const ESPERA_FECHAMENTO_MS = 3000;
+/** Na agenda o lojista vê o agendamento que o teste marcou: fica mais tempo à vista. */
+export const ESPERA_FECHAMENTO_AGENDA_MS = 15000;
 
 const ITENS: Record<'produtos' | 'servicos', ItemDica[]> = {
   produtos: [

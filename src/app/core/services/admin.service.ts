@@ -56,6 +56,14 @@ export class AdminService {
     this.tirarDaLista(solicitacaoId);
   }
 
+  /** Para testes: apaga todas as conversas e mensagens da loja; devolve quantas conversas saíram. */
+  async apagarConversas(perfilId: string): Promise<number> {
+    const resposta = await firstValueFrom(
+      this.http.delete<{ conversasApagadas: number }>(urlApi(`/api/admin/lojas/${perfilId}/conversas`)),
+    );
+    return resposta.conversasApagadas;
+  }
+
   private tirarDaLista(solicitacaoId: string): void {
     this.pedidosSenha.update((lista) => lista.filter((s) => s.id !== solicitacaoId));
   }

@@ -22,12 +22,20 @@
         }
 
         @case ('catalogo') {
+          @if (servico()) {
+            <span class="opcional">Opcional</span>
+          }
           <h2 id="onboarding-titulo" class="titulo">
             Cadastre o seu <span class="destaque">principal catálogo</span>{{ servico() ? '' : ' de produtos' }} em imagens ou PDF
           </h2>
           <p class="descricao">
-            {{ servico() ? 'A tabela de preços ou o portfólio do seu negócio.' : 'A imagem com os sabores ou o arquivo de menu do seu negócio.' }}
-            O assistente envia na conversa quando o cliente pergunta.
+            @if (servico()) {
+              A tabela de preços ou o portfólio do seu negócio, que o assistente envia na conversa quando o cliente pergunta.
+              Se você não compartilha os preços dessa forma, pule esta etapa.
+            } @else {
+              A imagem com os sabores ou o arquivo de menu do seu negócio.
+              O assistente envia na conversa quando o cliente pergunta.
+            }
           </p>
           <label
             class="envio"

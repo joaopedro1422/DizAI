@@ -63,7 +63,14 @@ export class ClienteAutomatico {
     }
     if (this.dados.servico) {
       const servico = minusculaNoInicio(this.dados.nomeServico);
-      return servico ? `Oi, gostaria de agendar ${servico}` : 'Oi, gostaria de agendar um horário';
+      const pedido = servico ? `Oi, gostaria de agendar ${servico}` : 'Oi, gostaria de agendar um horário';
+      const livre = this.dados.primeiroHorario;
+      if (!livre) {
+        return pedido;
+      }
+      // o dia e o horário já vão na primeira mensagem: depois é só o nome
+      this.respondidas.add('horario');
+      return `${pedido} para ${diaFalado(livre.data, this.dados.agora)} às ${livre.hora}`;
     }
     const nome = this.dados.produto?.nome ?? '';
     const pessoas = /(\d+)\s*-\s*(\d+)\s*pessoas/i.exec(nome);

@@ -36,7 +36,7 @@ import { NomeIcone } from '../../shared/components/icone/icones';
 import { formatarReal } from '../pedidos/textos-pedido';
 import { ArtePostComponent } from './arte-post/arte-post.component';
 import { baixarArquivo, compartilharArquivo, gerarPng, nomeDaFamilia } from './motor/exportar-post';
-import { corDaLogo, coresParecidas } from './motor/cor-da-logo';
+import { corDaLogo } from './motor/cor-da-logo';
 import { chaveDoEstilo, dnaDaLoja, gerarEstilos, hashTexto } from './motor/motor-post';
 import { SELOS, TIPOS_POST, TextoPost, textosReserva } from './motor/textos-post';
 import {
@@ -190,11 +190,8 @@ export class PostsPageComponent implements OnInit {
 
   /** A cor de destaque da vitrine (nem sempre é a cor da marca). */
   protected readonly corVitrine = computed(() => buscarCorMarca(this.perfil().corMarca).hex);
-  /** A cor da logo, quando ela existe e é diferente da cor da vitrine (só aí aparece a escolha "Cor das artes"). */
-  protected readonly corLogoDiferente = computed(() => {
-    const corLogo = this.corLogo();
-    return corLogo && !coresParecidas(corLogo, this.corVitrine()) ? corLogo : null;
-  });
+  /** A cor da logo, sempre que ela existe: a escolha "Cor das artes" aparece mesmo com as cores parecidas. */
+  protected readonly corLogoDiferente = computed(() => this.corLogo());
 
   protected readonly marca = computed<MarcaPost>(() => {
     const perfil = this.perfil();

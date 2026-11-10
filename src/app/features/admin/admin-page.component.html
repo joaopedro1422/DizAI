@@ -164,6 +164,16 @@
               <div class="loja__rodape">
                 <p class="loja__atividade">Desde {{ dataCadastro(loja) }} · {{ atividade(loja) }}</p>
                 <span class="loja__acoes">
+                  <button
+                    type="button"
+                    class="btn-icone btn-icone--suave"
+                    [disabled]="apagandoConversas() === loja.id"
+                    (click)="apagarConversas(loja)"
+                    [attr.aria-label]="'Apagar todas as conversas de ' + loja.nomeLoja"
+                    title="Apagar todas as conversas (para testes)"
+                  >
+                    <app-icone nome="lixeira" [tamanho]="18" />
+                  </button>
                   <a
                     class="btn-icone btn-icone--suave"
                     [href]="linkWhatsapp(loja)"

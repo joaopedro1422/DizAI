@@ -58,7 +58,7 @@ const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
 const ATUALIZAR_A_CADA_MS = 15_000;
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { ESPERA_FECHAMENTO_MS, FechamentoOnboardingComponent } from '../painel/onboarding/fechamento-onboarding.component';
+import { ESPERA_FECHAMENTO_AGENDA_MS, FechamentoOnboardingComponent } from '../painel/onboarding/fechamento-onboarding.component';
 
 @Component({
   selector: 'app-agenda-page',
@@ -388,7 +388,7 @@ export class AgendaPageComponent implements OnInit {
       return false;
     }
     void this.routerFechamento.navigate([], { relativeTo: this.rotaAtualFechamento, queryParams: {}, replaceUrl: true });
-    window.setTimeout(() => this.mostrarFechamento.set(true), ESPERA_FECHAMENTO_MS);
+    window.setTimeout(() => this.mostrarFechamento.set(true), ESPERA_FECHAMENTO_AGENDA_MS);
     return true;
   }
 

@@ -291,3 +291,16 @@
     animation: none;
   }
 }
+
+/* "Opcional" acima do título (catálogo nos serviços) */
+.opcional {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--cor-gema-clara, #FFF6DA);
+  border: 1px solid var(--cor-gema-linha, #F3DE9C);
+  color: var(--cor-texto-gema, #6B4E00);
+  font-size: 12px;
+  font-weight: 700;
+}

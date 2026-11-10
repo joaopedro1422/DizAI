@@ -205,6 +205,33 @@ export class AdminPageComponent implements OnInit {
     }
   }
 
+  /** A loja com as conversas sendo apagadas. */
+  protected readonly apagandoConversas = signal<string | null>(null);
+
+  /** Para testes: o próximo contato de qualquer número volta a ser o primeiro (saudação, primeira resposta). */
+  protected async apagarConversas(loja: LojaAdmin): Promise<void> {
+    if (this.apagandoConversas()) {
+      return;
+    }
+    const confirmou = window.confirm(
+      `Apagar TODAS as conversas e mensagens de "${loja.nomeLoja}"?\n\n` +
+        'O próximo contato de qualquer número volta a ser o primeiro (saudação, primeira resposta). ' +
+        'Pedidos, agendamentos e clientes continuam. Não dá para desfazer.',
+    );
+    if (!confirmou) {
+      return;
+    }
+    this.apagandoConversas.set(loja.id);
+    try {
+      const total = await this.adminService.apagarConversas(loja.id);
+      this.toastService.mostrar(total === 1 ? '1 conversa apagada' : `${total} conversas apagadas`);
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível apagar as conversas.'));
+    } finally {
+      this.apagandoConversas.set(null);
+    }
+  }
+
   protected async copiarSenha(senha: string): Promise<void> {
     try {
       await navigator.clipboard.writeText(senha);
