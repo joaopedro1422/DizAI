@@ -217,6 +217,11 @@
   padding-block: 0 96px;
 }
 
+/* "Pergunte ao DizAI" entre as perguntas e o painel amarelo do fim */
+.lv .pergunte-secao {
+  padding-bottom: 72px;
+}
+
 .lv .final__painel {
   position: relative;
   display: flex;

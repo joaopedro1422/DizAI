@@ -6,6 +6,7 @@ import { EMAIL_SUPORTE } from '../../../core/constants/contato';
 import { LogoComponent } from '../../../shared/components/logo/logo.component';
 import { CHAVE_TIPO_VISTO, TipoLanding } from '../../landing/conteudo-landing';
 import { FaixaTechProviderComponent } from '../../landing/faixa-tech-provider/faixa-tech-provider.component';
+import { PergunteDizaiComponent } from '../../landing/secao-perguntas/pergunte-dizai/pergunte-dizai.component';
 import { RevelarAoRolarDirective } from '../../landing/revelar-ao-rolar.directive';
 import { CelularMockComponent } from '../celular-mock.component';
 import { ComoFuncionaLandingComponent } from './como-funciona-landing.component';
@@ -41,6 +42,7 @@ const CONTEUDOS: Record<TipoLanding, ConteudoLandingNova> = {
     CelularMockComponent,
     RevelarAoRolarDirective,
     FaixaTechProviderComponent,
+    PergunteDizaiComponent,
     HeroLandingComponent,
     ProvaLandingComponent,
     ComoFuncionaLandingComponent,

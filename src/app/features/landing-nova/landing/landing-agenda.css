@@ -15,6 +15,74 @@
   background: var(--wpp-fundo);
 }
 
+/* mensagens automáticas em linha do tempo: o momento (pontinho na linha) e a mensagem que sai sozinha */
+.lv .linha-msgs {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0 0 14px;
+  padding: 14px 14px 14px 34px;
+  border-radius: 16px;
+  background: var(--wpp-fundo);
+  list-style: none;
+  position: relative;
+}
+
+.lv .linha-msgs::before {
+  content: '';
+  position: absolute;
+  top: 22px;
+  bottom: 22px;
+  left: 17px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--gema-linha);
+}
+
+.lv .linha-msgs li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  position: relative;
+}
+
+.lv .linha-msgs li::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: -22px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gema);
+  box-shadow: 0 0 0 3px var(--wpp-fundo);
+}
+
+.lv .linha-msgs__quando {
+  color: var(--noite);
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.lv .linha-msgs .msg {
+  max-width: 92%;
+  white-space: pre-line;
+}
+
+.lv .linha-msgs .msg--cliente,
+.lv .linha-msgs .status--ok {
+  align-self: flex-end;
+}
+
+/* cada momento chega na vez dele quando a seção aparece */
+.lv .revelado .linha-msgs li {
+  animation: marca-entra 0.45s ease both;
+  animation-delay: calc(0.4s + var(--i, 0) * 0.7s);
+}
+
 /* a conversa do agendamento chega mensagem a mensagem quando a seção aparece */
 .lv .revelado .rec__conversa .msg {
   animation: marca-entra 0.45s ease both;

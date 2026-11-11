@@ -36,7 +36,7 @@
   position: absolute;
   inset: -24px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(76, 125, 240, 0.35) 0%, rgba(47, 181, 122, 0.16) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 200, 61, 0.32) 0%, rgba(30, 58, 114, 0.12) 40%, transparent 70%);
   filter: blur(6px);
   animation: aura-pulsa 3.2s ease-in-out infinite;
 }
@@ -45,7 +45,7 @@
   position: absolute;
   inset: 8px;
   border-radius: 50%;
-  background: conic-gradient(from var(--angulo), #1e3a72, #4c7df0, #2FB57A, #8FE3B0, #1e3a72);
+  background: conic-gradient(from var(--angulo), #13204a, #1e3a72, #ffc83d, #ffe39a, #13204a);
   animation: gira 4s linear infinite;
 }
 
@@ -63,7 +63,7 @@
 .pergunte__estrela {
   position: absolute;
   display: inline-flex;
-  color: #2FB57A;
+  color: #e9a800;
   animation: estrela-pisca 2.4s ease-in-out infinite;
 }
 
@@ -75,26 +75,23 @@
 .pergunte__estrela--2 {
   bottom: 10px;
   left: -8px;
-  color: #36a6d8;
+  color: #1e3a72;
   animation-delay: 1.2s;
 }
 
 /* ---------- textos ---------- */
 .pergunte__titulo {
   margin: 0;
+  font-family: var(--fonte-titulo);
   font-size: clamp(26px, 4vw, 34px);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--cor-texto);
 }
 
 .pergunte__brilho-texto {
-  background: linear-gradient(90deg, #1e3a72, #4c7df0, #2FB57A, #4c7df0, #1e3a72);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: texto-brilha 4s linear infinite;
+  color: var(--cor-noite);
+  box-shadow: inset 0 -0.22em 0 var(--cor-gema-clara);
 }
 
 .pergunte__descricao {
@@ -112,7 +109,7 @@
   border-radius: 26px;
   background:
     linear-gradient(var(--cor-fundo), var(--cor-fundo)) padding-box,
-    conic-gradient(from var(--angulo), #dce0e8 0%, #4c7df0 12%, #2FB57A 22%, #dce0e8 34%, #dce0e8 100%) border-box;
+    conic-gradient(from var(--angulo), #dce0e8 0%, #1e3a72 12%, #ffc83d 22%, #dce0e8 34%, #dce0e8 100%) border-box;
   box-shadow: 0 18px 50px rgba(30, 58, 114, 0.12);
   text-align: left;
   animation: gira 5s linear infinite;
@@ -120,7 +117,7 @@
 }
 
 .pergunte__caixa:focus-within {
-  box-shadow: 0 18px 50px rgba(30, 58, 114, 0.12), 0 0 0 5px rgba(76, 125, 240, 0.14);
+  box-shadow: 0 18px 50px rgba(30, 58, 114, 0.12), 0 0 0 5px rgba(30, 58, 114, 0.12);
 }
 
 .pergunte__campo {
@@ -157,8 +154,8 @@
   gap: 6px;
   padding: 6px 11px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #EAF0FA, #E4F8EC);
-  color: #1E3A72;
+  background: var(--cor-gema-clara);
+  color: var(--cor-texto-gema);
   font-size: 12px;
   font-weight: 700;
 }
@@ -170,8 +167,8 @@
   width: 44px;
   height: 44px;
   border: none;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #1e3a72, #2C6FC9 55%, #2FB57A);
+  border-radius: 14px 14px 14px 4px;
+  background: var(--cor-noite);
   color: #fff;
   box-shadow: 0 6px 16px rgba(30, 58, 114, 0.3);
   transition: transform 0.15s ease, opacity 0.15s ease;
@@ -241,7 +238,7 @@
   height: 34px;
   border-radius: 50%;
   background: var(--cor-fundo);
-  box-shadow: 0 0 0 1.5px #dfe5f5, 0 4px 12px rgba(76, 125, 240, 0.18);
+  box-shadow: 0 0 0 1.5px #dfe5f5, 0 4px 12px rgba(30, 58, 114, 0.16);
 }
 
 .pergunte__avatar--pensando {
@@ -258,7 +255,7 @@
 
 /* "Pensando…" com um brilho passando pelo texto */
 .pergunte__resposta .pergunte__pensando {
-  background: linear-gradient(90deg, #98a1b3 0%, #98a1b3 35%, #4c7df0 50%, #98a1b3 65%, #98a1b3 100%);
+  background: linear-gradient(90deg, #98a1b3 0%, #98a1b3 35%, #1e3a72 50%, #98a1b3 65%, #98a1b3 100%);
   background-size: 250% auto;
   -webkit-background-clip: text;
   background-clip: text;
@@ -306,10 +303,10 @@
 
 @keyframes avatar-pulsa {
   0%, 100% {
-    box-shadow: 0 0 0 1.5px #dfe5f5, 0 0 0 0 rgba(76, 125, 240, 0.35);
+    box-shadow: 0 0 0 1.5px #dfe5f5, 0 0 0 0 rgba(255, 200, 61, 0.45);
   }
   50% {
-    box-shadow: 0 0 0 1.5px #c9d5f7, 0 0 0 7px rgba(76, 125, 240, 0);
+    box-shadow: 0 0 0 1.5px #c9d5f7, 0 0 0 7px rgba(255, 200, 61, 0);
   }
 }
 

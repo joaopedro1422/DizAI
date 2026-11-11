@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { ETAPAS_AGENDA, RECURSOS_AGENDA, TABELA_AGENDA } from './conteudo-agendamentos';
-import { EtapasAvisoComponent } from './etapas-aviso.component';
+import { RECURSOS_AGENDA, TABELA_AGENDA } from './conteudo-agendamentos';
 
 /**
  * Recursos da agenda (o conteúdo da seção de produção, na marca nova), no mesmo lugar dos Recursos de vendas: os
@@ -12,7 +11,7 @@ import { EtapasAvisoComponent } from './etapas-aviso.component';
  */
 @Component({
   selector: 'app-recursos-agenda',
-  imports: [RouterLink, EtapasAvisoComponent],
+  imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="secao faixa nevoa" id="recursos">
@@ -35,9 +34,9 @@ import { EtapasAvisoComponent } from './etapas-aviso.component';
             <h3>Marca o horário conversando, como você faria.</h3>
             <p>O assistente oferece os horários disponíveis, marca, remarca e cancela pelo próprio WhatsApp.</p>
             <div class="rec__visual rec__conversa">
-              <span class="msg msg--cliente" style="--i: 0">Tem horário amanhã à tarde para pé e mão?</span>
+              <span class="msg msg--cliente" style="--i: 0">Tem horário amanhã à tarde para corte e barba?</span>
               <span class="msg msg--loja" style="--i: 1">Tenho às 14:00, 15:30 e 17:00. Qual fica melhor para você?</span>
-              <span class="msg msg--cliente" style="--i: 2">14h</span>
+              <span class="msg msg--cliente" style="--i: 2">15:30</span>
               <span class="msg msg--loja" style="--i: 3">{{ confirmacao }}</span>
             </div>
           </article>
@@ -47,13 +46,20 @@ import { EtapasAvisoComponent } from './etapas-aviso.component';
             <h3>Confirma, lembra e agradece sozinho.</h3>
             <p>Menos faltas e cliente bem tratado, sem você digitar nada.</p>
             <div class="rec__visual">
-              <div class="fila">
-                <div class="cartao cartao--destaque">
-                  <span><b>Maria · amanhã, 14:00</b><small>Pé e mão · <span class="mono">R$ 70</span></small></span>
-                  <span [class]="'status status--' + classeStatus()">{{ statusMaria() }}</span>
-                </div>
-              </div>
-              <app-etapas-aviso [etapas]="etapasAgenda" hora="12:00" (etapaMudou)="etapaMaria.set($event)" />
+              <ol class="linha-msgs" aria-hidden="true">
+                @for (passo of linhaMensagens; track passo.quando; let i = $index) {
+                  <li [style.--i]="i">
+                    <span class="linha-msgs__quando">{{ passo.quando }}</span>
+                    <span class="msg msg--loja">{{ passo.mensagem }}</span>
+                    @if (passo.resposta) {
+                      <span class="msg msg--cliente">{{ passo.resposta }}</span>
+                    }
+                    @if (passo.selo) {
+                      <span class="status status--ok">✓ {{ passo.selo }}</span>
+                    }
+                  </li>
+                }
+              </ol>
               <div class="editor">
                 <small>Os textos são seus</small>
                 <span>Oi, <i>{{ '{' }}nome{{ '}' }}</i>! Seu horário de <i>{{ '{' }}servico{{ '}' }}</i> é <i>{{ '{' }}data{{ '}' }}</i> às <i>{{ '{' }}horario{{ '}' }}</i>.</span>
@@ -164,15 +170,28 @@ import { EtapasAvisoComponent } from './etapas-aviso.component';
 export class RecursosAgendaComponent {
   protected readonly recursos = RECURSOS_AGENDA;
   protected readonly tabela = TABELA_AGENDA;
-  protected readonly etapasAgenda = ETAPAS_AGENDA;
-  protected readonly confirmacao = 'Agendado! ✅\nServiços: Manicure + Pedicure\nData: sexta, 25/10\nHorário: 14:00 às 15:45';
+  protected readonly confirmacao = 'Agendado! ✅\nServiço: Corte + barba\nData: sexta, 25/10\nHorário: 15:30 às 16:30';
   protected readonly fatias = [
     { nome: 'Gel', parte: 42, cor: 'var(--noite)' },
     { nome: 'Manicure', parte: 27, cor: 'var(--gema-forte)' },
     { nome: 'Pedicure', parte: 19, cor: '#5B7BC0' },
     { nome: 'Sobrancelha', parte: 12, cor: '#B9C3D9' },
   ];
-  protected readonly etapaMaria = signal(0);
-  protected readonly statusMaria = computed(() => ['Agendado', 'Lembrete enviado', 'Atendida'][this.etapaMaria()] ?? 'Agendado');
-  protected readonly classeStatus = computed(() => ['confirmado', 'pronto', 'ok'][this.etapaMaria()] ?? 'confirmado');
+  /** Mensagens automáticas como linha do tempo: o que sai sozinho em cada momento. */
+  protected readonly linhaMensagens = [
+    { quando: 'No agendamento', mensagem: 'Agendado! ✅\nEsmaltação em gel · sexta, 25/10 às 14:00', resposta: '', selo: '' },
+    {
+      quando: '1 hora antes',
+      mensagem: 'Oi, Maria! Lembrando do seu horário hoje às 14:00. Podemos confirmar?',
+      resposta: 'Estarei lá! 😊',
+      selo: 'Presença confirmada',
+    },
+    { quando: '15 minutos depois', mensagem: 'Obrigada pela visita, Maria! Foi um prazer te atender 💅', resposta: '', selo: '' },
+    {
+      quando: 'Retorno marcado (15 dias depois)',
+      mensagem: 'Bom dia, Maria! Passando para lembrar do seu retorno para manutenção do gel. Quando quiser agendar, é só me avisar por aqui.',
+      resposta: '',
+      selo: '',
+    },
+  ];
 }

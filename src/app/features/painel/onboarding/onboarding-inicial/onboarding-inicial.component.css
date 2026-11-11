@@ -209,17 +209,24 @@
   border-color: rgba(14, 21, 37, 0.2);
 }
 
+/* o primário da marca: azul-noite com a pontinha de balão (canto de baixo à esquerda) */
 .botao-proximo {
   padding: 0 24px;
   border: 0;
-  background: linear-gradient(135deg, var(--ob-marinho) 0%, var(--ob-marinho-2) 100%);
+  border-radius: var(--raio-medio) var(--raio-medio) var(--raio-medio) 4px;
+  background: var(--cor-noite);
   color: #ffffff;
-  box-shadow: 0 12px 26px -14px var(--ob-marinho);
+  box-shadow: 0 12px 26px -14px var(--cor-noite);
 }
 
 .botao-proximo:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 16px 30px -14px var(--ob-marinho);
+  background: var(--cor-noite-hover);
+  box-shadow: 0 16px 30px -14px var(--cor-noite);
+}
+
+.botao-depois {
+  border-radius: var(--raio-medio);
 }
 
 .botao-voltar:disabled,
