@@ -57,7 +57,8 @@ export class PrimeirosPassosComponent implements OnInit {
       {
         titulo: `Cadastrar o primeiro ${this.conteudo().termoItem}`,
         detalhe: 'Nome, preço e as opções',
-        feito: this.produtos().length > 0,
+        // a conta já nasce com 1 de exemplo: só conta quando o lojista cadastra outro
+        feito: this.produtos().length > 1,
         rota: rotas.produtos,
         parametros: { novo: 1 },
       },

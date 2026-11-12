@@ -47,6 +47,12 @@ const rotasDoPainel: Routes = [
     loadComponent: () => import('./features/posts/posts-page.component').then((m) => m.PostsPageComponent),
   },
   {
+    // campanhas de WhatsApp: promoção, novidade, convite, datas especiais e as oportunidades que o DizAI encontra
+    path: 'campanhas',
+    title: 'Campanhas | DizAI',
+    loadComponent: () => import('./features/campanhas/campanhas-page.component').then((m) => m.CampanhasPageComponent),
+  },
+  {
     path: 'agenda',
     title: 'Agenda | DizAI',
     loadComponent: () => import('./features/agenda/agenda-page.component').then((m) => m.AgendaPageComponent),

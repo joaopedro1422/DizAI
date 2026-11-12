@@ -19,7 +19,9 @@ export type DestinoImagem =
   /** Foto anexada ao confirmar um pedido (lojas/{slug}/pedidos). */
   | { tipo: 'PEDIDOS' }
   /** Foto de quem atende na agenda (lojas/{slug}/profissionais). */
-  | { tipo: 'PROFISSIONAIS' };
+  | { tipo: 'PROFISSIONAIS' }
+  /** A arte que vai no topo da mensagem de uma campanha de WhatsApp (lojas/{slug}/campanhas). */
+  | { tipo: 'CAMPANHAS' };
 
 /**
  * Envia as imagens ao backend (POST /api/perfis/{perfilId}/arquivos, multipart), que grava no Firebase Storage

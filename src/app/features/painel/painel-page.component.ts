@@ -30,6 +30,10 @@ import { ResumoLojaComponent } from './resumo-loja/resumo-loja.component';
 import { FechamentoDoDiaComponent } from './fechamento-do-dia/fechamento-do-dia.component';
 import { ResumoDoDia } from '../../core/models/resumo-do-dia.model';
 import { ResumoDoDiaService } from '../../core/services/resumo-do-dia.service';
+import { ResultadoCampanha } from '../../core/models/campanha.model';
+import { CampanhaService } from '../../core/services/campanha.service';
+import { ResultadoCampanhaComponent } from '../campanhas/resultado-campanha/resultado-campanha.component';
+import { OportunidadePainelComponent } from './oportunidade-painel/oportunidade-painel.component';
 
 /** Tempo que o painel fica à mostra antes do onboarding abrir. */
 const ESPERA_BOAS_VINDAS_MS = 1200;
@@ -61,6 +65,8 @@ const ESPERA_FECHAMENTO_MS = 700;
     PrimeirosPassosComponent,
     AlterarSenhaComponent,
     FechamentoDoDiaComponent,
+    ResultadoCampanhaComponent,
+    OportunidadePainelComponent,
   ],
   providers: [OnboardingTourService],
   templateUrl: './painel-page.component.html',
@@ -80,6 +86,10 @@ export class PainelPageComponent implements OnInit {
   private readonly tour = viewChild.required(OnboardingTourComponent);
   private readonly destroyRef = inject(DestroyRef);
   private readonly resumoDoDiaService = inject(ResumoDoDiaService);
+  private readonly campanhaService = inject(CampanhaService);
+
+  /** O resumo de uma campanha que já teve tempo de dar resultado (abre uma vez, depois do fechamento do dia). */
+  protected readonly resultadoCampanha = signal<ResultadoCampanha | null>(null);
 
   /** Fechamento do dia aberto (null = fechado). */
   protected readonly resumoDoDia = signal<ResumoDoDia | null>(null);
@@ -93,6 +103,7 @@ export class PainelPageComponent implements OnInit {
   /** Card "Como o assistente atende": as configurações do atendimento ficam numa tela própria. */
   protected readonly rotaAtendimento = computed(() => this.rotasPainel().atendimento);
   protected readonly rotaPosts = computed(() => this.rotasPainel().posts);
+  protected readonly rotaCampanhas = computed(() => this.rotasPainel().campanhas);
 
   protected readonly editandoPerfil = signal(false);
   protected readonly alterandoSenha = signal(false);
@@ -108,6 +119,7 @@ export class PainelPageComponent implements OnInit {
   protected readonly mostrarBoasVindas = signal(false);
 
   ngOnInit(): void {
+    this.campanhaService.lerDemonstracao(this.rotaAtual.snapshot.queryParamMap.get('demonstracao'));
     void this.carregarPainel();
   }
 
@@ -135,25 +147,43 @@ export class PainelPageComponent implements OnInit {
       removerDoNavegador(CHAVE_TOUR_PENDENTE + perfil.id);
       this.depois(ESPERA_TOUR_MS, () => this.tour().iniciar());
     } else if (perfil.id) {
-      void this.abrirFechamentoDoDia(perfil.id);
+      void this.abrirResumos(perfil.id);
     }
   }
 
+  /** Um modal por visita: o fechamento do dia tem a vez; sem ele, o resultado de uma campanha. */
+  private async abrirResumos(perfilId: string): Promise<void> {
+    if (await this.abrirFechamentoDoDia(perfilId)) return;
+    let resultado: ResultadoCampanha | null;
+    try {
+      resultado = await this.campanhaService.resultadoPendente();
+    } catch {
+      return;
+    }
+    if (!resultado) return;
+    const campanha = resultado;
+    this.depois(ESPERA_FECHAMENTO_MS, () => {
+      this.resultadoCampanha.set(campanha);
+      void this.campanhaService.marcarResultadoVisto(campanha.id).catch(() => undefined);
+    });
+  }
+
   /** Primeira visita depois do expediente: o fechamento do dia (uma vez por dia; sem movimento, não abre). */
-  private async abrirFechamentoDoDia(perfilId: string): Promise<void> {
+  private async abrirFechamentoDoDia(perfilId: string): Promise<boolean> {
     let resumo: ResumoDoDia;
     try {
       resumo = await this.resumoDoDiaService.buscar(FECHAMENTO_SEMPRE_ABERTO);
     } catch {
-      return;
+      return false;
     }
     const chave = CHAVE_FECHAMENTO_VISTO + perfilId;
     if (!FECHAMENTO_SEMPRE_ABERTO) {
-      if (!resumo.encerrado || !resumo.comMovimento || lerDoNavegador(chave) === resumo.data) return;
+      if (!resumo.encerrado || !resumo.comMovimento || lerDoNavegador(chave) === resumo.data) return false;
       gravarNoNavegador(chave, resumo.data);
     }
     const temporizador = setTimeout(() => this.resumoDoDia.set(resumo), ESPERA_FECHAMENTO_MS);
     this.destroyRef.onDestroy(() => clearTimeout(temporizador));
+    return true;
   }
 
   /** Último passo do onboarding: o teste automático; o tour pelos cards fica para a volta ao painel. */

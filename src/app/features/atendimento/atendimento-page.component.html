@@ -41,13 +41,18 @@
         descricao="Primeira mensagem que o cliente recebe. Evite cordialidades como 'Posso te ajudar?' ou 'Como vai?', o seu assistente já fará isso por você. Faça apenas uma breve saudação. Use Emojis ou informações que quiser."
       >
         <label for="saudacao" class="somente-leitor-tela">Saudação inicial</label>
-        <textarea
-          id="saudacao"
-          class="campo__entrada"
-          rows="3"
-          formControlName="saudacaoPersonalizada"
-          [placeholder]="exemploSaudacao()"
-        ></textarea>
+        <!-- caixa de tamanho fixo (cresce só se o lojista puxar), com o contador embaixo -->
+        <div class="editor-saudacao">
+          <textarea
+            id="saudacao"
+            class="editor-saudacao__campo"
+            rows="6"
+            maxlength="1000"
+            formControlName="saudacaoPersonalizada"
+            [placeholder]="exemploSaudacao()"
+          ></textarea>
+          <small class="editor-saudacao__contador">{{ valores().saudacaoPersonalizada.length }}/1000</small>
+        </div>
 
       </app-secao-configuracao>
 

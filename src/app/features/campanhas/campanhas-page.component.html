@@ -1,0 +1,210 @@
+<div class="tela-app tela-pc tela-campanhas">
+  <header class="topo-azul">
+    <div class="topo-azul__linha">
+      <a class="topo-azul__voltar" [routerLink]="rotas().inicio" aria-label="Voltar para o painel">
+        <app-icone nome="voltar" [tamanho]="22" />
+        <span class="topo-azul__voltar-texto" aria-hidden="true">Voltar</span>
+      </a>
+    </div>
+    <div class="topo-azul__textos">
+      <h1 class="topo-azul__titulo">Campanhas no WhatsApp</h1>
+      <p class="topo-azul__sub">Mensagens para os seus clientes voltarem e comprarem de novo, no momento certo.</p>
+    </div>
+    @if (convertidosTotal() > 0) {
+      <div class="placar">
+        <span class="placar__rotulo">As suas campanhas já trouxeram</span>
+        <strong class="placar__valor">{{ faturamentoTotal() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+      </div>
+    }
+  </header>
+
+  <main class="conteudo-tela campanhas corpo-pc">
+    @if (demonstracao()) {
+      <div class="demonstracao" role="status">
+        <app-icone nome="olho" [tamanho]="18" [espessura]="2" />
+        <span><strong>Modo demonstração.</strong> Dados de exemplo para você ver como funciona. Nada é enviado.</span>
+        <button type="button" class="btn btn--secundario btn--pequeno" (click)="sairDaDemonstracao()">Sair</button>
+      </div>
+    }
+    @let s = situacao();
+    @if (carregando()) {
+      <app-carregando texto="Abrindo as campanhas…" />
+    } @else if (s) {
+      <div class="acoes-topo">
+        <button type="button" class="btn btn--primario nova-campanha" (click)="escolhendoTipo.set(true)">
+          <app-icone nome="mais" [tamanho]="18" [espessura]="2.4" /> Nova campanha
+        </button>
+      </div>
+      <!-- o que impede ou limita o envio -->
+      @if (!s.conectado) {
+        <section class="aviso">
+          <app-icone nome="celular" [tamanho]="22" [espessura]="2" />
+          <div class="aviso__textos">
+            <strong>Conecte o WhatsApp da loja</strong>
+            <span>As campanhas saem pelo número do seu negócio.</span>
+          </div>
+          <a class="btn btn--primario btn--pequeno" [routerLink]="rotas().conectarWhatsapp">Conectar</a>
+        </section>
+      }
+      @if (s.pagamentoPendente) {
+        <section class="aviso aviso--alerta">
+          <app-icone nome="cartao" [tamanho]="22" [espessura]="2" />
+          <div class="aviso__textos">
+            <strong>Cadastre um cartão na Meta</strong>
+            <span>
+              A Meta recusou mensagens por falta de uma forma de pagamento. Sem ela, campanhas e lembretes para quem não
+              falou com você nas últimas 24 horas não saem. Cadastre em Gerenciador do WhatsApp → Faturamento.
+            </span>
+          </div>
+          <button type="button" class="btn btn--secundario btn--pequeno" (click)="jaCadastrei()">Já cadastrei</button>
+        </section>
+      }
+      @if (s.conectado && s.modelos === 'EM_ANALISE') {
+        <section class="aviso aviso--info">
+          <app-icone nome="relogio" [tamanho]="22" [espessura]="2" />
+          <div class="aviso__textos">
+            <strong>Suas mensagens estão em análise na Meta</strong>
+            <span>Isso acontece uma vez e leva até 24 horas. Enquanto isso, a campanha já pode ir para quem falou com você hoje.</span>
+          </div>
+        </section>
+      }
+      @if (s.qualidade === 'RED' || s.qualidade === 'YELLOW') {
+        <section class="aviso aviso--alerta">
+          <app-icone nome="alerta" [tamanho]="22" [espessura]="2" />
+          <div class="aviso__textos">
+            <strong>A qualidade do seu número está {{ s.qualidade === 'RED' ? 'baixa' : 'em atenção' }} na Meta</strong>
+            <span>Muitas pessoas bloquearam ou denunciaram mensagens. Envie menos campanhas por alguns dias e prefira os clientes mais recentes.</span>
+          </div>
+        </section>
+      }
+
+      @if (!s.liberada) {
+        <!-- loja nova: as campanhas são liberadas com o tempo -->
+        <section class="liberar">
+          <span class="liberar__selo">Em breve para você</span>
+          <h2 class="liberar__titulo">As campanhas crescem junto com os seus clientes</h2>
+          <p class="liberar__texto">
+            Cada {{ s.servico ? 'agendamento' : 'pedido' }} e cada conversa pelo WhatsApp entram na sua lista de clientes.
+            Com {{ s.minimo }} clientes você já envia a primeira campanha e, com o tempo, o DizAI passa a sugerir as
+            melhores oportunidades: {{ s.servico ? 'quem passou da hora de voltar, horários livres e as datas em que as pessoas mais se cuidam' : 'as datas especiais e quem encomendou nesta época no ano passado' }}.
+          </p>
+          <div class="liberar__progresso" role="progressbar" [attr.aria-valuenow]="s.aptos" [attr.aria-valuemax]="s.minimo">
+            <span class="liberar__cheio" [style.width.%]="progresso()"></span>
+          </div>
+          <span class="liberar__conta">{{ s.aptos }} de {{ s.minimo }} clientes</span>
+        </section>
+      }
+
+      @if (contatos().length > 0) {
+        <!-- poucas clientes: uma a uma, com a mensagem pronta no WhatsApp do lojista (sem modelo e sem custo) -->
+        <section class="grupo" aria-labelledby="titulo-individuais">
+          <h2 id="titulo-individuais" class="grupo__titulo">Para chamar uma a uma</h2>
+          <p class="grupo__ajuda">
+            O DizAI já escreveu a mensagem. Toque em "Chamar no WhatsApp": a conversa abre no seu celular, você confere e envia.
+          </p>
+          @for (c of contatos(); track c.id) {
+            <app-contato-individual [contato]="c" (chamado)="tirarContato($event)" (dispensado)="tirarContato($event)" />
+          }
+        </section>
+      }
+
+      @if (oportunidades().length > 0 && s.conectado) {
+        <section class="grupo" aria-labelledby="titulo-sugeridas">
+          <h2 id="titulo-sugeridas" class="grupo__titulo">Sugeridas para você</h2>
+          @for (op of oportunidades(); track op.chave) {
+            <article class="oportunidade">
+              <span class="oportunidade__icone"><app-icone [nome]="icones[op.tipo]" [tamanho]="22" [espessura]="2" /></span>
+              <div class="oportunidade__textos">
+                <span class="oportunidade__selo">Oportunidade</span>
+                <h3 class="oportunidade__titulo">{{ op.titulo }}</h3>
+                <p class="oportunidade__descricao">{{ op.descricao }}</p>
+                <div class="oportunidade__acoes">
+                  <button type="button" class="btn btn--primario btn--pequeno" (click)="abrirOportunidade(op)">Ver campanha</button>
+                  <button type="button" class="btn btn--texto btn--pequeno" (click)="dispensar(op)">Agora não</button>
+                </div>
+              </div>
+            </article>
+          }
+        </section>
+      }
+
+      @if (escolhendoTipo()) {
+        <app-bottom-sheet titulo="Nova campanha" (fechar)="escolhendoTipo.set(false)">
+          <app-escolher-tipo [tipos]="s.tipos" [servico]="s.servico" [bloqueio]="bloqueioDaCriacao()"
+            [rotaBloqueio]="s.conectado ? null : rotas().conectarWhatsapp" (escolher)="criar($event)" />
+        </app-bottom-sheet>
+      }
+
+      @if (contatosFeitos().length > 0) {
+        <section class="grupo" aria-labelledby="titulo-chamadas">
+          <h2 id="titulo-chamadas" class="grupo__titulo">Quem você chamou</h2>
+          <ul class="historico">
+            @for (f of contatosFeitos(); track $index) {
+              <li class="chamada">
+                <span class="chamada__textos">
+                  <span class="campanha__titulo">{{ f.nome }}</span>
+                  <span class="campanha__detalhe">Chamada em {{ f.quando | date: 'dd/MM' }}</span>
+                </span>
+                @if (f.converteu) {
+                  <span class="chamada__selo chamada__selo--sim">
+                    {{ s.servico ? 'Agendou' : 'Comprou' }}{{ f.valor ? ' · ' : '' }}{{ f.valor | currency: 'BRL' : 'symbol' : '1.0-2' : 'pt-BR' }}
+                  </span>
+                } @else if (f.respondeu) {
+                  <span class="chamada__selo">Respondeu</span>
+                } @else {
+                  <span class="chamada__selo chamada__selo--neutro">Sem resposta ainda</span>
+                }
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      <section class="grupo" aria-labelledby="titulo-historico">
+        <h2 id="titulo-historico" class="grupo__titulo">Histórico</h2>
+        @if (historico().length === 0) {
+          <p class="vazio">As campanhas que você enviar aparecem aqui, com quantos clientes responderam e quanto cada uma trouxe.</p>
+        } @else {
+          <ul class="historico">
+            @for (c of historico(); track c.id) {
+              <li>
+                <button type="button" class="campanha" (click)="abrirRelatorio(c.id)">
+                  <span class="campanha__icone"><app-icone [nome]="icones[c.tipo]" [tamanho]="18" [espessura]="2" /></span>
+                  <span class="campanha__textos">
+                    <span class="campanha__titulo">{{ c.titulo }}</span>
+                    <span class="campanha__detalhe">
+                      {{ c.criadaEm | date: 'dd/MM' }} · {{ rotuloPeriodo(c) }}{{ c.sugerida ? ' · sugerida pelo DizAI' : '' }}
+                    </span>
+                    <span class="campanha__numeros">
+                      <span><strong>{{ c.enviadas }}</strong> enviadas</span>
+                      <span><strong>{{ c.responderam }}</strong> responderam</span>
+                      <span><strong>{{ c.converteram }}</strong> {{ s.servico ? 'agendaram' : 'compraram' }}</span>
+                    </span>
+                  </span>
+                  <span class="campanha__valor">{{ c.faturamento | currency: 'BRL' : 'symbol' : '1.0-2' : 'pt-BR' }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </section>
+
+      <p class="rodape">
+        <app-icone nome="escudo" [tamanho]="16" [espessura]="2" />
+        Para proteger o seu número, cada cliente recebe no máximo uma campanha a cada 15 dias, toda mensagem tem o botão
+        "Não quero receber" e quem toca nele nunca mais recebe.
+      </p>
+
+      @if (abrindo(); as a) {
+        <app-nova-campanha [tipo]="a.tipo" [situacao]="s" [oportunidade]="a.oportunidade"
+          (fechar)="abrindo.set(null)" (enviada)="aoEnviar($event)" />
+      }
+    }
+  </main>
+</div>
+
+@if (relatorio(); as r) {
+  <app-bottom-sheet [titulo]="r.titulo" (fechar)="relatorio.set(null)">
+    <app-resultado-campanha [resultado]="r" />
+  </app-bottom-sheet>
+}

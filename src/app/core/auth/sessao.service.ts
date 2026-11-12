@@ -46,6 +46,7 @@ export class SessaoService {
       pedidos: `${inicio}/pedidos`,
       estatisticas: `${inicio}/estatisticas`,
       posts: `${inicio}/posts`,
+      campanhas: `${inicio}/campanhas`,
       atendimento: `${inicio}/atendimento`,
       conectarWhatsapp: `${inicio}/conectar-whatsapp`,
       contatosIgnorados: `${inicio}/contatos-ignorados`,

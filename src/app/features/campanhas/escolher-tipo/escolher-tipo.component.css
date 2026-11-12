@@ -1,0 +1,165 @@
+/*
+ * Os tipos de campanha como recados: em cima, o "chat" com os pontinhos da marca e o balão da mensagem (a pontinha de
+ * balão embaixo à esquerda, como os botões); embaixo, o número em gema, o nome em Bricolage e quando usar.
+ */
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.intro {
+  margin: 0;
+  color: var(--cor-texto-secundario);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.bloqueio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-noite);
+  color: #ffffff;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.bloqueio span:nth-child(2) {
+  flex: 1;
+}
+
+.bloqueio__ponto {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cor-gema);
+  box-shadow: 0 0 0 4px rgba(255, 200, 61, 0.22);
+}
+
+.bloqueio__link {
+  color: var(--cor-gema);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.bloqueio__link:hover {
+  text-decoration: underline;
+}
+
+/* ---------- os recados ---------- */
+.recados {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.recado {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 18px 18px 18px 6px;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.recado:hover:not(:disabled),
+.recado:focus-visible {
+  border-color: var(--cor-noite);
+  box-shadow: 0 10px 22px -12px rgba(19, 32, 74, 0.45);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+/* o "chat": fundo com os pontinhos da marca */
+.recado__chat {
+  display: flex;
+  align-items: flex-end;
+  min-height: 104px;
+  padding: 14px 12px 12px;
+  background-color: #eef1f8;
+  background-image: radial-gradient(rgba(19, 32, 74, 0.09) 1.2px, transparent 1.3px);
+  background-size: 12px 12px;
+}
+
+.recado__balao {
+  position: relative;
+  padding: 8px 10px;
+  border-radius: 12px 12px 12px 4px;
+  background: #ffffff;
+  box-shadow: 0 1px 1px rgba(19, 32, 74, 0.1);
+  color: #1b2338;
+  font-size: 12.5px;
+  line-height: 1.38;
+  transition: transform 0.18s ease;
+}
+
+.recado:hover:not(:disabled) .recado__balao {
+  transform: rotate(-1.2deg);
+}
+
+.recado__rodape {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: 2px 8px;
+  padding: 12px 12px 14px;
+}
+
+.recado__numero {
+  color: var(--cor-gema-forte, #d9a21b);
+  font-family: var(--fonte-numero);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.recado__nome {
+  font-family: var(--fonte-titulo);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.recado__quando {
+  grid-column: 2;
+  color: var(--cor-texto-secundario);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+/* indisponível: o recado fica apagado e o motivo no lugar do "quando usar" */
+.recado:disabled {
+  cursor: not-allowed;
+}
+
+.recado:disabled .recado__chat {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.recado:disabled .recado__nome,
+.recado:disabled .recado__numero {
+  color: var(--cor-texto-suave);
+}
+
+@media (max-width: 359px) {
+  .recados {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recado,
+  .recado__balao {
+    transition: none;
+  }
+}

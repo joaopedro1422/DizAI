@@ -1,0 +1,31 @@
+@let c = contato();
+<article class="contato">
+  <div class="contato__topo">
+    <span class="contato__icone" aria-hidden="true">
+      <app-icone [nome]="c.motivo === 'ANO_PASSADO' ? 'sacola' : c.motivo === 'SUMIDO' ? 'retorno' : 'calendario'" [tamanho]="20" [espessura]="2" />
+    </span>
+    <div class="contato__textos">
+      <span class="contato__selo">Para chamar agora</span>
+      <h3 class="contato__titulo">{{ c.titulo }}</h3>
+      <p class="contato__detalhe">{{ c.detalhe }}</p>
+    </div>
+  </div>
+
+  @if (editando()) {
+    <textarea class="contato__campo" rows="5" maxlength="1000" [value]="texto()" (input)="editar($event)"
+      aria-label="Mensagem para a cliente"></textarea>
+  } @else {
+    <blockquote class="contato__mensagem">{{ texto() }}</blockquote>
+  }
+
+  <div class="contato__acoes">
+    <button type="button" class="btn btn--primario btn--pequeno contato__chamar" (click)="chamar()">
+      <app-icone nome="conversa" [tamanho]="16" [espessura]="2" /> Chamar no WhatsApp
+    </button>
+    <button type="button" class="contato__link" (click)="editando.set(!editando())">
+      {{ editando() ? 'Pronto' : 'Editar mensagem' }}
+    </button>
+    <button type="button" class="contato__link" (click)="dispensar()">Agora não</button>
+  </div>
+  <p class="contato__nota">Sai pelo WhatsApp da loja, sem custo. Quando ela responder, o assistente continua.</p>
+</article>

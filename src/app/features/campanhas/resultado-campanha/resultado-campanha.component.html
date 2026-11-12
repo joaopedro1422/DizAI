@@ -1,0 +1,99 @@
+@let r = resultado();
+<div class="resultado">
+  <p class="resultado__quando">
+    {{ r.enviadaEm ? 'Enviada em ' : 'Criada em ' }}{{ r.enviadaEm ?? r.criadaEm | date: "dd/MM 'às' HH:mm" }}
+    @if (r.status === 'ENVIANDO') {
+      <span class="selo selo--andamento">Enviando…</span>
+    } @else if (r.medindo) {
+      <span class="selo selo--andamento">Medindo até {{ r.medicaoAte | date: 'dd/MM' }}</span>
+    } @else {
+      <span class="selo">Concluída</span>
+    }
+  </p>
+
+  <section class="destaque" aria-label="Resultado">
+    @if (r.converteram > 0) {
+      <span class="destaque__rotulo">Trouxe</span>
+      <strong class="destaque__valor">{{ r.faturamento | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</strong>
+      <span class="destaque__frase">
+        {{ r.converteram }} {{ r.converteram === 1 ? 'cliente ' + verboUm() : 'clientes ' + verbo() }} depois da mensagem
+      </span>
+    } @else {
+      <span class="destaque__rotulo">{{ r.medindo ? 'Ainda medindo' : 'Resultado' }}</span>
+      <strong class="destaque__valor destaque__valor--menor">
+        {{ r.responderam > 0 ? r.responderam + (r.responderam === 1 ? ' cliente respondeu' : ' clientes responderam') : 'Nenhuma resposta ainda' }}
+      </strong>
+      <span class="destaque__frase">
+        @if (r.medindo) {
+          {{ r.servico ? 'Agendamentos' : 'Pedidos' }} de quem recebeu entram aqui até {{ r.medicaoAte | date: 'dd/MM' }}.
+        } @else {
+          Nenhum cliente {{ verboUm() }} no período da campanha.
+        }
+      </span>
+    }
+    <span class="destaque__custo">
+      Custo na Meta: {{ r.custo | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}
+      @if (r.converteram > 0 && r.custo > 0) { · cada R$ 1 virou {{ r.faturamento / r.custo | currency: 'BRL' : 'symbol' : '1.0-0' : 'pt-BR' }} }
+    </span>
+  </section>
+
+  <section class="funil" aria-label="O caminho das mensagens">
+    @for (etapa of etapas(); track etapa.nome; let ultima = $last) {
+      <div class="funil__linha" [class.funil__linha--fim]="ultima">
+        <span class="funil__nome">{{ etapa.nome }}</span>
+        <span class="funil__barra"><span class="funil__cheio" [style.width.%]="etapa.largura"></span></span>
+        <span class="funil__valor">{{ etapa.valor }}</span>
+      </div>
+    }
+    @if (r.falharam > 0 || r.pendentes > 0) {
+      <p class="funil__nota">
+        @if (r.pendentes > 0) { {{ r.pendentes }} ainda na fila. }
+        @if (r.falharam > 0) { {{ r.falharam }} não {{ r.falharam === 1 ? 'saiu' : 'saíram' }} (o motivo está na lista). }
+      </p>
+    }
+  </section>
+
+  @if (r.comparacao; as c) {
+    <section class="comparacao" aria-label="Comparação">
+      <h3 class="comparacao__titulo"><app-icone nome="grafico" [tamanho]="18" [espessura]="2" /> A diferença que a campanha fez</h3>
+      <div class="comparacao__grupos">
+        <div class="comparacao__grupo comparacao__grupo--sim">
+          <strong>{{ c.taxaRecebeu }}%</strong>
+          <span>de quem recebeu {{ verboUm() }}</span>
+        </div>
+        <div class="comparacao__grupo">
+          <strong>{{ c.taxaNaoRecebeu }}%</strong>
+          <span>de quem não recebeu ({{ c.clientes }}, por sorteio)</span>
+        </div>
+      </div>
+      <p class="comparacao__frase">
+        @if (diferenca() > 0) {
+          A campanha trouxe {{ diferenca() }} de cada 100 clientes que não viriam sozinhos.
+        } @else {
+          Desta vez, quem não recebeu {{ verboUm() }} na mesma proporção. Vale testar outro texto ou outro público.
+        }
+      </p>
+    </section>
+  }
+
+  @if (!compacto() && r.clientes.length > 0) {
+    <section class="clientes" aria-label="Clientes">
+      <h3 class="clientes__titulo">Cliente por cliente</h3>
+      <ul class="clientes__lista">
+        @for (c of r.clientes; track $index) {
+          <li class="cliente">
+            <span class="cliente__textos">
+              <span class="cliente__nome">{{ c.nome }}</span>
+              <span class="cliente__detalhe">{{ c.erro ?? rotuloStatus(c.status) }}</span>
+            </span>
+            @if (c.converteu) {
+              <span class="etiqueta etiqueta--sim">{{ r.servico ? 'Agendou' : 'Comprou' }}{{ c.valor ? ' · ' : '' }}{{ c.valor | currency: 'BRL' : 'symbol' : '1.0-2' : 'pt-BR' }}</span>
+            } @else if (c.respondeu) {
+              <span class="etiqueta">Respondeu</span>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  }
+</div>

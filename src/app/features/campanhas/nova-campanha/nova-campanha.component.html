@@ -1,0 +1,374 @@
+<app-bottom-sheet [titulo]="titulo()" (fechar)="fechar.emit()">
+  <div class="nova">
+    <!-- barrinha dos 3 passos -->
+    <ol class="passos" aria-label="Passos da campanha">
+      @for (n of [1, 2, 3]; track n) {
+        <li class="passos__item" [class.passos__item--feito]="passo() >= n" [attr.aria-current]="passo() === n ? 'step' : null">
+          <span class="passos__numero">{{ n }}</span>
+          <span class="passos__nome">{{ n === 1 ? 'Mensagem' : n === 2 ? 'Quem recebe' : 'Enviar' }}</span>
+        </li>
+      }
+    </ol>
+
+    @switch (passo()) {
+      @case (1) {
+        <section class="etapa" aria-label="A mensagem">
+          @if (oportunidade(); as op) {
+            <p class="sugestao"><app-icone nome="brilho" [tamanho]="16" [espessura]="2" /> {{ op.descricao }}</p>
+          }
+
+          @switch (tipo()) {
+            @case ('CONVITE') {
+              @if (servico()) {
+                <h3 class="etapa__pergunta">Qual dia você quer oferecer?</h3>
+                <p class="etapa__ajuda">Os horários vêm da sua agenda, do jeito que estão agora. Ofereça um dia ou a semana toda.</p>
+                @if (carregandoDias()) {
+                  <p class="etapa__ajuda">Conferindo a agenda…</p>
+                } @else if (diasLivres().length === 0) {
+                  <p class="vazio">A sua agenda não tem horários livres nos próximos dias.</p>
+                } @else {
+                  <div class="opcoes" role="radiogroup" aria-label="Dia">
+                    <button type="button" role="radio" class="opcao" [class.opcao--ativa]="semana()"
+                      [attr.aria-checked]="semana()" (click)="escolherDia(null)">
+                      <span class="opcao__titulo">Esta semana</span>
+                      <span class="opcao__detalhe">
+                        "Temos horários livres para esta semana", com os dias que ainda têm vaga
+                        ({{ diasLivres().length }} {{ diasLivres().length === 1 ? 'dia' : 'dias' }})
+                      </span>
+                    </button>
+                    @for (dia of diasLivres(); track dia.data) {
+                      <button type="button" role="radio" class="opcao" [class.opcao--ativa]="!semana() && dataReferencia() === dia.data"
+                        [attr.aria-checked]="!semana() && dataReferencia() === dia.data" (click)="escolherDia(dia.data)">
+                        <span class="opcao__titulo">{{ dia.rotulo }}</span>
+                        <span class="opcao__detalhe">{{ dia.vagas }} {{ dia.vagas === 1 ? 'horário livre' : 'horários livres' }} · {{ dia.horarios }}</span>
+                      </button>
+                    }
+                  </div>
+                }
+              } @else {
+                <h3 class="etapa__pergunta">Para quando são as encomendas?</h3>
+                <div class="chips">
+                  @for (periodo of periodos; track periodo) {
+                    <button type="button" class="chip" [class.chip--ativo]="destaque() === periodo" (click)="destaque.set(periodo)">
+                      {{ periodo }}
+                    </button>
+                  }
+                </div>
+                <label class="campo">
+                  <span class="campo__rotulo">Ou escreva</span>
+                  <input class="campo__entrada" type="text" maxlength="60" placeholder="para o Dia das Crianças"
+                    [value]="destaque()" (input)="destaque.set(texto($event))" />
+                </label>
+                <label class="campo">
+                  <span class="campo__rotulo">Algo a mais? (opcional)</span>
+                  <input class="campo__entrada" type="text" maxlength="120" placeholder="Conte para a gente o que você precisa."
+                    [value]="detalhe()" (input)="detalhe.set(texto($event))" />
+                </label>
+              }
+            }
+
+            @case ('PROMOCAO') {
+              <h3 class="etapa__pergunta">Qual é a promoção?</h3>
+              @if (produtos().length > 0) {
+                <label class="campo">
+                  <span class="campo__rotulo">Do seu cadastro (opcional)</span>
+                  <select class="campo__entrada" (change)="escolherProduto($event)">
+                    <option value="">Escolha um {{ servico() ? 'serviço' : 'produto' }}</option>
+                    @for (p of produtos(); track p.id) {
+                      <option [value]="p.id" [selected]="produtoId() === p.id">{{ p.nome }}</option>
+                    }
+                  </select>
+                </label>
+              }
+              <label class="campo">
+                <span class="campo__rotulo">A oferta</span>
+                <input class="campo__entrada" type="text" maxlength="120"
+                  [placeholder]="servico() ? '15% de desconto na manutenção do gel' : 'cento de salgados por R$ 75'"
+                  [value]="destaque()" (input)="destaque.set(texto($event))" />
+              </label>
+              <label class="campo">
+                <span class="campo__rotulo">Até quando vale? (opcional)</span>
+                <input class="campo__entrada" type="text" maxlength="120" placeholder="Válido até sábado."
+                  [value]="detalhe()" (input)="detalhe.set(texto($event))" />
+              </label>
+              <p class="etapa__ajuda">O assistente vê a promoção na conversa e atende quem responder com ela.</p>
+            }
+
+            @case ('NOVIDADE') {
+              <h3 class="etapa__pergunta">Qual é a novidade?</h3>
+              @if (produtos().length > 0) {
+                <label class="campo">
+                  <span class="campo__rotulo">Do seu cadastro (opcional)</span>
+                  <select class="campo__entrada" (change)="escolherProduto($event)">
+                    <option value="">Escolha um {{ servico() ? 'serviço' : 'produto' }}</option>
+                    @for (p of produtos(); track p.id) {
+                      <option [value]="p.id" [selected]="produtoId() === p.id">{{ p.nome }}</option>
+                    }
+                  </select>
+                </label>
+              }
+              <label class="campo">
+                <span class="campo__rotulo">A novidade</span>
+                <input class="campo__entrada" type="text" maxlength="120"
+                  [placeholder]="servico() ? 'o novo spa dos pés' : 'o bolo de pistache'"
+                  [value]="destaque()" (input)="destaque.set(texto($event))" />
+              </label>
+              <label class="campo">
+                <span class="campo__rotulo">Uma frase sobre ela (opcional)</span>
+                <input class="campo__entrada" type="text" maxlength="120" placeholder="Preparamos com muito carinho para você."
+                  [value]="detalhe()" (input)="detalhe.set(texto($event))" />
+              </label>
+            }
+
+            @case ('DATA_ESPECIAL') {
+              <h3 class="etapa__pergunta">Qual data?</h3>
+              <div class="opcoes" role="radiogroup" aria-label="Data especial">
+                @for (data of situacao().datas; track data.id + data.dia) {
+                  <button type="button" role="radio" class="opcao" [class.opcao--ativa]="dataEspecialId() === data.id"
+                    [attr.aria-checked]="dataEspecialId() === data.id" (click)="escolherData(data.id)">
+                    <span class="opcao__titulo">{{ data.nome }}</span>
+                    <span class="opcao__detalhe">{{ data.dia | date: 'dd/MM' }} · {{ data.diasAte === 0 ? 'hoje' : data.diasAte === 1 ? 'amanhã' : 'em ' + data.diasAte + ' dias' }}</span>
+                  </button>
+                }
+                <button type="button" role="radio" class="opcao" [class.opcao--ativa]="dataEspecialId() === 'OUTRA'"
+                  [attr.aria-checked]="dataEspecialId() === 'OUTRA'" (click)="escolherData('OUTRA')">
+                  <span class="opcao__titulo">Outra data</span>
+                  <span class="opcao__detalhe">Aniversário da loja, uma data da sua cidade…</span>
+                </button>
+              </div>
+              @if (dataEspecialId() === 'OUTRA') {
+                <label class="campo">
+                  <span class="campo__rotulo">Como ela entra na mensagem</span>
+                  <input class="campo__entrada" type="text" maxlength="60" placeholder="o aniversário da loja"
+                    [value]="outraData()" (input)="outraData.set(texto($event))" />
+                  <small class="campo__dica">"Estamos nos preparando para <strong>{{ outraData() || 'o aniversário da loja' }}</strong>…"</small>
+                </label>
+              }
+              @if (dataEspecialId()) {
+                <label class="campo">
+                  <span class="campo__rotulo">A frase de apoio</span>
+                  <input class="campo__entrada" type="text" maxlength="120" [value]="detalhe()" (input)="detalhe.set(texto($event))" />
+                </label>
+              }
+            }
+
+            @case ('RECUPERAR') {
+              <h3 class="etapa__pergunta">Quer dar um motivo para elas voltarem?</h3>
+              <p class="etapa__ajuda">Opcional, mas um mimo costuma fazer diferença para quem sumiu.</p>
+              <label class="campo">
+                <span class="campo__rotulo">O motivo (opcional)</span>
+                <input class="campo__entrada" type="text" maxlength="120" placeholder="Para a sua volta, preparamos 10% de desconto."
+                  [value]="detalhe()" (input)="detalhe.set(texto($event))" />
+                <small class="campo__dica">Sem motivo, vai: "Temos horários disponíveis nesta semana."</small>
+              </label>
+            }
+
+            @case ('REPETIR_PEDIDO') {
+              <h3 class="etapa__pergunta">Lembrar quem encomendou nesta época</h3>
+              <p class="etapa__ajuda">
+                Cada cliente recebe a mensagem com o que encomendou no ano passado. Pode ser um aniversário ou uma data
+                da família: quem lembra primeiro, fica com a encomenda.
+              </p>
+            }
+          }
+
+          <div class="arte-bloco">
+            <label class="chave">
+              <input type="checkbox" [checked]="comArte()" (change)="comArte.set(!comArte())" />
+              <span class="chave__textos">
+                <span class="chave__titulo">Enviar com uma arte da loja</span>
+                <span class="chave__detalhe">Com a sua logo, cores e fotos, no topo da mensagem</span>
+              </span>
+            </label>
+            @if (comArte()) {
+              <app-arte-campanha [tipoPost]="arteTipo()" [titulo]="arteTitulo()" [apoio]="arteApoio()"
+                [horarios]="arteHorarios()" [fotoRef]="fotoDaArte()" [largura]="220"
+                [semente]="sementeArte()" (trocar)="trocarArte()" />
+              <div class="foto-propria">
+                @if (fotoPropria()) {
+                  <span>Com a sua foto</span>
+                  <button type="button" class="foto-propria__link" (click)="fotoPropria.set(null)">Remover</button>
+                } @else {
+                  <label class="foto-propria__link">
+                    <app-icone nome="camera" [tamanho]="15" [espessura]="2" /> Usar uma foto minha
+                    <input type="file" accept="image/*" class="foto-propria__campo" (change)="escolherFotoPropria($event)" />
+                  </label>
+                }
+              </div>
+            }
+          </div>
+        </section>
+      }
+
+      @case (2) {
+        <section class="etapa" aria-label="Quem recebe">
+          @if (publicoFixo()) {
+            <h3 class="etapa__pergunta">Quem vai receber</h3>
+            <p class="etapa__ajuda">
+              @switch (publico()) {
+                @case ('NO_CICLO') { Clientes que passaram da hora de voltar, pelo intervalo de costume de cada uma. }
+                @case ('SUMIDOS') { Clientes que passaram muito do intervalo de costume e não voltaram (até 1 ano). }
+                @case ('ANO_PASSADO') { Quem encomendou nesta mesma época no ano passado e ainda não comprou de novo. }
+              }
+            </p>
+          } @else {
+            <h3 class="etapa__pergunta">Para quem enviar?</h3>
+            <div class="opcoes" role="radiogroup" aria-label="Público">
+              <button type="button" role="radio" class="opcao" [class.opcao--ativa]="publico() === 'TODOS'"
+                [attr.aria-checked]="publico() === 'TODOS'" (click)="escolherPublico('TODOS')">
+                <span class="opcao__titulo">Todos os clientes</span>
+                <span class="opcao__detalhe">Quem já {{ servico() ? 'agendou' : 'comprou' }} ou conversou com você</span>
+              </button>
+              <div class="opcao" [class.opcao--ativa]="publico() === 'AUSENTES'">
+                <button type="button" role="radio" class="opcao__botao" [attr.aria-checked]="publico() === 'AUSENTES'"
+                  (click)="escolherPublico('AUSENTES')">
+                  <span class="opcao__titulo">Quem não {{ servico() ? 'vem' : 'compra' }} há um tempo</span>
+                </button>
+                <span class="opcao__detalhe opcao__dias">
+                  Há mais de
+                  <input class="dias" type="number" min="1" max="365" [value]="diasAusencia()" (change)="mudarDias($event)"
+                    aria-label="Dias sem vir" (focus)="publico() !== 'AUSENTES' && escolherPublico('AUSENTES')" />
+                  dias
+                </span>
+              </div>
+              <button type="button" role="radio" class="opcao" [class.opcao--ativa]="publico() === 'FREQUENTES'"
+                [attr.aria-checked]="publico() === 'FREQUENTES'" (click)="escolherPublico('FREQUENTES')">
+                <span class="opcao__titulo">Clientes frequentes</span>
+                <span class="opcao__detalhe">3 {{ servico() ? 'atendimentos' : 'pedidos' }} ou mais</span>
+              </button>
+            </div>
+            @if (produtos().length > 0) {
+              <label class="campo">
+                <span class="campo__rotulo">Somente quem já {{ servico() ? 'fez' : 'comprou' }} (opcional)</span>
+                <select class="campo__entrada" (change)="mudarItem($event)">
+                  <option value="">Qualquer {{ servico() ? 'serviço' : 'produto' }}</option>
+                  @for (p of produtos(); track p.id) {
+                    <option [value]="p.nome" [selected]="item() === p.nome">{{ p.nome }}</option>
+                  }
+                </select>
+              </label>
+            }
+          }
+
+          @let p = previa();
+          @if (carregandoPrevia()) {
+            <p class="etapa__ajuda">Montando a lista…</p>
+          } @else if (p) {
+            @if (p.clientes.length === 0) {
+              <p class="vazio">
+                Nenhum cliente se encaixa ainda.
+                @if (!publicoFixo()) { Experimente diminuir os dias ou escolher todos os clientes. }
+              </p>
+            } @else {
+              <div class="lista-topo">
+                <strong>{{ quantosMarcados() }} de {{ p.clientes.length }} vão receber</strong>
+                <button type="button" class="btn btn--texto btn--pequeno"
+                  (click)="marcarTodos(quantosMarcados() < p.clientes.length)">
+                  {{ quantosMarcados() < p.clientes.length ? 'Marcar todos' : 'Desmarcar todos' }}
+                </button>
+              </div>
+              <ul class="clientes">
+                @for (c of p.clientes; track c.id) {
+                  <li>
+                    <label class="cliente">
+                      <input type="checkbox" [checked]="marcados().has(c.id)" (change)="alternar(c.id)" />
+                      <span class="cliente__textos">
+                        <span class="cliente__nome">{{ c.nome }}</span>
+                        <span class="cliente__detalhe">{{ c.detalhe }}</span>
+                      </span>
+                      @if (c.semCusto) { <span class="selo-gratis">Grátis</span> }
+                    </label>
+                  </li>
+                }
+              </ul>
+            }
+            @if (p.sairam + p.recentes + p.comHorario > 0) {
+              <p class="fora">
+                <app-icone nome="informacao" [tamanho]="15" [espessura]="2" />
+                <span>
+                  Ficaram de fora para proteger o seu número:
+                  @if (p.sairam > 0) { {{ p.sairam }} {{ p.sairam === 1 ? 'pediu' : 'pediram' }} para não receber. }
+                  @if (p.recentes > 0) { {{ p.recentes }} {{ p.recentes === 1 ? 'recebeu' : 'receberam' }} uma campanha há menos de 15 dias. }
+                  @if (p.comHorario > 0) { {{ p.comHorario }} já {{ p.comHorario === 1 ? 'tem' : 'têm' }} horário marcado. }
+                </span>
+              </p>
+            }
+          }
+        </section>
+      }
+
+      @case (3) {
+        @if (!revisaoPronta()) {
+          <div class="preparando" role="status">
+            <span class="preparando__roda" aria-hidden="true"></span>
+            Preparando a mensagem…
+          </div>
+        }
+        @if (previa(); as p) {
+          <section class="etapa" aria-label="Revisar e enviar" [class.etapa--escondida]="!revisaoPronta()">
+            <h3 class="etapa__pergunta">Assim a mensagem chega no WhatsApp</h3>
+            <div class="whatsapp">
+              <div class="balao">
+                @if (comArte()) {
+                  <div class="balao__arte">
+                    <app-arte-campanha [tipoPost]="arteTipo()" [titulo]="arteTitulo()" [apoio]="arteApoio()"
+                      [horarios]="arteHorarios()" [fotoRef]="fotoDaArte()" [largura]="232"
+                      [semente]="sementeArte()" [trocavel]="false" />
+                  </div>
+                }
+                @for (linha of paragrafos(); track $index) { <p class="balao__texto">{{ linha }}</p> }
+              </div>
+              <div class="balao__botoes">
+                <span class="balao__botao">{{ p.botao }}</span>
+                <span class="balao__botao">Não quero receber</span>
+              </div>
+            </div>
+            @if (p.versoes > 1) {
+              <p class="etapa__ajuda">Para não parecer mensagem em massa, o DizAI alterna entre {{ p.versoes }} versões deste texto.</p>
+            }
+
+            <dl class="resumo">
+              <div class="resumo__linha"><dt>Vai para</dt><dd>{{ quantosMarcados() }} {{ quantosMarcados() === 1 ? 'cliente' : 'clientes' }}</dd></div>
+              @if (gratisMarcados() > 0) {
+                <div class="resumo__linha"><dt>Sem custo</dt><dd>{{ gratisMarcados() }} (falaram com você nas últimas 24 h)</dd></div>
+              }
+              <div class="resumo__linha resumo__linha--destaque">
+                <dt>Custo estimado</dt>
+                <dd>{{ custoMarcado() | currency: 'BRL' : 'symbol' : '1.2-2' : 'pt-BR' }}</dd>
+              </div>
+            </dl>
+            <p class="etapa__ajuda">
+              A Meta cobra cerca de R$ 0,35 por mensagem de campanha para quem não falou com você nas últimas 24 horas, no
+              cartão da sua conta do WhatsApp Business.
+            </p>
+            @if (p.grupoComparacao) {
+              <p class="comparacao">
+                <app-icone nome="grafico" [tamanho]="16" [espessura]="2" />
+                <span>Para medir o resultado de verdade, 1 de cada 10 clientes fica de fora desta vez (por sorteio). Assim você vê a diferença que a campanha fez.</span>
+              </p>
+            }
+            <p class="etapa__ajuda">Quando os clientes responderem, o assistente continua o atendimento normalmente.</p>
+          </section>
+        }
+      }
+    }
+
+    @if (erro()) {
+      <p class="erro" role="alert">{{ erro() }}</p>
+    }
+
+    <footer class="acoes">
+      @if (passo() > 1) {
+        <button type="button" class="btn btn--secundario" (click)="voltar()" [disabled]="enviando()">Voltar</button>
+      }
+      @if (passo() < 3) {
+        <button type="button" class="btn btn--primario" (click)="avancar()" [disabled]="carregandoPrevia()">Continuar</button>
+      } @else {
+        <button type="button" class="btn btn--primario" (click)="enviar()" [attr.aria-busy]="enviando()"
+          [disabled]="enviando() || !revisaoPronta()">
+          {{ enviando() ? 'Enviando…' : 'Enviar para ' + quantosMarcados() + (quantosMarcados() === 1 ? ' cliente' : ' clientes') }}
+        </button>
+      }
+    </footer>
+  </div>
+</app-bottom-sheet>

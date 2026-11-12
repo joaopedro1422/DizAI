@@ -208,7 +208,7 @@ export const CONTEUDO_AGENDAMENTOS: ConteudoLandingNova = {
     { momento: 'Você quis responder', titulo: 'Você assume quando quiser', texto: 'Respondeu pelo celular? Ele sai daquela conversa na hora.', visual: 'chave' },
     { momento: 'Do jeito do seu espaço', titulo: 'Fala do seu jeito', texto: 'Saudação, regras e jeito de falar definidos por você.', visual: 'jeito' },
     { momento: 'Hora de divulgar', titulo: 'Posts prontos para o Instagram', texto: 'Com a sua logo, as suas fotos e os horários livres.', visual: 'posts' },
-    { momento: 'Fim do dia', titulo: 'Seus números, prontos', texto: 'Quanto faturou, os dias mais cheios e os clientes que mais voltam.', visual: 'numeros', detalhe: 'R$ 6.340' },
+    { momento: 'Na hora certa', titulo: 'Campanhas que enchem a agenda', texto: 'Avisa dos horários livres, de quem sumiu e das datas especiais, com a mensagem pronta.', visual: 'campanhas', detalhe: 'Amanhã você tem 5 horários livres' },
   ],
   vitrine: {
     texto: 'O link para a bio do Instagram e para mandar no WhatsApp. O cliente vê os seus trabalhos e escolhe o horário na agenda online, sem precisar te chamar.',

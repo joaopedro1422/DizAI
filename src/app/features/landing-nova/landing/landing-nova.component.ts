@@ -61,6 +61,7 @@ const CONTEUDOS: Record<TipoLanding, ConteudoLandingNova> = {
     './landing-meio.css',
     './landing-recursos.css',
     './landing-vitrine.css',
+    './landing-campanhas.css',
     './landing-agenda.css',
     './landing-fim.css',
   ],

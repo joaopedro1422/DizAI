@@ -218,7 +218,7 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
     { momento: 'Você quis responder', titulo: 'Você assume quando quiser', texto: 'Respondeu pelo celular? Ele sai daquela conversa na hora.', visual: 'chave' },
     { momento: 'Do jeito da sua loja', titulo: 'Fala do seu jeito', texto: 'Saudação, regras e jeito de falar definidos por você.', visual: 'jeito' },
     { momento: 'Hora de divulgar', titulo: 'Posts prontos para o Instagram', texto: 'Com a sua logo, as suas fotos e os seus preços.', visual: 'posts' },
-    { momento: 'Fim do dia', titulo: 'Seus números, prontos', texto: 'Quanto faturou, os melhores dias e os clientes que mais voltam.', visual: 'numeros', detalhe: 'R$ 4.820' },
+    { momento: 'Na época certa', titulo: 'Campanhas que vendem', texto: 'Avisa das datas que mais vendem, com a arte e a mensagem prontas, e mostra quanto cada uma rendeu.', visual: 'campanhas', detalhe: 'Faltam 18 dias para o Dia das Mães' },
   ],
   vitrine: {
     texto: 'O link para a bio do Instagram e para mandar no WhatsApp. O cliente vê os seus trabalhos, as avaliações e o horário, e já faz a encomenda.',

@@ -35,7 +35,7 @@ export interface EtapaAviso {
   mensagem: string;
 }
 
-export type VisualDia = 'conversa' | 'audio' | 'arquivo' | 'chama' | 'chave' | 'jeito' | 'posts' | 'numeros';
+export type VisualDia = 'conversa' | 'audio' | 'arquivo' | 'chama' | 'chave' | 'jeito' | 'posts' | 'numeros' | 'campanhas';
 
 /** Um cartão de "O que ele faz por você". `detalhe`: o arquivo, o valor ou a pergunta difícil do visual. */
 export interface ItemDia {

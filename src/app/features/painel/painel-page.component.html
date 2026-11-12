@@ -21,6 +21,9 @@
       <!-- o que falta para o assistente atender de verdade (some quando tudo está feito) -->
       <app-primeiros-passos />
 
+      <!-- uma oportunidade que o DizAI encontrou (some quando o momento passa) -->
+      <app-oportunidade-painel />
+
       <section class="grupo grupo--negocio" aria-labelledby="titulo-sua-loja">
         <h2 id="titulo-sua-loja" class="grupo__titulo">Seu Negócio</h2>
         <app-atalhos-secoes />
@@ -42,7 +45,7 @@
       </section>
 
       <section class="grupo grupo--redes" aria-labelledby="titulo-redes-sociais">
-        <h2 id="titulo-redes-sociais" class="grupo__titulo">Redes Sociais</h2>
+        <h2 id="titulo-redes-sociais" class="grupo__titulo">Marketing</h2>
         <a class="cartao-atendimento cartao-posts" [routerLink]="rotaPosts()" appAlvoTour="redes-sociais">
           <span class="cartao-atendimento__icone cartao-posts__icone" aria-hidden="true">
             <app-icone nome="brilho" [tamanho]="22" [espessura]="2" />
@@ -50,6 +53,17 @@
           <span class="cartao-atendimento__textos">
             <span class="cartao-atendimento__titulo">Criar posts</span>
             <span class="cartao-atendimento__descricao">Artes para o Instagram com a sua logo, cores, fotos e preços, e a legenda pronta</span>
+          </span>
+          <span class="cartao-posts__selo">Novo</span>
+          <app-icone nome="avancar" [tamanho]="18" [espessura]="2" class="cartao-atendimento__seta" />
+        </a>
+        <a class="cartao-atendimento cartao-campanhas" [routerLink]="rotaCampanhas()">
+          <span class="cartao-atendimento__icone cartao-campanhas__icone" aria-hidden="true">
+            <app-icone nome="conversa" [tamanho]="22" [espessura]="2" />
+          </span>
+          <span class="cartao-atendimento__textos">
+            <span class="cartao-atendimento__titulo">Campanhas no WhatsApp</span>
+            <span class="cartao-atendimento__descricao">Promoções, convites e datas especiais para os seus clientes voltarem, com o resultado de cada uma</span>
           </span>
           <span class="cartao-posts__selo">Novo</span>
           <app-icone nome="avancar" [tamanho]="18" [espessura]="2" class="cartao-atendimento__seta" />
@@ -64,6 +78,19 @@
 </div>
 
 <app-onboarding-tour (encerrado)="aoEncerrarTour($event)" />
+
+@if (resultadoCampanha(); as resultado) {
+  <app-bottom-sheet titulo="Resultado da sua campanha" (fechar)="resultadoCampanha.set(null)">
+    <div class="resultado-campanha">
+      <h3 class="resultado-campanha__titulo">{{ resultado.titulo }}</h3>
+      <app-resultado-campanha [resultado]="resultado" [compacto]="true" />
+      <div class="resultado-campanha__acoes">
+        <a class="btn btn--primario" [routerLink]="rotaCampanhas()" [queryParams]="{ campanha: resultado.id }">Ver cliente por cliente</a>
+        <button type="button" class="btn btn--secundario" (click)="resultadoCampanha.set(null)">Fechar</button>
+      </div>
+    </div>
+  </app-bottom-sheet>
+}
 
 @if (mostrarBoasVindas()) {
   <!-- conta nova: o onboarding em passos e, no fim, o teste automático -->

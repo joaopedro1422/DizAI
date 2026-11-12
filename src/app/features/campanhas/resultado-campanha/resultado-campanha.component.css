@@ -1,0 +1,242 @@
+/* Relatório da campanha: o destaque na faixa azul da marca, o funil com a barra em gema e a comparação. */
+.resultado {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.resultado__quando {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--cor-texto-secundario);
+  font-size: 13px;
+}
+
+.selo {
+  padding: 2px 10px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto-secundario);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.selo--andamento {
+  background: var(--cor-gema-clara);
+  color: var(--cor-texto-gema);
+}
+
+/* ---------- destaque ---------- */
+.destaque {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px;
+  border-radius: var(--raio-grande);
+  background: var(--fundo-marca);
+  color: #ffffff;
+}
+
+.destaque__rotulo {
+  color: var(--cor-gema);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.destaque__valor {
+  font-family: var(--fonte-numero);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.destaque__valor--menor {
+  font-family: var(--fonte-titulo);
+  font-size: 22px;
+}
+
+.destaque__frase {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.destaque__custo {
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 12.5px;
+}
+
+/* ---------- funil ---------- */
+.funil {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.funil__linha {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 36px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.funil__nome {
+  color: var(--cor-texto-secundario);
+  font-weight: 600;
+}
+
+.funil__barra {
+  height: 10px;
+  overflow: hidden;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo-suave);
+}
+
+.funil__cheio {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cor-primaria);
+}
+
+.funil__linha--fim .funil__cheio {
+  background: var(--cor-gema);
+}
+
+.funil__linha--fim .funil__nome {
+  color: var(--cor-texto);
+  font-weight: 800;
+}
+
+.funil__valor {
+  font-family: var(--fonte-numero);
+  font-weight: 700;
+  text-align: right;
+}
+
+.funil__nota {
+  margin: 0;
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+}
+
+/* ---------- comparação ---------- */
+.comparacao {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+}
+
+.comparacao__titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.comparacao__grupos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.comparacao__grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo-suave);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.comparacao__grupo strong {
+  font-family: var(--fonte-numero);
+  font-size: 22px;
+}
+
+.comparacao__grupo--sim {
+  background: var(--cor-gema-clara);
+  color: var(--cor-texto-gema);
+}
+
+.comparacao__frase {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* ---------- clientes ---------- */
+.clientes__titulo {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.clientes__lista {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  list-style: none;
+}
+
+.cliente {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+}
+
+.cliente + .cliente {
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+.cliente__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cliente__nome {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cliente__detalhe {
+  color: var(--cor-texto-secundario);
+  font-size: 12px;
+}
+
+.etiqueta {
+  flex: none;
+  padding: 3px 10px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-azul-fundo);
+  color: var(--cor-primaria);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.etiqueta--sim {
+  background: var(--cor-gema-clara);
+  color: var(--cor-texto-gema);
+}

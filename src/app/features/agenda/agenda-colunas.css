@@ -6,10 +6,10 @@
 .colunas {
   --largura-minima-coluna: 320px;
   --espaco-entre-colunas: 10px;
-  /* para cima e para baixo rola a própria página; aqui dentro só a rolagem para o lado (muitos profissionais),
-     com a régua de horas presa à esquerda */
-  overflow-x: auto;
-  overflow-y: hidden;
+  /* rola sozinha nos dois sentidos (altura da tela): assim os nomes ficam presos no topo e a régua de horas presa à
+     esquerda. Com a página rolando, o sticky dos nomes não funciona: qualquer overflow aqui prende o topo a esta caixa */
+  overflow: auto;
+  max-height: max(420px, calc(100vh - 150px));
   margin: 8px 0 4px;
   padding-bottom: 6px;   /* espaço para a barra de rolagem não encostar nos cards */
 }

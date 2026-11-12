@@ -3,28 +3,30 @@ import { RouterLink } from '@angular/router';
 
 import { semMovimento } from '../movimento';
 import { ConteudoLandingNova } from './conteudo-landing-nova';
+import { CampanhasLandingComponent } from './campanhas-landing.component';
 import { VitrineMockComponent } from './vitrine-mock.component';
 
 const TEMPO_POR_ARTE_MS = 3200;
 const POSICOES = ['centro', 'direita', 'esquerda'] as const;
 
 /**
- * "E ainda vem junto": a vitrine pública (texto + o celular com a vitrine no layout novo; nos serviços, com a aba
- * da agenda online) e os posts para as redes (o leque de 3 artes: a da frente troca a cada 3,2 s, para com o mouse
- * em cima e um toque traz qualquer uma).
+ * "Uma solução completa para o marketing do seu negócio": a vitrine pública (texto + o celular com a vitrine no layout
+ * novo; nos serviços, com a aba da agenda online), os posts para as redes (o leque de 3 artes: a da frente troca a cada
+ * 3,2 s, para com o mouse em cima e um toque traz qualquer uma) e as campanhas no WhatsApp (`CampanhasLandingComponent`,
+ * o 3º bloco, com a tela que passa os passos em slides).
  */
 @Component({
   selector: 'app-vitrine-posts-landing',
-  imports: [RouterLink, VitrineMockComponent],
+  imports: [RouterLink, VitrineMockComponent, CampanhasLandingComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @let c = conteudo();
     <section class="secao faixa vp" id="vitrine">
       <div class="miolo">
         <div class="cabeca cabeca--centro">
-          <span class="rotulo">E ainda vem junto</span>
-          <h2 class="titulo">A sua vitrine e os seus posts,<br /><span class="grifo">prontos para o Instagram.</span></h2>
-          <p class="apoio">Tudo com a sua logo, as suas cores e as suas fotos. De graça, mesmo sem ligar o assistente.</p>
+          <span class="rotulo">Marketing</span>
+          <h2 class="titulo">Uma solução completa<br /><span class="grifo">para o marketing do seu negócio.</span></h2>
+          <p class="apoio">Uma página personalizada, posts automáticos para as suas redes sociais e campanhas de marketing no WhatsApp.</p>
         </div>
 
         <div class="vp__bloco">
@@ -72,6 +74,8 @@ const POSICOES = ['centro', 'direita', 'esquerda'] as const;
             </div>
           </div>
         </div>
+
+        <app-campanhas-landing [conteudo]="c" />
       </div>
     </section>
   `,

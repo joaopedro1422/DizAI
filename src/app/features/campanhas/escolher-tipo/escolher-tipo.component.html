@@ -1,0 +1,26 @@
+<p class="intro">Escolha o recado. É assim que ele chega para o seu cliente:</p>
+
+@if (bloqueio(); as aviso) {
+  <p class="bloqueio">
+    <span class="bloqueio__ponto" aria-hidden="true"></span>
+    <span>{{ aviso }}</span>
+    @if (rotaBloqueio(); as rota) {
+      <a class="bloqueio__link" [routerLink]="rota">Conectar</a>
+    }
+  </p>
+}
+
+<div class="recados">
+  @for (c of cartoes(); track c.tipo.tipo) {
+    <button type="button" class="recado" [disabled]="!c.livre" (click)="escolher.emit(c.tipo)">
+      <span class="recado__chat" aria-hidden="true">
+        <span class="recado__balao">{{ c.recado }}</span>
+      </span>
+      <span class="recado__rodape">
+        <span class="recado__numero">{{ c.numero }}</span>
+        <span class="recado__nome">{{ c.tipo.titulo }}</span>
+        <span class="recado__quando">{{ c.quando }}</span>
+      </span>
+    </button>
+  }
+</div>

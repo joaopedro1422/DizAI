@@ -1,0 +1,465 @@
+/*
+ * Landings: Campanhas no WhatsApp, o 3º bloco da seção de marketing (o mesmo `.vp__bloco` da vitrine e dos posts).
+ * À esquerda o texto com os 3 passos como abas (o ativo enche a barrinha, que é o relógio); à direita uma tela só que
+ * troca os slides: a oportunidade (azul-noite, selo em gema), a conversa no WhatsApp com a arte no topo e o resultado
+ * em reais com o funil. @keyframes ficam aqui (o mesmo arquivo em que são usadas).
+ */
+
+/* ---------- os passos (abas) ---------- */
+.lv .cp__passos {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  margin: 4px 0 2px;
+}
+
+.lv .cp__passo {
+  position: relative;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  overflow: hidden;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: var(--raio) var(--raio) var(--raio) 4px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.lv .cp__passo:hover {
+  background: var(--nevoa);
+}
+
+.lv .cp__passo--ativo {
+  border-color: var(--linha);
+  background: var(--papel);
+  box-shadow: 0 12px 24px -18px rgba(19, 32, 74, 0.4);
+}
+
+.lv .cp__passo i {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--nevoa);
+  color: var(--suave);
+  font-family: var(--f-mono);
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.lv .cp__passo--ativo i {
+  background: var(--noite);
+  color: var(--gema);
+}
+
+.lv .cp__passo b {
+  display: block;
+  font-size: 16.5px;
+}
+
+.lv .cp__passo small {
+  color: var(--suave);
+  font-size: 14.5px;
+}
+
+.lv .cp__relogio {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--gema);
+  transform-origin: left;
+  animation: cp-relogio 5.2s linear forwards;
+}
+
+.lv .cp__relogio--pausado {
+  animation-play-state: paused;
+}
+
+@keyframes cp-relogio {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ---------- as datas ---------- */
+.lv .cp__datas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 46ch;
+  margin-bottom: 6px;
+}
+
+.lv .cp__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.lv .cp__datas small {
+  color: var(--suave);
+  font-size: 14px;
+}
+
+.lv .cp__tags span {
+  padding: 4px 10px;
+  border: 1px solid var(--gema-linha);
+  border-radius: 10px 10px 10px 3px;
+  background: var(--gema-clara);
+  color: var(--noite);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+/* ---------- a tela (os slides empilhados) ---------- */
+.lv .cp__tela {
+  position: relative;
+  width: min(100%, 380px);
+  height: 460px;
+  overflow: hidden;
+  border: 1px solid var(--linha);
+  border-radius: var(--raio-cartao);
+  background: var(--papel);
+  box-shadow: 0 30px 60px -32px rgba(19, 32, 74, 0.45);
+}
+
+.lv .cp__slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  opacity: 0;
+  transform: translateX(24px);
+  pointer-events: none;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.lv .cp__slide--ativo {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* 1. a oportunidade */
+.lv .cp__oportunidade {
+  gap: 8px;
+  background: var(--noite);
+  color: #ffffff;
+}
+
+.lv .cp__selo {
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--gema);
+  color: var(--noite);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.lv .cp__op-titulo {
+  font-family: var(--f-titulo);
+  font-size: 24px;
+  line-height: 1.12;
+}
+
+.lv .cp__op-detalhe {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 15px;
+}
+
+.lv .cp__itens {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lv .cp__itens li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.lv .cp__itens i {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--gema-clara);
+  color: var(--noite);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.lv .cp__itens span {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.lv .cp__itens small {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12.5px;
+}
+
+.lv .cp__op-botao {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 10px 16px;
+  border-radius: var(--raio) var(--raio) var(--raio) 4px;
+  background: #ffffff;
+  color: var(--noite);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* 2. a conversa */
+.lv .cp__chat {
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 64px;
+  background-color: var(--wpp-fundo);
+  background-image: radial-gradient(rgba(19, 32, 74, 0.07) 1.2px, transparent 1.3px);
+  background-size: 14px 14px;
+}
+
+.lv .cp__chat-topo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: #075e54;
+  color: #ffffff;
+  font-size: 14.5px;
+  font-weight: 700;
+}
+
+.lv .cp__chat-topo i {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f4d4e2;
+  color: #a8326e;
+  font-style: normal;
+}
+
+.lv .cp__msg {
+  align-self: flex-start;
+  max-width: 88%;
+  padding: 8px 12px;
+  border-radius: 4px 14px 14px 14px;
+  background: #ffffff;
+  box-shadow: 0 1px 1px rgba(17, 26, 51, 0.12);
+  color: var(--tinta);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.lv .cp__msg--cliente {
+  align-self: flex-end;
+  border-radius: 14px 4px 14px 14px;
+  background: var(--wpp-cliente);
+}
+
+.lv .cp__msg p {
+  margin: 0;
+}
+
+.lv .cp__msg-botao {
+  display: block;
+  margin: 8px -12px -8px;
+  padding: 8px;
+  border-top: 1px solid var(--linha);
+  color: #027eb5;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* a arte da campanha no topo da mensagem (como o post gerado, na cor da loja) */
+.lv .cp__arte {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: -4px -8px 8px;
+  padding: 16px 14px;
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.28) 0 22px, transparent 23px),
+    radial-gradient(circle at 92% 70%, rgba(255, 255, 255, 0.16) 0 12px, transparent 13px),
+    linear-gradient(135deg, var(--cor-arte), color-mix(in srgb, var(--cor-arte) 70%, #000));
+  color: #ffffff;
+}
+
+.lv .cp__arte small {
+  opacity: 0.85;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.lv .cp__arte b {
+  font-family: var(--f-titulo);
+  font-size: 22px;
+  line-height: 1.05;
+}
+
+.lv .cp__arte em {
+  font-size: 12.5px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* 3. o resultado */
+.lv .cp__resultado {
+  gap: 4px;
+}
+
+.lv .cp__res-campanha {
+  color: var(--fraco);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.lv .cp__res-rotulo {
+  margin-top: 6px;
+  color: var(--gema-forte);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.lv .cp__res-valor {
+  color: var(--noite);
+  font-family: var(--f-mono);
+  font-size: 44px;
+  line-height: 1.05;
+}
+
+.lv .cp__res-frase {
+  color: var(--suave);
+  font-size: 15px;
+}
+
+.lv .cp__funil {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 22px 0 12px;
+}
+
+.lv .cp__funil-linha {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 28px;
+  align-items: center;
+  gap: 10px;
+  color: var(--suave);
+  font-size: 13.5px;
+}
+
+.lv .cp__funil-linha i {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--nevoa);
+}
+
+.lv .cp__funil-linha s {
+  display: block;
+  width: calc(var(--cheio) * 100%);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--marinho);
+  transform-origin: left;
+}
+
+.lv .cp__funil-linha--fim {
+  color: var(--tinta);
+  font-weight: 800;
+}
+
+.lv .cp__funil-linha--fim s {
+  background: var(--gema);
+}
+
+.lv .cp__funil-linha b {
+  color: var(--tinta);
+  font-family: var(--f-mono);
+  text-align: right;
+}
+
+.lv .cp__res-custo {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--linha);
+  color: var(--fraco);
+  font-size: 12.5px;
+}
+
+/* ---------- movimento dentro do slide ativo ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .lv .cp__slide--ativo .cp__msg {
+    animation: cp-entrar 0.45s ease both;
+    animation-delay: calc(0.3s + var(--ordem) * 0.9s);
+  }
+
+  .lv .cp__slide--ativo .cp__funil-linha s {
+    animation: cp-crescer 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both 0.25s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lv .cp__slide {
+    transition: none;
+  }
+}
+
+@keyframes cp-entrar {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+@keyframes cp-crescer {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .lv .cp__tela {
+    height: 440px;
+  }
+}

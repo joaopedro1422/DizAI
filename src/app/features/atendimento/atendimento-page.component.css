@@ -305,3 +305,48 @@
   color: var(--cor-texto-secundario);
 }
 
+
+/* Saudação inicial: caixa de tamanho fixo (o lojista pode puxar para baixo) com o contador embaixo */
+.editor-saudacao {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #C3CBDA;
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo-tracejado);
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.editor-saudacao:hover {
+  border-color: var(--cor-borda-forte);
+}
+
+.editor-saudacao:focus-within {
+  border-color: var(--cor-primaria);
+  background: var(--cor-fundo);
+  box-shadow: 0 0 0 3px rgba(30, 58, 114, 0.15);
+}
+
+.editor-saudacao__campo {
+  display: block;
+  width: 100%;
+  min-height: 170px;
+  padding: 14px 16px 6px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--cor-texto);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.5;
+  resize: vertical;
+  field-sizing: fixed;
+}
+
+.editor-saudacao__contador {
+  align-self: flex-end;
+  padding: 0 14px 10px;
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}

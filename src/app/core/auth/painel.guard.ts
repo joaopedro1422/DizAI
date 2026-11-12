@@ -45,7 +45,9 @@ export const visitanteGuard: CanActivateFn = () => {
 };
 
 /** /painel sem UUID (links antigos, favoritos): leva ao painel de quem está logado. */
-export const redirecionarParaPainel: RedirectFunction = () => inject(SessaoService).caminhoPainel();
+/** /painel → /painel/{uuid}, mantendo os parâmetros (ex.: ?demonstracao=1). */
+export const redirecionarParaPainel: RedirectFunction = ({ queryParams }) =>
+  inject(Router).createUrlTree([inject(SessaoService).caminhoPainel()], { queryParams });
 
 /**
  * Busca o perfil antes de abrir qualquer tela do painel, porque todas usam nome, ramo e conexão da loja.
