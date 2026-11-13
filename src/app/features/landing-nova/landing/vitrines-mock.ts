@@ -31,6 +31,8 @@ export interface LojaMock {
   hoje: number;
   pagamento: string;
   entrega: string;
+  /** O tópico "Como chegar" (o mapa vai no fim, embaixo das Informações). */
+  endereco?: { rua: string; bairro: string };
   /** Só serviços: a aba "Agendar horário". */
   agenda?: { servicos: [string, string][]; dias: [string, string][]; horas: string[] };
 }
@@ -61,6 +63,7 @@ const PEDACINHO: LojaMock = {
   hoje: 1,
   pagamento: 'Pix, Cartão de crédito e Dinheiro',
   entrega: 'Entrega e Retirada no local · Taxa de entrega: R$ 8',
+  endereco: { rua: 'Av. Epitácio Pessoa, 1200', bairro: 'Tambaú, João Pessoa - PB' },
 };
 
 const SUPER_SALGADOS: LojaMock = {
@@ -85,6 +88,7 @@ const SUPER_SALGADOS: LojaMock = {
   hoje: 0,
   pagamento: 'Pix, Cartão de débito e Dinheiro',
   entrega: 'Entrega e Retirada no local · Taxa de entrega: R$ 10',
+  endereco: { rua: 'Rua das Trincheiras, 455', bairro: 'Centro, João Pessoa - PB' },
 };
 
 const STUDIO_BELLA: LojaMock = {
@@ -93,7 +97,7 @@ const STUDIO_BELLA: LojaMock = {
   descricao: 'Unhas em gel e nail art',
   logo: `${LOGOS}/studio-bella.webp`,
   capa: null,
-  fonte: "'Playfair Display', serif",
+  fonte: "'Dancing Script', cursive",
   cores: { destaque: '#a8455a', fundo: '#fff7f8', borda: '#f0dfe2', suave: '#8f6a72', selo: '#f8e9ec' },
   aberto: 'Aberto agora · fecha às 18h',
   nota: '5,0',

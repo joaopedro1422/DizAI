@@ -6,6 +6,7 @@ import {
   ModoCatalogo,
   ModoFotos,
   ModoPedido,
+  TomAtendimento,
 } from '../../core/models/perfil.model';
 import { urlValida } from '../../core/utils/validadores';
 
@@ -45,6 +46,10 @@ export function criarFormularioConfiguracoes(fb: FormBuilder, valores: Configura
       mensagemRepasseNaHora: [valores.mensagemRepasseNaHora ?? '', Validators.maxLength(200)],
       mensagemRepassePedido: [valores.mensagemRepassePedido ?? '', Validators.maxLength(200)],
       mensagemSemResposta: [valores.mensagemSemResposta ?? '', Validators.maxLength(200)],
+      /** "Jeito de falar": o tom, os emojis da loja (até 6) e se usa emoji. */
+      tomAtendimento: fb.nonNullable.control<TomAtendimento>(valores.tomAtendimento ?? 'NEUTRO'),
+      emojis: fb.nonNullable.control<string[]>(valores.emojis ?? []),
+      usarEmojis: fb.nonNullable.control<boolean>(valores.usarEmojis ?? true),
     },
     { validators: [linkObrigatorioNoModoExterno, linkAgendamentoNoModoExterno] },
   );

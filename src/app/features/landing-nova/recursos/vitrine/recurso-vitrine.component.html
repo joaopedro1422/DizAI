@@ -1,0 +1,48 @@
+@let conteudo = c();
+<app-pagina-recurso [conteudo]="conteudo">
+  <!-- as cenas do mock do topo: o painel de verdade no celular e, no fim, a vitrine pronta com a bio do Instagram -->
+  <ng-template #cena let-cena>
+    @if (cena === 'resultado') {
+      <div class="rv-resultado">
+        <div class="rv-bio" aria-hidden="true">
+          <span class="rv-bio__foto">{{ conteudo.loja.nome.charAt(0) }}</span>
+          <span class="rv-bio__textos">
+            <b>{{ conteudo.loja.slug.replaceAll('-', '') }}</b>
+            <small>{{ conteudo.tipo === 'servicos' ? 'Agende pelo link abaixo 💅' : 'Encomendas pelo link abaixo 🎂' }}</small>
+            <span class="rv-bio__link">dizai.com/l/{{ conteudo.loja.slug }}</span>
+          </span>
+        </div>
+        <app-vitrine-mock [variante]="conteudo.tipo" />
+      </div>
+    } @else {
+      <app-painel-vitrine-mock [cena]="comoCena(cena)" [loja]="conteudo.loja" />
+    }
+  </ng-template>
+
+  @if (conteudo.agenda; as agenda) {
+    <article class="rv-agenda" destaque>
+      <div class="rv-agenda__texto">
+        <h3>{{ agenda.titulo }}</h3>
+        <p>{{ agenda.texto }}</p>
+        <ul>
+          @for (item of agenda.itens; track item) { <li><span class="check">✓</span>{{ item }}</li> }
+        </ul>
+      </div>
+      <div class="rv-agenda__exemplo" aria-hidden="true">
+        <span class="rv-agenda__abas"><i>Vitrine</i><i class="rv-agenda__aba-ativa">Agendar horário</i></span>
+        <b>Esmaltação em gel · 1h</b>
+        <span class="rv-agenda__dias">
+          @for (dia of ['Hoje', 'Amanhã', 'Sex 14', 'Sáb 15']; track dia; let i = $index) {
+            <i [class.rv-agenda__marcado]="i === 1">{{ dia }}</i>
+          }
+        </span>
+        <span class="rv-agenda__horas">
+          @for (hora of ['08:00', '09:00', '10:30', '13:00', '14:30', '16:00']; track hora; let i = $index) {
+            <i [class.rv-agenda__marcado]="i === 4">{{ hora }}</i>
+          }
+        </span>
+        <span class="rv-agenda__enviar">Enviar pelo WhatsApp</span>
+      </div>
+    </article>
+  }
+</app-pagina-recurso>

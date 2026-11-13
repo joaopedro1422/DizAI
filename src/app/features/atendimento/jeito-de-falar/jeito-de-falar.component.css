@@ -1,0 +1,104 @@
+/* "Jeito de falar": os 3 tons, a chave e a grade dos emojis e a prévia em um balão do WhatsApp. */
+.jeito {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.lista-opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.jeito__emojis {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+}
+
+.jeito__linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.jeito__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.jeito__detalhe {
+  color: var(--cor-texto-secundario);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.jeito__grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: 6px;
+}
+
+.jeito__emoji {
+  display: grid;
+  place-items: center;
+  height: 44px;
+  padding: 0;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo);
+  font-size: 21px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+}
+
+.jeito__emoji:hover:not(:disabled) {
+  border-color: var(--cor-borda-forte);
+}
+
+.jeito__emoji--marcado {
+  border-color: var(--cor-noite);
+  background: var(--cor-gema-clara);
+  box-shadow: inset 0 0 0 1px var(--cor-noite);
+}
+
+.jeito__emoji:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.jeito__previa {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: var(--raio-grande);
+  background: #efeae2;
+}
+
+.jeito__previa-rotulo {
+  color: var(--cor-texto-secundario);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.jeito__balao {
+  align-self: flex-start;
+  max-width: 320px;
+  margin: 0;
+  padding: 8px 11px;
+  border-radius: 4px 12px 12px 12px;
+  background: #ffffff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12);
+  color: #111b21;
+  font-size: 14px;
+  line-height: 1.45;
+  white-space: pre-line;
+}

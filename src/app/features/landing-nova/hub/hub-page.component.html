@@ -13,9 +13,11 @@
   <!-- primeira dobra: o título e os dois mundos, que descem para a faixa branca -->
   <section class="hb-abertura faixa" aria-labelledby="hub-titulo">
     <div class="miolo">
-      <span class="hb-selo"><i></i>Assistente de IA para o seu WhatsApp</span>
-      <h1 id="hub-titulo" class="hb-titulo" aria-label="Nenhum cliente sem resposta"><app-titulo-digitando [quebra]="true" /></h1>
-      <p class="hb-desc">O DizAI responde os clientes do seu WhatsApp na hora, do jeito do seu negócio. Escolha o seu tipo de negócio e veja como ele trabalha.</p>
+      <span class="hb-selo"><i></i>Atendimento, vendas e marketing no seu WhatsApp</span>
+      <h1 id="hub-titulo" class="hb-titulo" aria-label="Um assistente que atende, agenda, anota os pedidos, divulga e vende por você">
+        <app-titulo-digitando [quebra]="true" inicio="Um assistente que" [frases]="funcoes" [trocas]="funcoes.length" [pausaMs]="2600" />
+      </h1>
+      <p class="hb-desc">Atendimento, agenda, pedidos, vitrine, posts e campanhas: o DizAI cuida do seu WhatsApp e do marketing do seu negócio. Escolha o seu tipo de negócio e veja como ele trabalha.</p>
 
       <div class="mundos">
         @for (mundo of mundos; track mundo.tipo) {

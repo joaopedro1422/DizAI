@@ -32,7 +32,7 @@ import { EtapasAvisoComponent } from './etapas-aviso.component';
           <article class="rec rec--a">
             <span class="etiqueta">Coleta de pedidos</span>
             <h3>O pedido chega anotado. Você apenas confirma.</h3>
-            <p>A função do assistente é responder o seu cliente nos primeiros 30 segundos de interesse e mantê-lo por perto. Ele tira dúvidas, coleta informações e te entrega pedidos anotados, prontos para serem confirmados.</p>
+            <p>A função do assistente é responder o seu cliente nos primeiros 30 segundos de interesse e mantê-lo por perto.</p>
             <div class="rec__visual">
               <div class="cartao">
                 <div class="cartao__topo"><span>Ana Souza <small class="mono cartao__fone">(83) 98812-4410</small></span><span class="status status--pronto">Pronto para fechar</span></div>

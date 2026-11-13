@@ -17,7 +17,7 @@ const TEMPO_POR_SLIDE_MS = 3800;
     <section class="secao faixa" id="como">
       <div class="miolo">
         <div class="cabeca cabeca--centro">
-          <span class="rotulo">Como funciona</span>
+          <span class="rotulo">Como funciona o DizAI</span>
           <h2 class="titulo">Pronto em 3 passos. <span class="grifo">Sem complicação.</span></h2>
           <p class="apoio">Você não precisa entender de tecnologia. Se você usa o WhatsApp, você usa o DizAI.</p>
         </div>

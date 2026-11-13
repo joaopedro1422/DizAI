@@ -1,0 +1,205 @@
+/*
+ * O tempo de cada toque das cenas de campanhas (animation-delay a partir do momento em que a cena aparece).
+ * Oportunidade: o cartão azul entra e o "Ver campanha" é tocado (2,6 s).
+ * Mensagem: a folha sobe, a opção é tocada (1,1 s), a frase é digitada e a arte entra; "Continuar" (4,6 s).
+ * Quem recebe: o público é tocado (1 s), os clientes entram marcados; "Continuar" (4,4 s).
+ * Enviar: "Preparando a mensagem…" até 1,4 s, a prévia e o resumo; "Enviar" (4,2 s) vira "Enviando…".
+ * Cliente: o botão da mensagem é tocado (1,2 s) e a conversa continua com o assistente.
+ * Resultado: o valor entra e as barras do funil enchem uma a uma.
+ */
+
+/* ---------- peças comuns (as mesmas do mock da vitrine) ---------- */
+.pm-toque {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+  background: rgba(19, 32, 74, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  animation: pc-tocar 0.6s ease-out both var(--toque, 1s);
+}
+
+.pc-oportunidade .pm-toque {
+  background: rgba(19, 32, 74, 0.35);
+}
+
+.pm-troca {
+  display: inline-grid;
+}
+
+.pm-troca > * {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  grid-area: 1 / 1;
+}
+
+.pm-troca > :first-child {
+  animation: pc-sumir 0.3s ease both var(--troca, 2.4s);
+}
+
+.pm-troca > :last-child {
+  opacity: 0;
+  animation: pc-aparecer 0.3s ease both var(--troca, 2.4s);
+}
+
+.pm-digita {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(0 100% 0 0);
+}
+
+.pm-roda {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: pc-girar 0.7s linear infinite;
+}
+
+/* ---------- 1. a oportunidade ---------- */
+.pc-painel--animar .pc-oportunidade {
+  animation: pc-entrar 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both 0.5s;
+}
+
+.pc-painel--animar .pc-oportunidade__ver {
+  animation: pc-apertar 0.35s ease 2.6s;
+}
+
+/* ---------- a folha ---------- */
+.pc-veu {
+  animation: pc-aparecer 0.25s ease both;
+}
+
+.pc-veu--fixo {
+  animation: none;
+}
+
+.pc-folha--sobe {
+  animation: pc-subir 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.pc-opcao--escolhida {
+  animation: pc-escolher 0.25s ease forwards 1.2s;
+}
+
+.pc-opcao--escolhida::after {
+  animation: pc-bolinha 0.25s ease forwards 1.2s;
+}
+
+.pc-digita--frase {
+  animation: pc-digitar 1.2s steps(30) forwards 1.8s;
+}
+
+.pc-arte-bloco .pc-arte {
+  opacity: 0;
+  animation: pc-chegar 0.4s ease forwards 2.4s;
+}
+
+.pc-continuar {
+  animation: pc-apertar 0.35s ease 4.4s;
+}
+
+[data-cena='mensagem'] .pc-continuar {
+  animation-delay: 4.6s;
+}
+
+/* a folha da mensagem rola um pouco para mostrar a arte */
+.pc-folha__trilho--rola {
+  animation: pc-rolar 0.6s ease forwards 3.1s;
+}
+
+/* ---------- 3. quem recebe ---------- */
+.pc-cliente:not(.pc-cliente--fixo) {
+  opacity: 0;
+  animation: pc-chegar-lado 0.3s ease forwards calc(1.6s + var(--i) * 0.22s);
+}
+
+/* ---------- 4. conferir e enviar ---------- */
+.pc-preparando {
+  animation: pc-recolher 0.3s ease forwards 1.4s;
+}
+
+.pc-preparando__roda {
+  animation: pc-girar 0.8s linear infinite;
+}
+
+.pc-revisao {
+  opacity: 0;
+  animation: pc-aparecer 0.4s ease forwards 1.5s;
+}
+
+.pc-enviar {
+  animation-delay: 4.2s;
+}
+
+.pc-troca--enviar {
+  --troca: 4.4s;
+}
+
+/* ---------- 5. o cliente no WhatsApp ---------- */
+.pc-balao__botao--tocado {
+  animation: pc-botao-tocado 0.35s ease 1.2s;
+}
+
+.pc .pc-entra {
+  flex: none;
+  max-height: 0;
+  margin-top: 0;
+  padding-block: 0;
+  overflow: hidden;
+  opacity: 0;
+  animation: pc-abrir-msg 0.35s ease forwards var(--em, 1s);
+}
+
+.pc .pc-digitando {
+  animation: pc-abrir-msg 0.3s ease forwards var(--em, 1s), pc-fechar-msg 0.2s ease forwards calc(var(--em, 1s) + 0.65s);
+}
+
+/* ---------- 6. o resultado ---------- */
+.pc-destaque {
+  animation: pc-entrar 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both 0.4s;
+}
+
+.pc-funil__cheio {
+  animation: pc-encher 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both calc(1.2s + var(--i) * 0.3s);
+}
+
+.pc-comparacao {
+  opacity: 0;
+  animation: pc-aparecer 0.4s ease forwards 3.2s;
+}
+
+@keyframes pc-tocar { 0% { opacity: 0.9; transform: scale(0.3); } 100% { opacity: 0; transform: scale(1.6); } }
+@keyframes pc-aparecer { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pc-sumir { from { opacity: 1; } to { opacity: 0; } }
+@keyframes pc-girar { to { transform: rotate(360deg); } }
+@keyframes pc-digitar { to { clip-path: inset(0 0 0 0); } }
+@keyframes pc-apertar { 40% { transform: scale(0.96); filter: brightness(1.25); } 100% { transform: none; } }
+@keyframes pc-entrar { from { opacity: 0; transform: translateY(14px) scale(0.97); } }
+@keyframes pc-subir { from { transform: translateY(100%); } }
+@keyframes pc-escolher { to { border-color: var(--cor-primaria); background: var(--cor-azul-fundo); box-shadow: inset 3px 0 0 var(--cor-gema); } }
+@keyframes pc-bolinha { to { border-color: var(--cor-noite); box-shadow: inset 0 0 0 3px var(--cor-fundo), inset 0 0 0 9px var(--cor-noite); } }
+@keyframes pc-chegar { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: none; } }
+@keyframes pc-chegar-lado { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+@keyframes pc-recolher { to { opacity: 0; max-height: 0; padding: 0; margin: 0; } }
+@keyframes pc-botao-tocado { 50% { background: #e6f4fa; } }
+@keyframes pc-abrir-msg { to { max-height: 220px; margin-top: 5px; padding-block: 7px 5px; opacity: 1; } }
+@keyframes pc-fechar-msg { to { max-height: 0; margin-top: 0; padding-block: 0; opacity: 0; } }
+@keyframes pc-encher { from { width: 0; } }
+@keyframes pc-rolar { to { transform: translateY(var(--rola, -56px)); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .pc *,
+  .pc *::after {
+    animation-duration: 0.01s !important;
+    animation-delay: 0s !important;
+  }
+}

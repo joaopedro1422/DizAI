@@ -499,91 +499,125 @@
   height: 440px;
 }
 
-.lv .arte {
+.lv .leque__arte {
   position: absolute;
   top: 30px;
   left: 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: flex-start;
+  display: block;
   width: 230px;
   aspect-ratio: 4 / 5;
   margin-left: -115px;
-  padding: 18px;
+  padding: 0;
   overflow: hidden;
   border: none;
   border-radius: 18px;
-  background-color: var(--noite);
-  background-position: center;
-  background-size: cover;
-  color: #ffffff;
+  background: none;
   font: inherit;
-  text-align: left;
   cursor: pointer;
   box-shadow: 0 24px 40px -22px rgba(19, 32, 74, 0.6);
   transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease, top 0.6s ease;
 }
 
-.lv .arte::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 30%, rgba(0, 0, 0, 0.75));
-}
-
-.lv .arte > * {
-  position: relative;
-}
-
-.lv .arte small {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  opacity: 0.9;
-}
-
-.lv .arte b {
+/* a caixa só posiciona; o desenho é da própria arte do gerador (ArtePostComponent) */
+.lv .leque__arte app-arte-post {
   display: block;
-  margin-top: 4px;
-  font-family: var(--f-titulo);
-  font-size: 22px;
-  line-height: 1.05;
+  pointer-events: none;
 }
 
-.lv .arte span {
-  margin-top: 10px;
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 700;
+.lv .leque__arte--escondida {
+  z-index: 0;
+  transform: scale(0.8);
+  opacity: 0;
+  pointer-events: none;
 }
 
-.lv .arte--amarelo span { background: #e2a400; color: #2a1a00; }
-.lv .arte--claro span { background: #ffffff; color: #6b3a48; }
-.lv .arte--escuro span { background: #1e1e1e; color: #ffffff; }
-
-.lv .arte--centro {
+.lv .leque__arte--centro {
   z-index: 3;
   top: 0;
   transform: none;
 }
 
-.lv .arte--direita {
+.lv .leque__arte--direita {
   z-index: 2;
   transform: translateX(46%) rotate(8deg) scale(0.92);
   opacity: 0.92;
 }
 
-.lv .arte--esquerda {
+.lv .leque__arte--esquerda {
   z-index: 1;
   transform: translateX(-46%) rotate(-8deg) scale(0.92);
   opacity: 0.92;
 }
 
-.lv .leque:hover .arte--direita { transform: translateX(54%) rotate(11deg) scale(0.92); }
-.lv .leque:hover .arte--esquerda { transform: translateX(-54%) rotate(-11deg) scale(0.92); }
+.lv .leque:hover .leque__arte--direita { transform: translateX(54%) rotate(11deg) scale(0.92); }
+.lv .leque:hover .leque__arte--esquerda { transform: translateX(-54%) rotate(-11deg) scale(0.92); }
+
+/* "Como chegar": o mapa desenhado (sem carregar o Google Maps), no fim da vitrine */
+.lv .vt__mapa {
+  margin: 0 14px;
+  overflow: hidden;
+  border: 1px solid var(--vt-borda);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.lv .vt__mapa-desenho {
+  position: relative;
+  height: 92px;
+  background:
+    linear-gradient(90deg, transparent 46%, #ffffff 46% 50%, transparent 50%),
+    linear-gradient(0deg, transparent 58%, #ffffff 58% 63%, transparent 63%),
+    linear-gradient(28deg, transparent 70%, #fff6c2 70% 75%, transparent 75%),
+    radial-gradient(circle at 18% 30%, #cfe6c9 0 18px, transparent 19px),
+    #e6ebef;
+}
+
+.lv .vt__mapa-desenho i {
+  position: absolute;
+  top: 24%;
+  left: 47%;
+  width: 18px;
+  height: 18px;
+  border-radius: 50% 50% 50% 0;
+  background: #e5484d;
+  transform: rotate(-45deg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.lv .vt__mapa-desenho i::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.lv .vt__mapa-rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 10px;
+  color: var(--vt-suave);
+  font-size: 10.5px;
+  line-height: 1.4;
+}
+
+.lv .vt__mapa-rodape b {
+  display: block;
+  color: #2b1d14;
+  font-size: 11px;
+}
+
+.lv .vt__rota {
+  flex: none;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--vt-destaque);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+}
 
 @keyframes lv-vt-rola {
   0%, 12% { transform: none; }
@@ -608,13 +642,8 @@
     height: 330px;
   }
 
-  .lv .arte {
+  .lv .leque__arte {
     width: 170px;
     margin-left: -85px;
-    padding: 14px;
-  }
-
-  .lv .arte b {
-    font-size: 17px;
   }
 }

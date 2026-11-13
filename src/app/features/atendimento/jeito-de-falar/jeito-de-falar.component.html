@@ -1,0 +1,45 @@
+<div class="jeito">
+  <span class="campo__rotulo">Tom do atendimento</span>
+  <div class="lista-opcoes" role="radiogroup" aria-label="Tom do atendimento">
+    @for (t of tons; track t.valor) {
+      <app-opcao-card [titulo]="t.titulo" [descricao]="t.descricao" [selecionado]="tom() === t.valor" (selecionar)="escolherTom(t.valor)" />
+    }
+  </div>
+
+  <div class="jeito__emojis">
+    <div class="jeito__linha">
+      <span class="jeito__textos">
+        <span class="campo__rotulo">Usar emojis</span>
+        <span class="jeito__detalhe">No máximo um a cada 3 mensagens, sempre no fim de uma frase.</span>
+      </span>
+      <app-interruptor rotulo="Usar emojis" [ligado]="usarEmojis()" (alternar)="alternarUsar($event)" />
+    </div>
+
+    @if (usarEmojis()) {
+      <span class="jeito__detalhe">
+        Escolha até {{ maximo }} emojis da sua marca ({{ emojis().length }} de {{ maximo }}). O assistente usa um por vez, sem
+        repetir o mesmo. Sem nenhum escolhido, ele usa os mais comuns.
+      </span>
+      <div class="jeito__grade" role="group" aria-label="Emojis da loja">
+        @for (emoji of sugestoes; track emoji) {
+          @let marcado = emojis().includes(emoji);
+          <button
+            type="button"
+            class="jeito__emoji"
+            [class.jeito__emoji--marcado]="marcado"
+            [attr.aria-pressed]="marcado"
+            [disabled]="!marcado && emojis().length >= maximo"
+            (click)="alternarEmoji(emoji)"
+          >
+            {{ emoji }}
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="jeito__previa" aria-label="Exemplo de resposta">
+    <span class="jeito__previa-rotulo">Assim ele responde</span>
+    <p class="jeito__balao">{{ previa() }}</p>
+  </div>
+</div>

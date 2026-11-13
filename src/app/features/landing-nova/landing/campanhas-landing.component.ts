@@ -122,7 +122,7 @@ const VENDAS: TextosCampanhas = {
         </div>
         <small>ou quando você quiser</small>
       </div>
-      <a class="btn btn--forte" routerLink="/cadastro" [queryParams]="{ tipo: conteudo().tipo }">Testar grátis →</a>
+      <a class="btn btn--forte" [routerLink]="conteudo().rota + '/campanhas'">Como funciona →</a>
     </div>
 
     <div class="vp__visual">

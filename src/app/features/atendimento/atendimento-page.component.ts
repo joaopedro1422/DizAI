@@ -27,6 +27,7 @@ import { DicasVistasService } from '../../core/services/dicas-vistas.service';
 import { testeFeito } from '../painel/onboarding/progresso-onboarding';
 import { TesteAtendimentoComponent } from '../painel/teste-atendimento/teste-atendimento.component';
 import { MensagensRepasseComponent } from './mensagens-repasse/mensagens-repasse.component';
+import { JeitoDeFalarComponent } from './jeito-de-falar/jeito-de-falar.component';
 import { catalogosIniciais, criarFormularioConfiguracoes } from '../painel/painel-formulario';
 
 @Component({
@@ -45,6 +46,7 @@ import { catalogosIniciais, criarFormularioConfiguracoes } from '../painel/paine
     RegrasNegocioComponent,
     VideoAtendimentoComponent,
     MensagensRepasseComponent,
+    JeitoDeFalarComponent,
   ],
   templateUrl: './atendimento-page.component.html',
   styleUrls: ['./atendimento-page.component.css', './atendimento-pc.css'],

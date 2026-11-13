@@ -7,22 +7,23 @@ const FRASES = ['sem resposta', 'indo embora'];
 const TROCAS = 6;
 
 /**
- * "Nenhum cliente sem resposta" com a parte final apagada e escrita como em uma máquina de escrever
- * ("sem resposta" ↔ "indo embora"). As duas frases ficam invisíveis na mesma célula da grade e reservam a largura
- * da maior, para o título não pular. Os pontinhos de "digitando" somem enquanto a frase troca.
+ * Um título com a parte final apagada e escrita como em uma máquina de escrever. Padrão (landings): "Nenhum cliente
+ * sem resposta" ↔ "indo embora", 6 trocas. O hub passa o próprio início e as próprias frases ("Um assistente que"
+ * atende, agenda...). As frases ficam invisíveis na mesma célula da grade e reservam a largura da maior, para o
+ * título não pular. Os pontinhos de "digitando" somem enquanto a frase troca.
  */
 @Component({
   selector: 'app-titulo-digitando',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <span aria-hidden="true">Nenhum cliente</span>
+    <span aria-hidden="true">{{ inicio() }}</span>
     @if (quebra()) {
       <br />
     } @else {
       {{ ' ' }}
     }
     <span class="troca" aria-hidden="true">
-      @for (frase of frases; track frase) {
+      @for (frase of frases(); track frase) {
         <span class="troca__reserva">{{ frase }}</span>
       }
       <span class="troca__texto">{{ texto() }}</span>
@@ -33,8 +34,13 @@ const TROCAS = 6;
 export class TituloDigitandoComponent {
   /** Quebra a linha antes da parte que troca (o título centralizado do hub). */
   readonly quebra = input(false);
+  readonly inicio = input('Nenhum cliente');
+  readonly frases = input<string[]>(FRASES);
+  /** Quantas vezes a frase troca antes de parar. */
+  readonly trocas = input(TROCAS);
+  /** Quanto tempo cada frase fica na tela. */
+  readonly pausaMs = input(4000);
 
-  protected readonly frases = FRASES;
   protected readonly texto = signal(FRASES[0]);
   protected readonly pontos = signal(true);
 
@@ -42,6 +48,7 @@ export class TituloDigitandoComponent {
     let ativo = true;
     inject(DestroyRef).onDestroy(() => (ativo = false));
     afterNextRender(() => {
+      this.texto.set(this.frases()[0]);
       if (!semMovimento()) {
         void this.trocar(() => ativo);
       }
@@ -50,18 +57,19 @@ export class TituloDigitandoComponent {
 
   private async trocar(ativo: () => boolean): Promise<void> {
     let atual = 0;
-    for (let troca = 0; troca < TROCAS; troca++) {
-      await esperar(4000);
+    const frases = this.frases();
+    for (let troca = 0; troca < this.trocas(); troca++) {
+      await esperar(this.pausaMs());
       if (!ativo()) return;
       this.pontos.set(false);
-      const frase = FRASES[atual];
+      const frase = frases[atual];
       for (let n = frase.length - 1; n >= 0; n--) {
         this.texto.set(frase.slice(0, n) || '​');
         await esperar(38);
       }
       await esperar(220);
-      atual = (atual + 1) % FRASES.length;
-      const nova = FRASES[atual];
+      atual = (atual + 1) % frases.length;
+      const nova = frases[atual];
       for (let n = 1; n <= nova.length; n++) {
         if (!ativo()) return;
         this.texto.set(nova.slice(0, n));

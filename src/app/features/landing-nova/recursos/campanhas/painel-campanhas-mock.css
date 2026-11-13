@@ -1,0 +1,737 @@
+/*
+ * As campanhas no celular: cópia das regras de celular do painel (resumo e oportunidade), da folha "Nova campanha"
+ * (nova-campanha.component.css: passos, opções com a bolinha, arte, clientes, prévia do WhatsApp, resumo) e do
+ * relatório (resultado-campanha.component.css), no tamanho da moldura. Botões, campos e a folha de baixo vêm de
+ * ../vitrine/painel-vitrine-mock.css; as animações, de painel-campanhas-cenas.css.
+ */
+.pc b,
+.pc strong {
+  font-weight: 700;
+}
+
+/* ---------- o painel ---------- */
+.pc-painel {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 34px 12px 12px;
+  background: var(--cor-fundo-suave);
+}
+
+.pc-loja {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pc-loja img {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.pc-loja span {
+  display: flex;
+  flex-direction: column;
+}
+
+.pc-loja b {
+  font-family: var(--fonte-titulo);
+  font-size: 17px;
+}
+
+.pc-loja small {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--cor-texto-suave);
+  font-size: 11px;
+}
+
+.pc-loja small i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #1a9b71;
+}
+
+.pc-assistente {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+}
+
+.pc-assistente span {
+  display: flex;
+  flex-direction: column;
+}
+
+.pc-assistente b {
+  font-family: var(--fonte-numero);
+  font-size: 15px;
+}
+
+.pc-assistente small {
+  color: var(--cor-texto-suave);
+  font-size: 10px;
+}
+
+.pc .pc-secao {
+  margin-top: 2px;
+  font-family: var(--fonte-titulo);
+  font-size: 15px;
+}
+
+/* o cartão azul da oportunidade (oportunidade-painel) */
+.pc-oportunidade {
+  display: flex;
+  gap: 10px;
+  padding: 13px;
+  border-radius: var(--raio-grande);
+  background: var(--fundo-marca);
+  color: #ffffff;
+  box-shadow: var(--sombra-card);
+}
+
+.pc-oportunidade__icone {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--cor-gema);
+}
+
+.pc-oportunidade__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.pc-oportunidade__selo {
+  align-self: flex-start;
+  padding: 1px 8px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-gema);
+  color: var(--cor-noite);
+  font-size: 9.5px;
+  font-weight: 800;
+}
+
+.pc-oportunidade__textos > b {
+  font-family: var(--fonte-titulo);
+  font-size: 15px;
+  line-height: 1.25;
+}
+
+.pc-oportunidade__textos > small {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.pc-oportunidade__acoes {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.pc-oportunidade__ver {
+  position: relative;
+  padding: 6px 12px;
+  border-radius: var(--raio-medio) var(--raio-medio) var(--raio-medio) 4px;
+  background: #ffffff;
+  color: var(--cor-noite);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.pc-oportunidade__depois {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.pc-cartoes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.pc-cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+  font-size: 11.5px;
+}
+
+.pc-cartao__icone {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+}
+
+/* ---------- a folha "Nova campanha" ---------- */
+.pc-folha {
+  gap: 10px;
+  max-height: 94%;
+}
+
+/* o conteúdo rola por baixo das ações, que ficam presas embaixo (como o sticky da tela real) */
+.pc-folha__corpo {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.pc-folha__trilho {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pc-passos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pc-passos__item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-top: 6px;
+  border-top: 3px solid var(--cor-borda);
+  color: var(--cor-texto-suave);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.pc-passos__item i {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: var(--cor-fundo-suave);
+  font-family: var(--fonte-numero);
+  font-size: 9.5px;
+  font-style: normal;
+}
+
+.pc-passos__item--feito {
+  border-top-color: var(--cor-gema);
+  color: var(--cor-texto);
+}
+
+.pc-passos__item--feito i {
+  background: var(--cor-gema);
+  color: var(--cor-noite);
+}
+
+.pc-sugestao {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-gema-clara);
+  color: var(--cor-texto-gema);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.pc .pc-pergunta {
+  font-family: var(--fonte-titulo);
+  font-size: 15.5px;
+  line-height: 1.2;
+}
+
+.pc-opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pc-opcao {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 8px 40px 8px 11px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo);
+}
+
+.pc-opcao b {
+  font-size: 12.5px;
+}
+
+.pc-opcao small {
+  color: var(--cor-texto-secundario);
+  font-size: 10.5px;
+}
+
+/* a bolinha de seleção à direita */
+.pc-opcao::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 17px;
+  height: 17px;
+  box-sizing: border-box;
+  border: 2px solid var(--cor-borda-forte);
+  border-radius: 50%;
+  background: var(--cor-fundo);
+  transform: translateY(-50%);
+}
+
+.pc-arte-bloco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo-suave);
+}
+
+.pc-chave {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  align-self: stretch;
+}
+
+.pc-chave span {
+  display: flex;
+  flex-direction: column;
+}
+
+.pc-chave b {
+  font-size: 12px;
+}
+
+.pc-chave small {
+  color: var(--cor-texto-secundario);
+  font-size: 10px;
+}
+
+.pc-chave__caixa {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 4px;
+  background: var(--cor-noite);
+  color: #ffffff;
+}
+
+.pc-arte {
+  display: block;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.pc-acoes {
+  display: flex;
+  flex: none;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.pc-acoes .pm-btn {
+  position: relative;
+  flex: 1;
+}
+
+.pc-lista-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.pc-lista-topo small {
+  color: var(--cor-primaria);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.pc-clientes {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  list-style: none;
+}
+
+.pc-cliente {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 10px;
+}
+
+.pc-cliente + .pc-cliente {
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+.pc-cliente span {
+  display: flex;
+  flex-direction: column;
+}
+
+.pc-cliente b {
+  font-size: 12px;
+}
+
+.pc-cliente small {
+  color: var(--cor-texto-secundario);
+  font-size: 10px;
+}
+
+.pc-preparando {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 40px 0;
+  color: var(--cor-texto-secundario);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pc-preparando__roda {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--cor-borda);
+  border-top-color: var(--cor-gema);
+  border-radius: 50%;
+}
+
+.pc-revisao {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ---------- a mensagem como ela chega (prévia e conversa) ---------- */
+.pc-whatsapp {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 10px;
+  border-radius: var(--raio-grande);
+  background: #efeae2;
+}
+
+.pc-balao {
+  max-width: 210px;
+  padding: 3px 3px 6px;
+  border-radius: 4px 10px 10px 10px;
+  background: #ffffff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12);
+}
+
+.pc-balao .pc-arte {
+  margin-bottom: 4px;
+}
+
+.pc-balao p {
+  margin: 0;
+  padding: 1px 6px;
+  color: #111b21;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.pc-balao time {
+  display: block;
+  padding: 0 6px;
+  color: #667781;
+  font-family: var(--fonte-numero);
+  font-size: 9px;
+  text-align: right;
+}
+
+.pc-balao__botao {
+  position: relative;
+  width: 100%;
+  max-width: 210px;
+  padding: 6px;
+  border-radius: 9px;
+  background: #ffffff;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12);
+  color: #027eb5;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.pc-resumo {
+  margin: 0;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+}
+
+.pc-resumo div {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 10px;
+  font-size: 11.5px;
+}
+
+.pc-resumo div + div {
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+.pc-resumo dt {
+  color: var(--cor-texto-secundario);
+}
+
+.pc-resumo dd {
+  margin: 0;
+  font-family: var(--fonte-numero);
+  font-weight: 700;
+}
+
+.pc-resumo--destaque dd {
+  color: var(--cor-noite);
+}
+
+/* ---------- o WhatsApp do cliente ---------- */
+.pc-wpp {
+  display: flex;
+  flex-direction: column;
+  padding-top: 0;
+  background: var(--wpp-fundo, #efe9e1);
+}
+
+.pc-wpp .wpp-topo {
+  padding-top: 36px;
+}
+
+.pc-wpp__msgs {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 0;
+  padding: 10px 10px 4px;
+  overflow: hidden;
+}
+
+.pc-wpp__modelo {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pc-wpp .msg {
+  font-size: 12px;
+}
+
+/* ---------- o relatório ---------- */
+.pc-tela-resultado {
+  padding-top: 0;
+  background: var(--cor-fundo);
+}
+
+.pc-topo-azul {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 36px 16px 14px;
+  background: var(--fundo-marca);
+  color: #ffffff;
+}
+
+.pc-topo-azul b {
+  margin-top: 6px;
+  font-family: var(--fonte-titulo);
+  font-size: 19px;
+}
+
+.pc-topo-azul small {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 11px;
+}
+
+.pc-resultado {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 12px;
+}
+
+.pc-resultado__quando {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cor-texto-secundario);
+  font-size: 11px;
+}
+
+.pc-resultado__quando i {
+  padding: 1px 8px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.pc-destaque {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px;
+  border-radius: var(--raio-grande);
+  background: var(--fundo-marca);
+  color: #ffffff;
+}
+
+.pc-destaque__rotulo {
+  color: var(--cor-gema);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pc .pc-destaque__valor {
+  font-family: var(--fonte-numero);
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+.pc-destaque__frase {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 12px;
+}
+
+.pc-destaque__custo {
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 10.5px;
+}
+
+.pc-funil {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.pc-funil__linha {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr) 26px;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.pc-funil__nome {
+  color: var(--cor-texto-secundario);
+  font-weight: 600;
+}
+
+.pc-funil__barra {
+  height: 9px;
+  overflow: hidden;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo-suave);
+}
+
+.pc-funil__cheio {
+  display: block;
+  width: var(--largura);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--cor-primaria);
+}
+
+.pc-funil__linha--fim .pc-funil__cheio {
+  background: var(--cor-gema);
+}
+
+.pc-funil__linha--fim .pc-funil__nome {
+  color: var(--cor-texto);
+  font-weight: 800;
+}
+
+.pc-funil__valor {
+  font-family: var(--fonte-numero);
+  font-weight: 700;
+  text-align: right;
+}
+
+.pc-comparacao {
+  display: flex;
+  gap: 7px;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  color: var(--cor-texto-secundario);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.pc .pc-clientes-titulo {
+  font-size: 12.5px;
+}
+
+.pc-cliente--fixo {
+  justify-content: space-between;
+}
+
+.pc-etiqueta {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-fundo-suave);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.pc-etiqueta--sim {
+  background: #e3f6ee;
+  color: #11795a;
+}

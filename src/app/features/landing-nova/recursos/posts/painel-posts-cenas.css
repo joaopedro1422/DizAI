@@ -1,0 +1,196 @@
+/*
+ * O tempo de cada toque das cenas de posts (animation-delay a partir do momento em que a cena aparece).
+ * Tipo: toca "Destaque" (1 s), os outros tipos recolhem e o passo 2 sobe, toca o 1º item (3,2 s) e a foto marca.
+ * Formato: toca "Feed", o tom é digitado, "Criar artes" (3,4 s) vira "Criando as artes…".
+ * Artes: os esqueletos brilham, as 4 artes entram uma a uma e a 2ª é tocada (3,6 s).
+ * Editar: a folha sobe, "Compartilhar" (2,6 s) vira "Preparando…" e a folha do celular sobe com os destinos.
+ * Resultado: o coração grande, a curtida, o número que sobe e o comentário novo.
+ */
+
+/* ---------- peças comuns (as mesmas do mock da vitrine) ---------- */
+.pm-toque {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+  background: rgba(19, 32, 74, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  animation: pp-tocar 0.6s ease-out both var(--toque, 1s);
+}
+
+.pm-troca {
+  display: inline-grid;
+}
+
+.pm-troca > * {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  grid-area: 1 / 1;
+}
+
+.pm-troca > :first-child {
+  animation: pp-sumir 0.3s ease both var(--troca, 2.4s);
+}
+
+.pm-troca > :last-child {
+  opacity: 0;
+  animation: pp-aparecer 0.3s ease both var(--troca, 2.4s);
+}
+
+.pm-digita {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(0 100% 0 0);
+}
+
+.pm-roda {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: pp-girar 0.7s linear infinite;
+}
+
+/* ---------- 1. tipo e conteúdo ---------- */
+.pp-tipo--escolhido {
+  animation: pp-escolher 0.25s ease forwards 1.1s;
+}
+
+.pp-tipo--escolhido .pp-tipo__icone {
+  animation: pp-icone-ativo 0.25s ease forwards 1.1s;
+}
+
+.pp-tipo--sai {
+  animation: pp-recolher 0.4s ease forwards 2s;
+}
+
+.pp-etapa--entra {
+  opacity: 0;
+  animation: pp-aparecer 0.4s ease forwards 2.3s;
+}
+
+.pp-produto--escolhido {
+  animation: pp-escolher-borda 0.25s ease forwards 3.3s;
+}
+
+.pp-foto--escolhida {
+  animation: pp-escolher-borda 0.25s ease forwards 3.6s;
+}
+
+/* ---------- 2. formato e criar ---------- */
+.pp-formato--escolhido {
+  animation: pp-escolher 0.25s ease forwards 1s;
+}
+
+.pp-formato--escolhido .pp-formato__desenho {
+  animation: pp-cor-primaria 0.25s ease forwards 1s;
+}
+
+.pp-digita--tom {
+  animation: pp-digitar 1.2s steps(28) forwards 1.6s;
+}
+
+.pp-criar__botao {
+  animation: pp-apertar 0.35s ease 3.4s;
+}
+
+.pp-troca--criar {
+  --troca: 3.6s;
+}
+
+/* ---------- 3. as artes ---------- */
+.pp-resultados--animar .pp-esqueleto {
+  animation: pp-brilho 1s linear infinite, pp-sumir 0.3s ease forwards 1.5s;
+}
+
+.pp-resultados--animar .pp-opcao__arte {
+  opacity: 0;
+  animation: pp-chegar 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards calc(1.4s + var(--i) * 0.25s);
+}
+
+.pp-resultados--animar .pp-opcao__usar {
+  opacity: 0;
+  animation: pp-aparecer 0.25s ease forwards 3.3s;
+}
+
+.pp-resultados--animar .pp-opcao--escolhida {
+  animation: pp-anel 0.3s ease forwards 3.6s;
+}
+
+/* por baixo da folha: as artes já prontas */
+.pp-resultados:not(.pp-resultados--animar) .pp-esqueleto,
+.pp-resultados:not(.pp-resultados--animar) .pm-toque {
+  display: none;
+}
+
+/* ---------- 4. seu post ---------- */
+.pm-veu {
+  animation: pp-aparecer 0.25s ease both 0.3s;
+}
+
+.pp-folha {
+  animation: pp-subir 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both 0.3s;
+}
+
+.pp-troca--compartilhar {
+  --troca: 2.8s;
+}
+
+.pp-sistema {
+  transform: translateY(115%);
+  animation: pp-subir-sistema 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 3.8s;
+}
+
+/* ---------- 5. no feed ---------- */
+.pp-feed__coracao-grande {
+  animation: pp-coracao 0.9s ease forwards 1.2s;
+}
+
+.pp-feed__curtir {
+  animation: pp-curtir 0.35s ease forwards 1.5s;
+}
+
+.pp-troca--curtidas {
+  --troca: 1.7s;
+}
+
+.pp-feed__comentario {
+  opacity: 0;
+  animation: pp-chegar-baixo 0.4s ease forwards 3s;
+}
+
+@keyframes pp-tocar { 0% { opacity: 0.9; transform: scale(0.3); } 100% { opacity: 0; transform: scale(1.6); } }
+@keyframes pp-aparecer { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pp-sumir { from { opacity: 1; } to { opacity: 0; } }
+@keyframes pp-girar { to { transform: rotate(360deg); } }
+@keyframes pp-digitar { to { clip-path: inset(0 0 0 0); } }
+@keyframes pp-apertar { 40% { transform: scale(0.96); filter: brightness(1.25); } 100% { transform: none; } }
+@keyframes pp-escolher { to { border-color: var(--cor-primaria); background: var(--cor-selecionado); } }
+@keyframes pp-escolher-borda { to { border-color: var(--cor-primaria); box-shadow: 0 0 0 2px var(--cor-primaria-clara); } }
+@keyframes pp-icone-ativo { to { background: var(--cor-primaria); color: #ffffff; } }
+@keyframes pp-cor-primaria { to { color: var(--cor-primaria); } }
+@keyframes pp-recolher { to { max-height: 0; padding-block: 0; border-width: 0; margin-top: -5px; opacity: 0; } }
+@keyframes pp-brilho { to { background-position: -200% 0; } }
+@keyframes pp-chegar { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: none; } }
+@keyframes pp-anel { to { box-shadow: 0 0 0 3px var(--cor-primaria), 0 6px 16px -10px rgba(19, 32, 74, 0.45); } }
+@keyframes pp-subir { from { transform: translateY(100%); } }
+@keyframes pp-subir-sistema { to { transform: none; } }
+@keyframes pp-coracao { 0% { opacity: 0; transform: scale(0.4); } 25% { opacity: 1; transform: scale(1.1); } 60% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1); } }
+@keyframes pp-curtir { 50% { transform: scale(1.25); } 100% { fill: #ed4956; stroke: #ed4956; } }
+@keyframes pp-chegar-baixo { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .pp *,
+  .pp *::after {
+    animation-duration: 0.01s !important;
+    animation-delay: 0s !important;
+  }
+}

@@ -34,7 +34,7 @@ import { EtapasAvisoComponent } from './etapas-aviso.component';
           <div>
             @for (p of passos; track p.titulo; let i = $index) {
               <article class="passo" #passo [attr.data-passo]="i" [class.ativo]="i === ativo()">
-                <span class="passo__num">{{ i + 1 }} de {{ passos.length }}</span>
+                <span class="passo__num"><i>{{ i + 1 }}</i> de {{ passos.length }}</span>
                 <h3>{{ p.titulo }}</h3>
                 <p>{{ p.texto }}</p>
                 <div class="cena cena-inline" [class.cena--wpp]="ehConversa(p.cena)">

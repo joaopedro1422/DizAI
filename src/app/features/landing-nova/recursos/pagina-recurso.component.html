@@ -1,0 +1,118 @@
+@let c = conteudo();
+<header class="topo faixa">
+  <div class="miolo">
+    <a routerLink="/" class="topo__marca" aria-label="DizAI, início"><app-logo [tamanhoSimbolo]="32" [tamanhoTexto]="24" /></a>
+    <nav class="topo__links" aria-label="Principal">
+      <a [routerLink]="c.landing.rota">← {{ c.landing.rotulo }}</a>
+      <a class="btn btn--forte btn--pequeno" routerLink="/entrar">Entrar</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ======================== o topo: a dor e o mock passando sozinho ======================== -->
+  <section class="faixa rv-hero">
+    <div class="miolo rv-hero__grade">
+      <div class="rv-hero__texto">
+        <span class="rotulo">{{ c.rotulo }}</span>
+        <h1 class="titulo">{{ c.hero.titulo }}<br /><span class="grifo">{{ c.hero.grifo }}</span></h1>
+        <p class="apoio">{{ c.hero.apoio }}</p>
+        <div class="rv-hero__acoes">
+          <a class="btn btn--forte" routerLink="/cadastro" [queryParams]="{ tipo: c.tipo }">{{ c.hero.botao }} →</a>
+          <button type="button" class="btn btn--linha" (click)="irPara('o-que-tem')">Ver o que tem ↓</button>
+        </div>
+        <ul class="rv-hero__fatos">
+          @for (fato of c.fatos; track fato) {
+            <li><span class="check">✓</span>{{ fato }}</li>
+          }
+        </ul>
+      </div>
+
+      <!-- o painel de verdade no celular, cena por cena, com a legenda de cada uma por cima -->
+      <div class="rv-hero__visual rv-palco" (mouseenter)="pausado = true" (mouseleave)="pausado = false">
+        @for (cena of [cena()]; track cena.cena) {
+          <div class="rv-palco__cena" aria-live="polite">
+            <span class="rv-legenda"><i></i>{{ cena.legenda }}</span>
+            <ng-container *ngTemplateOutlet="modelo(); context: { $implicit: cena.cena }" />
+          </div>
+        }
+        <div class="rv-pontos" role="group" aria-label="Etapas do exemplo">
+          @for (item of c.cenas; track item.cena; let i = $index) {
+            <button type="button" [attr.aria-pressed]="i === indiceCena()" [attr.aria-label]="item.legenda" (click)="escolherCena(i)"></button>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== por que ======================== -->
+  <section class="secao faixa" appRevelar>
+    <div class="miolo rv-motivos">
+      <div class="cabeca">
+        <span class="rotulo">{{ c.motivos.rotulo }}</span>
+        <h2 class="titulo">{{ c.motivos.titulo[0] }}<br /><span class="grifo">{{ c.motivos.titulo[1] }}</span></h2>
+        <p class="apoio">{{ c.motivos.apoio }}</p>
+      </div>
+      <div class="diferenciais rv-motivos__lista">
+        @for (motivo of c.motivos.itens; track motivo[0]; let i = $index) {
+          <div class="diferencial"><i>{{ i + 1 }}</i><span><b>{{ motivo[0] }}</b><small>{{ motivo[1] }}</small></span></div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== o que tem ======================== -->
+  <section class="secao faixa nevoa" id="o-que-tem" appRevelar>
+    <div class="miolo">
+      <div class="cabeca cabeca--centro">
+        <span class="rotulo">{{ c.recursos.rotulo }}</span>
+        <h2 class="titulo">{{ c.recursos.titulo[0] }}<br /><span class="grifo">{{ c.recursos.titulo[1] }}</span></h2>
+      </div>
+
+      <!-- o destaque de cada página (na vitrine dos serviços, a agenda online) -->
+      <ng-content select="[destaque]" />
+
+      <div class="rv-recursos">
+        @for (recurso of c.recursos.itens; track recurso.titulo) {
+          <article class="rv-recurso">
+            <span class="rv-recurso__icone"><app-icone [nome]="icone(recurso.icone)" [tamanho]="20" [espessura]="2" /></span>
+            <h3>{{ recurso.titulo }}</h3>
+            <p>{{ recurso.texto }}</p>
+          </article>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== perguntas ======================== -->
+  <section class="secao faixa perguntas" appRevelar>
+    <div class="miolo">
+      <div class="cabeca cabeca--perguntas">
+        <span class="rotulo">Dúvidas</span>
+        <h2 class="titulo">{{ c.perguntas.titulo }}</h2>
+        <p class="apoio">{{ c.perguntas.apoio }}</p>
+      </div>
+      <div class="lista-perguntas">
+        @for (pergunta of c.perguntas.itens; track pergunta[0]) {
+          <details>
+            <summary>{{ pergunta[0] }}</summary>
+            <p>{{ pergunta[1] }}</p>
+          </details>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="final faixa nevoa">
+    <div class="miolo">
+      <div class="final__painel" appRevelar>
+        <h2>{{ c.final.titulo }}</h2>
+        <p>{{ c.final.texto }}</p>
+        <div class="final__acoes">
+          <a class="btn btn--escuro" routerLink="/cadastro" [queryParams]="{ tipo: c.tipo }">{{ c.final.botao }} →</a>
+          <a class="final__demo" [routerLink]="c.landing.rota">Conhecer o DizAI completo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

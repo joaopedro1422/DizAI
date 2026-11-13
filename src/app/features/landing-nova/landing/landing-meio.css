@@ -252,10 +252,26 @@
 }
 
 .lv .passo__num {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--f-mono);
   font-weight: 600;
   font-size: 15px;
   color: var(--marinho);
+}
+
+/* o número do passo atual numa bolinha azul-noite, em amarelo-claro */
+.lv .passo__num i {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--noite);
+  color: var(--gema-linha);
+  font-style: normal;
+  font-weight: 700;
 }
 
 .lv .passo h3 {

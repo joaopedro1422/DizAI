@@ -1,0 +1,144 @@
+/*
+ * A base das páginas de recurso (vitrine, posts e campanhas; marca nova, preso a .rv): o topo com a dor e o mock que
+ * passa sozinho, o "por que", a grade do que tem, as perguntas e a chamada. O mock do topo fica em recurso-palco.css.
+ */
+
+/* ---------- topo ---------- */
+.rv .rv-hero {
+  padding-top: 56px;
+  padding-bottom: 72px;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(255, 200, 61, 0.16), transparent 42%),
+    radial-gradient(rgba(19, 32, 74, 0.07) 1.2px, transparent 1.3px) 0 0 / 18px 18px,
+    var(--nevoa);
+}
+
+.rv .rv-hero__grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 56px;
+  align-items: center;
+}
+
+.rv .rv-hero__texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.rv .rv-hero__texto .titulo {
+  font-size: clamp(36px, 4.6vw, 58px);
+}
+
+.rv .rv-hero__texto .apoio {
+  max-width: 50ch;
+}
+
+.rv .rv-hero__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.rv .rv-hero__fatos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--suave);
+  font-size: 15px;
+}
+
+.rv .rv-hero__fatos li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rv .rv-hero__visual {
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------- por que ---------- */
+.rv .rv-motivos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 64px;
+  align-items: center;
+}
+
+.rv .rv-motivos .cabeca {
+  margin-bottom: 0;
+}
+
+.rv .rv-motivos__lista {
+  gap: 26px;
+}
+
+/* ---------- o que tem ---------- */
+.rv .rv-recursos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.rv .rv-recurso {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px;
+  border: 1px solid var(--linha);
+  border-radius: 20px;
+  background: var(--papel);
+}
+
+.rv .rv-recurso__icone {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 4px;
+  border-radius: 12px;
+  background: var(--noite);
+  color: var(--gema);
+}
+
+.rv .rv-recurso h3 {
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.rv .rv-recurso p {
+  color: var(--suave);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ---------- tablet e celular ---------- */
+@media (max-width: 1000px) {
+  .rv .rv-hero__grade,
+  .rv .rv-motivos {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
+  }
+
+  .rv .rv-recursos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .rv .rv-hero {
+    padding-top: 32px;
+  }
+
+  .rv .rv-recursos {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

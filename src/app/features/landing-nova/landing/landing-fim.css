@@ -16,6 +16,8 @@
 
 .lv .dores__titulo {
   margin-top: 12px;
+  /* 3 px menor que os outros títulos de seção */
+  font-size: clamp(29px, calc(4.4vw - 3px), 49px);
 }
 
 /* ======================= CONFIANÇA ======================= */

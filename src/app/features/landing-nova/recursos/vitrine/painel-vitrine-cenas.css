@@ -1,0 +1,751 @@
+/*
+ * As cenas do mock do painel e o tempo de cada toque (animation-delay a partir do momento em que a cena aparece).
+ * Personalizar: a folha sobe, toca a cor da loja (1 s), a fonte troca (2,4 s), Salvar (3,8 s) e a folha desce.
+ * Fotos: toca "Escolher", as fotos entram uma a uma, Enviar, "Enviando…" e o tópico ganha as fotos.
+ * Mapa: escolhe "Como chegar", digita o nome e o CEP, o endereço se completa, o número, Criar e o mapa aparece.
+ * Feedback: o texto entra palavra por palavra, o nome, Salvar e o feedback vai para o tópico.
+ * Agenda: toca "Adicionar período", o período da tarde entra e a prévia do que o cliente vê sobe por baixo.
+ */
+
+/* ---------- peças comuns: toque, troca de texto, digitação e roda ---------- */
+.pm-toque {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+  background: rgba(19, 32, 74, 0.28);
+  opacity: 0;
+  pointer-events: none;
+  animation: pm-tocar 0.6s ease-out both var(--toque, 1s);
+}
+
+.pm-troca {
+  display: inline-grid;
+}
+
+.pm-troca > * {
+  grid-area: 1 / 1;
+  transition: none;
+}
+
+.pm-troca > :first-child {
+  animation: pm-sumir 0.3s ease both var(--troca, 2.4s);
+}
+
+.pm-troca > :last-child {
+  opacity: 0;
+  animation: pm-aparecer 0.3s ease both var(--troca, 2.4s);
+}
+
+.pm-digita {
+  display: inline-block;
+  clip-path: inset(0 100% 0 0);
+}
+
+.pm-roda {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  vertical-align: -2px;
+  margin-right: 6px;
+  animation: pm-girar 0.7s linear infinite;
+}
+
+/* a folha sobe ao abrir e desce quando a ação termina (--desce, por cena) */
+.pm-folha {
+  animation: pm-subir 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.pm-folha--salva,
+.pm-folha--desce {
+  animation: pm-subir 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both, pm-descer 0.35s ease-in forwards var(--desce, 4.3s);
+}
+
+.pm-veu {
+  animation: pm-aparecer 0.2s ease both, pm-sumir 0.3s ease forwards var(--desce, 4.3s);
+}
+
+.pm[data-cena='fotos'] { --desce: 4s; }
+.pm[data-cena='mapa'] { --desce: 4.5s; }
+.pm[data-cena='avaliacoes'] { --desce: 4s; }
+
+/* ---------- 1. Personalizar vitrine ---------- */
+.pm-estilos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.pm-estilo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 2px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.pm-estilo--marcado {
+  border-color: var(--cor-primaria);
+}
+
+.pm-estilo__amostra {
+  width: 26px;
+  height: 12px;
+  border-radius: 6px;
+  background: #151515;
+  animation: pm-pintar 0.4s ease both 1.2s;
+}
+
+.pm-estilo__amostra[data-estilo='1'] { box-shadow: inset 0 3px 4px rgba(255, 255, 255, 0.45); }
+.pm-estilo__amostra[data-estilo='2'] { background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4)); }
+.pm-estilo__amostra[data-estilo='3'] { opacity: 0.7; }
+
+.pm-cores {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.pm-cor {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  color: #ffffff;
+}
+
+.pm-cor__check {
+  opacity: 0;
+}
+
+/* o anel da cor marcada: começa no preto e passa para a cor da loja no toque */
+.pm-cor--inicial {
+  box-shadow: 0 0 0 2px var(--cor-fundo), 0 0 0 3.5px var(--cor-texto);
+  animation: pm-desmarcar 0.2s ease forwards 1.2s;
+}
+
+.pm-cor--inicial .pm-cor__check {
+  opacity: 1;
+  animation: pm-sumir 0.2s ease forwards 1.2s;
+}
+
+.pm-cor--alvo {
+  animation: pm-marcar 0.25s ease forwards 1.2s;
+}
+
+.pm-cor--alvo .pm-cor__check {
+  animation: pm-aparecer 0.2s ease forwards 1.2s;
+}
+
+.pm-select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  font-size: 12px;
+}
+
+.pm-select__seta {
+  transform: rotate(90deg);
+  color: var(--cor-texto-suave);
+}
+
+.pm-fonte-previa {
+  padding: 8px 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  font-size: 15px;
+}
+
+.pm-menus {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.pm-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 6px 6px 7px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  font-size: 11px;
+}
+
+.pm-menu b {
+  font-weight: 700;
+}
+
+.pm-menu--marcado {
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 2px var(--cor-primaria-clara);
+}
+
+.pm-menu__previa {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 0 6px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px var(--cor-borda-suave);
+}
+
+.pm-menu__previa i {
+  flex: none;
+  padding: 3px 8px;
+  border-radius: var(--raio-pilula);
+  background: #eeeeee;
+  font-size: 10.5px;
+  font-style: normal;
+}
+
+.pm-menu__previa .pm-pinta {
+  background: #151515;
+  color: #ffffff;
+  animation: pm-pintar 0.4s ease both 1.2s;
+}
+
+.pm-menu__previa--minimalista i {
+  padding: 3px 0;
+  background: none;
+  color: #6b6461;
+}
+
+.pm-menu__previa--minimalista .pm-sublinha {
+  color: #1c1a19;
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 #151515;
+}
+
+.pm-pinta-depois {
+  animation: pm-pintar 0.4s ease both 4.5s;
+}
+
+.pm-aperta {
+  animation: pm-apertar 0.35s ease both 3.8s;
+}
+
+/* ---------- 2. Adicionar fotos ---------- */
+.pm-grade {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.pm-grade__adicionar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  aspect-ratio: 1;
+  border: 1.5px dashed #c3cbda;
+  border-radius: 10px;
+  background: var(--cor-fundo-tracejado);
+  color: var(--cor-primaria);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.pm-toque--escolher {
+  --toque: 0.7s;
+}
+
+.pm-grade__item {
+  position: relative;
+  opacity: 0;
+  animation: pm-chegar 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) both calc(1s + var(--i) * 0.25s);
+}
+
+.pm-grade__item img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.pm-remover {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid #ffffff;
+  border-radius: 50%;
+  background: var(--cor-primaria);
+  color: #ffffff;
+}
+
+.pm-troca--fotos {
+  --troca: 2.2s;
+  color: var(--cor-texto-suave);
+  font-size: 11px;
+}
+
+.pm-enviar {
+  opacity: 0.55;
+  animation: pm-habilitar 0.2s ease forwards 2.2s, pm-apertar 0.35s ease 3s;
+}
+
+.pm-troca--enviar {
+  --troca: 3.1s;
+}
+
+.pm-vazio--some {
+  animation: pm-recolher 0.3s ease forwards 4.2s;
+}
+
+/* a contagem do tópico muda junto com as fotos que chegam */
+.pm-troca--contagem {
+  --troca: 4.3s;
+}
+
+.pm-album__grade--chega {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  animation: pm-abrir 0.4s ease forwards 4.3s;
+}
+
+/* ---------- 3. Novo tópico: Como chegar ---------- */
+.pm-tipos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.pm-tipo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 6px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 10px;
+  color: var(--cor-texto-suave);
+  font-size: 9.5px;
+  line-height: 1.2;
+}
+
+.pm-tipo > span:not(.pm-toque) {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pm-tipo b {
+  color: var(--cor-texto);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.pm-tipo i {
+  font-style: normal;
+  font-size: 14px;
+}
+
+.pm-tipo__estrela {
+  color: #f2b01e;
+}
+
+.pm-tipo--sai {
+  animation: pm-desativar-tipo 0.2s ease both 0.8s;
+}
+
+.pm-tipo--sai,
+.pm-tipo--entra.pm-ativo {
+  border-color: var(--cor-primaria);
+  background: var(--cor-selecionado);
+  box-shadow: inset 0 0 0 1px var(--cor-primaria);
+  color: var(--cor-primaria);
+}
+
+.pm-tipo--entra {
+  animation: pm-ativar-tipo 0.2s ease both 0.8s;
+}
+
+.pm-toque--tipo {
+  --toque: 0.6s;
+}
+
+.pm-digita--nome { animation: pm-digitar 0.5s steps(11) forwards 1s; }
+.pm-digita--cep { animation: pm-digitar 0.6s steps(9) forwards 1.8s; }
+.pm-digita--numero { animation: pm-digitar 0.3s steps(4) forwards 3.3s; }
+.pm-digita--cliente { animation: pm-digitar 0.45s steps(7) forwards 2.7s; }
+
+.pm-campo--cep {
+  position: relative;
+  width: 55%;
+}
+
+.pm-roda--cep {
+  position: absolute;
+  right: -26px;
+  bottom: 9px;
+  border-color: var(--cor-borda);
+  border-top-color: var(--cor-primaria);
+  opacity: 0;
+  animation: pm-girar 0.7s linear infinite, pm-piscar-roda 0.6s linear forwards 2.4s;
+}
+
+.pm-endereco {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* o que o ViaCEP preenche: aparece de uma vez, com um brilho amarelo */
+.pm-entrada--auto span {
+  opacity: 0;
+  animation: pm-aparecer 0.25s ease forwards 3s;
+}
+
+.pm-entrada--auto {
+  animation: pm-preenchido 1.2s ease 3s;
+}
+
+.pm-criar {
+  animation: pm-apertar 0.35s ease 4.1s;
+}
+
+.pm[data-cena='avaliacoes'] .pm-criar {
+  animation-delay: 3.6s;
+}
+
+.pm-album--novo {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-width: 0;
+  animation: pm-abrir-cartao 0.45s ease forwards 4.7s;
+}
+
+.pm[data-cena='avaliacoes'] .pm-album--novo {
+  animation-delay: 4.2s;
+}
+
+.pm-mapa__pino {
+  animation: pm-cair 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) both 5.1s;
+}
+
+/* ---------- 4a. Novo feedback ---------- */
+.pm-estrelas i {
+  color: #f2b01e;
+  font-size: 24px;
+  font-style: normal;
+  letter-spacing: 2px;
+}
+
+.pm-palavra {
+  opacity: 0;
+  animation: pm-aparecer 0.15s ease forwards calc(0.8s + var(--i) * 0.12s);
+}
+
+/* ---------- 4b. Horários da agenda ---------- */
+.pm-tela--agenda {
+  padding-top: 0;
+  background: var(--cor-fundo-suave);
+}
+
+.pm-topo-azul {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 36px 16px 12px;
+  background: var(--fundo-marca);
+  color: #ffffff;
+}
+
+.pm-topo-azul b {
+  font-family: var(--fonte-titulo);
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.pm-agenda {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 14px 0;
+}
+
+.pm-grupo-titulo {
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.pm-ajustes {
+  overflow: hidden;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: 14px;
+  background: var(--cor-fundo);
+}
+
+.pm-ajustes > * + * {
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+.pm-semana {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  padding: 10px;
+}
+
+.pm-semana__dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 0 6px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 11px;
+  font-size: 11px;
+}
+
+.pm-semana__dia b {
+  font-weight: 700;
+}
+
+.pm-semana__dia i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cor-borda);
+}
+
+.pm-semana__dia--aberto i {
+  background: var(--cor-ativo);
+}
+
+.pm-semana__dia--escolhido {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria);
+  color: #ffffff;
+}
+
+.pm-semana__dia--escolhido i {
+  background: #7fd3a2;
+}
+
+.pm-dia {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+}
+
+.pm-dia__cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pm-dia__cab b {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.pm-dia__cab span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cor-texto-secundario);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.pm-interruptor {
+  position: relative;
+  width: 30px;
+  height: 18px;
+  border-radius: 9px;
+  background: var(--cor-ativo);
+}
+
+.pm-interruptor::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.pm-trecho {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+}
+
+.pm-trecho span {
+  display: grid;
+  place-items: center;
+  min-height: 32px;
+  border: 1px solid #c3cbda;
+  border-radius: var(--raio-pequeno);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.pm-trecho small {
+  color: var(--cor-texto-suave);
+  font-size: 11px;
+}
+
+.pm-trecho--novo {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  animation: pm-abrir 0.35s ease forwards 1.1s;
+}
+
+.pm-dia__acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.pm-adiciona {
+  position: relative;
+  --toque: 0.9s;
+}
+
+.pm-resumo {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 4px 10px;
+  list-style: none;
+}
+
+.pm-resumo li {
+  display: flex;
+  gap: 10px;
+  padding: 5px 0;
+  font-size: 11px;
+}
+
+.pm-resumo b {
+  width: 28px;
+  font-weight: 700;
+}
+
+.pm-resumo--fechado {
+  color: var(--cor-texto-suave);
+}
+
+.pm-troca--resumo {
+  --troca: 1.3s;
+}
+
+.pm-na-vitrine {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 -10px 30px -10px rgba(19, 32, 74, 0.35);
+  transform: translateY(130%);
+  animation: pm-subir-cartao 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 2.4s;
+}
+
+.pm-na-vitrine small {
+  color: var(--cor-texto-suave);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pm-na-vitrine b {
+  font-family: var(--loja-fonte);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.pm-horas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.pm-horas span {
+  display: grid;
+  place-items: center;
+  min-height: 28px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 8px;
+  font-family: var(--fonte-numero);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.pm-horas--escolhida {
+  animation: pm-escolher-hora 0.3s ease forwards 3.4s;
+}
+
+/* ---------- os movimentos ---------- */
+@keyframes pm-subir { from { transform: translateY(100%); } }
+@keyframes pm-descer { to { transform: translateY(105%); } }
+@keyframes pm-aparecer { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pm-sumir { from { opacity: 1; } to { opacity: 0; } }
+@keyframes pm-girar { to { transform: rotate(360deg); } }
+@keyframes pm-tocar { 0% { opacity: 0.9; transform: scale(0.3); } 100% { opacity: 0; transform: scale(1.6); } }
+@keyframes pm-pintar { from { background-color: #151515; } to { background-color: var(--loja); } }
+@keyframes pm-desmarcar { to { box-shadow: none; } }
+@keyframes pm-marcar { to { box-shadow: 0 0 0 2px var(--cor-fundo), 0 0 0 3.5px var(--cor-texto); } }
+@keyframes pm-apertar { 40% { transform: scale(0.96); filter: brightness(1.25); } 100% { transform: none; } }
+@keyframes pm-habilitar { to { opacity: 1; } }
+@keyframes pm-chegar { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: none; } }
+@keyframes pm-recolher { to { opacity: 0; height: 0; padding: 0; border-width: 0; margin: 0; } }
+@keyframes pm-abrir { to { max-height: 160px; opacity: 1; } }
+@keyframes pm-abrir-cartao { to { max-height: 260px; opacity: 1; padding-top: 11px; padding-bottom: 11px; border-width: 1px; } }
+@keyframes pm-digitar { to { clip-path: inset(0 0 0 0); } }
+@keyframes pm-piscar-roda { 0% { opacity: 1; } 99% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes pm-preenchido { 0% { background: var(--cor-gema-clara); } 100% { background: var(--cor-fundo); } }
+@keyframes pm-desativar-tipo { to { border-color: var(--cor-borda); background: var(--cor-fundo); box-shadow: none; color: var(--cor-texto-suave); } }
+@keyframes pm-ativar-tipo { to { border-color: var(--cor-primaria); background: var(--cor-selecionado); box-shadow: inset 0 0 0 1px var(--cor-primaria); color: var(--cor-primaria); } }
+@keyframes pm-cair { from { opacity: 0; transform: translateY(-24px) rotate(-45deg); } to { opacity: 1; transform: rotate(-45deg); } }
+@keyframes pm-subir-cartao { to { transform: none; } }
+@keyframes pm-escolher-hora { to { border-color: var(--loja); background: var(--loja); color: #ffffff; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .pm *,
+  .pm *::after {
+    animation-duration: 0.01s !important;
+    animation-delay: 0s !important;
+  }
+}

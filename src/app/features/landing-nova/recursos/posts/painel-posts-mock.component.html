@@ -1,0 +1,211 @@
+@let ex = exemplo();
+<app-celular-mock style="--celular-largura: 320px; --celular-altura: 640px">
+  <div class="pm pp" [attr.data-cena]="cena()" [attr.aria-label]="'Exemplo do gerador de posts: ' + ex.marca.nome">
+    <!-- o topo azul da tela de posts -->
+    <ng-template #topo>
+      <div class="pp-topo">
+        <app-icone nome="voltar" [tamanho]="18" />
+        <b>Posts para redes sociais</b>
+        <small>Artes com a sua logo, cores e fotos, prontas para postar.</small>
+      </div>
+    </ng-template>
+
+    <!-- as 4 artes (escolher e, por baixo da folha, a tela que fica) -->
+    <ng-template #artes let-animar>
+      <div class="pp-resultados" [class.pp-resultados--animar]="animar">
+        <div class="pp-resultados__topo">
+          <b>Escolha a sua arte</b>
+          <span class="pp-resultados__acoes">
+            <span class="pm-btn pm-btn--secundario pm-btn--mini"><app-icone nome="listaRepetida" [tamanho]="12" />Outras artes</span>
+            <span class="pm-btn pm-btn--secundario pm-btn--mini"><app-icone nome="brilho" [tamanho]="12" />Outros textos</span>
+          </span>
+        </div>
+        <div class="pp-grade">
+          @for (estilo of ex.estilos; track $index; let i = $index) {
+            <span class="pp-opcao" [class.pp-opcao--escolhida]="i === 1" [style.--i]="i">
+              <span class="pp-esqueleto"></span>
+              <span class="pp-opcao__arte">
+                <app-arte-post [marca]="ex.marca" [conteudo]="ex.conteudo" [estilo]="estilo" formato="feed" [largura]="130" />
+              </span>
+              @if (i === 1) {
+                <span class="pp-opcao__usar">Usar esta</span>
+                <i class="pm-toque" style="--toque: 3.6s"></i>
+              }
+            </span>
+          }
+        </div>
+      </div>
+    </ng-template>
+
+    @switch (cena()) {
+      <!-- ============ 1. O que divulgar e o conteúdo ============ -->
+      @case ('tipo') {
+        <div class="pm-tela pp-tela">
+          <ng-container *ngTemplateOutlet="topo" />
+          <div class="pp-criar">
+            <div class="pp-etapa">
+              <b class="pp-etapa__titulo"><i>1</i>O que você quer divulgar?</b>
+              <div class="pp-tipos">
+                @for (t of tipos(); track t.tipo; let i = $index) {
+                  <span class="pp-tipo" [class.pp-tipo--escolhido]="i === 0" [class.pp-tipo--sai]="i !== 0">
+                    <span class="pp-tipo__icone"><app-icone [nome]="icone(t.icone)" [tamanho]="15" [espessura]="2" /></span>
+                    <span class="pp-tipo__textos"><b>{{ t.nome }}</b><small>{{ t.descricao }}</small></span>
+                    @if (i === 0) { <i class="pm-toque" style="--toque: 1s"></i> }
+                  </span>
+                }
+              </div>
+            </div>
+            <div class="pp-etapa pp-etapa--entra">
+              <b class="pp-etapa__titulo"><i>2</i>Escolha o conteúdo</b>
+              <div class="pp-produtos">
+                @for (item of ex.itens; track item.nome; let i = $index) {
+                  <span class="pp-produto" [class.pp-produto--escolhido]="i === 0">
+                    <img [src]="item.foto" alt="" />
+                    <small>{{ item.nome }}</small>
+                    @if (i === 0) { <i class="pm-toque" style="--toque: 3.2s"></i> }
+                  </span>
+                }
+              </div>
+              <small class="pp-rotulo">Foto</small>
+              <div class="pp-fotos">
+                <span class="pp-foto pp-foto--nenhuma"><app-icone nome="fechar" [tamanho]="13" />Sem foto</span>
+                @for (foto of ex.fotos; track foto; let i = $index) {
+                  <span class="pp-foto" [class.pp-foto--escolhida]="i === 0"><img [src]="foto" alt="" /></span>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ============ 2. Formato, o tom e "Criar artes" ============ -->
+      @case ('formato') {
+        <div class="pm-tela pp-tela">
+          <ng-container *ngTemplateOutlet="topo" />
+          <div class="pp-criar">
+            <div class="pp-etapa">
+              <b class="pp-etapa__titulo"><i>2</i>Escolha o conteúdo</b>
+              <div class="pp-fotos">
+                <span class="pp-foto pp-foto--nenhuma"><app-icone nome="fechar" [tamanho]="13" />Sem foto</span>
+                @for (foto of ex.fotos; track foto; let i = $index) {
+                  <span class="pp-foto" [class.pp-foto--ativa]="i === 0"><img [src]="foto" alt="" /></span>
+                }
+              </div>
+            </div>
+            <div class="pp-etapa">
+              <b class="pp-etapa__titulo"><i>3</i>Formato</b>
+              <div class="pp-formatos">
+                @for (f of formatos; track f.valor; let i = $index) {
+                  <span class="pp-formato" [class.pp-formato--escolhido]="i === 0">
+                    <span class="pp-formato__desenho pp-formato__desenho--{{ f.valor }}"></span>
+                    <b>{{ f.rotulo }}</b><small>{{ f.detalhe }}</small>
+                    @if (i === 0) { <i class="pm-toque" style="--toque: 0.9s"></i> }
+                  </span>
+                }
+              </div>
+              <span class="pm-campo pm-campo--junto">
+                <span class="pm-rotulo">Quer orientar o texto? <small>(opcional)</small></span>
+                <span class="pm-entrada"><span class="pm-digita pp-digita--tom">{{ ex.orientacao }}</span></span>
+              </span>
+            </div>
+            <span class="pm-btn pm-btn--primario pm-btn--bloco pp-criar__botao">
+              <span class="pm-troca pp-troca--criar">
+                <span><app-icone nome="brilho" [tamanho]="15" [espessura]="2" /> Criar artes</span>
+                <span><i class="pm-roda"></i>Criando as artes…</span>
+              </span>
+              <i class="pm-toque" style="--toque: 3.4s"></i>
+            </span>
+          </div>
+        </div>
+      }
+
+      <!-- ============ 3. As 4 artes ============ -->
+      @case ('artes') {
+        <div class="pm-tela pp-tela">
+          <ng-container *ngTemplateOutlet="topo" />
+          <ng-container *ngTemplateOutlet="artes; context: { $implicit: true }" />
+        </div>
+      }
+
+      <!-- ============ 4. Seu post: o texto e o compartilhar ============ -->
+      @case ('editar') {
+        <div class="pm-tela pp-tela">
+          <ng-container *ngTemplateOutlet="topo" />
+          <ng-container *ngTemplateOutlet="artes; context: { $implicit: false }" />
+        </div>
+        <div class="pm-veu"></div>
+        <div class="pm-folha pp-folha">
+          <span class="pm-folha__alca"></span>
+          <span class="pm-folha__cab"><b>Seu post</b><span class="pm-fechar"><app-icone nome="fechar" [tamanho]="14" /></span></span>
+          <span class="pp-final__arte">
+            <app-arte-post [marca]="ex.marca" [conteudo]="ex.conteudo" [estilo]="escolhido()" formato="feed" [largura]="132" />
+          </span>
+          <span class="pm-campo pm-campo--junto">
+            <span class="pm-rotulo">Título</span>
+            <span class="pm-entrada">{{ ex.conteudo.titulo }}</span>
+          </span>
+          <span class="pm-campo pm-campo--junto">
+            <span class="pm-rotulo">Legenda para o post</span>
+            <span class="pm-entrada pm-entrada--texto pp-legenda">{{ ex.legenda }}</span>
+          </span>
+          <span class="pm-btn pm-btn--primario pm-btn--bloco">
+            <span class="pm-troca pp-troca--compartilhar">
+              <span><app-icone nome="externo" [tamanho]="15" /> Compartilhar</span>
+              <span><i class="pm-roda"></i>Preparando…</span>
+            </span>
+            <i class="pm-toque" style="--toque: 2.6s"></i>
+          </span>
+          <span class="pp-secundarias">
+            <span class="pm-btn pm-btn--secundario"><app-icone nome="seta" [tamanho]="13" />Baixar</span>
+            <span class="pm-btn pm-btn--secundario"><app-icone nome="copiar" [tamanho]="13" />Copiar legenda</span>
+          </span>
+        </div>
+        <!-- a folha de compartilhar do celular -->
+        <div class="pp-sistema">
+          <b>Compartilhar</b>
+          <span class="pp-sistema__destinos">
+            @for (d of destinos; track d.nome; let i = $index) {
+              <span class="pp-destino">
+                <i [style.background]="d.cor"></i>
+                <small>{{ d.nome }}</small>
+                @if (i === 0) { <i class="pm-toque" style="--toque: 4.8s"></i> }
+              </span>
+            }
+          </span>
+        </div>
+      }
+
+      <!-- ============ 5. O post no feed ============ -->
+      @case ('resultado') {
+        <div class="pm-tela pp-feed">
+          <div class="pp-feed__barra"><app-icone nome="voltar" [tamanho]="18" /><b>Publicações</b></div>
+          <div class="pp-feed__cab">
+            <span class="pp-feed__avatar">
+              @if (ex.marca.logo) { <img [src]="ex.marca.logo" alt="" /> } @else { {{ ex.marca.nome.charAt(0) }} }
+            </span>
+            <b>{{ ex.usuario }}</b>
+            <app-icone nome="maisOpcoes" [tamanho]="16" />
+          </div>
+          <div class="pp-feed__arte">
+            <app-arte-post [marca]="ex.marca" [conteudo]="ex.conteudo" [estilo]="escolhido()" formato="feed" [largura]="300" />
+            <svg class="pp-feed__coracao-grande" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.6 4.5c2.1 0 3.5 1.1 4.4 2.5.9-1.4 2.3-2.5 4.4-2.5 3.6 0 5.7 3.9 4.2 7.3C19.5 16.4 12 21 12 21z" />
+            </svg>
+          </div>
+          <div class="pp-feed__acoes" aria-hidden="true">
+            <svg class="pp-feed__curtir" viewBox="0 0 24 24">
+              <path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.6 4.5c2.1 0 3.5 1.1 4.4 2.5.9-1.4 2.3-2.5 4.4-2.5 3.6 0 5.7 3.9 4.2 7.3C19.5 16.4 12 21 12 21z" />
+            </svg>
+            <svg viewBox="0 0 24 24"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.6 7.4L3.5 20l1.2-4.2A8.5 8.5 0 1 1 20.5 11.5z" /></svg>
+            <svg viewBox="0 0 24 24"><path d="M21 3 3 10.5l7 2.5 2.5 7L21 3zM10 13l5-5" /></svg>
+            <svg class="pp-feed__salvar" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4.5L6 21z" /></svg>
+          </div>
+          <span class="pp-feed__curtidas"><span class="pm-troca pp-troca--curtidas"><span>128 curtidas</span><span>129 curtidas</span></span></span>
+          <p class="pp-feed__legenda"><b>{{ ex.usuario }}</b> {{ primeiraLinha() }}</p>
+          <span class="pp-feed__ver">Ver todos os 14 comentários</span>
+          <p class="pp-feed__comentario"><b>{{ ex.comentario.usuario }}</b> {{ ex.comentario.texto }}</p>
+        </div>
+      }
+    }
+  </div>
+</app-celular-mock>

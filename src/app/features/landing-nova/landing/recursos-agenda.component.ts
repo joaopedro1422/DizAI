@@ -70,7 +70,7 @@ import { RECURSOS_AGENDA, TABELA_AGENDA } from './conteudo-agendamentos';
           <article class="rec rec--c">
             <span class="etiqueta">Vários profissionais</span>
             <h3>Uma agenda para toda a equipe.</h3>
-            <p>O cliente escolhe com quem ou "qualquer um", e o assistente acha quem está livre.</p>
+            <p>Suporte para diferentes profissionais. O assistente encontra quem está livre ou marca com o escolhido pelo cliente.</p>
             <div class="rec__visual">
               <div class="colunas-agenda">
                 <span></span><span class="cab">Lucas</span><span class="cab">Luis</span><span class="cab">Sergio</span>

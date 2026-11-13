@@ -47,14 +47,6 @@ export interface ItemDia {
   conversa?: [string, string];
 }
 
-export interface ArtePost {
-  loja: string;
-  titulo: string;
-  botao: string;
-  foto: string;
-  estilo: 'amarelo' | 'claro' | 'escuro';
-}
-
 export interface ConteudoLandingNova {
   tipo: TipoLanding;
   tituloPagina: string;
@@ -63,7 +55,6 @@ export interface ConteudoLandingNova {
   /** "Recursos" ou "Recursos da agenda" (topo e seção). */
   rotuloRecursos: string;
   hero: { descricao: string; garantias: string[]; conversas: ConversaHero[] };
-  negocios: string[];
   dores: { titulo: [string, string]; itens: { titulo: string; texto: string; citacao: string }[] };
   bloqueio: { contador: string; avisos: { nome: string; cor: string; texto: string; quando: string }[] };
   prova: {
@@ -83,7 +74,6 @@ export interface ConteudoLandingNova {
     itens: string[];
     textoPosts: string;
     diferenciais: [string, string][];
-    artes: ArtePost[];
   };
   confianca: [string, string][];
   ramos: { titulo: string; quem: string; fotos: string[]; faz: string[] }[];

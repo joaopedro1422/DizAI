@@ -1,0 +1,497 @@
+/*
+ * A tela de posts no celular: cópia das regras de celular de posts-page.component.css (topo azul, o cartão "criar"
+ * com as etapas, tipos, produtos, fotos, formatos, a grade das artes e a folha "Seu post"), no tamanho da moldura.
+ * Os botões, campos e a folha de baixo vêm de ../vitrine/painel-vitrine-mock.css; as animações, de painel-posts-cenas.css.
+ */
+.pp-tela {
+  display: flex;
+  flex-direction: column;
+  padding-top: 0;
+  background: var(--cor-fundo-suave);
+}
+
+/* ---------- topo azul ---------- */
+.pp-topo {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 2px;
+  padding: 36px 16px 14px;
+  background: var(--fundo-marca);
+  color: #ffffff;
+}
+
+.pp-topo b {
+  margin-top: 6px;
+  font-family: var(--fonte-titulo);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.pp-topo small {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 11px;
+}
+
+/* ---------- o cartão "criar" e as etapas ---------- */
+.pp-criar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 12px;
+  padding: 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+}
+
+.pp-etapa {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pp .pp-etapa__titulo {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.pp-etapa__titulo i {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--cor-gema);
+  color: var(--cor-noite);
+  font-size: 10.5px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.pp-tipos {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.pp-tipo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  max-height: 60px;
+  padding: 7px 9px;
+  overflow: hidden;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 11px;
+}
+
+.pp-tipo__icone {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+}
+
+.pp-tipo__textos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pp-tipo__textos b {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pp-tipo__textos small {
+  color: var(--cor-texto-suave);
+  font-size: 10.5px;
+}
+
+.pp-produtos,
+.pp-fotos {
+  display: flex;
+  gap: 7px;
+  overflow: hidden;
+}
+
+.pp-produto {
+  position: relative;
+  display: flex;
+  flex: 0 0 82px;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 11px;
+}
+
+.pp-produto img {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.pp-produto small {
+  overflow: hidden;
+  font-size: 10.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pp-rotulo {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.pp-foto {
+  display: grid;
+  flex: 0 0 52px;
+  place-items: center;
+  height: 52px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: var(--cor-fundo-suave);
+}
+
+.pp-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pp-foto--nenhuma {
+  gap: 1px;
+  border-color: var(--cor-borda);
+  color: var(--cor-texto-suave);
+  font-size: 9.5px;
+  font-weight: 700;
+}
+
+.pp-foto--ativa {
+  border-color: var(--cor-primaria);
+  box-shadow: 0 0 0 2px var(--cor-primaria-clara);
+}
+
+.pp-formatos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.pp-formato {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 4px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 11px;
+}
+
+.pp-formato b {
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.pp-formato small {
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-numero);
+  font-size: 10px;
+}
+
+.pp-formato__desenho {
+  width: 22px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+  color: var(--cor-texto-suave);
+}
+
+.pp-formato__desenho--feed { height: 27px; }
+.pp-formato__desenho--quadrado { height: 22px; margin-block: 2.5px; }
+.pp-formato__desenho--story { width: 16px; height: 28px; }
+
+.pp-criar__botao {
+  min-height: 42px;
+}
+
+/* ---------- as artes ---------- */
+.pp-resultados {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 12px;
+}
+
+.pp-resultados__topo {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.pp-resultados__topo b {
+  font-family: var(--fonte-titulo);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.pp-resultados__acoes {
+  display: flex;
+  gap: 6px;
+}
+
+.pp-grade {
+  display: grid;
+  grid-template-columns: repeat(2, 130px);
+  justify-content: center;
+  gap: 10px 12px;
+}
+
+.pp-opcao {
+  position: relative;
+  display: block;
+  width: 130px;
+  height: 162.5px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px -10px rgba(19, 32, 74, 0.45);
+}
+
+.pp-esqueleto {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(100deg, #eef1f6 30%, #f8f9fb 50%, #eef1f6 70%) 0 0 / 200% 100%;
+}
+
+.pp-opcao__arte {
+  position: relative;
+  display: block;
+}
+
+.pp-opcao__usar {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  padding: 5px 10px;
+  border-radius: var(--raio-pilula);
+  background: var(--cor-noite);
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  transform: translateX(-50%);
+}
+
+/* ---------- a folha "Seu post" ---------- */
+.pp-folha {
+  gap: 9px;
+  max-height: 92%;
+}
+
+.pp-final__arte {
+  align-self: center;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px -12px rgba(19, 32, 74, 0.5);
+}
+
+.pp-legenda {
+  display: -webkit-box;
+  min-height: 0;
+  overflow: hidden;
+  font-size: 11px;
+  white-space: pre-line;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.pp-secundarias {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+/* a folha de compartilhar do próprio celular */
+.pp-sistema {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 12px 16px;
+  border-radius: 18px;
+  background: #f2f2f7;
+  box-shadow: 0 -10px 30px -12px rgba(0, 0, 0, 0.35);
+}
+
+.pp-sistema b {
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.pp-sistema__destinos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.pp-destino {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.pp-destino > i:first-child {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+.pp-destino small {
+  font-size: 9.5px;
+  text-align: center;
+}
+
+/* ---------- o post no feed ---------- */
+.pp-feed {
+  padding-top: 0;
+  background: #ffffff;
+  color: #111111;
+}
+
+.pp-feed__barra {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 34px 12px 8px;
+  border-bottom: 1px solid #efefef;
+}
+
+.pp-feed__barra b {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pp-feed__cab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+}
+
+.pp-feed__cab b {
+  flex: 1;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.pp-feed__avatar {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 2px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #f9b234, #e1306c 55%, #833ab4);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.pp-feed__avatar img {
+  width: 100%;
+  height: 100%;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: #ffffff;
+  object-fit: cover;
+}
+
+.pp-feed__arte {
+  position: relative;
+  height: 375px;
+  overflow: hidden;
+}
+
+.pp-feed__coracao-grande {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 90px;
+  height: 90px;
+  margin: -45px 0 0 -45px;
+  fill: #ffffff;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.3));
+  opacity: 0;
+}
+
+.pp-feed__acoes {
+  display: flex;
+  gap: 14px;
+  padding: 9px 10px 4px;
+}
+
+.pp-feed__acoes svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: #111111;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.pp-feed__acoes .pp-feed__salvar {
+  margin-left: auto;
+}
+
+.pp-feed__curtidas {
+  display: block;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pp-feed__legenda,
+.pp-feed__comentario {
+  margin: 3px 10px 0;
+  overflow: hidden;
+  font-size: 11.5px;
+  line-height: 1.35;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.pp .pp-feed__legenda b,
+.pp .pp-feed__comentario b {
+  font-weight: 700;
+}
+
+.pp-feed__ver {
+  display: block;
+  margin: 3px 10px 0;
+  color: #8e8e8e;
+  font-size: 11px;
+}

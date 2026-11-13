@@ -488,9 +488,9 @@
   z-index: 6;
   top: 10px;
   left: 50%;
-  width: 88px;
-  height: 24px;
-  border-radius: 14px;
+  width: 80px;
+  height: 18px;
+  border-radius: 10px;
   background: var(--noite-funda);
   transform: translateX(-50%);
 }

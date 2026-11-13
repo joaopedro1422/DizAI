@@ -13,7 +13,7 @@ const CICLO_MS: Record<TipoLanding, number> = { produtos: 18000, servicos: 16000
 /**
  * A vitrine pública no layout novo (o mesmo de /l/{slug}), com 2 lojas por tipo que se alternam a cada ciclo
  * (botões embaixo do celular; o mouse em cima pausa). Produtos: capa, cartão com selos e "Atendimento 24 horas",
- * categorias, fotos, avaliações e Informações, rolando sozinha. Serviços: o cartão, as abas e a troca sozinha de
+ * categorias, fotos, avaliações, Informações e o mapa do Como chegar, rolando sozinha. Serviços: o cartão, as abas e a troca sozinha de
  * "Vitrine" para "Agendar horário" (serviço, dia e horário escolhidos e o "Enviar pelo WhatsApp"). Tudo em CSS
  * (landing-vitrine.css e landing-agenda.css); a troca de loja recria a tela, e as animações começam de novo.
  * Ao mudar a vitrine de verdade (vitrine-publica + cartao-loja-vitrine.css), atualize esta cópia.
@@ -147,6 +147,16 @@ const CICLO_MS: Record<TipoLanding, number> = { produtos: 18000, servicos: 16000
                     <span><b>Entrega e retirada</b>{{ loja.entrega }}</span>
                   </span>
                 </div>
+                @if (loja.endereco; as endereco) {
+                  <div class="vt__topico"><b>Como chegar</b></div>
+                  <div class="vt__mapa">
+                    <div class="vt__mapa-desenho"><i></i></div>
+                    <span class="vt__mapa-rodape">
+                      <span><b>{{ endereco.rua }}</b>{{ endereco.bairro }}</span>
+                      <span class="vt__rota">Traçar rota</span>
+                    </span>
+                  </div>
+                }
                 <span class="vt__credito">Criado com DizAI</span>
               </div>
               <span class="vt__whats"><app-icone nome="conversa" [tamanho]="15" />Falar pelo WhatsApp</span>

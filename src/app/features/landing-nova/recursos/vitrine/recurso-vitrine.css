@@ -1,0 +1,252 @@
+/*
+ * Só da página da vitrine (preso a .rv): o cartão da agenda online (serviços) e a última cena do mock, a vitrine pronta
+ * com a bio do Instagram ao lado. A base das páginas de recurso fica em ../recurso-base.css.
+ */
+
+/* ---------- a agenda online (serviços) ---------- */
+.rv .rv-agenda {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: 40px;
+  align-items: center;
+  margin-top: 40px;
+  padding: 36px;
+  border-radius: var(--raio-cartao);
+  background: var(--noite);
+  color: #ffffff;
+}
+
+.rv .rv-agenda__texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.rv .rv-agenda h3 {
+  font-family: var(--f-titulo);
+  font-size: clamp(26px, 2.8vw, 34px);
+  line-height: 1.1;
+}
+
+.rv .rv-agenda p {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.rv .rv-agenda ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 15.5px;
+}
+
+.rv .rv-agenda li {
+  display: flex;
+  gap: 10px;
+}
+
+.rv .rv-agenda .check {
+  color: var(--gema);
+}
+
+/* o exemplo da aba "Agendar horário" (como a agenda pública) */
+.rv .rv-agenda__exemplo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 20px;
+  background: #ffffff;
+  color: var(--tinta);
+  box-shadow: 0 30px 50px -30px rgba(0, 0, 0, 0.6);
+}
+
+.rv .rv-agenda__abas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+  border-radius: 999px;
+  background: #f1f1f1;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.rv .rv-agenda__abas i,
+.rv .rv-agenda__dias i,
+.rv .rv-agenda__horas i {
+  font-style: normal;
+}
+
+.rv .rv-agenda__abas i {
+  padding: 7px 4px;
+  border-radius: 999px;
+  color: #6b6461;
+}
+
+.rv .rv-agenda__abas .rv-agenda__aba-ativa {
+  background: #a12a63;
+  color: #ffffff;
+}
+
+.rv .rv-agenda__exemplo b {
+  font-size: 15px;
+}
+
+.rv .rv-agenda__dias,
+.rv .rv-agenda__horas {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.rv .rv-agenda__horas {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.rv .rv-agenda__dias i,
+.rv .rv-agenda__horas i {
+  padding: 8px 2px;
+  border: 1px solid #e3e3e3;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.rv .rv-agenda__horas i {
+  font-family: var(--f-mono);
+}
+
+.rv .rv-agenda__exemplo .rv-agenda__marcado {
+  border-color: #a12a63;
+  background: #a12a63;
+  color: #ffffff;
+}
+
+.rv .rv-agenda__enviar {
+  padding: 11px;
+  border-radius: 12px;
+  background: #1fa855;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+
+/* ---------- o resultado: a vitrine e a bio do Instagram ---------- */
+.rv .rv-resultado {
+  position: relative;
+  width: 340px;
+  max-width: 100%;
+}
+
+.rv .rv-resultado app-vitrine-mock {
+  display: block;
+  width: 100%;
+}
+
+/* uma loja só no exemplo (a mesma que foi personalizada nas cenas) */
+.rv .rv-resultado .vt-lojas {
+  display: none;
+}
+
+.rv .rv-bio {
+  position: absolute;
+  top: 110px;
+  left: -110px;
+  z-index: 2;
+  display: flex;
+  gap: 10px;
+  width: 250px;
+  padding: 14px;
+  border: 1px solid var(--linha);
+  border-radius: 18px;
+  background: var(--papel);
+  box-shadow: 0 24px 44px -24px rgba(19, 32, 74, 0.5);
+  animation: rv-bio 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both 0.8s;
+}
+
+.rv .rv-bio__foto {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid #e1306c;
+  border-radius: 50%;
+  background: #a12a63;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.rv .rv-bio__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.rv .rv-bio__textos b {
+  font-weight: 800;
+}
+
+.rv .rv-bio__textos small {
+  color: var(--suave);
+}
+
+.rv .rv-bio__link {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--gema-clara);
+  color: #00376b;
+  font-weight: 700;
+  animation: rv-piscar-link 1.4s ease 1.5s 2;
+}
+
+@keyframes rv-bio {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+}
+
+@keyframes rv-piscar-link {
+  50% {
+    background: var(--gema);
+  }
+}
+
+@media (max-width: 1000px) {
+  .rv .rv-bio {
+    left: -8px;
+    top: 90px;
+    width: 230px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .rv .rv-agenda {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px;
+  }
+}
+
+@media (max-width: 560px) {
+  .rv .rv-agenda {
+    padding: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rv .rv-bio {
+    animation: none;
+  }
+}

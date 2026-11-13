@@ -1,0 +1,301 @@
+<app-celular-mock style="--celular-largura: 320px; --celular-altura: 640px">
+  <div class="pm" [attr.data-cena]="cena()" [style.--loja]="loja().cor" [style.--loja-fonte]="loja().fonte">
+    @switch (cena()) {
+      <!-- ============ 1. Personalizar vitrine ============ -->
+      @case ('personalizar') {
+        <ng-container [ngTemplateOutlet]="galeria" [ngTemplateOutletContext]="{ $implicit: 'personalizar' }" />
+        <div class="pm-veu"></div>
+        <section class="pm-folha pm-folha--salva">
+          <span class="pm-folha__alca"></span>
+          <div class="pm-folha__cab"><b>Personalizar vitrine</b><span class="pm-fechar"><app-icone nome="fechar" [tamanho]="14" [espessura]="2" /></span></div>
+
+          <div class="pm-campo">
+            <b class="pm-campo__titulo">Cor de destaque</b>
+            <div class="pm-estilos">
+              @for (estilo of ['Normal', 'Metálico', 'Degradê', 'Vidro']; track estilo; let i = $index) {
+                <span class="pm-estilo" [class.pm-estilo--marcado]="i === 0">
+                  <i class="pm-estilo__amostra" [attr.data-estilo]="i"></i>{{ estilo }}
+                </span>
+              }
+            </div>
+            <div class="pm-cores">
+              @for (cor of cores; track cor; let i = $index) {
+                <span class="pm-cor" [style.background]="cor" [class.pm-cor--inicial]="i === 0" [class.pm-cor--alvo]="i === indiceCor()">
+                  @if (i === 0 || i === indiceCor()) {
+                    <app-icone class="pm-cor__check" nome="check" [tamanho]="11" [espessura]="3" />
+                  }
+                  @if (i === indiceCor()) { <span class="pm-toque"></span> }
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="pm-campo">
+            <b class="pm-campo__titulo">Fonte</b>
+            <span class="pm-select">
+              <span class="pm-troca"><span>Poppins</span><span>{{ nomeDaFonte() }}</span></span>
+              <app-icone class="pm-select__seta" nome="avancar" [tamanho]="13" [espessura]="2" />
+            </span>
+            <span class="pm-fonte-previa">
+              <span class="pm-troca">
+                <span style="font-family: 'Poppins', sans-serif">O texto ficará assim</span>
+                <span [style.font-family]="loja().fonte">O texto ficará assim</span>
+              </span>
+            </span>
+          </div>
+
+          <div class="pm-campo">
+            <b class="pm-campo__titulo">Menu de categorias</b>
+            <div class="pm-menus">
+              <span class="pm-menu pm-menu--marcado">
+                <span class="pm-menu__previa"><i class="pm-pinta" [style.font-family]="loja().fonte">{{ loja().topico.split(' ')[0] }}</i><i>{{ loja().outroTopico.split(' ')[0] }}</i></span>
+                <b>Arredondado</b>
+              </span>
+              <span class="pm-menu">
+                <span class="pm-menu__previa pm-menu__previa--minimalista"><i class="pm-sublinha">{{ loja().topico.split(' ')[0] }}</i><i>{{ loja().outroTopico.split(' ')[0] }}</i></span>
+                <b>Minimalista</b>
+              </span>
+            </div>
+          </div>
+
+          <span class="pm-btn pm-btn--primario pm-btn--bloco pm-aperta">Salvar</span>
+        </section>
+      }
+
+      <!-- ============ 2. Adicionar fotos ============ -->
+      @case ('fotos') {
+        <ng-container [ngTemplateOutlet]="galeria" [ngTemplateOutletContext]="{ $implicit: 'fotos' }" />
+        <div class="pm-veu pm-veu--some"></div>
+        <section class="pm-folha pm-folha--desce">
+          <span class="pm-folha__alca"></span>
+          <div class="pm-folha__cab"><b>Adicionar fotos</b><span class="pm-fechar"><app-icone nome="fechar" [tamanho]="14" [espessura]="2" /></span></div>
+
+          <div class="pm-campo">
+            <b class="pm-campo__titulo">1. Em qual tópico?</b>
+            <div class="pm-chips">
+              <span class="pm-chip pm-chip--ativo">{{ loja().topico }}</span>
+              <span class="pm-chip">{{ loja().outroTopico }}</span>
+              <span class="pm-chip pm-chip--tracejado">+ Novo tópico</span>
+            </div>
+          </div>
+
+          <div class="pm-campo">
+            <div class="pm-linha-titulo">
+              <b class="pm-campo__titulo">2. Escolha as fotos</b>
+              <span class="pm-troca pm-troca--fotos"><small>Nenhuma foto</small><small>{{ loja().fotos.length }} fotos</small></span>
+            </div>
+            <div class="pm-grade">
+              <span class="pm-grade__adicionar">
+                <app-icone nome="mais" [tamanho]="20" [espessura]="2" />Escolher
+                <span class="pm-toque pm-toque--escolher"></span>
+              </span>
+              @for (foto of loja().fotos; track foto; let i = $index) {
+                <span class="pm-grade__item" [style.--i]="i">
+                  <img [src]="foto" alt="" />
+                  <span class="pm-remover"><app-icone nome="fechar" [tamanho]="9" [espessura]="3" /></span>
+                </span>
+              }
+            </div>
+          </div>
+
+          <span class="pm-btn pm-btn--primario pm-btn--bloco pm-enviar">
+            <span class="pm-troca pm-troca--enviar"><span>Enviar {{ loja().fotos.length }} fotos</span><span><i class="pm-roda"></i>Enviando…</span></span>
+          </span>
+        </section>
+      }
+
+      <!-- ============ 3. Novo tópico: Como chegar ============ -->
+      @case ('mapa') {
+        <ng-container [ngTemplateOutlet]="galeria" [ngTemplateOutletContext]="{ $implicit: 'mapa' }" />
+        <div class="pm-veu pm-veu--some"></div>
+        <section class="pm-folha pm-folha--desce pm-folha--compacta">
+          <span class="pm-folha__alca"></span>
+          <div class="pm-folha__cab"><b>Novo tópico</b><span class="pm-fechar"><app-icone nome="fechar" [tamanho]="14" [espessura]="2" /></span></div>
+
+          <div class="pm-tipos">
+            <span class="pm-tipo pm-tipo--sai"><app-icone nome="imagem" [tamanho]="15" /><span><b>Fotos</b>Seus trabalhos</span></span>
+            <span class="pm-tipo"><i class="pm-tipo__estrela">★</i><span><b>Feedbacks</b>Clientes</span></span>
+            <span class="pm-tipo pm-tipo--entra"><i>📍</i><span><b>Como chegar</b>Mapa da loja</span><span class="pm-toque pm-toque--tipo"></span></span>
+          </div>
+
+          <div class="pm-campo pm-campo--junto">
+            <span class="pm-rotulo">Nome do tópico</span>
+            <span class="pm-entrada"><span class="pm-digita pm-digita--nome">Como chegar</span></span>
+          </div>
+
+          <div class="pm-endereco">
+            <div class="pm-campo pm-campo--junto pm-campo--cep">
+              <span class="pm-rotulo">CEP</span>
+              <span class="pm-entrada"><span class="pm-digita pm-digita--cep">58038-000</span></span>
+              <i class="pm-roda pm-roda--cep"></i>
+            </div>
+            <div class="pm-campo pm-campo--junto">
+              <span class="pm-rotulo">Rua</span>
+              <span class="pm-entrada pm-entrada--auto"><span>Av. Epitácio Pessoa</span></span>
+            </div>
+            <div class="pm-dupla">
+              <div class="pm-campo pm-campo--junto">
+                <span class="pm-rotulo">Número</span>
+                <span class="pm-entrada"><span class="pm-digita pm-digita--numero">1200</span></span>
+              </div>
+              <div class="pm-campo pm-campo--junto">
+                <span class="pm-rotulo">Complemento <small>(opcional)</small></span>
+                <span class="pm-entrada"><small class="pm-placeholder">Ex.: Sala 2</small></span>
+              </div>
+            </div>
+            <div class="pm-dupla pm-dupla--cidade">
+              <div class="pm-campo pm-campo--junto">
+                <span class="pm-rotulo">Cidade</span>
+                <span class="pm-entrada pm-entrada--auto"><span>João Pessoa</span></span>
+              </div>
+              <div class="pm-campo pm-campo--junto">
+                <span class="pm-rotulo">UF</span>
+                <span class="pm-entrada pm-entrada--auto"><span>PB</span></span>
+              </div>
+            </div>
+          </div>
+
+          <span class="pm-btn pm-btn--primario pm-btn--bloco pm-criar">Criar e mostrar o mapa</span>
+        </section>
+      }
+
+      <!-- ============ 4a. Novo feedback (produtos) ============ -->
+      @case ('avaliacoes') {
+        <ng-container [ngTemplateOutlet]="galeria" [ngTemplateOutletContext]="{ $implicit: 'avaliacoes' }" />
+        <div class="pm-veu pm-veu--some"></div>
+        <section class="pm-folha pm-folha--desce">
+          <span class="pm-folha__alca"></span>
+          <div class="pm-folha__cab"><b>Novo feedback</b><span class="pm-fechar"><app-icone nome="fechar" [tamanho]="14" [espessura]="2" /></span></div>
+
+          <div class="pm-campo">
+            <span class="pm-rotulo">Avaliação</span>
+            <span class="pm-estrelas">@for (n of [1, 2, 3, 4, 5]; track n) { <i>★</i> }</span>
+          </div>
+          <div class="pm-campo">
+            <span class="pm-rotulo">O que o cliente disse</span>
+            <span class="pm-entrada pm-entrada--texto">
+              @for (palavra of palavrasFeedback(); track $index) {
+                <span class="pm-palavra" [style.--i]="$index">{{ palavra }} </span>
+              }
+            </span>
+          </div>
+          <div class="pm-dupla">
+            <div class="pm-campo pm-campo--junto">
+              <span class="pm-rotulo">Nome do cliente</span>
+              <span class="pm-entrada"><span class="pm-digita pm-digita--cliente">{{ loja().feedback.nome }}</span></span>
+            </div>
+            <div class="pm-campo pm-campo--junto">
+              <span class="pm-rotulo">Data <small>(opcional)</small></span>
+              <span class="pm-entrada"><small class="pm-placeholder">dd/mm/aaaa</small></span>
+            </div>
+          </div>
+          <span class="pm-btn pm-btn--primario pm-btn--bloco pm-criar">Salvar feedback</span>
+        </section>
+      }
+
+      <!-- ============ 4b. Horários da agenda (serviços) ============ -->
+      @case ('agenda') {
+        <div class="pm-tela pm-tela--agenda">
+          <div class="pm-topo-azul">
+            <app-icone nome="menu" [tamanho]="20" [espessura]="2" />
+            <b>Horários</b>
+          </div>
+          <div class="pm-agenda">
+            <b class="pm-grupo-titulo">Dias e horários de atendimento</b>
+            <div class="pm-ajustes">
+              <div class="pm-semana">
+                @for (dia of dias; track $index; let i = $index) {
+                  <span class="pm-semana__dia" [class.pm-semana__dia--escolhido]="i === 0" [class.pm-semana__dia--aberto]="i < 6">
+                    <b>{{ dia }}</b><i></i>
+                  </span>
+                }
+              </div>
+              <div class="pm-dia">
+                <div class="pm-dia__cab"><b>Segunda</b><span>Atendo <i class="pm-interruptor"></i></span></div>
+                <div class="pm-trecho"><span>08:00</span><small>até</small><span>12:00</span><app-icone nome="lixeira" [tamanho]="14" /></div>
+                <div class="pm-trecho pm-trecho--novo"><span>13:00</span><small>até</small><span>18:00</span><app-icone nome="lixeira" [tamanho]="14" /></div>
+                <div class="pm-dia__acoes">
+                  <span class="pm-btn pm-btn--secundario pm-btn--pequeno pm-adiciona"><app-icone nome="mais" [tamanho]="13" [espessura]="2" />Adicionar período<span class="pm-toque"></span></span>
+                  <span class="pm-btn-texto"><app-icone nome="copiar" [tamanho]="12" [espessura]="2" />Copiar para outros dias</span>
+                </div>
+              </div>
+              <ul class="pm-resumo">
+                <li><b>Seg</b><span class="pm-troca pm-troca--resumo"><span>08:00–12:00</span><span>08:00–12:00 e 13:00–18:00</span></span></li>
+                <li><b>Ter</b><span>08:00–12:00 e 13:00–18:00</span></li>
+                <li><b>Qua</b><span>08:00–12:00 e 13:00–18:00</span></li>
+                <li class="pm-resumo--fechado"><b>Dom</b><span>Fechado</span></li>
+              </ul>
+            </div>
+          </div>
+          <!-- o que o cliente vê na aba "Agendar horário" da vitrine -->
+          <div class="pm-na-vitrine">
+            <small>Na sua vitrine, aba Agendar horário</small>
+            <b>Amanhã · {{ loja().topico }}</b>
+            <div class="pm-horas">
+              @for (hora of ['08:00', '09:00', '10:00', '13:00', '14:30', '16:00']; track hora; let i = $index) {
+                <span [class.pm-horas--escolhida]="i === 3">{{ hora }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</app-celular-mock>
+
+<!-- a tela da Galeria do painel (o fundo das folhas); o que muda em cada cena vem pelo contexto -->
+<ng-template #galeria let-cena>
+  <div class="pm-tela">
+    <div class="pm-cab">
+      <div class="pm-cab__topo">
+        <app-icone nome="voltar" [tamanho]="20" />
+        <span class="pm-link"><span class="pm-link__url"><app-icone nome="link" [tamanho]="12" [espessura]="2" />{{ link() }}</span><span class="pm-link__copiar"><app-icone nome="copiar" [tamanho]="12" [espessura]="2" /></span></span>
+      </div>
+      <div class="pm-cab__linha">
+        <b class="pm-titulo">Galeria</b>
+        <span class="pm-botao-cor"><i [class.pm-pinta-depois]="cena === 'personalizar'" [style.background]="cena === 'personalizar' ? '#151515' : 'var(--loja)'"></i>Personalizar vitrine</span>
+      </div>
+      <span class="pm-sub">2 tópicos · {{ cena === 'fotos' ? 4 : 9 }} fotos</span>
+      <div class="pm-acoes">
+        <span class="pm-btn pm-btn--primario"><app-icone nome="pastaMais" [tamanho]="15" [espessura]="2" />Novo tópico</span>
+        <span class="pm-btn pm-btn--secundario"><app-icone nome="imagem" [tamanho]="15" [espessura]="2" />Adicionar fotos</span>
+      </div>
+    </div>
+
+    <div class="pm-lista">
+      @if (cena === 'mapa') {
+        <div class="pm-album pm-album--novo">
+          <div class="pm-album__cab"><span><b>Como chegar</b><small>Mapa da loja</small></span><span class="pm-btn pm-btn--secundario pm-btn--mini"><app-icone nome="editar" [tamanho]="12" [espessura]="2" />Endereço</span></div>
+          <div class="pm-mapa"><i class="pm-mapa__pino"></i><span class="pm-mapa__rua">Av. Epitácio Pessoa</span></div>
+        </div>
+      }
+      @if (cena === 'avaliacoes') {
+        <div class="pm-album pm-album--novo">
+          <div class="pm-album__cab"><span><b>O que dizem os clientes</b><small>1 feedback</small></span><span class="pm-btn pm-btn--secundario pm-btn--mini"><app-icone nome="mais" [tamanho]="12" [espessura]="2" />Feedback</span></div>
+          <div class="pm-feedback"><span class="pm-feedback__estrelas">★★★★★</span><p>"{{ loja().feedback.texto }}"</p><small>{{ loja().feedback.nome }}</small></div>
+        </div>
+      }
+      <div class="pm-album">
+        <div class="pm-album__cab"><span><b>{{ loja().topico }}</b>@if (cena === 'fotos') {<small class="pm-troca pm-troca--contagem"><span>Nenhuma foto</span><span>{{ loja().fotos.length }} fotos</span></small>} @else {<small>5 fotos</small>}</span><span class="pm-btn pm-btn--secundario pm-btn--mini"><app-icone nome="mais" [tamanho]="12" [espessura]="2" />Fotos</span></div>
+        @if (cena === 'fotos') {
+          <div class="pm-vazio pm-vazio--some">Nenhuma foto ainda<b>Adicionar as primeiras fotos</b></div>
+          <div class="pm-album__grade pm-album__grade--chega">
+            @for (foto of loja().fotos.slice(0, 3); track foto) { <img [src]="foto" alt="" /> }
+            <span class="pm-album__mais">+{{ loja().fotos.length - 3 }}</span>
+          </div>
+        } @else {
+          <div class="pm-album__grade">
+            @for (foto of loja().fotos.slice(0, 3); track foto) { <img [src]="foto" alt="" /> }
+            <span class="pm-album__mais">+{{ loja().fotos.length - 3 }}</span>
+          </div>
+        }
+      </div>
+      <div class="pm-album">
+        <div class="pm-album__cab"><span><b>{{ loja().outroTopico }}</b><small>4 fotos</small></span><span class="pm-btn pm-btn--secundario pm-btn--mini"><app-icone nome="mais" [tamanho]="12" [espessura]="2" />Fotos</span></div>
+        <div class="pm-album__grade">
+          @for (foto of loja().fotos.slice(1, 5); track foto) { <img [src]="foto" alt="" /> }
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

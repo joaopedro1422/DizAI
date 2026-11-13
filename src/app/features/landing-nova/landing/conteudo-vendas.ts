@@ -1,5 +1,5 @@
 import { ROTA_LANDING } from '../../landing/conteudo-landing';
-import { ArtePost, ConteudoLandingNova, EtapaAviso, PERGUNTAS_COMUNS } from './conteudo-landing-nova';
+import { ConteudoLandingNova, EtapaAviso, PERGUNTAS_COMUNS } from './conteudo-landing-nova';
 
 /** Textos e exemplos da landing de vendas (/vendas). Imagens em public/landing (as mesmas da landing antiga). */
 const LOGOS = '/landing/galeria/logos';
@@ -44,8 +44,7 @@ export const ETAPAS_PEDIDO: EtapaAviso[] = [
 
 export const RECURSOS_VENDAS = {
   checks: [
-    'Faz a triagem e mantém o cliente por perto',
-    'Faz orçamentos e coleta os dados do pedido',
+    'Mantém o cliente por perto enquanto você está fora.',
     'Você confirma cada pedido e combina o pagamento',
     'Pedidos organizados numa tela própria, do confirmado ao entregue',
     'Ganhe uma página de portfólio',
@@ -67,12 +66,6 @@ export const TABELA_VENDAS: [string, string, string][] = [
   ['Postar no Instagram', 'Horas no Canva', 'Menos de 1 minuto'],
 ];
 
-const ARTES_VENDAS: ArtePost[] = [
-  { loja: 'Rei dos Salgados', titulo: 'Cento a R$ 85 neste fim de semana', botao: 'Peça pelo WhatsApp', foto: FOTOS.salgados, estilo: 'amarelo' },
-  { loja: 'Pedacinho do Céu', titulo: 'Encomendas abertas para o Dia das Crianças', botao: 'Garanta o seu', foto: FOTOS.bolo, estilo: 'claro' },
-  { loja: 'Ateliê das Flores', titulo: 'Buquês para entrega hoje', botao: 'Pedidos até 16h', foto: FOTOS.flores, estilo: 'escuro' },
-];
-
 export const CONTEUDO_VENDAS: ConteudoLandingNova = {
   tipo: 'produtos',
   tituloPagina: 'DizAI para quem vende pelo WhatsApp: orçamentos e pedidos anotados',
@@ -82,7 +75,7 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
   hero: {
     descricao:
       'O DizAI responde os seus clientes no WhatsApp na hora: envia o catálogo, faz o orçamento e anota o pedido. Você apenas confirma.',
-    garantias: ['No seu número de sempre', 'Você confirma cada pedido', 'Pronto em poucos minutos'],
+    garantias: ['No seu número de sempre', 'Pronto em poucos minutos', 'Ferramentas de marketing', 'Todos os tipos de negócio'],
     conversas: [
       {
         chave: 'doces',
@@ -131,10 +124,6 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
       },
     ],
   },
-  negocios: [
-    'Confeitaria', 'Bolos e tortas', 'Doces finos', 'Salgados para festa', 'Lanches', 'Cestas e presentes',
-    'Floricultura', 'Papelaria personalizada', 'Camisetas e estampas', 'Encomendas em geral',
-  ],
   dores: {
     titulo: ['Você trabalha,', 'o WhatsApp não espera.'],
     itens: [
@@ -223,10 +212,9 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
   vitrine: {
     texto: 'O link para a bio do Instagram e para mandar no WhatsApp. O cliente vê os seus trabalhos, as avaliações e o horário, e já faz a encomenda.',
     itens: [
-      'Portfólio com as fotos separadas por tema',
-      'Avaliações dos clientes, com estrelas',
-      'Horário, pagamento e entrega à vista',
-      'Endereço com mapa e o botão do WhatsApp',
+      'Portfólio com as fotos do seu trabalho',
+      'Avaliações dos clientes, endereço no Maps e informações gerais',
+      'Você define cores, estilo, tipo de fonte e muito mais',
     ],
     textoPosts: 'Escolha o que divulgar e receba as artes prontas para o feed e o story, com a legenda escrita.',
     diferenciais: [
@@ -234,7 +222,6 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
       ['Com os seus dados de verdade', 'Preços, cardápio e encomendas abertas, tirados do seu cadastro.'],
       ['Legenda pronta', 'Título, chamada e hashtags. É baixar e postar.'],
     ],
-    artes: ARTES_VENDAS,
   },
   confianca: [
     ['O seu negócio sob controle', 'O DizAI não confirma pedidos, não pede pagamentos e nem promete entregas.'],

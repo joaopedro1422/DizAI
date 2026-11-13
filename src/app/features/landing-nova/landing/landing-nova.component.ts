@@ -71,7 +71,6 @@ export class LandingNovaComponent {
   readonly tipo = input.required<TipoLanding>();
 
   protected readonly conteudo = computed(() => CONTEUDOS[this.tipo()]);
-  protected readonly negociosEmDobro = computed(() => [...this.conteudo().negocios, ...this.conteudo().negocios]);
   protected readonly techProviderAprovado = TECH_PROVIDER_APROVADO;
   protected readonly anoAtual = new Date().getFullYear();
   protected readonly emailSuporte = EMAIL_SUPORTE;

@@ -247,6 +247,14 @@
         </p>
       </app-secao-configuracao>
 
+      <app-secao-configuracao
+        id="secao-jeito"
+        titulo="Jeito de falar"
+        descricao="Pequenos detalhes na voz do assistente. O conteúdo das respostas continua o mesmo."
+      >
+        <app-jeito-de-falar [formulario]="formulario" />
+      </app-secao-configuracao>
+
       @if (temAlteracoes()) {
         <div class="barra-salvar barra-fixa-inferior" role="region" aria-label="Alterações não salvas">
           <button type="button" class="btn btn--secundario barra-salvar__descartar" (click)="descartarAlteracoes()">Descartar</button>

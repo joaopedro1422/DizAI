@@ -23,6 +23,8 @@ import { MUNDOS_HUB, MundoHub, ONDAS_HUB } from './mundos-hub';
   host: { class: 'marca hb' },
 })
 export class HubPageComponent {
+  /** As funções que se alternam no título ("Um assistente que" atende, agenda...); para de novo em "atende". */
+  protected readonly funcoes = ['atende', 'agenda', 'anota os pedidos', 'divulga', 'vende por você'];
   protected readonly anoAtual = new Date().getFullYear();
   protected readonly mundos = MUNDOS_HUB;
   protected readonly ondas = ONDAS_HUB;

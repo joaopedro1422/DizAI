@@ -116,6 +116,12 @@ export interface Perfil {
   mensagemSemResposta?: string;
   /** Tipo do negócio dentro do ramo (barbearia, bolos...): só para exemplos e tutoriais. null = os gerais do ramo. */
   segmento?: SegmentoNegocio | null;
+  /** "Jeito de falar": a voz do atendente (só a concordância e um toque leve de vez em quando). */
+  tomAtendimento?: TomAtendimento;
+  /** Os emojis da loja (até 6), usados um por vez, em rodízio. Vazio = os de sempre. */
+  emojis?: string[];
+  /** false = o assistente não usa emoji. */
+  usarEmojis?: boolean;
   saudacaoPersonalizada: string;
   instrucoesObrigatorias: string;
   modoCatalogo: ModoCatalogo;
@@ -173,7 +179,12 @@ export type ConfiguracoesAtendimento = Pick<
   | 'mensagemRepasseNaHora'
   | 'mensagemRepassePedido'
   | 'mensagemSemResposta'
+  | 'tomAtendimento'
+  | 'emojis'
+  | 'usarEmojis'
 >;
+
+export type TomAtendimento = 'NEUTRO' | 'FEMININO' | 'MASCULINO';
 
 /** Dados editados no modal "Dados da loja" do painel. */
 export interface DadosLoja {

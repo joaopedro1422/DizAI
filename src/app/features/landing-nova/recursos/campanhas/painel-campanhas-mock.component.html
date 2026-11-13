@@ -1,0 +1,233 @@
+@let ex = exemplo();
+<app-celular-mock style="--celular-largura: 320px; --celular-altura: 640px">
+  <div class="pm pc" [attr.data-cena]="cena()" [attr.aria-label]="'Exemplo de campanha no WhatsApp: ' + ex.marca.nome">
+    <!-- a barrinha dos 3 passos da folha "Nova campanha" -->
+    <ng-template #passosDaFolha let-feitos>
+      <span class="pm-folha__alca"></span>
+      <span class="pm-folha__cab"><b>Nova campanha</b><span class="pm-fechar"><app-icone nome="fechar" [tamanho]="14" /></span></span>
+      <ol class="pc-passos">
+        @for (nome of passos; track nome; let i = $index) {
+          <li class="pc-passos__item" [class.pc-passos__item--feito]="i < feitos"><i>{{ i + 1 }}</i>{{ nome }}</li>
+        }
+      </ol>
+    </ng-template>
+
+    <!-- a arte da loja no topo da mensagem -->
+    <ng-template #arte let-largura>
+      <span class="pc-arte">
+        <app-arte-post [marca]="ex.marca" [conteudo]="ex.arte.conteudo" [estilo]="ex.arte.estilo" formato="quadrado" [largura]="largura" />
+      </span>
+    </ng-template>
+
+    <!-- o painel por baixo da folha -->
+    <ng-template #painel let-animar>
+      <div class="pm-tela pc-painel" [class.pc-painel--animar]="animar">
+        <div class="pc-loja">
+          @if (ex.marca.logo) { <img [src]="ex.marca.logo" alt="" /> }
+          <span><b>{{ ex.marca.nome }}</b><small><i></i>Assistente ligado</small></span>
+        </div>
+        <div class="pc-assistente">
+          <span><b>12</b><small>conversas hoje</small></span>
+          <span><b>{{ servico() ? 4 : 3 }}</b><small>{{ servico() ? 'agendamentos' : 'pedidos' }}</small></span>
+          <span><b>36 min</b><small>economizados</small></span>
+        </div>
+        <b class="pc-secao">Marketing</b>
+        <article class="pc-oportunidade">
+          <span class="pc-oportunidade__icone"><app-icone [nome]="icone(ex.oportunidade.icone)" [tamanho]="19" [espessura]="2" /></span>
+          <span class="pc-oportunidade__textos">
+            <span class="pc-oportunidade__selo">Oportunidade</span>
+            <b>{{ ex.oportunidade.titulo }}</b>
+            <small>{{ ex.oportunidade.descricao }}</small>
+            <span class="pc-oportunidade__acoes">
+              <span class="pc-oportunidade__ver">Ver campanha<i class="pm-toque" style="--toque: 2.6s"></i></span>
+              <span class="pc-oportunidade__depois">Agora não</span>
+            </span>
+          </span>
+        </article>
+        <div class="pc-cartoes">
+          <span class="pc-cartao"><span class="pc-cartao__icone"><app-icone nome="imagem" [tamanho]="15" /></span><b>Criar posts</b></span>
+          <span class="pc-cartao"><span class="pc-cartao__icone"><app-icone nome="conversa" [tamanho]="15" /></span><b>Campanhas no WhatsApp</b></span>
+        </div>
+      </div>
+    </ng-template>
+
+    @switch (cena()) {
+      <!-- ============ 1. A oportunidade no painel ============ -->
+      @case ('oportunidade') {
+        <ng-container *ngTemplateOutlet="painel; context: { $implicit: true }" />
+      }
+
+      <!-- ============ 2. Passo 1: a mensagem ============ -->
+      @case ('mensagem') {
+        <ng-container *ngTemplateOutlet="painel; context: { $implicit: false }" />
+        <div class="pm-veu pc-veu"></div>
+        <div class="pm-folha pc-folha pc-folha--sobe">
+          <ng-container *ngTemplateOutlet="passosDaFolha; context: { $implicit: 1 }" />
+          <div class="pc-folha__corpo"><div class="pc-folha__trilho pc-folha__trilho--rola" [style.--rola]="ex.frase ? '-84px' : '-56px'">
+            <p class="pc-sugestao"><app-icone nome="brilho" [tamanho]="13" [espessura]="2" />{{ ex.oportunidade.descricao }}</p>
+            <b class="pc-pergunta">{{ ex.pergunta }}</b>
+            <div class="pc-opcoes">
+              @for (opcao of ex.opcoes; track opcao.titulo; let i = $index) {
+                <span class="pc-opcao" [class.pc-opcao--escolhida]="i === ex.escolha">
+                  <b>{{ opcao.titulo }}</b><small>{{ opcao.detalhe }}</small>
+                  @if (i === ex.escolha) { <i class="pm-toque" style="--toque: 1.1s"></i> }
+                </span>
+              }
+            </div>
+            @if (ex.frase) {
+              <span class="pm-campo pm-campo--junto">
+                <span class="pm-rotulo">A frase de apoio</span>
+                <span class="pm-entrada"><span class="pm-digita pc-digita--frase">{{ ex.frase }}</span></span>
+              </span>
+            }
+            <div class="pc-arte-bloco">
+              <span class="pc-chave"><i class="pc-chave__caixa"><app-icone nome="check" [tamanho]="12" [espessura]="3" /></i>
+                <span><b>Enviar com uma arte da loja</b><small>Com a sua logo, cores e fotos, no topo da mensagem</small></span>
+              </span>
+              <ng-container *ngTemplateOutlet="arte; context: { $implicit: 120 }" />
+            </div>
+          </div></div>
+          <span class="pc-acoes"><span class="pm-btn pm-btn--primario pc-continuar">Continuar<i class="pm-toque" style="--toque: 4.6s"></i></span></span>
+        </div>
+      }
+
+      <!-- ============ 3. Passo 2: quem recebe ============ -->
+      @case ('publico') {
+        <ng-container *ngTemplateOutlet="painel; context: { $implicit: false }" />
+        <div class="pm-veu pc-veu pc-veu--fixo"></div>
+        <div class="pm-folha pc-folha">
+          <ng-container *ngTemplateOutlet="passosDaFolha; context: { $implicit: 2 }" />
+          <div class="pc-folha__corpo"><div class="pc-folha__trilho">
+            <b class="pc-pergunta">Para quem enviar?</b>
+            <div class="pc-opcoes">
+              @for (opcao of ex.publico; track opcao.titulo; let i = $index) {
+                <span class="pc-opcao" [class.pc-opcao--escolhida]="i === ex.escolhaPublico">
+                  <b>{{ opcao.titulo }}</b><small>{{ opcao.detalhe }}</small>
+                  @if (i === ex.escolhaPublico) { <i class="pm-toque" style="--toque: 1s"></i> }
+                </span>
+              }
+            </div>
+            <span class="pc-lista-topo"><b>{{ ex.totalClientes }} de {{ ex.totalClientes }} vão receber</b><small>Desmarcar todos</small></span>
+            <ul class="pc-clientes">
+              @for (c of ex.clientes; track c.titulo; let i = $index) {
+                <li class="pc-cliente" [style.--i]="i">
+                  <i class="pc-chave__caixa"><app-icone nome="check" [tamanho]="11" [espessura]="3" /></i>
+                  <span><b>{{ c.titulo }}</b><small>{{ c.detalhe }}</small></span>
+                </li>
+              }
+            </ul>
+          </div></div>
+          <span class="pc-acoes">
+            <span class="pm-btn pm-btn--secundario">Voltar</span>
+            <span class="pm-btn pm-btn--primario pc-continuar">Continuar<i class="pm-toque" style="--toque: 4.4s"></i></span>
+          </span>
+        </div>
+      }
+
+      <!-- ============ 4. Passo 3: conferir e enviar ============ -->
+      @case ('enviar') {
+        <ng-container *ngTemplateOutlet="painel; context: { $implicit: false }" />
+        <div class="pm-veu pc-veu pc-veu--fixo"></div>
+        <div class="pm-folha pc-folha">
+          <ng-container *ngTemplateOutlet="passosDaFolha; context: { $implicit: 3 }" />
+          <div class="pc-folha__corpo"><div class="pc-folha__trilho">
+            <div class="pc-preparando"><i class="pc-preparando__roda"></i>Preparando a mensagem…</div>
+            <div class="pc-revisao">
+              <b class="pc-pergunta">Assim a mensagem chega no WhatsApp</b>
+              <div class="pc-whatsapp">
+                <div class="pc-balao">
+                  <ng-container *ngTemplateOutlet="arte; context: { $implicit: 156 }" />
+                  <p>{{ ex.mensagem }}</p>
+                </div>
+                <span class="pc-balao__botao">{{ ex.botao }}</span>
+                <span class="pc-balao__botao">Não quero receber</span>
+              </div>
+              <dl class="pc-resumo">
+                <div><dt>Vai para</dt><dd>{{ ex.totalClientes }} clientes</dd></div>
+                <div class="pc-resumo--destaque"><dt>Custo estimado</dt><dd>{{ ex.custo }}</dd></div>
+              </dl>
+            </div>
+          </div></div>
+          <span class="pc-acoes">
+            <span class="pm-btn pm-btn--secundario">Voltar</span>
+            <span class="pm-btn pm-btn--primario pc-continuar pc-enviar">
+              <span class="pm-troca pc-troca--enviar"><span>Enviar para {{ ex.totalClientes }} clientes</span><span><i class="pm-roda"></i>Enviando…</span></span>
+              <i class="pm-toque" style="--toque: 4.2s"></i>
+            </span>
+          </span>
+        </div>
+      }
+
+      <!-- ============ 5. O cliente no WhatsApp ============ -->
+      @case ('cliente') {
+        <div class="pm-tela pc-wpp">
+          <div class="wpp-topo">
+            @if (ex.marca.logo) { <img [src]="ex.marca.logo" alt="" /> }
+            <span><b>{{ ex.marca.nome }}</b><small>online</small></span>
+          </div>
+          <div class="pc-wpp__msgs">
+            <div class="pc-wpp__modelo">
+              <div class="pc-balao">
+                <ng-container *ngTemplateOutlet="arte; context: { $implicit: 196 }" />
+                <p>{{ ex.mensagem }}</p>
+                <time>10:02</time>
+              </div>
+              <span class="pc-balao__botao pc-balao__botao--tocado">{{ ex.botao }}<i class="pm-toque" style="--toque: 1.2s"></i></span>
+              <span class="pc-balao__botao">Não quero receber</span>
+            </div>
+            @for (r of ex.cliente.respostas; track $index; let i = $index) {
+              @if (r.de === 'loja') {
+                <span class="msg msg--digitando pc-entra pc-digitando" [style.--em]="0.9 + i * 1.1 + 's'"><i></i><i></i><i></i></span>
+              }
+              <span class="msg pc-entra" [class.msg--cliente]="r.de === 'cliente'" [class.msg--loja]="r.de === 'loja'"
+                [style.--em]="(r.de === 'loja' ? 1.6 : 1.5) + i * 1.1 + 's'">{{ r.texto }}<time>{{ r.de === 'cliente' ? '10:14' : '10:14' }}</time></span>
+            }
+          </div>
+          <div class="wpp-campo"><span>Mensagem</span><i></i></div>
+        </div>
+      }
+
+      <!-- ============ 6. O resultado ============ -->
+      @case ('resultado') {
+        @let r = ex.resultado;
+        <div class="pm-tela pc-tela-resultado">
+          <div class="pc-topo-azul">
+            <app-icone nome="voltar" [tamanho]="18" />
+            <b>Campanhas</b>
+            <small>Mensagens no WhatsApp para os seus clientes</small>
+          </div>
+          <div class="pc-resultado">
+            <span class="pc-resultado__quando">{{ r.enviadaEm }} <i>Concluída</i></span>
+            <section class="pc-destaque">
+              <span class="pc-destaque__rotulo">Trouxe</span>
+              <strong class="pc-destaque__valor">{{ r.valor }}</strong>
+              <span class="pc-destaque__frase">{{ r.frase }}</span>
+              <span class="pc-destaque__custo">{{ r.custo }}</span>
+            </section>
+            <section class="pc-funil">
+              @for (etapa of r.funil; track etapa[0]; let i = $index; let ultima = $last) {
+                <div class="pc-funil__linha" [class.pc-funil__linha--fim]="ultima" [style.--i]="i">
+                  <span class="pc-funil__nome">{{ etapa[0] }}</span>
+                  <span class="pc-funil__barra"><span class="pc-funil__cheio" [style.--largura]="(etapa[1] / maiorFunil()) * 100 + '%'"></span></span>
+                  <span class="pc-funil__valor">{{ etapa[1] }}</span>
+                </div>
+              }
+            </section>
+            @if (r.comparacao) {
+              <p class="pc-comparacao"><app-icone nome="grafico" [tamanho]="14" [espessura]="2" />{{ r.comparacao }}</p>
+            }
+            <b class="pc-clientes-titulo">Cliente por cliente</b>
+            <ul class="pc-clientes pc-clientes--resultado">
+              @for (c of r.clientes; track c[0]) {
+                <li class="pc-cliente pc-cliente--fixo">
+                  <span><b>{{ c[0] }}</b><small>{{ c[1] }}</small></span>
+                  @if (c[2]) { <em class="pc-etiqueta" [class.pc-etiqueta--sim]="c[2] !== 'Respondeu'">{{ c[2] }}</em> }
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</app-celular-mock>

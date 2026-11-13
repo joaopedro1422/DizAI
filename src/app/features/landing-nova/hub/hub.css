@@ -45,6 +45,11 @@
   box-shadow: 0 0 0 4px rgba(255, 200, 61, 0.22);
 }
 
+/* título centralizado: sem reservar a largura da frase mais longa, a palavra fica no centro e os pontinhos colados */
+.hb .hb-titulo .troca__reserva {
+  display: none;
+}
+
 .hb .hb-titulo {
   margin-top: 22px;
   color: #ffffff;

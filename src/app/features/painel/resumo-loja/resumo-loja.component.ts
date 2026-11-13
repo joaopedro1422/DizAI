@@ -50,7 +50,6 @@ export class ResumoLojaComponent {
   private readonly armazenamentoFotos = inject(ArmazenamentoFotosService);
 
   protected readonly perfil = this.perfilService.perfil;
-  protected readonly linkPublicoExibicao = this.perfilService.linkPaginaPublicaExibicao;
   private readonly instalacaoApp = inject(InstalacaoAppService);
   private readonly router = inject(Router);
   private readonly rotas = inject(SessaoService).rotasDoPainel;
@@ -159,15 +158,6 @@ export class ResumoLojaComponent {
       this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível enviar a foto. Tente de novo.'));
     } finally {
       this.enviandoFoto.set(false);
-    }
-  }
-
-  protected async copiarLinkPublico(): Promise<void> {
-    try {
-      await navigator.clipboard.writeText(this.perfilService.linkPaginaPublica());
-      this.toastService.mostrar('Link copiado');
-    } catch (erro) {
-      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível copiar. Selecione o link e copie manualmente.'));
     }
   }
 }

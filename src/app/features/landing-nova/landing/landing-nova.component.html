@@ -15,14 +15,6 @@
 <main>
   <app-hero-landing [conteudo]="c" />
 
-  <div class="negocios" aria-label="Tipos de negócio atendidos">
-    <div class="negocios__trilho">
-      @for (negocio of negociosEmDobro(); track $index) {
-        <span>{{ negocio }}</span>
-      }
-    </div>
-  </div>
-
   <!-- o problema: as dores com a mensagem de cada cliente e a tela de bloqueio cheia de mensagens sem resposta -->
   <section class="secao faixa dores" appRevelar>
     <div class="miolo">
@@ -70,8 +62,8 @@
   <section class="secao faixa" appRevelar>
     <div class="miolo">
       <div class="cabeca">
-        <span class="rotulo">O que ele faz por você</span>
-        <p class="apoio">Um atendente a mais na equipe, sem folga e sem salário.</p>
+        <span class="rotulo">Uma solução completa</span>
+        <p class="apoio">Do atendimento inicial de qualidade à criação automática de posts para redes sociais e campanhas de marketing em 3 toques.</p>
       </div>
       <div class="grade-dia">
         @for (item of c.dia; track item.titulo; let i = $index) {

@@ -119,6 +119,49 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/landing-nova/landing/landing-nova.component').then((m) => m.LandingNovaComponent),
   },
+  // páginas de cada recurso (vitrine, posts e campanhas), por público: o tipo vem no data
+  {
+    path: 'vendas/vitrine',
+    data: { tipo: 'produtos' },
+    title: 'Vitrine online para a bio do Instagram | DizAI',
+    loadComponent: () =>
+      import('./features/landing-nova/recursos/vitrine/recurso-vitrine.component').then((m) => m.RecursoVitrineComponent),
+  },
+  {
+    path: 'agendamentos/vitrine',
+    data: { tipo: 'servicos' },
+    title: 'Vitrine e agenda online | DizAI',
+    loadComponent: () =>
+      import('./features/landing-nova/recursos/vitrine/recurso-vitrine.component').then((m) => m.RecursoVitrineComponent),
+  },
+  {
+    path: 'vendas/posts',
+    data: { tipo: 'produtos' },
+    title: 'Posts para o Instagram com a sua marca | DizAI',
+    loadComponent: () =>
+      import('./features/landing-nova/recursos/posts/recurso-posts.component').then((m) => m.RecursoPostsComponent),
+  },
+  {
+    path: 'agendamentos/posts',
+    data: { tipo: 'servicos' },
+    title: 'Posts para o Instagram com a sua marca | DizAI',
+    loadComponent: () =>
+      import('./features/landing-nova/recursos/posts/recurso-posts.component').then((m) => m.RecursoPostsComponent),
+  },
+  {
+    path: 'vendas/campanhas',
+    data: { tipo: 'produtos' },
+    title: 'Campanhas no WhatsApp para vender mais | DizAI',
+    loadComponent: () =>
+      import('./features/landing-nova/recursos/campanhas/recurso-campanhas.component').then((m) => m.RecursoCampanhasComponent),
+  },
+  {
+    path: 'agendamentos/campanhas',
+    data: { tipo: 'servicos' },
+    title: 'Campanhas no WhatsApp para encher a agenda | DizAI',
+    loadComponent: () =>
+      import('./features/landing-nova/recursos/campanhas/recurso-campanhas.component').then((m) => m.RecursoCampanhasComponent),
+  },
   {
     path: 'demonstracao',
     title: 'Veja o DizAI atendendo | DizAI',

@@ -45,9 +45,6 @@ export const RECURSOS_AGENDA = {
   ],
   alem: [
     ['Lista de espera', 'Dia lotado e clientes esperando? Vagou horário, a mensagem de aviso é enviada aos clientes na ordem da fila.'],
-    ['Remarca e cancela pelo WhatsApp', 'O cliente resolve tudo pela conversa. Você recebe o aviso.'],
-    ['Agradecimento automático', 'Ao terminar o atendimento, o assistente envia sozinho uma mensagem de agradecimento personalizada.'],
-    ['Lembrete com confirmação', 'De 1 hora a 1 dia antes. Quando o cliente responde que vem, o card ganha "Presença confirmada".'],
     ['Produtos à venda', 'Esmalte, shampoo, minoxidil: o cliente reserva junto do horário e você registra cada venda.'],
     ['Lembrete de retorno', 'Marque quando o cliente deve voltar. Na véspera, ele recebe o lembrete automaticamente.'],
   ],
@@ -72,7 +69,7 @@ export const CONTEUDO_AGENDAMENTOS: ConteudoLandingNova = {
   hero: {
     descricao:
       'Chega de parar o atendimento para marcar horário. O DizAI responde no seu WhatsApp, mostra os horários livres, marca na sua agenda e lembra o cliente antes.',
-    garantias: ['No seu número de sempre', 'Agenda online inclusa', 'Lembrete antes do horário'],
+    garantias: ['No seu número de sempre', 'Pronto em poucos minutos', 'Ferramentas de marketing', 'Todos os tipos de negócio'],
     conversas: [
       {
         chave: 'manicure',
@@ -121,10 +118,6 @@ export const CONTEUDO_AGENDAMENTOS: ConteudoLandingNova = {
       },
     ],
   },
-  negocios: [
-    'Barbearia', 'Studio de manicure', 'Salão de beleza', 'Esteticista', 'Design de sobrancelhas', 'Studio de tatuagem',
-    'Massoterapia', 'Banho e tosa', 'Personal trainer', 'Aulas particulares',
-  ],
   dores: {
     titulo: ['Marcar horário à mão', 'virou um segundo trabalho.'],
     itens: [
@@ -213,21 +206,15 @@ export const CONTEUDO_AGENDAMENTOS: ConteudoLandingNova = {
   vitrine: {
     texto: 'O link para a bio do Instagram e para mandar no WhatsApp. O cliente vê os seus trabalhos e escolhe o horário na agenda online, sem precisar te chamar.',
     itens: [
-      'Portfólio com as fotos separadas por serviço',
-      'Agenda online só com os horários livres',
-      'Avaliações dos clientes, com estrelas',
-      'Horário, pagamento e endereço à vista',
+      'Portfólio com as fotos do seu trabalho',
+      'Avaliações dos clientes, endereço no Maps e informações gerais',
+      'Você define cores, estilo, tipo de fonte e muito mais',
     ],
     textoPosts: 'Escolha o que divulgar e receba as artes prontas para o feed e o story: horários livres da semana, serviços e preços, com a legenda escrita.',
     diferenciais: [
       ['Com a sua identidade', 'A sua logo, as suas cores, as suas fotos e a fonte da sua vitrine.'],
       ['Com os seus horários de verdade', 'Os horários livres da agenda e os serviços com preço, tirados do seu cadastro.'],
       ['Legenda pronta', 'Título, chamada e hashtags. É baixar e postar.'],
-    ],
-    artes: [
-      { loja: 'Barbearia do Léo', titulo: 'Horários livres hoje: 16h e 18h30', botao: 'Agende pelo WhatsApp', foto: FOTOS_AGENDA.barbearia, estilo: 'amarelo' },
-      { loja: 'Studio Bella Unhas', titulo: 'Agenda aberta para a semana', botao: 'Garanta o seu horário', foto: FOTOS_AGENDA.unhas, estilo: 'claro' },
-      { loja: 'Espaço Renova', titulo: 'Limpeza de pele por R$ 150', botao: 'Vagas no sábado', foto: FOTOS_AGENDA.estetica, estilo: 'escuro' },
     ],
   },
   confianca: [
