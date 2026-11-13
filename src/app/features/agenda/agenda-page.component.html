@@ -160,29 +160,30 @@
                   <span class="horario__fim">{{ agendamento.fim }}</span>
                 </div>
                 <div class="horario__corpo">
-                  <span class="horario__nome">{{ agendamento.nomeCliente }}</span>
-                  <span class="horario__servicos">{{ agendamento.servicos }} <span class="horario__duracao">· {{ duracao(agendamento) }}</span>@if (variosProfissionais()) {<span class="horario__profissional">&nbsp;· com {{ agendamento.profissionalNome }}</span>}</span>
-                  <!-- "1 produto" (reservado pela agenda online) e as etiquetas de presença/lembrete numa linha só -->
+                  <!-- nome (no máximo 2 palavras, só na tela) e a etiqueta de presença/lembrete na mesma linha; "pelo assistente" fica no modal -->
                   @let mostraEtiqueta = !cancelado && !jaPassou(agendamento) && (agendamento.presencaConfirmada || agendamento.lembreteEnviado);
-                  @if (agendamento.produtos.length || mostraEtiqueta) {
-                    <span class="horario__marcas">
-                      @if (agendamento.produtos.length) {
-                        <span class="marca-produtos">
-                          <app-icone nome="caixa" [tamanho]="13" />
-                          {{ rotuloProdutos(agendamento) }}
+                  <span class="horario__topo">
+                    <span class="horario__nome" [title]="agendamento.nomeCliente">{{ nomeExibido(agendamento.nomeCliente) }}</span>
+                    <!-- depois que o horário acaba, a presença e o lembrete não importam mais -->
+                    @if (mostraEtiqueta) {
+                      @if (agendamento.presencaConfirmada) {
+                        <span class="etiqueta etiqueta--presenca">
+                          <app-icone nome="check" [tamanho]="12" [espessura]="3" />
+                          Confirmado
                         </span>
+                      } @else {
+                        <span class="etiqueta etiqueta--lembrete">Lembrete enviado</span>
                       }
-                      <!-- depois que o horário acaba, a presença e o lembrete não importam mais -->
-                      @if (mostraEtiqueta) {
-                        @if (agendamento.presencaConfirmada) {
-                          <span class="etiqueta etiqueta--presenca">
-                            <app-icone nome="check" [tamanho]="12" [espessura]="3" />
-                            Presença confirmada
-                          </span>
-                        } @else {
-                          <span class="etiqueta etiqueta--lembrete">Lembrete enviado</span>
-                        }
-                      }
+                    }
+                  </span>
+                  <span class="horario__servicos">{{ agendamento.servicos }} <span class="horario__duracao">· {{ duracao(agendamento) }}</span>@if (variosProfissionais()) {<span class="horario__profissional">&nbsp;· com {{ agendamento.profissionalNome }}</span>}</span>
+                  <!-- "1 produto" (reservado pela agenda online) -->
+                  @if (agendamento.produtos.length) {
+                    <span class="horario__marcas">
+                      <span class="marca-produtos">
+                        <app-icone nome="caixa" [tamanho]="13" />
+                        {{ rotuloProdutos(agendamento) }}
+                      </span>
                     </span>
                   }
                   <span class="horario__rodape">
@@ -205,18 +206,7 @@
                     </span>
                   </span>
                 </div>
-                @if (!cancelado) {
-                  <div class="horario__lateral">
-                    @if (agendamento.origem === 'WHATSAPP') {
-                      <span class="horario__assistente" title="Marcado pelo assistente" aria-label="Marcado pelo assistente">
-                        <app-icone nome="brilho" [tamanho]="16" [espessura]="2" />
-                      </span>
-                    }
-                    <button type="button" class="btn-icone btn-icone--sem-borda horario__cancelar" [attr.aria-label]="'Cancelar o horário de ' + agendamento.nomeCliente" (click)="paraCancelar.set(agendamento)">
-                      <app-icone nome="fechar" [tamanho]="18" />
-                    </button>
-                  </div>
-                }
+                <!-- sem o "x" de cancelar: o cancelamento fica no modal de detalhes (toque no card) -->
               </article>
             } @empty {
               <app-estado-vazio
@@ -607,7 +597,7 @@
           }
           @if (agendamento.presencaConfirmada) {
             <span class="bloco__presenca" title="Presença confirmada" aria-label="Presença confirmada">
-              <app-icone nome="check" [tamanho]="13" [espessura]="3" />
+              <app-icone nome="check" [tamanho]="11" [espessura]="3.4" />
             </span>
           }
           @if (agendamento.origem === 'WHATSAPP') {

@@ -154,10 +154,27 @@ a.faixa-aviso {
   gap: 4px;
 }
 
+/* nome, etiqueta de presença/lembrete e a estrelinha numa linha; o nome encolhe com reticências */
+.horario__topo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
 .horario__nome {
-  padding-right: 58px;   /* espaço da estrela e do X, que ficam no canto de cima */
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
   font-size: 15px;
   font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.horario__topo .etiqueta {
+  flex: none;
+  white-space: nowrap;
 }
 
 .horario__servicos {
@@ -197,6 +214,7 @@ a.faixa-aviso {
 
 .horario__assistente {
   display: inline-flex;
+  flex: none;
   color: var(--cor-ativo);
 }
 
@@ -433,6 +451,17 @@ a.faixa-aviso {
   display: inline-flex;
   flex: none;
   color: var(--cor-ativo);
+}
+
+/* presença confirmada: o check branco numa bolinha verde */
+.bloco__presenca {
+  place-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--cor-ativo);
+  color: #ffffff;
 }
 
 /* os ícones vão para a direita quando o nome não está na mesma linha */

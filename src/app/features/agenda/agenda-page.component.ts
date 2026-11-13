@@ -504,6 +504,11 @@ export class AgendaPageComponent implements OnInit {
   }
 
   /** "1 produto", "2 produtos" (reservados pela agenda online). */
+  /** Nome no card da resumida: no máximo as 2 primeiras palavras (o cadastro não muda). */
+  protected nomeExibido(nome: string): string {
+    return nome.trim().split(/\s+/).slice(0, 2).join(' ');
+  }
+
   protected rotuloProdutos(agendamento: Agendamento): string {
     return pluralizar(agendamento.produtos.length, 'produto', 'produtos');
   }
