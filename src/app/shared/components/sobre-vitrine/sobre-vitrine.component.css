@@ -1,0 +1,247 @@
+/*
+ * O tópico "Sobre" da vitrine nos 3 estilos. Usa a cor (--vitrine-destaque) e a fonte (--vitrine-fonte) da loja.
+ * Container query: largo (computador) vira duas colunas; estreito (celular e as prévias do painel) fica empilhado.
+ */
+:host {
+  --d: var(--vitrine-destaque, #1e3a72);
+  --suave: color-mix(in srgb, var(--d) 14%, #ffffff);
+  display: block;
+  container-type: inline-size;
+}
+
+.sobre {
+  color: inherit;
+}
+
+.sobre__rotulo {
+  display: block;
+  color: var(--d);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.sobre__titulo {
+  margin: 6px 0 10px;
+  font-family: var(--vitrine-fonte, inherit);
+  font-size: clamp(26px, 7cqi, 38px);
+  font-weight: 700;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.sobre__texto {
+  margin: 0;
+  color: color-mix(in srgb, currentColor 74%, transparent);
+  font-size: 15px;
+  line-height: 1.65;
+  white-space: pre-line;
+}
+
+.sobre__assinatura {
+  display: block;
+  margin-top: 14px;
+  color: var(--d);
+  font-family: var(--vitrine-fonte, inherit);
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.sobre__foto {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* sem foto nas prévias do painel: o espaço com um ícone */
+.sobre__vazia {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background: var(--suave);
+  color: var(--d);
+}
+
+/* ---------- 1. Clássico: a foto em cima, o texto e a assinatura ---------- */
+.classico {
+  display: grid;
+  gap: 18px;
+}
+
+.classico__foto {
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: 20px;
+}
+
+/* ---------- 2. Janela com selo: a foto em arco, o selo "desde" e o texto centralizado ---------- */
+.janela {
+  display: grid;
+  gap: 26px;
+  text-align: center;
+}
+
+.janela__moldura {
+  position: relative;
+  width: min(78%, 340px);
+  margin: 0 auto;
+}
+
+.janela__arco {
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+  border-radius: 999px 999px 18px 18px;
+}
+
+.janela__selo {
+  position: absolute;
+  right: -14px;
+  bottom: -14px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  width: 78px;
+  height: 78px;
+  border: 4px solid var(--vitrine-fundo-selecionado, #ffffff);
+  border-radius: 50%;
+  background: var(--vitrine-destaque-fundo, var(--d));
+  color: #ffffff;
+  line-height: 1.1;
+}
+
+.janela__selo small {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.janela__selo b {
+  font-size: 19px;
+  font-weight: 800;
+}
+
+/* sem foto, o selo fica no fluxo, em cima do rótulo */
+.janela__selo--solto {
+  position: static;
+  margin: 0 auto;
+}
+
+.janela__traco {
+  display: block;
+  width: 38px;
+  height: 3px;
+  margin: 0 auto 14px;
+  border-radius: 2px;
+  background: var(--vitrine-destaque-fundo, var(--d));
+}
+
+/* ---------- 3. Capa com cartão: a foto cheia e o texto num cartão por cima ---------- */
+.capa {
+  position: relative;
+}
+
+.capa__foto {
+  overflow: hidden;
+  height: 260px;
+  border-radius: 20px;
+}
+
+/* sem foto: o degradê da cor da loja no lugar */
+.capa__foto--cor {
+  background: var(--vitrine-destaque-fundo, var(--d));
+  background-image: linear-gradient(135deg, var(--d), color-mix(in srgb, var(--d) 55%, #ffffff));
+}
+
+.capa__cartao {
+  position: relative;
+  margin: -64px 14px 0;
+  padding: 20px 18px;
+  border: 1px solid color-mix(in srgb, var(--d) 14%, transparent);
+  border-radius: 18px;
+  background: #ffffff;
+  color: #1f2430;
+  box-shadow: 0 18px 40px -22px rgba(15, 23, 42, 0.35);
+}
+
+.capa__destaques {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.capa__destaques li {
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--suave);
+  color: color-mix(in srgb, var(--d) 80%, #000000);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+/* tema escuro da vitrine: o cartão e o selo acompanham */
+:host-context(.vitrine--escura) .capa__cartao {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: #1b1b1b;
+  color: #ffffff;
+}
+
+:host-context(.vitrine--escura) {
+  --suave: rgba(255, 255, 255, 0.1);
+}
+
+:host-context(.vitrine--escura) .capa__destaques li {
+  color: #ffffff;
+}
+
+:host-context(.vitrine--escura) .janela__selo {
+  border-color: #000000;
+  color: #000000;
+}
+
+/* ---------- largo (computador): duas colunas ---------- */
+@container (min-width: 640px) {
+  .classico,
+  .janela {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: 44px;
+    text-align: left;
+  }
+
+  .classico--sem-foto,
+  .janela--sem-foto {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 680px;
+  }
+
+  .janela__moldura {
+    width: min(84%, 360px);
+  }
+
+  .janela__traco {
+    margin-left: 0;
+  }
+
+  .janela--sem-foto .janela__selo--solto {
+    margin-left: 0;
+  }
+
+  .capa__foto {
+    height: 420px;
+    border-radius: 24px;
+  }
+
+  .capa__cartao {
+    position: absolute;
+    right: 28px;
+    bottom: 28px;
+    width: min(460px, 60%);
+    margin: 0;
+    padding: 26px 24px;
+  }
+}

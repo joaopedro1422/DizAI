@@ -7,7 +7,7 @@ import { IconeComponent } from '../../../shared/components/icone/icone.component
 import { MapaLojaComponent } from '../../../shared/components/mapa-loja/mapa-loja.component';
 import { ItemMenuAcoes, MenuAcoesComponent } from '../../../shared/components/menu-acoes/menu-acoes.component';
 
-type AcaoAlbum = 'excluir';
+type AcaoAlbum = 'editar' | 'excluir';
 type AcaoFeedback = 'editar' | 'excluir';
 
 /** Fotos exibidas na prévia; a última vira "+N" quando há mais. */
@@ -34,6 +34,10 @@ export class AlbumCardComponent {
   protected readonly ehLocalizacao = computed(() => this.album().tipo === 'LOCALIZACAO');
   /** "Como chegar": trocar o endereço do mapa. */
   readonly editarEndereco = output<void>();
+  /** "Sobre": abrir o formulário com o conteúdo atual (menu ⋮ → Editar). */
+  readonly editarSobre = output<void>();
+  protected readonly ehSobre = computed(() => this.album().tipo === 'SOBRE');
+  protected readonly nomesEstilo: Record<string, string> = { CLASSICO: 'Clássico', JANELA: 'Janela com selo', CAPA: 'Capa com cartão' };
   protected readonly itensMenuFeedback: ItemMenuAcoes<AcaoFeedback>[] = [
     { id: 'editar', rotulo: 'Editar', icone: 'editar' },
     { id: 'excluir', rotulo: 'Excluir', icone: 'lixeira', perigo: true },
@@ -53,13 +57,16 @@ export class AlbumCardComponent {
     }
   }
 
-  protected readonly itensMenu: ItemMenuAcoes<AcaoAlbum>[] = [
+  protected readonly itensMenu = computed<ItemMenuAcoes<AcaoAlbum>[]>(() => [
+    ...(this.ehSobre() ? [{ id: 'editar' as const, rotulo: 'Editar', icone: 'editar' as const }] : []),
     { id: 'excluir', rotulo: 'Excluir tópico', icone: 'lixeira', perigo: true },
-  ];
+  ]);
 
   /** O total vem do backend; `fotos` traz só a prévia. */
   protected readonly contagem = computed(() =>
-    this.ehLocalizacao()
+    this.ehSobre()
+      ? 'Seção na vitrine · ' + (this.nomesEstilo[this.album().sobre?.estilo ?? 'CLASSICO'] ?? 'Clássico')
+      : this.ehLocalizacao()
       ? 'Mapa na vitrine'
       : this.ehFeedbacks()
       ? pluralizar(this.album().feedbacks.length, 'feedback', 'feedbacks')
@@ -81,6 +88,8 @@ export class AlbumCardComponent {
   protected aoEscolherAcao(acao: AcaoAlbum): void {
     if (acao === 'excluir') {
       this.excluir.emit(this.album());
+    } else if (acao === 'editar') {
+      this.editarSobre.emit();
     }
   }
 }

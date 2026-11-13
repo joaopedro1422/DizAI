@@ -21,9 +21,10 @@ import { FeedbackFormularioComponent } from './feedback-formulario/feedback-form
 import { FotosEscolhidas, FotosFormularioComponent } from './fotos-formulario/fotos-formulario.component';
 import { SeletorCorMarcaComponent } from './seletor-cor-marca/seletor-cor-marca.component';
 import { TopicoFormularioComponent } from './topico-formulario/topico-formulario.component';
+import { SobreFormularioComponent, SobreSalvo } from './sobre-formulario/sobre-formulario.component';
 import { VideoGaleriaComponent } from './video-galeria/video-galeria.component';
 
-type ModalGaleria = 'topico' | 'fotos' | 'feedback' | 'endereco' | 'vitrine' | 'excluir' | null;
+type ModalGaleria = 'topico' | 'fotos' | 'feedback' | 'endereco' | 'sobre' | 'vitrine' | 'excluir' | null;
 
 @Component({
   selector: 'app-galeria-page',
@@ -34,6 +35,7 @@ type ModalGaleria = 'topico' | 'fotos' | 'feedback' | 'endereco' | 'vitrine' | '
     EstadoVazioComponent,
     AlbumCardComponent,
     TopicoFormularioComponent,
+    SobreFormularioComponent,
     FotosFormularioComponent,
     CarregandoComponent,
     SeletorCorMarcaComponent,
@@ -204,6 +206,9 @@ export class GaleriaPageComponent implements OnInit {
       } else if (album.tipo === 'LOCALIZACAO') {
         this.modalAberto.set(null);
         this.toastService.mostrar('Mapa adicionado à sua vitrine');
+      } else if (album.tipo === 'SOBRE') {
+        this.modalAberto.set(null);
+        this.toastService.mostrar('Seção Sobre adicionada à sua vitrine');
       } else {
         this.abrirAdicionarFotos(album.id);
       }
@@ -211,6 +216,29 @@ export class GaleriaPageComponent implements OnInit {
       this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível criar o tópico. Tente de novo.'));
     } finally {
       this.criandoTopico.set(false);
+    }
+  }
+
+  /** "Sobre": editar pelo menu ⋮ do card. */
+  protected readonly albumDoSobre = signal<Album | null>(null);
+
+  protected abrirSobre(album: Album): void {
+    this.albumDoSobre.set(album);
+    this.modalAberto.set('sobre');
+  }
+
+  protected async salvarSobre({ nome, sobre }: SobreSalvo): Promise<void> {
+    const album = this.albumDoSobre();
+    if (!album || this.salvandoFeedback()) return;
+    this.salvandoFeedback.set(true);
+    try {
+      await this.galeriaService.atualizarSobre(album, nome, sobre);
+      this.toastService.mostrar('Seção Sobre atualizada');
+      this.modalAberto.set(null);
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível salvar a seção. Tente de novo.'));
+    } finally {
+      this.salvandoFeedback.set(false);
     }
   }
 

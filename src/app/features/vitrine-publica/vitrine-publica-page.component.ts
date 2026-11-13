@@ -1,6 +1,7 @@
 import { AvaliacoesVitrineComponent } from './avaliacoes-vitrine/avaliacoes-vitrine.component';
 import { semana, situacaoAgora } from './horario-loja';
 import { MapaLojaComponent } from '../../shared/components/mapa-loja/mapa-loja.component';
+import { SobreVitrineComponent } from '../../shared/components/sobre-vitrine/sobre-vitrine.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Location } from '@angular/common';
 import { Meta } from '@angular/platform-browser';
@@ -40,7 +41,7 @@ type AbaVitrine = 'galeria' | 'agenda' | 'orcamento';
 /** Página pública com os trabalhos da loja, aberta pelo cliente a partir do link enviado no WhatsApp. */
 @Component({
   selector: 'app-vitrine-publica-page',
-  imports: [RouterLink, IconeComponent, LogoComponent, VisualizadorFotoComponent, CarregandoComponent, UrlImagemPipe, AgendaPublicaComponent, OrcamentoPublicoComponent, AvaliacoesVitrineComponent, MapaLojaComponent, DicaSobrepostaComponent],
+  imports: [RouterLink, IconeComponent, LogoComponent, VisualizadorFotoComponent, CarregandoComponent, UrlImagemPipe, AgendaPublicaComponent, OrcamentoPublicoComponent, AvaliacoesVitrineComponent, MapaLojaComponent, DicaSobrepostaComponent, SobreVitrineComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './vitrine-publica-page.component.html',
   styleUrls: ['./vitrine-publica-page.component.css', './cartao-loja-vitrine.css', './layout-fotos-vitrine.css', './abas-vitrine.css'],

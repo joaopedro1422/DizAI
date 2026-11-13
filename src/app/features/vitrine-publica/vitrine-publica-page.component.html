@@ -158,14 +158,21 @@
     <main class="albuns animacao-entrada animacao-entrada--3" [attr.data-layout]="layoutFotos()">
       @for (album of albuns(); track album.slug) {
         <section class="album" [id]="idSecao(album)" [attr.aria-labelledby]="idSecao(album) + '-titulo'">
+          @if (album.tipo !== 'SOBRE') {
           <div class="album__cabecalho">
             <h2 class="album__nome" [id]="idSecao(album) + '-titulo'">{{ album.nome }}</h2>
             @if (album.tipo === 'FOTOS' || !album.tipo) {
               <span class="album__contagem">{{ contagemFotos(album) }}</span>
             }
           </div>
+          }
 
-          @if (album.tipo === 'LOCALIZACAO') {
+          @if (album.tipo === 'SOBRE') {
+            <!-- "Sobre": o nome do tópico vai pequeno em cima do título, dentro da seção -->
+            @if (album.sobre; as sobre) {
+              <app-sobre-vitrine [sobre]="sobre" [rotulo]="album.nome" [idTitulo]="idSecao(album) + '-titulo'" />
+            }
+          } @else if (album.tipo === 'LOCALIZACAO') {
             @if (album.endereco; as endereco) {
               <app-mapa-loja [endereco]="endereco" />
             }

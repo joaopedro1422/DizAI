@@ -4,7 +4,9 @@
     <span class="album__contagem">{{ contagem() }}</span>
   </div>
   <div class="album__acoes">
-    @if (ehLocalizacao()) {
+    @if (ehSobre()) {
+      <!-- "Sobre": editar fica no menu ⋮ -->
+    } @else if (ehLocalizacao()) {
       <button type="button" class="btn btn--secundario btn--pequeno" (click)="editarEndereco.emit()">
         <app-icone nome="editar" [tamanho]="14" [espessura]="2.2" />
         Endereço
@@ -22,7 +24,7 @@
     }
     <app-menu-acoes
       rotuloBotao="Opções do tópico"
-      [itens]="itensMenu"
+      [itens]="itensMenu()"
       (escolher)="aoEscolherAcao($event)"
     />
   </div>
@@ -32,7 +34,19 @@
   <p class="album__descricao">{{ album().descricao }}</p>
 }
 
-@if (ehLocalizacao()) {
+@if (ehSobre()) {
+  @if (album().sobre; as sobre) {
+    <div class="sobre-resumo">
+      @if (sobre.foto) {
+        <img class="sobre-resumo__foto" [src]="sobre.foto | urlImagem" alt="">
+      }
+      <div class="sobre-resumo__textos">
+        <strong>{{ sobre.titulo }}</strong>
+        <p>{{ sobre.texto }}</p>
+      </div>
+    </div>
+  }
+} @else if (ehLocalizacao()) {
   @if (album().endereco; as endereco) {
     <app-mapa-loja [endereco]="endereco" [altura]="170" [comBotoes]="false" />
   }

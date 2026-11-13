@@ -1,3 +1,4 @@
+import { Sobre } from './galeria.model';
 import { CorMarca } from './perfil.model';
 import { AreaCorFundoVitrine, CorFundoVitrine, EstiloAbas, EstiloCor, EstiloMenu, FonteVitrine, LayoutFotos } from './vitrine.model';
 
@@ -11,10 +12,12 @@ export interface AlbumPublico {
   /** Os ids das fotos de `fotos`, na mesma ordem (para o link de cada foto). */
   idsFotos?: number[];
   /** FEEDBACKS: tópico de depoimentos (slides), sem fotos. Sem o campo (backend antigo) = fotos. */
-  tipo?: 'FOTOS' | 'FEEDBACKS' | 'LOCALIZACAO';
+  tipo?: 'FOTOS' | 'FEEDBACKS' | 'LOCALIZACAO' | 'SOBRE';
   feedbacks?: FeedbackPublico[];
   /** LOCALIZACAO ("Como chegar"): o endereço do mapa. */
   endereco?: string | null;
+  /** SOBRE: título, texto, foto e estilo. */
+  sobre?: Sobre | null;
 }
 
 /** Depoimento de cliente na vitrine. data: "AAAA-MM-DD" ou null. */

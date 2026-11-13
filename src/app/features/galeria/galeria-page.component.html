@@ -82,6 +82,7 @@
               (editarFeedback)="abrirFeedback(album.id, $event)"
               (excluirFeedback)="excluirFeedback(album.id, $event)"
               (editarEndereco)="abrirEndereco(album)"
+              (editarSobre)="abrirSobre(album)"
             />
           </div>
         }
@@ -141,6 +142,11 @@
   @case ('feedback') {
     <app-bottom-sheet [titulo]="feedbackEmEdicao() ? 'Editar feedback' : 'Novo feedback'" (fechar)="fecharModal()">
       <app-feedback-formulario [feedback]="feedbackEmEdicao()" [salvando]="salvandoFeedback()" (salvo)="salvarFeedback($event)" />
+    </app-bottom-sheet>
+  }
+  @case ('sobre') {
+    <app-bottom-sheet titulo="Editar seção Sobre" (fechar)="fecharModal()">
+      <app-sobre-formulario [album]="albumDoSobre()" [salvando]="salvandoFeedback()" (salvo)="salvarSobre($event)" />
     </app-bottom-sheet>
   }
   @case ('endereco') {

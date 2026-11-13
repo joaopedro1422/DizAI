@@ -7,13 +7,14 @@ import { campoComErro } from '../../../core/utils/validadores';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { EnderecoFormularioComponent } from '../endereco-formulario/endereco-formulario.component';
+import { SobreFormularioComponent, SobreSalvo } from '../sobre-formulario/sobre-formulario.component';
 
 /** Formulário do modal "Novo tópico". Depois de criar, a tela abre a seleção de fotos. */
 @Component({
   selector: 'app-topico-formulario',
-  imports: [ReactiveFormsModule, CarregandoComponent, IconeComponent, EnderecoFormularioComponent],
+  imports: [ReactiveFormsModule, CarregandoComponent, IconeComponent, EnderecoFormularioComponent, SobreFormularioComponent],
   template: `
-    <form class="formulario" [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
+    <div class="formulario">
       <div class="tipos" role="radiogroup" aria-label="Tipo do tópico">
         <button type="button" role="radio" class="tipo" [class.tipo--ativo]="!ehFeedbacks()" [attr.aria-checked]="!ehFeedbacks()" (click)="escolherTipo('FOTOS')">
           <app-icone nome="imagem" [tamanho]="20" />
@@ -27,7 +28,17 @@ import { EnderecoFormularioComponent } from '../endereco-formulario/endereco-for
           <span class="tipo__estrela" aria-hidden="true">📍</span>
           <span class="tipo__textos"><strong>Como chegar</strong><span>Mapa da loja</span></span>
         </button>
+        <button type="button" role="radio" class="tipo" [class.tipo--ativo]="ehSobre()" [attr.aria-checked]="ehSobre()" (click)="escolherTipo('SOBRE')">
+          <app-icone nome="pessoa" [tamanho]="20" />
+          <span class="tipo__textos"><strong>Sobre</strong><span>A sua história</span></span>
+        </button>
       </div>
+
+      @if (ehSobre()) {
+        <!-- o "Sobre" tem o próprio formulário: os 3 estilos, título, texto e a foto -->
+        <app-sobre-formulario [salvando]="salvando()" (salvo)="salvarSobre($event)" />
+      } @else {
+      <form class="formulario" [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
 
       <div class="campo">
         <label for="topico-nome" class="campo__rotulo">Nome do tópico</label>
@@ -72,7 +83,9 @@ import { EnderecoFormularioComponent } from '../endereco-formulario/endereco-for
           {{ ehLocalizacao() ? 'Criar e mostrar o mapa' : ehFeedbacks() ? 'Criar e adicionar feedback' : 'Criar e adicionar fotos' }}
         }
       </button>
-    </form>
+      </form>
+      }
+    </div>
   `,
   styles: `
     .formulario {
@@ -87,14 +100,8 @@ import { EnderecoFormularioComponent } from '../endereco-formulario/endereco-for
 
     .tipos {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
-    }
-
-    @media (max-width: 420px) {
-      .tipos {
-        grid-template-columns: 1fr;
-      }
     }
 
     .tipo {
@@ -162,6 +169,14 @@ export class TopicoFormularioComponent {
 
   protected ehLocalizacao(): boolean {
     return this.tipoAtual() === 'LOCALIZACAO';
+  }
+
+  protected ehSobre(): boolean {
+    return this.tipoAtual() === 'SOBRE';
+  }
+
+  protected salvarSobre({ nome, sobre }: SobreSalvo): void {
+    this.salvo.emit({ nome, descricao: '', tipo: 'SOBRE', sobre });
   }
 
   /** Feedbacks e "Como chegar" já vêm com o nome pronto (se o lojista ainda não escreveu outro). */

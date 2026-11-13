@@ -22,10 +22,27 @@ export interface Album {
   feedbacks: Feedback[];
   /** Só no "Como chegar" (LOCALIZACAO): o endereço que vai no mapa. */
   endereco: string | null;
+  /** Só no "Sobre" (SOBRE): título, texto, foto e o estilo do layout. */
+  sobre: Sobre | null;
 }
 
-/** FOTOS (o de sempre), FEEDBACKS (depoimentos em slides) ou LOCALIZACAO ("Como chegar", com o mapa). */
-export type TipoTopico = 'FOTOS' | 'FEEDBACKS' | 'LOCALIZACAO';
+/** Layout do tópico "Sobre": foto em cima (CLASSICO), foto em arco com o selo (JANELA) ou foto cheia com cartão (CAPA). */
+export type EstiloSobre = 'CLASSICO' | 'JANELA' | 'CAPA';
+
+/** O conteúdo do "Sobre". Extras por estilo: assinatura (CLASSICO), desde (JANELA) e até 2 destaques (CAPA). */
+export interface Sobre {
+  estilo: EstiloSobre;
+  titulo: string;
+  texto: string;
+  /** Referência da foto principal (lojas/{slug}/sobre/...); null = sem foto. */
+  foto: string | null;
+  assinatura: string | null;
+  desde: number | null;
+  destaques: string[];
+}
+
+/** FOTOS (o de sempre), FEEDBACKS (depoimentos em slides), LOCALIZACAO ("Como chegar", com o mapa) ou SOBRE. */
+export type TipoTopico = 'FOTOS' | 'FEEDBACKS' | 'LOCALIZACAO' | 'SOBRE';
 
 /** Depoimento de cliente num tópico de feedbacks. data: "AAAA-MM-DD" ou null. */
 export interface Feedback {
@@ -43,4 +60,5 @@ export interface NovoAlbum {
   descricao: string;
   tipo?: TipoTopico;
   endereco?: string | null;
+  sobre?: Sobre | null;
 }

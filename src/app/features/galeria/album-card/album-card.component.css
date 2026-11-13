@@ -125,3 +125,40 @@
   font-weight: 600;
   color: var(--cor-texto-suave);
 }
+
+/* "Sobre": a foto pequena, o título e o começo do texto */
+.sobre-resumo {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.sobre-resumo__foto {
+  flex: none;
+  width: 84px;
+  height: 84px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.sobre-resumo__textos {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sobre-resumo__textos strong {
+  font-size: 14.5px;
+}
+
+.sobre-resumo__textos p {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}

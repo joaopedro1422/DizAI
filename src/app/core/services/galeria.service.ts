@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { urlDoPerfil } from '../api/api-url';
 import { SessaoService } from '../auth/sessao.service';
-import { Album, Feedback, Foto, NovoAlbum, NovoFeedback, TipoTopico } from '../models/galeria.model';
+import { Album, Feedback, Foto, NovoAlbum, NovoFeedback, Sobre, TipoTopico } from '../models/galeria.model';
 import { VisitasGaleria } from '../models/visitas.model';
 import { CarregamentoUnico } from '../utils/carregamento-unico';
 
@@ -25,6 +25,7 @@ interface AlbumApi {
   tipo?: TipoTopico | null;
   feedbacks?: Feedback[];
   endereco?: string | null;
+  sobre?: Sobre | null;
 }
 
 interface ExclusaoAlbumApi {
@@ -65,6 +66,12 @@ export class GaleriaService {
    * Depois busca a galeria de novo para a prévia e as contagens virem do backend.
    */
   /** "Como chegar": troca o endereço do mapa (nome e descrição continuam os mesmos). */
+  /** "Sobre": o nome do tópico (o rótulo) e o conteúdo da seção. */
+  async atualizarSobre(album: Album, nome: string, sobre: Sobre): Promise<void> {
+    await firstValueFrom(this.http.put<unknown>(this.url(`/albuns/${album.id}`), { nome, descricao: album.descricao, sobre }));
+    await this.buscar();
+  }
+
   async atualizarEndereco(album: Album, endereco: string): Promise<void> {
     await firstValueFrom(
       this.http.put<unknown>(this.url(`/albuns/${album.id}`), { nome: album.nome, descricao: album.descricao, endereco }),
@@ -140,5 +147,6 @@ function paraAlbum({ previa, descricao, tipo, feedbacks, ...album }: AlbumApi): 
     tipo: tipo ?? 'FOTOS',
     feedbacks: feedbacks ?? [],
     endereco: album.endereco ?? null,
+    sobre: album.sobre ?? null,
   };
 }
