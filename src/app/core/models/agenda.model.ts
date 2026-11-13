@@ -159,6 +159,14 @@ export interface NumerosAgenda {
   clientesRecorrentes: number;
   /** "Dias mais movimentados": SEG..DOM. */
   porDiaDaSemana: { dia: string; valor: number; atendimentos: number }[];
+  /** O mesmo trecho do período anterior ("outubro", "a semana passada", "2025"), para a comparação no faturamento. */
+  faturamentoAnterior: number;
+  periodoAnterior: string;
+  /** Marcados pelo assistente no WhatsApp e, desses, quantos fora do expediente da agenda. */
+  peloAssistente: number;
+  foraDoHorario: number;
+  /** Horários mais procurados: atendimentos por dia da semana e hora de início. */
+  mapaDeCalor: { horaInicio: number; horaFim: number; celulas: { dia: string; hora: number; atendimentos: number }[] };
 }
 
 export interface PontoSerie {

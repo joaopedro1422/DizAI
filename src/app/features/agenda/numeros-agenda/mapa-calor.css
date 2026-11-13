@@ -1,0 +1,169 @@
+/*
+ * Números da agenda: a comparação com o período anterior (no cartão azul), o cartão do assistente e o mapa de calor
+ * dos horários mais procurados (dias nas colunas, horas nas linhas; a cor vai do cinza-azulado ao azul-noite e o
+ * horário campeão ganha o anel amarelo).
+ */
+
+/* ---------- comparação no faturamento ---------- */
+.comparacao {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 4px 10px;
+  border-radius: var(--raio-pilula);
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.comparacao b {
+  font-family: var(--fonte-numero);
+  font-weight: 700;
+}
+
+.comparacao--sobe b {
+  color: #7ee2b8;
+}
+
+.comparacao--desce b {
+  color: #ffb4a8;
+}
+
+/* ---------- o assistente ---------- */
+.assistente {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.assistente__numero {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo-suave);
+}
+
+.assistente__numero strong {
+  font-family: var(--fonte-numero);
+  font-size: 26px;
+  line-height: 1.1;
+  color: var(--cor-noite);
+}
+
+.assistente__numero span {
+  color: var(--cor-texto-secundario);
+  font-size: 12.5px;
+  line-height: 1.35;
+}
+
+.assistente__numero--noite {
+  background: var(--fundo-marca);
+}
+
+.assistente__numero--noite strong {
+  color: var(--cor-gema);
+}
+
+.assistente__numero--noite span {
+  color: var(--cor-texto-sobre-escuro);
+}
+
+.assistente__frase {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--cor-texto-secundario);
+  font-size: 13px;
+}
+
+/* ---------- mapa de calor ---------- */
+.calor {
+  display: grid;
+  grid-template-columns: 34px repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.calor__dia,
+.calor__hora {
+  color: var(--cor-texto-suave);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.calor__dia {
+  padding-bottom: 2px;
+  text-align: center;
+}
+
+.calor__dia--destaque {
+  color: var(--cor-noite);
+}
+
+.calor__hora {
+  align-self: center;
+  font-family: var(--fonte-numero);
+  font-weight: 600;
+}
+
+.calor__celula {
+  position: relative;
+  min-height: 26px;
+  padding: 0;
+  border: none;
+  border-radius: 7px;
+  background: color-mix(in srgb, var(--cor-noite) calc(var(--forca) * 100%), #eef2fa);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.calor__celula--vazia {
+  background: #f4f6fa;
+}
+
+.calor__celula:hover,
+.calor__celula:focus-visible {
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px -4px rgba(19, 32, 74, 0.45);
+  outline: none;
+}
+
+/* o horário campeão: o anel amarelo */
+.calor__celula--topo {
+  box-shadow: 0 0 0 2px var(--cor-gema);
+}
+
+.calor__legenda {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: 10px;
+  color: var(--cor-texto-suave);
+  font-size: 11px;
+}
+
+.calor__legenda i {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.calor__destaque {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-gema-clara);
+  color: var(--cor-texto-gema);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (min-width: 1024px) {
+  .calor__celula {
+    min-height: 30px;
+  }
+}

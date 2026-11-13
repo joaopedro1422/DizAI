@@ -70,11 +70,17 @@
   height: 18px;
   fill: none;
   stroke: currentColor;
-  stroke-width: 2;
+  stroke-width: 2.2;
+  stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.semana-chip {
+/* "Esta semana" e o PDF na mesma linha, o PDF à direita */
+.linha-semana {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   margin-top: 10px;
 }
 
@@ -179,7 +185,7 @@
 .painel {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 14px;
+  gap: 18px;
   transition: opacity 0.2s ease;
 }
 
@@ -191,7 +197,7 @@
 .kpis {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 14px;
 }
 
 .kpi {
@@ -204,7 +210,7 @@
   border: 1px solid var(--cor-borda-suave);
   border-radius: var(--raio-grande);
   background: var(--cor-fundo);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 8px 22px -8px rgba(15, 23, 42, 0.1);
 }
 
 .kpi__icone {
@@ -283,7 +289,8 @@
   border: 1px solid var(--cor-borda-suave);
   border-radius: var(--raio-grande);
   background: var(--cor-fundo);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 6px 18px rgba(15, 23, 42, 0.04);
+  /* sombra bem leve, para o cartão se destacar do fundo da página */
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 8px 22px -8px rgba(15, 23, 42, 0.1);
 }
 
 .cartao__topo {
@@ -445,6 +452,37 @@
   text-align: center;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
+}
+
+.rotulos-x__item--hoje {
+  color: var(--cor-noite);
+  font-weight: 800;
+}
+
+/* ---------- a série de faturamento: barras grossas com a data de cada uma e rolagem lateral (celular e PC) ---------- */
+.serie-rolagem {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+
+.serie-trilho {
+  min-width: max(100%, calc(var(--n, 7) * 42px));
+}
+
+.serie-trilho .colunas,
+.serie-trilho .rotulos-x {
+  gap: 6px;
+}
+
+.serie-trilho .coluna__barra {
+  max-width: 28px;
+}
+
+.serie-trilho .rotulos-x__item,
+.serie-trilho .rotulos-x__item:first-child,
+.serie-trilho .rotulos-x__item:last-child {
+  text-align: center;
 }
 
 .rotulos-x__item:first-child {
@@ -709,7 +747,7 @@
 @media (min-width: 760px) {
   .kpis {
     grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
-    gap: 14px;
+    gap: 18px;
   }
 
   .kpi--destaque,
@@ -732,7 +770,7 @@
 
   .painel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
+    gap: 20px;
   }
 
   .kpis,

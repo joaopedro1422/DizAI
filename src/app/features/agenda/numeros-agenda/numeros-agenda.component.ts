@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, computed, effect, inject, signal, viewChild } from '@angular/core';
 
 import { ERRO_AO_CARREGAR, mensagemDoErro } from '../../../core/api/erro-api';
 import { NumerosAgenda, PontoSerie } from '../../../core/models/agenda.model';
@@ -51,7 +51,7 @@ const DIAS_DA_SEMANA: Record<string, { curto: string; longo: string }> = {
   imports: [CarregandoComponent, IconeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './numeros-agenda.component.html',
-  styleUrl: './numeros-agenda.component.css',
+  styleUrls: ['./numeros-agenda.component.css', './mapa-calor.css'],
 })
 export class NumerosAgendaComponent implements OnInit {
   private readonly agendaService = inject(AgendaService);
@@ -95,13 +95,17 @@ export class NumerosAgendaComponent implements OnInit {
   protected readonly colunas = computed(() => {
     const serie = this.numeros()?.serie ?? [];
     const topo = this.topoSerie();
-    const meio = Math.floor((serie.length - 1) / 2);
-    return serie.map((ponto, i) => {
+    const agora = new Date();
+    const hoje = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, '0')}-${String(agora.getDate()).padStart(2, '0')}`;
+    return serie.map((ponto) => {
       const valor = Number(ponto.valor);
+      const ehHoje = this.passoDaSerie() === 1 && ponto.inicio === hoje;
       return {
         chave: ponto.inicio,
         altura: topo > 0 && valor > 0 ? Math.max(2, (valor / topo) * 100) : 0,
-        rotulo: i === 0 || i === meio || i === serie.length - 1 ? rotuloDoPonto(ponto.inicio, this.passoDaSerie()) : '',
+        // cada barra tem a sua data (a série rola para o lado); a de hoje é "hoje"
+        rotulo: ehHoje ? 'hoje' : rotuloDoPonto(ponto.inicio, this.passoDaSerie()),
+        hoje: ehHoje,
         titulo: this.tituloDoPonto(ponto),
         detalhe: `${formatarReal(valor)} · ${ponto.atendimentos} ${ponto.atendimentos === 1 ? 'atendimento' : 'atendimentos'}`,
       };
@@ -181,6 +185,63 @@ export class NumerosAgendaComponent implements OnInit {
     return n && n.clientes > 0 ? (n.clientesRecorrentes / n.clientes) * 100 : 0;
   });
 
+  // ------------------------------------------------------------------ comparação com o período anterior
+  /** "+18%" (sobe), "-7%" (desce) ou "igual", contra o mesmo trecho do período anterior; null sem base para comparar. */
+  protected readonly comparacao = computed(() => {
+    const n = this.numeros();
+    if (!n) return null;
+    const anterior = Number(n.faturamentoAnterior ?? 0);
+    const atual = Number(n.faturamento);
+    if (anterior <= 0) return null;
+    const variacao = ((atual - anterior) / anterior) * 100;
+    const nome = n.periodoAnterior ?? '';
+    const contra = nome.startsWith('a ') ? `à ${nome.slice(2)}` : nome.startsWith('os ') ? `aos ${nome.slice(3)}` : `a ${nome}`;
+    return {
+      sentido: Math.abs(variacao) < 0.5 ? 'igual' : variacao > 0 ? 'sobe' : 'desce',
+      texto: Math.abs(variacao) < 0.5 ? 'igual' : `${variacao > 0 ? '▲' : '▼'} ${Math.abs(variacao).toFixed(0)}%`,
+      contra: `em relação ${contra}`,
+      anterior,
+    };
+  });
+
+  // ------------------------------------------------------------------ horários mais procurados (mapa de calor)
+  protected readonly diasDoCalor = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM'];
+  protected readonly calor = computed(() => {
+    const mapa = this.numeros()?.mapaDeCalor;
+    if (!mapa) return null;
+    const maior = Math.max(0, ...mapa.celulas.map((c) => c.atendimentos));
+    const porChave = new Map(mapa.celulas.map((c) => [`${c.dia}-${c.hora}`, c.atendimentos]));
+    const horas = Array.from({ length: Math.max(0, mapa.horaFim - mapa.horaInicio) }, (_, i) => mapa.horaInicio + i);
+    const linhas = horas.map((hora) => ({
+      hora,
+      rotulo: `${String(hora).padStart(2, '0')}h`,
+      celulas: this.diasDoCalor.map((dia) => {
+        const atendimentos = porChave.get(`${dia}-${hora}`) ?? 0;
+        const nome = DIAS_DA_SEMANA[dia]?.longo ?? dia;
+        return {
+          chave: `${dia}-${hora}`,
+          atendimentos,
+          // a cor começa visível (0,18) e vai até o azul-noite cheio no horário campeão
+          forca: maior > 0 && atendimentos > 0 ? 0.18 + 0.82 * (atendimentos / maior) : 0,
+          topo: maior > 0 && atendimentos === maior,
+          titulo: `${nome}, ${String(hora).padStart(2, '0')}:00`,
+          detalhe: pluralizar(atendimentos, 'atendimento', 'atendimentos'),
+        };
+      }),
+    }));
+    let campeao: { dia: string; hora: number } | null = null;
+    for (const c of mapa.celulas) {
+      if (maior > 0 && c.atendimentos === maior && !campeao) campeao = { dia: c.dia, hora: c.hora };
+    }
+    return {
+      linhas,
+      vazio: maior === 0,
+      campeao: campeao
+        ? `${DIAS_DA_SEMANA[campeao.dia]?.longo ?? campeao.dia} às ${String(campeao.hora).padStart(2, '0')}h é o horário mais procurado ${this.textoPeriodo()}.`
+        : null,
+    };
+  });
+
   /** Quanto do faturamento total (atendimentos + produtos) veio de cada lado. */
   protected readonly divisao = computed(() => {
     const n = this.numeros();
@@ -193,6 +254,20 @@ export class NumerosAgendaComponent implements OnInit {
       produtos: total > 0 ? (produtos / total) * 100 : 0,
     };
   });
+
+  /** A série rola para o lado: ao carregar, ela abre no fim (os dias mais recentes, com o "hoje"). */
+  private readonly rolagemSerie = viewChild<ElementRef<HTMLElement>>('rolagemSerie');
+
+  constructor() {
+    effect(() => {
+      const area = this.rolagemSerie()?.nativeElement;
+      if (!area || !this.colunas().length) return;
+      requestAnimationFrame(() => {
+        const hoje = area.querySelector<HTMLElement>('.rotulos-x__item--hoje');
+        area.scrollLeft = hoje ? Math.max(0, hoje.offsetLeft - area.clientWidth + hoje.offsetWidth * 4) : area.scrollWidth;
+      });
+    });
+  }
 
   ngOnInit(): void {
     void this.carregar();
@@ -210,7 +285,13 @@ export class NumerosAgendaComponent implements OnInit {
       const periodo = this.textoPeriodo();
       const passo = this.passoDaSerie();
       const destaques: DestaqueRelatorio[] = [
-        { rotulo: 'Faturamento dos atendimentos', valor: real(n.faturamento), nota: `atendimentos ${periodo}` },
+        {
+          rotulo: 'Faturamento dos atendimentos',
+          valor: real(n.faturamento),
+          nota: this.comparacao()
+            ? `${this.comparacao()!.texto} ${this.comparacao()!.contra} (${real(this.comparacao()!.anterior)})`
+            : `atendimentos ${periodo}`,
+        },
         { rotulo: 'Ticket médio', valor: real(n.valorMedio), nota: 'por atendimento' },
         {
           rotulo: 'Atendimentos',
@@ -225,6 +306,11 @@ export class NumerosAgendaComponent implements OnInit {
             }]
           : []),
         { rotulo: 'Clientes', valor: String(n.clientes), nota: `${n.clientesRecorrentes} voltaram mais de uma vez` },
+        {
+          rotulo: 'Marcados pelo assistente',
+          valor: String(n.peloAssistente),
+          nota: `${n.foraDoHorario} fora do seu horário`,
+        },
         ...(this.mostrarProdutos(n)
           ? [{
               rotulo: 'Faturado com produtos',

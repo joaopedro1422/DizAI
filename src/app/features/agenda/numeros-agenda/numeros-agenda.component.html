@@ -1,4 +1,4 @@
-<!-- 1ª linha: o mês e o ano (abre no mês atual) e, à direita, o relatório em PDF; embaixo, "Esta semana" -->
+<!-- 1ª linha: o mês e o ano (abre no mês atual) -->
 <div class="barra-numeros">
   <div class="filtros">
     <label class="seletor-mes chip" [class.chip--ativo]="!!mes()">
@@ -20,6 +20,14 @@
       </select>
     </label>
   </div>
+</div>
+<!-- 2ª linha: "Esta semana" e, à direita, o relatório em PDF -->
+<div class="linha-semana">
+  <div class="grupo-chips" role="group" aria-label="Período rápido">
+    <button type="button" class="chip" [class.chip--ativo]="semanaAtual()" [attr.aria-pressed]="semanaAtual()" (click)="alternarSemana()">
+      Esta semana
+    </button>
+  </div>
   <button
     type="button"
     class="exportar-pdf"
@@ -30,15 +38,11 @@
     (click)="exportarPdf()"
   >
     <svg class="exportar-pdf__icone" viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
-      <path d="M14 3v5h5" />
+      <path d="M12 4v11" />
+      <path d="M7 10.5l5 5 5-5" />
+      <path d="M5 19.5h14" />
     </svg>
     <span class="exportar-pdf__texto">PDF</span>
-  </button>
-</div>
-<div class="grupo-chips semana-chip" role="group" aria-label="Período rápido">
-  <button type="button" class="chip" [class.chip--ativo]="semanaAtual()" [attr.aria-pressed]="semanaAtual()" (click)="alternarSemana()">
-    Esta semana
   </button>
 </div>
 
@@ -50,6 +54,9 @@
         <span class="kpi__rotulo">Faturamento dos atendimentos</span>
         <span class="kpi__valor">{{ real(n.faturamento) }}</span>
         <span class="kpi__nota">atendimentos {{ textoPeriodo() }}</span>
+        @if (comparacao(); as c) {
+          <span class="comparacao comparacao--{{ c.sentido }}"><b>{{ c.texto }}</b> {{ c.contra }}</span>
+        }
       </div>
       <div class="kpi kpi--ticket">
         <span class="kpi__icone"><app-icone nome="grafico" [tamanho]="16" [espessura]="2" /></span>
@@ -92,6 +99,9 @@
             <span class="eixo__linha" style="bottom: 50%"><span class="eixo__rotulo">{{ real(topoSerie() / 2) }}</span></span>
             <span class="eixo__linha eixo__linha--base" style="bottom: 0"></span>
           </div>
+          <!-- no celular as barras ficam mais grossas e a série rola para o lado -->
+          <div class="serie-rolagem" #rolagemSerie>
+          <div class="serie-trilho" [style.--n]="colunas().length">
           <div class="colunas" role="list" [attr.aria-label]="'Faturamento ' + nomeDaSerie()">
             @for (coluna of colunas(); track coluna.chave) {
               <button
@@ -110,8 +120,10 @@
           </div>
           <div class="rotulos-x" aria-hidden="true">
             @for (coluna of colunas(); track coluna.chave) {
-              <span class="rotulos-x__item">{{ coluna.rotulo }}</span>
+              <span class="rotulos-x__item" [class.rotulos-x__item--hoje]="coluna.hoje">{{ coluna.rotulo }}</span>
             }
+          </div>
+          </div>
           </div>
           @if (dica(); as d) {
             @if (d.grafico === 'serie') {
@@ -201,6 +213,91 @@
         </ol>
       }
     </section>
+
+    <!-- o que o assistente marcou e quantos fora do horário (o que o lojista não teria respondido a tempo) -->
+    @if (n.peloAssistente > 0) {
+      <section class="cartao" aria-labelledby="titulo-assistente">
+        <header class="cartao__topo">
+          <div>
+            <h2 class="cartao__titulo" id="titulo-assistente">O assistente na sua agenda</h2>
+            <p class="cartao__sub">Horários marcados por ele no WhatsApp {{ textoPeriodo() }}</p>
+          </div>
+        </header>
+        <div class="assistente">
+          <div class="assistente__numero">
+            <strong>{{ n.peloAssistente }}</strong>
+            <span>de {{ n.realizados }} {{ n.realizados === 1 ? 'atendimento' : 'atendimentos' }} marcados pelo assistente</span>
+          </div>
+          <div class="assistente__numero assistente__numero--noite">
+            <strong>{{ n.foraDoHorario }}</strong>
+            <span>marcados fora do seu horário</span>
+          </div>
+          @if (n.foraDoHorario > 0) {
+            <p class="assistente__frase">Enquanto você não estava atendendo, ele marcou {{ n.foraDoHorario === 1 ? '1 horário' : n.foraDoHorario + ' horários' }}.</p>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- horários mais procurados: o mapa de calor de dia da semana × hora -->
+    @if (calor(); as mapa) {
+      <section class="cartao cartao--largo" aria-labelledby="titulo-calor">
+        <header class="cartao__topo">
+          <div>
+            <h2 class="cartao__titulo" id="titulo-calor">Horários mais procurados</h2>
+            <p class="cartao__sub">Atendimentos por dia e hora de início {{ textoPeriodo() }}</p>
+          </div>
+        </header>
+        @if (mapa.vazio) {
+          <p class="cartao__vazio">O mapa aparece assim que os atendimentos acontecerem.</p>
+        } @else {
+          <div class="grafico" (mouseleave)="esconderDica()">
+            <div class="calor" role="grid" aria-label="Atendimentos por dia da semana e hora">
+              <span></span>
+              @for (dia of diasDoCalor; track dia) {
+                <span class="calor__dia">{{ dia === 'SAB' ? 'Sáb' : dia.charAt(0) + dia.slice(1).toLowerCase() }}</span>
+              }
+              @for (linha of mapa.linhas; track linha.hora) {
+                <span class="calor__hora">{{ linha.rotulo }}</span>
+                @for (celula of linha.celulas; track celula.chave) {
+                  <button
+                    type="button"
+                    class="calor__celula"
+                    [class.calor__celula--vazia]="celula.atendimentos === 0"
+                    [class.calor__celula--topo]="celula.topo"
+                    [style.--forca]="celula.forca"
+                    [attr.aria-label]="celula.titulo + ': ' + celula.detalhe"
+                    (mouseenter)="mostrarDica($event, 'calor', celula.titulo, celula.detalhe)"
+                    (focus)="mostrarDica($event, 'calor', celula.titulo, celula.detalhe)"
+                    (click)="mostrarDica($event, 'calor', celula.titulo, celula.detalhe)"
+                    (blur)="esconderDica()"
+                  ></button>
+                }
+              }
+            </div>
+            <div class="calor__legenda" aria-hidden="true">
+              Menos
+              <i style="background: #f4f6fa"></i>
+              <i style="background: color-mix(in srgb, var(--cor-noite) 30%, #eef2fa)"></i>
+              <i style="background: color-mix(in srgb, var(--cor-noite) 60%, #eef2fa)"></i>
+              <i style="background: var(--cor-noite)"></i>
+              Mais
+            </div>
+            @if (dica(); as d) {
+              @if (d.grafico === 'calor') {
+                <div class="dica" [style.left.px]="d.x" [style.top.px]="d.y" role="status">
+                  <strong>{{ d.titulo }}</strong>
+                  <span>{{ d.detalhe }}</span>
+                </div>
+              }
+            }
+          </div>
+          @if (mapa.campeao) {
+            <p class="calor__destaque">{{ mapa.campeao }}</p>
+          }
+        }
+      </section>
+    }
 
     <!-- dias mais movimentados: o de mais atendimentos em destaque -->
     <section class="cartao" aria-labelledby="titulo-semana">
@@ -324,7 +421,7 @@
             </label>
             @if (comissao() !== null) {
               <p class="comissao__resumo">
-                Comissões: <b>{{ real(totalComissoes().total) }}</b> · Fica para o negócio: <b>{{ real(totalComissoes().fica) }}</b>
+                Comissões: <b>{{ real(totalComissoes().total) }}</b><br />Fica para o negócio: <b>{{ real(totalComissoes().fica) }}</b>
               </p>
             }
           }
