@@ -23,6 +23,8 @@ export const ICONES = {
   maisOpcoes: ['M12 5.5h.01M12 12h.01M12 18.5h.01'],
   menu: ['M4 6.5h16M4 12h16M4 17.5h16'],
   caixa: ['M3 8l9-5 9 5-9 5-9-5z', 'M3 8v8l9 5 9-5V8', 'M12 13v8'],
+  /** Chave inglesa: os serviços (cards sem foto). */
+  ferramenta: ['M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z'],
   pergunta: [CIRCULO, 'M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.4', 'M12 17h.01'],
   conversa: ['M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.6-5.2A8.5 8.5 0 1 1 21 11.5z'],
   imagem: [

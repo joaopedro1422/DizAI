@@ -12,18 +12,20 @@ type AcaoProduto = 'editar' | 'duplicar' | 'excluir';
 
 @Component({
   selector: 'app-produto-card',
+  host: { '[class.compacto]': '!produto().fotoUrl' },
   imports: [IconeComponent, MenuAcoesComponent, PrecoProdutoPipe, UrlImagemPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (produto().fotoUrl; as fotoUrl) {
       <img class="produto__foto" [src]="fotoUrl | urlImagem" alt="">
     } @else {
+      <!-- sem foto: o ícone pequeno, na altura da categoria + nome -->
       <span class="produto__foto foto-vazia" aria-hidden="true">
-        <app-icone nome="caixa" [tamanho]="24" />
+        <app-icone [nome]="servico() ? 'ferramenta' : 'caixa'" [tamanho]="18" />
       </span>
     }
 
-    <div class="produto__textos">
+    <div class="produto__cabeca">
       <span class="produto__categoria">
         {{ produto().categoria }}
         @if (produto().produtoAVenda) {
@@ -31,7 +33,12 @@ type AcaoProduto = 'editar' | 'duplicar' | 'excluir';
         }
       </span>
       <h2 class="produto__nome">{{ produto().nome }}</h2>
-      <p class="produto__descricao">{{ produto().descricao }}</p>
+    </div>
+
+    <div class="produto__textos">
+      @if (produto().descricao) {
+        <p class="produto__descricao">{{ produto().descricao }}</p>
+      }
       <div class="produto__rodape">
         <span class="produto__preco">{{ produto() | precoProduto }}</span>
         <span class="produto__opcoes">{{ resumoOpcoes() }}</span>
@@ -52,26 +59,61 @@ type AcaoProduto = 'editar' | 'duplicar' | 'excluir';
     />
   `,
   styles: `
+    /* com foto: a foto ocupa a altura toda à esquerda; sem foto: o ícone pequeno ao lado da categoria + nome e o
+       resto (descrição, preço, duração) na largura toda do card */
     :host {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-areas:
+        'foto cabeca menu'
+        'foto textos textos';
+      align-items: start;
+      column-gap: 14px;
+      row-gap: 6px;
       padding: 14px;
       border: 1px solid var(--cor-borda);
       border-radius: 16px;
       background: var(--cor-fundo);
     }
 
+    :host(.compacto) {
+      grid-template-areas:
+        'foto cabeca menu'
+        'textos textos textos';
+      column-gap: 12px;
+      row-gap: 8px;
+    }
+
     .produto__foto {
-      flex: none;
+      grid-area: foto;
       width: 72px;
       height: 72px;
       border-radius: 12px;
       object-fit: cover;
     }
 
+    /* o ícone dos itens sem foto: pequeno, na altura da categoria + nome */
+    :host(.compacto) .produto__foto {
+      display: grid;
+      place-items: center;
+      align-self: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: var(--cor-primaria-clara);
+      color: var(--cor-primaria);
+    }
+
+    .produto__cabeca {
+      grid-area: cabeca;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
     .produto__textos {
-      flex: 1;
+      grid-area: textos;
       min-width: 0;
       display: flex;
       flex-direction: column;
@@ -136,6 +178,7 @@ type AcaoProduto = 'editar' | 'duplicar' | 'excluir';
     }
 
     .produto__menu {
+      grid-area: menu;
       width: 36px;
       height: 36px;
       margin: -6px -6px 0 0;
@@ -144,6 +187,8 @@ type AcaoProduto = 'editar' | 'duplicar' | 'excluir';
 })
 export class ProdutoCardComponent {
   readonly produto = input.required<Produto>();
+  /** Serviço (não o produto à venda): sem foto, o ícone é a ferramenta, não a caixa. */
+  readonly servico = input(false);
   readonly editar = output<Produto>();
   /** Cadastrar um novo a partir deste (o formulário abre preenchido com os dados dele). */
   readonly duplicar = output<Produto>();

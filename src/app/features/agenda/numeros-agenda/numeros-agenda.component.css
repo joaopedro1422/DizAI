@@ -27,15 +27,119 @@
   gap: 8px;
 }
 
-.exportar {
+.barra-numeros {
+  align-items: center;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* o relatório em PDF: o botão vermelho com o ícone do arquivo */
+.exportar-pdf {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  min-height: 40px;
+  padding: 0 14px 0 11px;
+  border: none;
+  border-radius: var(--raio-medio);
+  background: #d93025;
+  color: #ffffff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.15s ease;
 }
 
-.exportar:disabled {
+.exportar-pdf:hover:not(:disabled) {
+  background: #b3261e;
+}
+
+.exportar-pdf:disabled {
   opacity: 0.6;
   cursor: default;
+}
+
+.exportar-pdf__icone {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.semana-chip {
+  margin-top: 10px;
+}
+
+/* comissão por profissional */
+.comissao {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+.comissao__campo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.comissao__entrada {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo);
+}
+
+.comissao__entrada input {
+  width: 72px;
+  padding: 8px 4px 8px 12px;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-family: var(--fonte-numero);
+  font-weight: 700;
+  outline: none;
+}
+
+.comissao__entrada i {
+  padding-right: 12px;
+  color: var(--cor-texto-suave);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.comissao__linha {
+  display: block;
+  margin-top: 4px;
+  color: var(--cor-texto-secundario);
+  font-size: 13px;
+}
+
+.comissao__linha b,
+.comissao__resumo b {
+  color: var(--cor-noite);
+  font-family: var(--fonte-numero);
+}
+
+.comissao__resumo {
+  margin: 0;
+  font-size: 13.5px;
 }
 
 /* "Mês": um chip com o seletor nativo dentro (no celular abre a lista do sistema) */
@@ -133,6 +237,12 @@
 .kpi__nota {
   font-size: 12px;
   color: var(--cor-texto-suave);
+}
+
+/* no celular, o ticket médio ocupa a linha toda logo depois do faturamento; os atendimentos, se ficarem sozinhos, também */
+.kpi--ticket,
+.kpi--atendimentos:last-child {
+  grid-column: 1 / -1;
 }
 
 .kpi--destaque {
@@ -602,8 +712,13 @@
     gap: 14px;
   }
 
-  .kpi--destaque {
+  .kpi--destaque,
+  .kpi--ticket,
+  .kpi--atendimentos:last-child {
     grid-column: auto;
+  }
+
+  .kpi--destaque {
     justify-content: center;
   }
 

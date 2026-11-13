@@ -51,6 +51,7 @@
       @for (produto of produtosFiltrados(); track produto.id) {
         <app-produto-card
           [produto]="produto"
+          [servico]="ramoServico() && !produto.produtoAVenda"
           (editar)="editarProduto($event)"
           (duplicar)="duplicarProduto($event)"
           (excluir)="solicitarExclusao($event)"

@@ -1,42 +1,44 @@
-<!-- os filtros do período e, no fim da linha, o relatório do mesmo período em PDF -->
+<!-- 1ª linha: o mês e o ano (abre no mês atual) e, à direita, o relatório em PDF; embaixo, "Esta semana" -->
 <div class="barra-numeros">
-<div class="filtros grupo-chips" role="radiogroup" aria-label="Período">
-  @for (periodo of periodos; track periodo.dias) {
-    <button
-      type="button"
-      role="radio"
-      class="chip"
-      [class.chip--ativo]="!mes() && !ano() && dias() === periodo.dias"
-      [attr.aria-checked]="!mes() && !ano() && dias() === periodo.dias"
-      (click)="escolherPeriodo(periodo.dias)"
-    >
-      {{ periodo.rotulo }}
-    </button>
-  }
-  <!-- mês do calendário: dia 1 até o fim do mês -->
-  <label class="seletor-mes chip" [class.chip--ativo]="!!mes()">
-    <span class="somente-leitor-tela">Ver um mês</span>
-    <select [value]="mes() ?? ''" (change)="escolherMes($event)">
-      <option value="" disabled>Mês</option>
-      @for (opcao of meses; track opcao.valor) {
-        <option [value]="opcao.valor">{{ opcao.rotulo }}</option>
-      }
-    </select>
-  </label>
-  <!-- ano inteiro: 1º de janeiro a 31 de dezembro, gráfico por mês -->
-  <label class="seletor-mes chip" [class.chip--ativo]="!!ano()">
-    <span class="somente-leitor-tela">Ver um ano</span>
-    <select [value]="ano() ?? ''" (change)="escolherAno($event)">
-      <option value="" disabled>Ano</option>
-      @for (opcao of anos; track opcao) {
-        <option [value]="opcao">{{ opcao }}</option>
-      }
-    </select>
-  </label>
+  <div class="filtros">
+    <label class="seletor-mes chip" [class.chip--ativo]="!!mes()">
+      <span class="somente-leitor-tela">Ver um mês</span>
+      <select [value]="mes() ?? ''" (change)="escolherMes($event)">
+        <option value="" disabled>Mês</option>
+        @for (opcao of meses; track opcao.valor) {
+          <option [value]="opcao.valor">{{ opcao.rotulo }}</option>
+        }
+      </select>
+    </label>
+    <label class="seletor-mes chip" [class.chip--ativo]="!!ano()">
+      <span class="somente-leitor-tela">Ver um ano</span>
+      <select [value]="ano() ?? ''" (change)="escolherAno($event)">
+        <option value="" disabled>Ano</option>
+        @for (opcao of anos; track opcao) {
+          <option [value]="opcao">{{ opcao }}</option>
+        }
+      </select>
+    </label>
+  </div>
+  <button
+    type="button"
+    class="exportar-pdf"
+    [disabled]="!numeros() || carregando() || exportando()"
+    [attr.aria-busy]="exportando()"
+    [attr.aria-label]="exportando() ? 'Gerando o PDF' : 'Exportar o relatório em PDF'"
+    [title]="exportando() ? 'Gerando o PDF…' : 'Exportar PDF'"
+    (click)="exportarPdf()"
+  >
+    <svg class="exportar-pdf__icone" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" />
+      <path d="M14 3v5h5" />
+    </svg>
+    <span class="exportar-pdf__texto">PDF</span>
+  </button>
 </div>
-  <button type="button" class="chip exportar" [disabled]="!numeros() || carregando() || exportando()" (click)="exportarPdf()">
-    <app-icone nome="documento" [tamanho]="16" [espessura]="2" />
-    {{ exportando() ? 'Gerando o PDF…' : 'Exportar PDF' }}
+<div class="grupo-chips semana-chip" role="group" aria-label="Período rápido">
+  <button type="button" class="chip" [class.chip--ativo]="semanaAtual()" [attr.aria-pressed]="semanaAtual()" (click)="alternarSemana()">
+    Esta semana
   </button>
 </div>
 
@@ -49,7 +51,13 @@
         <span class="kpi__valor">{{ real(n.faturamento) }}</span>
         <span class="kpi__nota">atendimentos {{ textoPeriodo() }}</span>
       </div>
-      <div class="kpi">
+      <div class="kpi kpi--ticket">
+        <span class="kpi__icone"><app-icone nome="grafico" [tamanho]="16" [espessura]="2" /></span>
+        <span class="kpi__rotulo">Ticket médio</span>
+        <span class="kpi__valor">{{ real(n.valorMedio) }}</span>
+        <span class="kpi__nota">por atendimento</span>
+      </div>
+      <div class="kpi kpi--atendimentos">
         <span class="kpi__icone"><app-icone nome="calendario" [tamanho]="16" [espessura]="2" /></span>
         <span class="kpi__rotulo">Atendimentos</span>
         <span class="kpi__valor">{{ n.realizados }}</span>
@@ -57,16 +65,10 @@
           <span class="kpi__nota">{{ n.cancelados }} {{ n.cancelados === 1 ? 'cancelado' : 'cancelados' }}</span>
         }
       </div>
-      <div class="kpi">
-        <span class="kpi__icone"><app-icone nome="grafico" [tamanho]="16" [espessura]="2" /></span>
-        <span class="kpi__rotulo">Ticket médio</span>
-        <span class="kpi__valor">{{ real(n.valorMedio) }}</span>
-        <span class="kpi__nota">por atendimento</span>
-      </div>
       @if (mostrarPrevistos(n)) {
         <div class="kpi">
           <span class="kpi__icone"><app-icone nome="relogio" [tamanho]="16" [espessura]="2" /></span>
-          <span class="kpi__rotulo">{{ n.ano ? 'Ainda neste ano' : n.mes ? 'Ainda neste mês' : 'Próximos ' + n.dias + ' dias' }}</span>
+          <span class="kpi__rotulo">{{ rotuloPrevistos(n) }}</span>
           <span class="kpi__valor">{{ n.previstos }}</span>
           <span class="kpi__nota">{{ real(n.valorPrevisto) }} previstos</span>
         </div>
@@ -300,9 +302,33 @@
                 <span class="barra__valor">{{ real(p.faturamento) }}</span>
               </span>
               <span class="barra__trilho"><span class="barra__preenchido" [style.width.%]="p.largura"></span></span>
+              @if (p.comissao !== null) {
+                <span class="comissao__linha">Comissão: <b>{{ real(p.comissao) }}</b></span>
+              }
             </li>
           }
         </ol>
+        <!-- "Calcular comissão": a porcentagem sobre o que cada um faturou no período -->
+        <div class="comissao">
+          <button type="button" class="btn btn--secundario btn--pequeno" [attr.aria-expanded]="comissaoAberta()" (click)="alternarComissao()">
+            {{ comissaoAberta() ? 'Fechar comissão' : 'Calcular comissão' }}
+          </button>
+          @if (comissaoAberta()) {
+            <label class="comissao__campo">
+              <span>Comissão de cada profissional</span>
+              <span class="comissao__entrada">
+                <input type="number" inputmode="decimal" min="0" max="100" step="0.5" placeholder="40"
+                  [value]="comissao() ?? ''" (input)="definirComissao($event)" aria-label="Porcentagem da comissão" />
+                <i>%</i>
+              </span>
+            </label>
+            @if (comissao() !== null) {
+              <p class="comissao__resumo">
+                Comissões: <b>{{ real(totalComissoes().total) }}</b> · Fica para o negócio: <b>{{ real(totalComissoes().fica) }}</b>
+              </p>
+            }
+          }
+        </div>
       </section>
     }
 

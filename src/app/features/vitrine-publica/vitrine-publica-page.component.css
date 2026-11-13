@@ -485,6 +485,14 @@ text-decoration: none;
   text-decoration: none;
 }
 
+/* tema escuro: a logo do DizAI toda em amarelo-gema (os pontinhos na cor da página, para aparecerem no balão) */
+.vitrine--escura .rodape__credito app-logo {
+  --logo-balao: #ffc83d;
+  --logo-pontos: var(--vitrine-pagina);
+  --logo-texto: #ffc83d;
+  --logo-ai: #ffc83d;
+}
+
 .nao-encontrada {
   display: flex;
   flex-direction: column;

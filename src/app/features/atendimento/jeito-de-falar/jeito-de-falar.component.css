@@ -28,10 +28,9 @@
   gap: 12px;
 }
 
-.jeito__textos {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.jeito__titulo {
+  font-size: 16px;
+  font-weight: 700;
 }
 
 .jeito__detalhe {

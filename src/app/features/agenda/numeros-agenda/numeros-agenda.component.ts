@@ -32,12 +32,6 @@ import {
   sufixoDoArquivo,
 } from '../../../shared/relatorio/relatorio-pdf.service';
 
-const PERIODOS = [
-  { dias: 7, rotulo: '7 dias' },
-  { dias: 30, rotulo: '30 dias' },
-  { dias: 90, rotulo: '90 dias' },
-];
-
 const CORES_FATIAS = ['var(--serie-1)', 'var(--serie-2)', 'var(--serie-3)', 'var(--serie-4)', 'var(--serie-5)'];
 const COR_OUTROS = 'var(--serie-outros)';
 
@@ -67,13 +61,16 @@ export class NumerosAgendaComponent implements OnInit {
   /** Gerando o PDF do relatório (o botão fica desligado). */
   protected readonly exportando = signal(false);
 
-  protected readonly periodos = PERIODOS;
-  protected readonly dias = signal(30);
-  /** Mês escolhido no seletor ("2026-10"); null = vale o período de dias. */
-  protected readonly mes = signal<string | null>(null);
   protected readonly meses = mesesRecentes();
-  /** Ano escolhido no seletor ("2026"); null = vale o mês ou o período de dias. */
+  /** Mês escolhido no seletor ("2026-10"); a tela abre no mês atual. null = vale a semana ou o ano. */
+  protected readonly mes = signal<string | null>(this.meses[0].valor);
+  /** Ano escolhido no seletor ("2026"); null = vale o mês ou a semana. */
   protected readonly ano = signal<string | null>(null);
+  /** "Esta semana": de segunda até agora. */
+  protected readonly semanaAtual = signal(false);
+  /** "Calcular comissão" aberto e a porcentagem digitada (0 a 100). */
+  protected readonly comissaoAberta = signal(false);
+  protected readonly comissao = signal<number | null>(null);
   protected readonly anos = anosDisponiveis();
   protected readonly nomeDoMes = nomeDoMes;
   protected readonly numeros = signal<NumerosAgenda | null>(null);
@@ -84,7 +81,8 @@ export class NumerosAgendaComponent implements OnInit {
   /** Período por extenso, para as notas: "dos últimos 30 dias", "de outubro de 2026" ou "de 2026". */
   protected readonly textoPeriodo = computed(() => {
     const n = this.numeros();
-    return n ? textoDoPeriodo(n) : '';
+    if (!n) return '';
+    return this.semanaAtual() ? 'desta semana' : textoDoPeriodo(n);
   });
 
   // ------------------------------------------------------------------ gráfico do período (colunas)
@@ -133,10 +131,19 @@ export class NumerosAgendaComponent implements OnInit {
   protected readonly profissionais = computed(() => {
     const itens = this.numeros()?.porProfissional ?? [];
     const maior = Math.max(0, ...itens.map((i) => Number(i.faturamento)));
+    const porcentagem = this.comissao();
     return itens.map((item) => ({
       ...item,
       largura: maior > 0 ? (Number(item.faturamento) / maior) * 100 : 0,
+      // a comissão de cada um sobre o que ele faturou no período
+      comissao: porcentagem != null ? (Number(item.faturamento) * porcentagem) / 100 : null,
     }));
+  });
+  /** A soma das comissões (o que sai do faturamento) e o que fica para o negócio. */
+  protected readonly totalComissoes = computed(() => {
+    const total = this.profissionais().reduce((soma, p) => soma + (p.comissao ?? 0), 0);
+    const faturado = this.profissionais().reduce((soma, p) => soma + Number(p.faturamento), 0);
+    return { total, fica: faturado - total };
   });
   protected readonly maisVendidos = computed(() => {
     const itens = this.numeros()?.produtosMaisVendidos ?? [];
@@ -204,15 +211,15 @@ export class NumerosAgendaComponent implements OnInit {
       const passo = this.passoDaSerie();
       const destaques: DestaqueRelatorio[] = [
         { rotulo: 'Faturamento dos atendimentos', valor: real(n.faturamento), nota: `atendimentos ${periodo}` },
+        { rotulo: 'Ticket médio', valor: real(n.valorMedio), nota: 'por atendimento' },
         {
           rotulo: 'Atendimentos',
           valor: String(n.realizados),
           nota: n.cancelados > 0 ? pluralizar(n.cancelados, 'cancelado', 'cancelados') : 'nenhum cancelado',
         },
-        { rotulo: 'Ticket médio', valor: real(n.valorMedio), nota: 'por atendimento' },
         ...(this.mostrarPrevistos(n)
           ? [{
-              rotulo: n.ano ? 'Ainda neste ano' : n.mes ? 'Ainda neste mês' : `Próximos ${n.dias} dias`,
+              rotulo: this.rotuloPrevistos(n),
               valor: String(n.previstos),
               nota: `${real(n.valorPrevisto)} previstos`,
             }]
@@ -275,9 +282,13 @@ export class NumerosAgendaComponent implements OnInit {
           ? [{
               titulo: 'Por profissional',
               subtitulo: 'Faturamento dos atendimentos de cada um',
-              colunas: ['Profissional', 'Atendimentos', 'Faturamento'],
-              linhas: this.profissionais().map((p) => [p.nome, String(p.realizados), real(p.faturamento)]),
-              direita: [1, 2],
+              colunas: this.comissao() != null
+                ? ['Profissional', 'Atendimentos', 'Faturamento', `Comissão (${this.comissao()}%)`]
+                : ['Profissional', 'Atendimentos', 'Faturamento'],
+              linhas: this.profissionais().map((p) => [
+                p.nome, String(p.realizados), real(p.faturamento), ...(p.comissao != null ? [real(p.comissao)] : []),
+              ]),
+              direita: this.comissao() != null ? [1, 2, 3] : [1, 2],
               vazio: '',
             }]
           : []),
@@ -294,8 +305,8 @@ export class NumerosAgendaComponent implements OnInit {
       ];
       await this.relatorioPdf.exportar({
         titulo: 'Relatório da agenda',
-        periodo: periodoDoRelatorio(n, nomeDoMes),
-        arquivo: `relatorio-agenda-${sufixoDoArquivo(n)}`,
+        periodo: this.semanaAtual() ? 'Esta semana' : periodoDoRelatorio(n, nomeDoMes),
+        arquivo: `relatorio-agenda-${this.semanaAtual() ? 'esta-semana' : sufixoDoArquivo(n)}`,
         destaques,
         grafico: {
           titulo: `Faturamento ${this.nomeDaSerie()}`,
@@ -314,14 +325,30 @@ export class NumerosAgendaComponent implements OnInit {
     }
   }
 
-  protected escolherPeriodo(dias: number): void {
-    if (dias === this.dias() && !this.mes() && !this.ano()) {
-      return;
-    }
-    this.dias.set(dias);
-    this.mes.set(null);
+  /** "Esta semana" liga e desliga; desligada, volta ao mês atual. */
+  protected alternarSemana(): void {
+    const ligar = !this.semanaAtual();
+    this.semanaAtual.set(ligar);
+    this.mes.set(ligar ? null : this.meses[0].valor);
     this.ano.set(null);
     void this.carregar();
+  }
+
+  protected alternarComissao(): void {
+    this.comissaoAberta.update((aberta) => !aberta);
+    if (!this.comissaoAberta()) this.comissao.set(null);
+  }
+
+  protected definirComissao(evento: Event): void {
+    const texto = (evento.target as HTMLInputElement).value.replace(',', '.');
+    const valor = Number(texto);
+    this.comissao.set(texto.trim() === '' || Number.isNaN(valor) ? null : Math.min(100, Math.max(0, valor)));
+  }
+
+  /** "Ainda nesta semana", "Ainda neste mês" ou "Ainda neste ano". */
+  protected rotuloPrevistos(n: NumerosAgenda): string {
+    if (this.semanaAtual()) return 'Ainda nesta semana';
+    return n.ano ? 'Ainda neste ano' : n.mes ? 'Ainda neste mês' : `Próximos ${n.dias} dias`;
   }
 
   protected escolherMes(evento: Event): void {
@@ -331,6 +358,7 @@ export class NumerosAgendaComponent implements OnInit {
     }
     this.mes.set(valor);
     this.ano.set(null);
+    this.semanaAtual.set(false);
     void this.carregar();
   }
 
@@ -341,6 +369,7 @@ export class NumerosAgendaComponent implements OnInit {
     }
     this.ano.set(valor);
     this.mes.set(null);
+    this.semanaAtual.set(false);
     void this.carregar();
   }
 
@@ -351,7 +380,7 @@ export class NumerosAgendaComponent implements OnInit {
 
   /** Card dos previstos: nos dias, sempre; num mês ou ano, quando ainda falta algo dele (ou há algo marcado). */
   protected mostrarPrevistos(n: NumerosAgenda): boolean {
-    if (n.previstos > 0) return true;
+    if (n.previstos > 0 || this.semanaAtual()) return true;
     if (n.ano) return n.ano >= this.anos[0];
     return !n.mes || this.mesAtualOuFuturo(n.mes);
   }
@@ -388,7 +417,9 @@ export class NumerosAgendaComponent implements OnInit {
     try {
       const ano = this.ano();
       const mes = this.mes();
-      this.numeros.set(await this.agendaService.numeros(ano ? { ano } : mes ? { mes } : { dias: this.dias() }));
+      this.numeros.set(await this.agendaService.numeros(
+        this.semanaAtual() ? { semana: true } : ano ? { ano } : { mes: mes ?? this.meses[0].valor },
+      ));
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, ERRO_AO_CARREGAR));
     } finally {

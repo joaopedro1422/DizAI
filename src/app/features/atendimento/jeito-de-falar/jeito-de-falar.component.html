@@ -8,18 +8,12 @@
 
   <div class="jeito__emojis">
     <div class="jeito__linha">
-      <span class="jeito__textos">
-        <span class="campo__rotulo">Usar emojis</span>
-        <span class="jeito__detalhe">No máximo um a cada 3 mensagens, sempre no fim de uma frase.</span>
-      </span>
+      <span class="jeito__titulo">Usar emojis</span>
       <app-interruptor rotulo="Usar emojis" [ligado]="usarEmojis()" (alternar)="alternarUsar($event)" />
     </div>
 
     @if (usarEmojis()) {
-      <span class="jeito__detalhe">
-        Escolha até {{ maximo }} emojis da sua marca ({{ emojis().length }} de {{ maximo }}). O assistente usa um por vez, sem
-        repetir o mesmo. Sem nenhum escolhido, ele usa os mais comuns.
-      </span>
+      <span class="jeito__detalhe">Escolha até {{ maximo }} emojis que mais combinem com o seu negócio</span>
       <div class="jeito__grade" role="group" aria-label="Emojis da loja">
         @for (emoji of sugestoes; track emoji) {
           @let marcado = emojis().includes(emoji);

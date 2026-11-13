@@ -133,13 +133,16 @@ export class AgendaService {
   }
 
   /** Últimos 7/30/90 dias, um mês do calendário ("2026-10") ou um ano inteiro ("2026"). */
-  numeros(filtro: FiltroNumeros): Promise<NumerosAgenda> {
+  /** Os Números da agenda: esta semana (de segunda até agora), um mês ou um ano inteiro. */
+  numeros(filtro: FiltroNumeros | { semana: true }): Promise<NumerosAgenda> {
     const params =
-      'ano' in filtro
-        ? new HttpParams().set('ano', filtro.ano)
-        : 'mes' in filtro
-          ? new HttpParams().set('mes', filtro.mes)
-          : new HttpParams().set('dias', filtro.dias);
+      'semana' in filtro
+        ? new HttpParams().set('semana', true)
+        : 'ano' in filtro
+          ? new HttpParams().set('ano', filtro.ano)
+          : 'mes' in filtro
+            ? new HttpParams().set('mes', filtro.mes)
+            : new HttpParams().set('dias', filtro.dias);
     return firstValueFrom(this.http.get<NumerosAgenda>(this.url('/numeros'), { params }));
   }
 

@@ -7,13 +7,17 @@ import { OpcaoCardComponent } from '../../../shared/components/opcao-card/opcao-
 import { FormularioConfiguracoes } from '../../painel/painel-formulario';
 
 /** Os emojis que a loja pode escolher (até 6): os que mais aparecem no atendimento de pequenos negócios. */
-const SUGESTOES = ['😊', '🥰', '✨', '💖', '🌸', '🙌', '👋', '🎉', '💙', '😋', '💅', '💇‍♀️', '💈', '✂️', '🎂', '🧁', '🍓', '🍰', '🌹', '🎁'];
+const SUGESTOES = [
+  '😊', '🥰', '😍', '🤩', '😉', '✨', '💖', '💙', '🌸', '🙌',
+  '👋', '🙏', '🎉', '🔥', '😋', '💅', '💇‍♀️', '💇‍♂️', '🧔', '💈',
+  '✂️', '💪', '🎂', '🧁', '🍓', '🍰', '🌹', '🎁',
+];
 const MAXIMO = 6;
 
 const TONS: { valor: TomAtendimento; titulo: string; descricao: string }[] = [
   { valor: 'NEUTRO', titulo: 'Neutro', descricao: 'Como hoje: cordial, sem marcas de gênero.' },
-  { valor: 'FEMININO', titulo: 'Feminino', descricao: '"Obrigada", "fico feliz" e, de vez em quando, uma palavra mais carinhosa.' },
-  { valor: 'MASCULINO', titulo: 'Masculino', descricao: '"Obrigado" e, de vez em quando, um cumprimento mais direto.' },
+  { valor: 'FEMININO', titulo: 'Feminino', descricao: '"Obrigada" e, de vez em quando, expressões mais voltadas para o feminino.' },
+  { valor: 'MASCULINO', titulo: 'Masculino', descricao: '"Obrigado" e, de vez em quando, expressões mais voltadas para o masculino.' },
 ];
 
 /**
