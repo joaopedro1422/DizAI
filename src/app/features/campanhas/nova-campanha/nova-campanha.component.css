@@ -527,6 +527,20 @@
   font-weight: 600;
 }
 
+/* sem WhatsApp conectado (ou sem clientes): o aviso curto em cima do "Enviar", que fica travado */
+.bloqueio-envio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-gema-clara);
+  color: var(--cor-texto-gema);
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .acoes {
   position: sticky;
   bottom: 0;

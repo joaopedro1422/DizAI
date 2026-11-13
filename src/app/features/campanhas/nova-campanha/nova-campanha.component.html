@@ -357,6 +357,10 @@
       <p class="erro" role="alert">{{ erro() }}</p>
     }
 
+    @if (passo() === 3 && bloqueioDoEnvio(); as aviso) {
+      <p class="bloqueio-envio" role="status"><app-icone nome="celular" [tamanho]="16" [espessura]="2" />{{ aviso }}</p>
+    }
+
     <footer class="acoes">
       @if (passo() > 1) {
         <button type="button" class="btn btn--secundario" (click)="voltar()" [disabled]="enviando()">Voltar</button>
@@ -365,7 +369,7 @@
         <button type="button" class="btn btn--primario" (click)="avancar()" [disabled]="carregandoPrevia()">Continuar</button>
       } @else {
         <button type="button" class="btn btn--primario" (click)="enviar()" [attr.aria-busy]="enviando()"
-          [disabled]="enviando() || !revisaoPronta()">
+          [disabled]="enviando() || !revisaoPronta() || !!bloqueioDoEnvio()">
           {{ enviando() ? 'Enviando…' : 'Enviar para ' + quantosMarcados() + (quantosMarcados() === 1 ? ' cliente' : ' clientes') }}
         </button>
       }

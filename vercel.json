@@ -34,6 +34,10 @@
       "destination": "https://dizai-backend-production.up.railway.app/public/previa/l/:slug/foto/:fotoId"
     },
     {
+      "source": "/public/previa/imagem/:caminho*",
+      "destination": "https://dizai-backend-production.up.railway.app/public/previa/imagem/:caminho*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

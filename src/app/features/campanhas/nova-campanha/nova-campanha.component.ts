@@ -82,6 +82,14 @@ export class NovaCampanhaComponent implements OnInit {
   protected readonly enviando = signal(false);
 
   protected readonly servico = computed(() => this.situacao().servico);
+  /** O que impede o envio (o resto da campanha pode ser montado para ver como fica); null = pode enviar. */
+  protected readonly bloqueioDoEnvio = computed(() => {
+    const s = this.situacao();
+    if (this.campanhaService.demonstracao()) return null;
+    if (!s.conectado) return 'Para enviar, conecte o WhatsApp da loja.';
+    if (!s.liberada) return `Para enviar, a loja precisa de pelo menos ${s.minimo} clientes (hoje: ${s.aptos}).`;
+    return null;
+  });
   protected readonly conviteComAgenda = computed(() => this.tipo() === 'CONVITE' && this.servico());
   /** Público montado pela estratégia do DizAI (não dá para trocar). */
   protected readonly publicoFixo = computed(
@@ -278,7 +286,8 @@ export class NovaCampanhaComponent implements OnInit {
       this.passo.set(2);
       await this.atualizarPrevia();
     } else if (this.passo() === 2) {
-      if (this.quantosMarcados() === 0) {
+      // sem poder enviar, segue mesmo sem clientes: o lojista vê como a mensagem chega
+      if (this.quantosMarcados() === 0 && !this.bloqueioDoEnvio()) {
         this.erro.set('Marque pelo menos um cliente para receber.');
         return;
       }
@@ -337,7 +346,7 @@ export class NovaCampanhaComponent implements OnInit {
 
   // ---------------------------------------------------------------- passo 3
   protected async enviar(): Promise<void> {
-    if (this.enviando()) return;
+    if (this.enviando() || this.bloqueioDoEnvio()) return;
     this.erro.set('');
     this.enviando.set(true);
     try {

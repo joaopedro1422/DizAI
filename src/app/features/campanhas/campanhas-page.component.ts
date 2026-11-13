@@ -79,16 +79,11 @@ export class CampanhasPageComponent implements OnInit {
     const s = this.situacao();
     return s ? Math.min(100, Math.round((s.aptos / s.minimo) * 100)) : 0;
   });
-  /** O que impede criar qualquer campanha agora (o aviso no topo do modal); null = liberado. */
-  protected readonly bloqueioDaCriacao = computed(() => {
-    const s = this.situacao();
-    if (!s) return null;
-    if (!s.conectado) return 'Conecte o WhatsApp da loja para enviar campanhas.';
-    if (!s.liberada) {
-      return `As campanhas são liberadas a partir de ${s.minimo} clientes (hoje: ${s.aptos}). Enquanto isso, use "Para chamar uma a uma".`;
-    }
-    return null;
-  });
+  /**
+   * Nada impede montar a campanha: sem o WhatsApp conectado (ou ainda sem clientes), o lojista escolhe tudo e vê como
+   * ela fica; só o "Enviar" do último passo fica travado (NovaCampanhaComponent.bloqueioDoEnvio).
+   */
+  protected readonly bloqueioDaCriacao = computed<string | null>(() => null);
   protected readonly faturamentoTotal = computed(() => this.historico().reduce((soma, c) => soma + c.faturamento, 0));
   protected readonly convertidosTotal = computed(() => this.historico().reduce((soma, c) => soma + c.converteram, 0));
 
@@ -129,14 +124,14 @@ export class CampanhasPageComponent implements OnInit {
     const parametros = this.rota.snapshot.queryParamMap;
     const chave = parametros.get('oportunidade');
     const oportunidade = chave ? oportunidades.find((o) => o.chave === chave) : null;
-    if (oportunidade && this.situacao()?.conectado) this.abrirOportunidade(oportunidade);
+    if (oportunidade) this.abrirOportunidade(oportunidade);
     const campanha = parametros.get('campanha');
     if (campanha) void this.abrirRelatorio(campanha);
   }
 
   protected podeCriar(tipo: TipoDisponivel): boolean {
     const s = this.situacao();
-    return !!s && s.conectado && s.liberada && tipo.disponivel;
+    return !!s && tipo.disponivel;
   }
 
   protected criar(tipo: TipoDisponivel): void {

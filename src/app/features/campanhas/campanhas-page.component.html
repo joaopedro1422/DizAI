@@ -131,7 +131,7 @@
       @if (escolhendoTipo()) {
         <app-bottom-sheet titulo="Nova campanha" (fechar)="escolhendoTipo.set(false)">
           <app-escolher-tipo [tipos]="s.tipos" [servico]="s.servico" [bloqueio]="bloqueioDaCriacao()"
-            [rotaBloqueio]="s.conectado ? null : rotas().conectarWhatsapp" (escolher)="criar($event)" />
+            [rotaBloqueio]="null" (escolher)="criar($event)" />
         </app-bottom-sheet>
       }
 
