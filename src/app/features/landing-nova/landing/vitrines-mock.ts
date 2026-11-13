@@ -79,7 +79,7 @@ const SUPER_SALGADOS: LojaMock = {
   avaliacoes: 57,
   categorias: ['Fritos', 'Assados', 'Kits festa'],
   topico: { nome: 'Fritos', fotos: 12 },
-  fotos: ['center', 'top', 'bottom', 'left', 'right', '30% 70%'].map((posicao) => ({ src: '/landing/hub/salgados.webp', posicao })),
+  fotos: ['01', '06', '04', '02', '05', '03'].map((n) => ({ src: `/landing/galeria/salgados/${n}.webp` })),
   depoimentos: [
     { texto: 'Pedi 300 salgados para o aniversário e chegaram quentinhos. Sucesso total!', nome: 'Fernanda Rocha' },
     { texto: 'Responderam na hora, até de noite. Já é o meu fornecedor de festa.', nome: 'Paulo Henrique' },
@@ -130,7 +130,7 @@ const BARBEARIA_LEO: LojaMock = {
   avaliacoes: 112,
   categorias: ['Cortes'],
   topico: { nome: 'Cortes', fotos: 14 },
-  fotos: ['center', 'top', 'bottom', '20% 40%', '80% 40%', '50% 80%'].map((posicao) => ({ src: '/landing/hub/barbearia.webp', posicao })),
+  fotos: ['03', '04', '05', '02', '01', '06'].map((n) => ({ src: `/landing/galeria/barbearia/${n}.webp` })),
   depoimentos: [],
   semana: [],
   hoje: 0,
