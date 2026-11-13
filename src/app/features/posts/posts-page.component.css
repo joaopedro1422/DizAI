@@ -416,3 +416,89 @@
 }
 
 .cor__amostras i + i { margin-left: -7px; }
+
+/* "Outra cor": o chip com a cor escolhida (tocar edita, o × tira) e o seletor com hex e transparência */
+.cor--nova { border-style: dashed; color: var(--cor-primaria); }
+.cor--extra { gap: 2px; padding: 0 4px 0 10px; }
+
+.cor__editar,
+.cor__remover {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-family: var(--fonte-numero);
+  cursor: pointer;
+}
+
+.cor__remover {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.cor__remover:hover { background: rgba(15, 23, 42, 0.08); }
+
+.seletor-cor {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+}
+
+/* a amostra com a transparência sobre o xadrez; o seletor nativo fica invisível por cima */
+.seletor-cor__roda {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 16px;
+  background:
+    linear-gradient(var(--amostra), var(--amostra)),
+    repeating-conic-gradient(#e5e7eb 0 25%, #ffffff 0 50%) 0 0 / 14px 14px;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.12);
+  cursor: pointer;
+}
+
+.seletor-cor__roda input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.seletor-cor__campos { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+
+.seletor-cor__hex,
+.seletor-cor__transparencia {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--cor-texto-secundario);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.seletor-cor__hex input { max-width: 140px; font-family: var(--fonte-numero); text-transform: uppercase; }
+
+.seletor-cor__transparencia b { color: var(--cor-texto); font-family: var(--fonte-numero); }
+
+.seletor-cor__transparencia input {
+  width: 100%;
+  accent-color: var(--cor-trilho, var(--cor-noite));
+}
+
+.seletor-cor__pronto { grid-column: 1 / -1; justify-self: end; }
+.seletor-cor__dica { margin: 0; }

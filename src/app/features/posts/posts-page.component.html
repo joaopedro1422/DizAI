@@ -143,10 +143,11 @@
             </button>
           }
         </div>
-        @if (corLogoDiferente(); as corLogo) {
-          <div class="cores" role="radiogroup" aria-label="Cor das artes">
-            <span class="campo__rotulo">Cor das artes</span>
-            <div class="cores__opcoes">
+        <!-- cores das artes: as da marca (vitrine e logo) e, se quiser, uma cor a mais que entra no rodízio -->
+        <div class="cores" role="group" aria-label="Cores das artes">
+          <span class="campo__rotulo">Cores das artes</span>
+          <div class="cores__opcoes">
+            @if (corLogoDiferente(); as corLogo) {
               @for (opcao of opcoesDeCor; track opcao.valor) {
                 <button type="button" role="radio" class="cor" [class.cor--ativa]="corDasArtes() === opcao.valor" [attr.aria-checked]="corDasArtes() === opcao.valor" (click)="corDasArtes.set(opcao.valor)">
                   <span class="cor__amostras" aria-hidden="true">
@@ -160,9 +161,51 @@
                   {{ opcao.rotulo }}
                 </button>
               }
-            </div>
+            } @else {
+              <span class="cor cor--ativa">
+                <span class="cor__amostras" aria-hidden="true"><i [style.background]="corVitrine()"></i></span>
+                Minha marca
+              </span>
+            }
+            @if (corExtra(); as extra) {
+              <span class="cor cor--ativa cor--extra">
+                <button type="button" class="cor__editar" (click)="escolhendoCor.set(!escolhendoCor())" [attr.aria-expanded]="escolhendoCor()">
+                  <span class="cor__amostras" aria-hidden="true"><i [style.background]="extra"></i></span>
+                  + {{ (corExtraBase() ?? '').toUpperCase() }}
+                </button>
+                <button type="button" class="cor__remover" aria-label="Tirar a cor a mais" (click)="removerCorExtra()">
+                  <app-icone nome="fechar" [tamanho]="14" />
+                </button>
+              </span>
+            } @else {
+              <button type="button" class="cor cor--nova" (click)="abrirSeletorDeCor()">
+                <app-icone nome="mais" [tamanho]="15" [espessura]="2.2" /> Outra cor
+              </button>
+            }
           </div>
-        }
+
+          @if (escolhendoCor() && corExtraBase(); as base) {
+            <div class="seletor-cor">
+              <label class="seletor-cor__roda" [style.--amostra]="amostraExtra()">
+                <span class="somente-leitor-tela">Escolher a cor</span>
+                <input type="color" [value]="base" (input)="definirCorExtra($event)" />
+              </label>
+              <div class="seletor-cor__campos">
+                <label class="seletor-cor__hex">
+                  <span>Hex</span>
+                  <input class="campo__entrada" maxlength="7" spellcheck="false" [value]="base.toUpperCase()" (change)="definirHex($event)" />
+                </label>
+                <label class="seletor-cor__transparencia">
+                  <span>Transparência <b>{{ transparenciaExtra() }}%</b></span>
+                  <input type="range" min="0" max="90" step="5" [value]="transparenciaExtra()" (input)="definirTransparencia($event)"
+                    [style.--cor-trilho]="base" />
+                </label>
+              </div>
+              <button type="button" class="btn btn--secundario btn--pequeno seletor-cor__pronto" (click)="escolhendoCor.set(false)">Pronto</button>
+            </div>
+            <p class="dica seletor-cor__dica">As artes se alternam entre as cores da sua marca e esta.</p>
+          }
+        </div>
         <label class="campo">
           <span class="campo__rotulo">Quer orientar o texto? <span class="campo__rotulo-opcional">(opcional)</span></span>
           <input class="campo__entrada" maxlength="140" placeholder="Ex.: tom divertido, falar do Dia das Mães" [value]="orientacao()" (input)="orientacao.set(texto($event))">

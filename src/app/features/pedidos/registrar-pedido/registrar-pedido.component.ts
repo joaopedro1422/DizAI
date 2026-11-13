@@ -1,29 +1,18 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
 
 import { mensagemDoErro } from '../../../core/api/erro-api';
-import { Cliente } from '../../../core/models/cliente.model';
-import { ClienteService } from '../../../core/services/cliente.service';
 import { PedidoService } from '../../../core/services/pedido.service';
 import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.service';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
-import { IconeComponent } from '../../../shared/components/icone/icone.component';
+import { ClienteDoRegistro, SeletorClienteComponent } from '../../../shared/components/seletor-cliente/seletor-cliente.component';
 import { SeletorProdutoComponent } from '../seletor-produto/seletor-produto.component';
 
 /** Aceita "70", "70,5" ou "70.50". */
 const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
 
-function chaveDoNumero(texto: string): string {
-  let digitos = texto.replace(/\D/g, '').replace(/^0+/, '');
-  if (digitos.length === 10 || digitos.length === 11) digitos = '55' + digitos;
-  if (digitos.length === 13 && digitos.startsWith('55') && digitos[4] === '9') {
-    digitos = digitos.slice(0, 4) + digitos.slice(5);
-  }
-  return digitos;
-}
-
 @Component({
   selector: 'app-registrar-pedido',
-  imports: [IconeComponent, CarregandoComponent, SeletorProdutoComponent],
+  imports: [CarregandoComponent, SeletorProdutoComponent, SeletorClienteComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form class="formulario" (submit)="$event.preventDefault(); registrar()" novalidate>
@@ -63,38 +52,8 @@ function chaveDoNumero(texto: string): string {
       </div>
 
       <div class="campo">
-        <label for="pedido-whatsapp" class="campo__rotulo">WhatsApp do cliente <span class="campo__rotulo-opcional">(opcional)</span></label>
-        <input
-          id="pedido-whatsapp"
-          class="campo__entrada"
-          type="tel"
-          inputmode="tel"
-          autocomplete="off"
-          placeholder="(83) 99999-0000"
-          [value]="whatsapp()"
-          (input)="digitarNumero($any($event.target).value)"
-        >
-        @if (clienteEncontrado(); as cliente) {
-          <span class="encontrado">
-            <app-icone nome="check" [tamanho]="13" [espessura]="3" />
-            Cliente já cadastrado: <strong>{{ cliente.nome }}</strong>
-          </span>
-        } @else {
-          <span class="campo__dica">Com o número, você pode avisar o cliente quando o pedido ficar pronto.</span>
-        }
-      </div>
-
-      <div class="campo">
-        <label for="pedido-nome" class="campo__rotulo">Nome do cliente <span class="campo__rotulo-opcional">(opcional)</span></label>
-        <input
-          id="pedido-nome"
-          class="campo__entrada"
-          type="text"
-          maxlength="100"
-          placeholder="Ex.: Maria Souza"
-          [value]="nome()"
-          (input)="nome.set($any($event.target).value)"
-        >
+        <span class="campo__rotulo">Cliente <span class="campo__rotulo-opcional">(opcional)</span></span>
+        <app-seletor-cliente dica="Com o número, você pode avisar o cliente quando o pedido ficar pronto." (mudou)="cliente.set($event)" />
       </div>
 
       <label class="entregue">
@@ -124,14 +83,6 @@ function chaveDoNumero(texto: string): string {
       display: flex;
       flex-direction: column;
       gap: 16px;
-    }
-
-    .encontrado {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      color: var(--cor-ativo);
     }
 
     .entregue {
@@ -164,18 +115,17 @@ function chaveDoNumero(texto: string): string {
     }
   `,
 })
-export class RegistrarPedidoComponent implements OnInit {
+export class RegistrarPedidoComponent {
   private readonly pedidoService = inject(PedidoService);
   /** Exemplo dos itens com a cara do negócio. */
   protected readonly conteudo = inject(ConteudoRamoService).conteudo;
-  private readonly clienteService = inject(ClienteService);
 
   readonly registrado = output<{ entregue: boolean }>();
 
   protected readonly itens = signal('');
   protected readonly valor = signal('');
-  protected readonly whatsapp = signal('');
-  protected readonly nome = signal('');
+  /** Escolhido da lista de Clientes ou novo (nome e WhatsApp digitados). */
+  protected readonly cliente = signal<ClienteDoRegistro>({ nome: '', whatsapp: '', id: null });
   protected readonly entregue = signal(false);
   protected readonly produtoId = signal<number | null>(null);
   protected readonly salvando = signal(false);
@@ -183,32 +133,6 @@ export class RegistrarPedidoComponent implements OnInit {
   protected readonly erro = signal('');
 
   protected readonly valorValido = computed(() => PADRAO_VALOR.test(this.valor().trim()));
-
-  /** O cliente com este número (com DDD completo), entre os que já conversaram ou pediram. */
-  protected readonly clienteEncontrado = computed<Cliente | null>(() => {
-    const chave = chaveDoNumero(this.whatsapp());
-    if (chave.length < 12) return null;
-    return this.clienteService.clientes().find((c) => c.numero && chaveDoNumero(c.numero) === chave) ?? null;
-  });
-  /** Último nome preenchido sozinho: se o lojista não mexeu nele, troca quando o número muda. */
-  private nomeAutomatico = '';
-
-  ngOnInit(): void {
-    // a lista de clientes alimenta o "Cliente já cadastrado"; se falhar, o lojista só digita o nome
-    this.clienteService.carregar().catch(() => undefined);
-  }
-
-  protected digitarNumero(valor: string): void {
-    this.whatsapp.set(valor);
-    const cliente = this.clienteEncontrado();
-    if (cliente && (!this.nome().trim() || this.nome() === this.nomeAutomatico)) {
-      this.nome.set(cliente.nome);
-      this.nomeAutomatico = cliente.nome;
-    } else if (!cliente && this.nome() === this.nomeAutomatico) {
-      this.nome.set('');
-      this.nomeAutomatico = '';
-    }
-  }
 
   protected async registrar(): Promise<void> {
     if (this.salvando()) return;
@@ -220,8 +144,8 @@ export class RegistrarPedidoComponent implements OnInit {
       await this.pedidoService.registrarManual({
         itens: this.itens().trim(),
         valor: Number(this.valor().trim().replace(',', '.')),
-        whatsapp: this.whatsapp().trim(),
-        nomeCliente: this.nome().trim(),
+        whatsapp: this.cliente().whatsapp.trim(),
+        nomeCliente: this.cliente().nome.trim(),
         entregue: this.entregue(),
         produtoId: this.produtoId(),
       });

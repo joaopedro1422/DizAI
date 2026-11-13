@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 
 import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
 import { Produto } from '../../../core/models/produto.model';
@@ -7,6 +7,8 @@ import { formatarDuracao } from '../../../core/utils/datas-agenda';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { ItemMenuAcoes, MenuAcoesComponent } from '../../../shared/components/menu-acoes/menu-acoes.component';
 import { PrecoProdutoPipe } from '../../../shared/pipes/preco-produto.pipe';
+import { PerfilService } from '../../../core/services/perfil.service';
+import { ICONES_SEGMENTO } from '../../painel/onboarding/icones-segmento';
 
 type AcaoProduto = 'editar' | 'duplicar' | 'excluir';
 
@@ -21,7 +23,17 @@ type AcaoProduto = 'editar' | 'duplicar' | 'excluir';
     } @else {
       <!-- sem foto: o ícone pequeno, na altura da categoria + nome -->
       <span class="produto__foto foto-vazia" aria-hidden="true">
-        <app-icone [nome]="servico() ? 'ferramenta' : 'caixa'" [tamanho]="18" />
+        @if (iconeDoSegmento(); as caminhos) {
+          <!-- serviço: o ícone do tipo de negócio (o mesmo da escolha do segmento) -->
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+            stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            @for (caminho of caminhos; track $index) {
+              <path [attr.d]="caminho" />
+            }
+          </svg>
+        } @else {
+          <app-icone [nome]="servico() ? 'ferramenta' : 'caixa'" [tamanho]="18" />
+        }
       </span>
     }
 
@@ -41,14 +53,16 @@ type AcaoProduto = 'editar' | 'duplicar' | 'excluir';
       }
       <div class="produto__rodape">
         <span class="produto__preco">{{ produto() | precoProduto }}</span>
-        <span class="produto__opcoes">{{ resumoOpcoes() }}</span>
+        @if (duracao(); as tempo) {
+          <span class="produto__duracao">
+            <app-icone nome="relogio" [tamanho]="14" />
+            {{ tempo }}
+          </span>
+        } @else if (!servico() && !produto().produtoAVenda) {
+          <!-- só os produtos têm opções que o cliente escolhe -->
+          <span class="produto__opcoes">{{ resumoOpcoes() }}</span>
+        }
       </div>
-      @if (duracao(); as tempo) {
-        <span class="produto__duracao">
-          <app-icone nome="relogio" [tamanho]="14" />
-          {{ tempo }}
-        </span>
-      }
     </div>
 
     <app-menu-acoes
@@ -74,6 +88,7 @@ type AcaoProduto = 'editar' | 'duplicar' | 'excluir';
       border: 1px solid var(--cor-borda);
       border-radius: 16px;
       background: var(--cor-fundo);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.05);
     }
 
     :host(.compacto) {
@@ -187,8 +202,10 @@ type AcaoProduto = 'editar' | 'duplicar' | 'excluir';
 })
 export class ProdutoCardComponent {
   readonly produto = input.required<Produto>();
-  /** Serviço (não o produto à venda): sem foto, o ícone é a ferramenta, não a caixa. */
+  /** Serviço (não o produto à venda): sem foto, o ícone é o do segmento (sem segmento, a ferramenta). */
   readonly servico = input(false);
+  private readonly perfil = inject(PerfilService).perfil;
+  private readonly segmento = computed(() => this.perfil().segmento ?? null);
   readonly editar = output<Produto>();
   /** Cadastrar um novo a partir deste (o formulário abre preenchido com os dados dele). */
   readonly duplicar = output<Produto>();
@@ -202,6 +219,11 @@ export class ProdutoCardComponent {
   protected readonly resumoOpcoes = computed(() => {
     const total = this.produto().atributos.length;
     return total === 0 ? 'Sem opções' : pluralizar(total, 'opção', 'opções');
+  });
+
+  protected readonly iconeDoSegmento = computed(() => {
+    const segmento = this.segmento();
+    return this.servico() && segmento ? ICONES_SEGMENTO[segmento] ?? null : null;
   });
 
   protected readonly duracao = computed(() => {

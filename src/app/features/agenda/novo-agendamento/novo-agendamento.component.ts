@@ -12,10 +12,11 @@ import { formatarDuracao, hojeIso } from '../../../core/utils/datas-agenda';
 import { campoComErro } from '../../../core/utils/validadores';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { SeletorServicoComponent } from '../seletor-servico/seletor-servico.component';
+import { SeletorClienteComponent } from '../../../shared/components/seletor-cliente/seletor-cliente.component';
 
 @Component({
   selector: 'app-novo-agendamento',
-  imports: [ReactiveFormsModule, CarregandoComponent, SeletorServicoComponent],
+  imports: [ReactiveFormsModule, CarregandoComponent, SeletorServicoComponent, SeletorClienteComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form class="formulario" [formGroup]="formulario" (ngSubmit)="salvar()" novalidate>
@@ -102,17 +103,12 @@ import { SeletorServicoComponent } from '../seletor-servico/seletor-servico.comp
       </div>
 
       <div class="campo">
-        <label for="agendamento-nome" class="campo__rotulo">Nome do cliente</label>
-        <input id="agendamento-nome" class="campo__entrada" type="text" formControlName="nomeCliente" placeholder="Ex.: Maria Souza">
-        @if (temErro('nomeCliente')) {
-          <span class="campo__erro" role="alert">Informe o nome do cliente.</span>
-        }
-      </div>
-
-      <div class="campo">
-        <label for="agendamento-whatsapp" class="campo__rotulo">WhatsApp do cliente <span class="campo__rotulo-opcional">(opcional)</span></label>
-        <input id="agendamento-whatsapp" class="campo__entrada" type="tel" inputmode="tel" formControlName="whatsapp" placeholder="(83) 99999-0000">
-        <span class="campo__dica">Com o número, o cliente pode remarcar ou cancelar falando com o assistente.</span>
+        <span class="campo__rotulo">Cliente</span>
+        <app-seletor-cliente
+          dica="Com o número, o cliente pode remarcar ou cancelar falando com o assistente."
+          [erro]="temErro('nomeCliente')"
+          (mudou)="formulario.patchValue({ nomeCliente: $event.nome, whatsapp: $event.whatsapp })"
+        />
       </div>
 
       <button type="submit" class="btn btn--primario btn--grande btn--bloco" [disabled]="salvando()" [attr.aria-busy]="salvando()">

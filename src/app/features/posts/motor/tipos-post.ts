@@ -70,7 +70,8 @@ export type BotaoPost = 'pilula' | 'quadrado' | 'contorno' | 'sublinhado';
 /** O selo de cima ("Novidade", "Agenda aberta"). */
 export type SeloPost = 'pilula' | 'texto' | 'tarja' | 'contorno';
 /** De onde vem a cor da arte: a de destaque da vitrine ou a tirada da logo. */
-export type OrigemCor = 'vitrine' | 'logo';
+/** De onde vem a cor da arte: a da vitrine, a tirada da logo ou a cor a mais escolhida pelo lojista. */
+export type OrigemCor = 'vitrine' | 'logo' | 'extra';
 export type FiltroFoto = 'natural' | 'quente' | 'pb' | 'duotone';
 export type RaioPost = 'reto' | 'suave' | 'redondo';
 /** A fonte das letras pequenas (selo, apoio, chamada); o título usa sempre a fonte da vitrine da loja. */
@@ -106,6 +107,9 @@ export interface MarcaPost {
   /** A cor principal da logo (tirada da imagem, `cor-da-logo.ts`) e o preenchimento nela; null sem cor própria. */
   corLogo: string | null;
   preenchimentoLogo: string | null;
+  /** A cor a mais que o lojista escolheu para as artes ("Outra cor"); sem ela, null ou ausente. */
+  corExtra?: string | null;
+  preenchimentoExtra?: string | null;
   /** "'Playfair Display', serif": a fonte da vitrine, para o título. */
   fonteTitulo: string;
   fonteManuscrita: boolean;

@@ -37,6 +37,7 @@ import { formatarReal } from '../pedidos/textos-pedido';
 import { ArtePostComponent } from './arte-post/arte-post.component';
 import { baixarArquivo, compartilharArquivo, gerarPng, nomeDaFamilia } from './motor/exportar-post';
 import { corDaLogo } from './motor/cor-da-logo';
+import { misturar } from './motor/paletas-post';
 import { chaveDoEstilo, dnaDaLoja, gerarEstilos, hashTexto } from './motor/motor-post';
 import { SELOS, TIPOS_POST, TextoPost, textosReserva } from './motor/textos-post';
 import {
@@ -110,7 +111,7 @@ export class PostsPageComponent implements OnInit {
   protected readonly servicoAgendaId = signal<number | null>(null);
   protected readonly formato = signal<FormatoPost>('feed');
   protected readonly opcoesDeCor: { valor: 'as-duas' | 'vitrine' | 'logo'; rotulo: string }[] = [
-    { valor: 'as-duas', rotulo: 'As duas' },
+    { valor: 'as-duas', rotulo: 'Minha marca' },
     { valor: 'vitrine', rotulo: 'Da vitrine' },
     { valor: 'logo', rotulo: 'Da logo' },
   ];
@@ -137,6 +138,22 @@ export class PostsPageComponent implements OnInit {
   private readonly corLogo = signal<string | null>(null);
   /** "Cor das artes": as duas (metade das artes em cada), só a da vitrine ou só a da logo. */
   protected readonly corDasArtes = signal<'as-duas' | 'vitrine' | 'logo'>('as-duas');
+  /**
+   * "Outra cor": uma cor a mais que entra no rodízio das artes, escolhida no seletor (hex) com a transparência. A
+   * transparência vira um tom mais claro (a cor misturada ao branco): a arte continua com a cor sólida que o motor usa.
+   */
+  protected readonly corExtraBase = signal<string | null>(null);
+  protected readonly transparenciaExtra = signal(0);
+  protected readonly escolhendoCor = signal(false);
+  /** A amostra do seletor com a transparência de verdade (sobre o xadrez). */
+  protected readonly amostraExtra = computed(() => {
+    const base = this.corExtraBase();
+    return base ? `color-mix(in srgb, ${base} ${100 - this.transparenciaExtra()}%, transparent)` : 'transparent';
+  });
+  protected readonly corExtra = computed(() => {
+    const base = this.corExtraBase();
+    return base ? misturar(base, '#ffffff', this.transparenciaExtra() / 100) : null;
+  });
 
   private readonly resultados = viewChild<ElementRef<HTMLElement>>('resultados');
   private readonly arteEscolhida = viewChild<ArtePostComponent>('arteEscolhida');
@@ -188,6 +205,37 @@ export class PostsPageComponent implements OnInit {
   protected readonly usaFoto = computed(() => this.tipo() !== 'CARDAPIO' || this.fotosParaEscolher().length > 0);
   protected readonly icone = (nome: string) => nome as NomeIcone;
 
+  /** "+ Outra cor": abre o seletor já com uma cor para o lojista ajustar. */
+  protected abrirSeletorDeCor(): void {
+    if (!this.corExtraBase()) this.corExtraBase.set('#e8590c');
+    this.escolhendoCor.set(true);
+  }
+
+  protected definirCorExtra(evento: Event): void {
+    this.corExtraBase.set((evento.target as HTMLInputElement).value.toLowerCase());
+  }
+
+  /** O hex digitado ("E8590C" ou "#e8590c"); inválido volta ao que estava. */
+  protected definirHex(evento: Event): void {
+    const campo = evento.target as HTMLInputElement;
+    const texto = campo.value.trim().replace(/^#?/, '#').toLowerCase();
+    if (/^#[0-9a-f]{6}$/.test(texto)) {
+      this.corExtraBase.set(texto);
+    } else {
+      campo.value = (this.corExtraBase() ?? '').toUpperCase();
+    }
+  }
+
+  protected definirTransparencia(evento: Event): void {
+    this.transparenciaExtra.set(Number((evento.target as HTMLInputElement).value));
+  }
+
+  protected removerCorExtra(): void {
+    this.corExtraBase.set(null);
+    this.transparenciaExtra.set(0);
+    this.escolhendoCor.set(false);
+  }
+
   /** A cor de destaque da vitrine (nem sempre é a cor da marca). */
   protected readonly corVitrine = computed(() => buscarCorMarca(this.perfil().corMarca).hex);
   /** A cor da logo, sempre que ela existe: a escolha "Cor das artes" aparece mesmo com as cores parecidas. */
@@ -204,9 +252,11 @@ export class PostsPageComponent implements OnInit {
       logo: this.logo(),
       cor,
       preenchimento: fundoDoDestaque(cor, perfil.estiloCor),
-      // "as duas": a cor da logo fica à mão para as artes que o sorteio pôs nela
+      // "minha marca": a cor da logo fica à mão para as artes que o sorteio pôs nela
       corLogo: corLogo && escolha === 'as-duas' ? corLogo : null,
       preenchimentoLogo: corLogo && escolha === 'as-duas' ? fundoDoDestaque(corLogo, perfil.estiloCor) : null,
+      corExtra: this.corExtra(),
+      preenchimentoExtra: this.corExtra() ? fundoDoDestaque(this.corExtra()!, perfil.estiloCor) : null,
       fonteTitulo: fonteComFamilia(fonte),
       fonteManuscrita: ehFonteManuscrita(fonte),
       link: `dizai.com/l/${perfil.slug}`,
@@ -390,8 +440,11 @@ export class PostsPageComponent implements OnInit {
       historico,
       quantidade: OPCOES,
       semente: (Date.now() ^ Math.floor(Math.random() * 1e9)) >>> 0,
-      // as duas cores: as artes se alternam entre a da vitrine e a da logo (a escolha vale na hora, pela marca)
-      origens: this.corLogoDiferente() ? ['vitrine', 'logo'] : ['vitrine'],
+      // as cores da marca e a cor a mais: as artes se alternam entre elas (a escolha vale na hora, pela marca)
+      origens: [
+        ...(this.corLogoDiferente() ? (['vitrine', 'logo'] as const) : (['vitrine'] as const)),
+        ...(this.corExtra() ? (['extra'] as const) : []),
+      ],
     });
     const selos = SELOS[base.tipo];
     const deslocamento = hashTexto(perfilId) % selos.length;

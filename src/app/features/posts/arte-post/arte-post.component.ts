@@ -40,12 +40,17 @@ export class ArtePostComponent {
   protected readonly escala = computed(() => this.largura() / this.dimensoes().largura);
   protected readonly alturaPrevia = computed(() => Math.round(this.dimensoes().altura * this.escala()));
 
-  /** A marca com a cor desta arte: a da vitrine ou, quando o sorteio escolheu, a tirada da logo. */
+  /** A marca com a cor desta arte: a da vitrine ou, quando o sorteio escolheu, a da logo ou a cor a mais do lojista. */
   private readonly marcaDaArte = computed<MarcaPost>(() => {
     const marca = this.marca();
-    return this.estilo().origemCor === 'logo' && marca.corLogo
-      ? { ...marca, cor: marca.corLogo, preenchimento: marca.preenchimentoLogo ?? marca.corLogo }
-      : marca;
+    const origem = this.estilo().origemCor;
+    if (origem === 'logo' && marca.corLogo) {
+      return { ...marca, cor: marca.corLogo, preenchimento: marca.preenchimentoLogo ?? marca.corLogo };
+    }
+    if (origem === 'extra' && marca.corExtra) {
+      return { ...marca, cor: marca.corExtra, preenchimento: marca.preenchimentoExtra ?? marca.corExtra };
+    }
+    return marca;
   });
 
   protected readonly variaveis = computed<Record<string, string>>(() => {
