@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, computed, effect, inject, signal, viewChild } from '@angular/core';
 
 import { ERRO_AO_CARREGAR, mensagemDoErro } from '../../../core/api/erro-api';
 import { NumerosPedidos } from '../../../core/models/pedido.model';
@@ -32,12 +32,6 @@ import {
 } from '../../../shared/relatorio/relatorio-pdf.service';
 import { formatarReal } from '../textos-pedido';
 
-const PERIODOS = [
-  { dias: 7, rotulo: '7 dias' },
-  { dias: 30, rotulo: '30 dias' },
-  { dias: 90, rotulo: '90 dias' },
-];
-
 const DATA_CURTA = new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: '2-digit' });
 
 /** SEG -> "Segunda" (dica) e "Seg" (rótulo do eixo). */
@@ -56,7 +50,11 @@ const DIAS_DA_SEMANA: Record<string, { curto: string; longo: string }> = {
   imports: [CarregandoComponent, IconeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './numeros-pedidos.component.html',
-  styleUrls: ['../../agenda/numeros-agenda/numeros-agenda.component.css', './numeros-pedidos.component.css'],
+  styleUrls: [
+    '../../agenda/numeros-agenda/numeros-agenda.component.css',
+    '../../agenda/numeros-agenda/mapa-calor.css',
+    './numeros-pedidos.component.css',
+  ],
 })
 export class NumerosPedidosComponent implements OnInit {
   private readonly pedidoService = inject(PedidoService);
@@ -65,13 +63,13 @@ export class NumerosPedidosComponent implements OnInit {
   /** Gerando o PDF do relatório (o botão fica desligado). */
   protected readonly exportando = signal(false);
 
-  protected readonly periodos = PERIODOS;
-  protected readonly dias = signal(30);
-  /** Mês escolhido no seletor ("2026-10"); null = vale o período de dias. */
-  protected readonly mes = signal<string | null>(null);
   protected readonly meses = mesesRecentes();
-  /** Ano escolhido no seletor ("2026"); null = vale o mês ou o período de dias. */
+  /** Mês escolhido no seletor ("2026-10"); a tela abre no mês atual. null = vale a semana ou o ano. */
+  protected readonly mes = signal<string | null>(this.meses[0].valor);
+  /** Ano escolhido no seletor ("2026"); null = vale o mês ou a semana. */
   protected readonly ano = signal<string | null>(null);
+  /** "Esta semana": de segunda até agora. */
+  protected readonly semanaAtual = signal(false);
   protected readonly anos = anosDisponiveis();
   protected readonly numeros = signal<NumerosPedidos | null>(null);
   protected readonly carregando = signal(true);
@@ -79,7 +77,25 @@ export class NumerosPedidosComponent implements OnInit {
 
   protected readonly textoPeriodo = computed(() => {
     const n = this.numeros();
-    return n ? textoDoPeriodo(n) : '';
+    if (!n) return '';
+    return this.semanaAtual() ? 'desta semana' : textoDoPeriodo(n);
+  });
+
+  /** "▲ 18%" contra o mesmo trecho do período anterior; null sem base para comparar. */
+  protected readonly comparacao = computed(() => {
+    const n = this.numeros();
+    if (!n) return null;
+    const anterior = Number(n.faturamentoAnterior ?? 0);
+    if (anterior <= 0) return null;
+    const variacao = ((Number(n.faturamento) - anterior) / anterior) * 100;
+    const nome = n.periodoAnterior ?? '';
+    const contra = nome.startsWith('a ') ? `à ${nome.slice(2)}` : nome.startsWith('os ') ? `aos ${nome.slice(3)}` : `a ${nome}`;
+    return {
+      sentido: Math.abs(variacao) < 0.5 ? 'igual' : variacao > 0 ? 'sobe' : 'desce',
+      texto: Math.abs(variacao) < 0.5 ? 'igual' : `${variacao > 0 ? '▲' : '▼'} ${Math.abs(variacao).toFixed(0)}%`,
+      contra: `em relação ${contra}`,
+      anterior,
+    };
   });
 
   // ------------------------------------------------------------------ faturamento por dia/semana
@@ -93,13 +109,17 @@ export class NumerosPedidosComponent implements OnInit {
   protected readonly colunas = computed(() => {
     const serie = this.numeros()?.serie ?? [];
     const topo = this.topoSerie();
-    const meio = Math.floor((serie.length - 1) / 2);
-    return serie.map((ponto, i) => {
+    const agora = new Date();
+    const hoje = `${agora.getFullYear()}-${String(agora.getMonth() + 1).padStart(2, '0')}-${String(agora.getDate()).padStart(2, '0')}`;
+    return serie.map((ponto) => {
       const valor = Number(ponto.valor);
+      const ehHoje = this.passo() === 1 && ponto.inicio === hoje;
       return {
         chave: ponto.inicio,
         altura: topo > 0 && valor > 0 ? Math.max(2, (valor / topo) * 100) : 0,
-        rotulo: i === 0 || i === meio || i === serie.length - 1 ? rotuloDoPonto(ponto.inicio, this.passo()) : '',
+        // cada barra tem a sua data (a série rola para o lado); a de hoje é "hoje"
+        rotulo: ehHoje ? 'hoje' : rotuloDoPonto(ponto.inicio, this.passo()),
+        hoje: ehHoje,
         titulo: tituloDoPonto(ponto.inicio, this.passo()),
         detalhe: `${formatarReal(valor)} · ${pluralizar(ponto.pedidos, 'pedido', 'pedidos')}`,
       };
@@ -145,6 +165,20 @@ export class NumerosPedidosComponent implements OnInit {
     return n && n.clientes > 0 ? (n.clientesRecorrentes / n.clientes) * 100 : 0;
   });
 
+  /** A série rola para o lado: ao carregar, ela abre nos dias mais recentes (com o "hoje"). */
+  private readonly rolagemSerie = viewChild<ElementRef<HTMLElement>>('rolagemSerie');
+
+  constructor() {
+    effect(() => {
+      const area = this.rolagemSerie()?.nativeElement;
+      if (!area || !this.colunas().length) return;
+      requestAnimationFrame(() => {
+        const hoje = area.querySelector<HTMLElement>('.rotulos-x__item--hoje');
+        area.scrollLeft = hoje ? Math.max(0, hoje.offsetLeft - area.clientWidth + hoje.offsetWidth * 4) : area.scrollWidth;
+      });
+    });
+  }
+
   ngOnInit(): void {
     void this.carregar();
   }
@@ -161,13 +195,19 @@ export class NumerosPedidosComponent implements OnInit {
       const periodo = this.textoPeriodo();
       const passo = this.passo();
       const destaques: DestaqueRelatorio[] = [
-        { rotulo: 'Faturamento', valor: real(n.faturamento), nota: `pedidos entregues ${periodo}` },
+        {
+          rotulo: 'Faturamento',
+          valor: real(n.faturamento),
+          nota: this.comparacao()
+            ? `${this.comparacao()!.texto} ${this.comparacao()!.contra} (${real(this.comparacao()!.anterior)})`
+            : `pedidos entregues ${periodo}`,
+        },
+        { rotulo: 'Ticket médio', valor: real(n.valorMedio), nota: 'por pedido' },
         {
           rotulo: 'Entregues',
           valor: String(n.entregues),
           nota: n.cancelados > 0 ? pluralizar(n.cancelados, 'cancelado', 'cancelados') : 'nenhum cancelado',
         },
-        { rotulo: 'Ticket médio', valor: real(n.valorMedio), nota: 'por pedido' },
         { rotulo: 'Em andamento agora', valor: String(n.emAndamento), nota: `${real(n.valorEmAndamento)} a receber` },
         {
           rotulo: 'Preparo médio',
@@ -175,6 +215,7 @@ export class NumerosPedidosComponent implements OnInit {
           nota: 'da confirmação até pronto',
         },
         { rotulo: 'Clientes', valor: String(n.clientes), nota: `${n.clientesRecorrentes} voltaram a comprar` },
+        { rotulo: 'Pedidos do assistente', valor: String(n.peloAssistente), nota: `${n.foraDoHorario} fora do seu horário` },
       ];
       const secoes: SecaoRelatorio[] = [
         // por semana (90 dias) ou por mês (ano): a tabela completa ao lado do gráfico
@@ -229,8 +270,8 @@ export class NumerosPedidosComponent implements OnInit {
       ];
       await this.relatorioPdf.exportar({
         titulo: 'Relatório de pedidos',
-        periodo: periodoDoRelatorio(n, nomeDoMes),
-        arquivo: `relatorio-pedidos-${sufixoDoArquivo(n)}`,
+        periodo: this.semanaAtual() ? 'Esta semana' : periodoDoRelatorio(n, nomeDoMes),
+        arquivo: `relatorio-pedidos-${this.semanaAtual() ? 'esta-semana' : sufixoDoArquivo(n)}`,
         destaques,
         grafico: {
           titulo: `Faturamento ${this.nomeDaSerie()}`,
@@ -249,12 +290,11 @@ export class NumerosPedidosComponent implements OnInit {
     }
   }
 
-  protected escolherPeriodo(dias: number): void {
-    if (dias === this.dias() && !this.mes() && !this.ano()) {
-      return;
-    }
-    this.dias.set(dias);
-    this.mes.set(null);
+  /** "Esta semana" liga e desliga; desligada, volta ao mês atual. */
+  protected alternarSemana(): void {
+    const ligar = !this.semanaAtual();
+    this.semanaAtual.set(ligar);
+    this.mes.set(ligar ? null : this.meses[0].valor);
     this.ano.set(null);
     void this.carregar();
   }
@@ -266,6 +306,7 @@ export class NumerosPedidosComponent implements OnInit {
     }
     this.mes.set(valor);
     this.ano.set(null);
+    this.semanaAtual.set(false);
     void this.carregar();
   }
 
@@ -276,6 +317,7 @@ export class NumerosPedidosComponent implements OnInit {
     }
     this.ano.set(valor);
     this.mes.set(null);
+    this.semanaAtual.set(false);
     void this.carregar();
   }
 
@@ -314,7 +356,9 @@ export class NumerosPedidosComponent implements OnInit {
     try {
       const ano = this.ano();
       const mes = this.mes();
-      this.numeros.set(await this.pedidoService.numeros(ano ? { ano } : mes ? { mes } : { dias: this.dias() }));
+      this.numeros.set(await this.pedidoService.numeros(
+        this.semanaAtual() ? { semana: true } : ano ? { ano } : { mes: mes ?? this.meses[0].valor },
+      ));
     } catch (erro) {
       this.toastService.mostrar(mensagemDoErro(erro, ERRO_AO_CARREGAR));
     } finally {

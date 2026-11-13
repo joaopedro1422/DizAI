@@ -124,13 +124,16 @@ export class PedidoService {
   }
 
   /** Últimos 7/30/90 dias, ou um mês do calendário ("2026-10"). */
-  async numeros(filtro: FiltroNumeros): Promise<NumerosPedidos> {
+  /** Os Números dos pedidos: esta semana (de segunda até agora), um mês ou um ano inteiro. */
+  async numeros(filtro: FiltroNumeros | { semana: true }): Promise<NumerosPedidos> {
     const consulta =
-      'ano' in filtro
-        ? `ano=${encodeURIComponent(filtro.ano)}`
-        : 'mes' in filtro
-          ? `mes=${encodeURIComponent(filtro.mes)}`
-          : `dias=${filtro.dias}`;
+      'semana' in filtro
+        ? 'semana=true'
+        : 'ano' in filtro
+          ? `ano=${encodeURIComponent(filtro.ano)}`
+          : 'mes' in filtro
+            ? `mes=${encodeURIComponent(filtro.mes)}`
+            : `dias=${filtro.dias}`;
     const numeros = await firstValueFrom(this.http.get<NumerosApi>(this.url(`/numeros?${consulta}`)));
     return { ...numeros, entreguesRecentes: numeros.entreguesRecentes.map(paraPedido) };
   }

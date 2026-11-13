@@ -59,9 +59,20 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* indicadores: o azul + quatro (no celular, 2 por linha) */
+/* indicadores: no celular, o azul e o ticket na linha toda, entregues e em andamento lado a lado e o preparo embaixo */
+.kpi--sozinho {
+  grid-column: 1 / -1;
+}
+
+/* no computador: o azul + quatro numa linha */
 @media (min-width: 760px) {
   .kpis--cinco {
     grid-template-columns: minmax(0, 1.4fr) repeat(4, minmax(0, 1fr));
+  }
+
+  .kpis--cinco .kpi--destaque,
+  .kpis--cinco .kpi--ticket,
+  .kpis--cinco .kpi--sozinho {
+    grid-column: auto;
   }
 }

@@ -1,42 +1,48 @@
-<!-- os filtros do período e, no fim da linha, o relatório do mesmo período em PDF -->
+<!-- 1ª linha: o mês e o ano (abre no mês atual) -->
 <div class="barra-numeros">
-<div class="filtros grupo-chips" role="radiogroup" aria-label="Período">
-  @for (periodo of periodos; track periodo.dias) {
-    <button
-      type="button"
-      role="radio"
-      class="chip"
-      [class.chip--ativo]="!mes() && !ano() && dias() === periodo.dias"
-      [attr.aria-checked]="!mes() && !ano() && dias() === periodo.dias"
-      (click)="escolherPeriodo(periodo.dias)"
-    >
-      {{ periodo.rotulo }}
-    </button>
-  }
-  <!-- mês do calendário: dia 1 até o fim do mês -->
-  <label class="seletor-mes chip" [class.chip--ativo]="!!mes()">
-    <span class="somente-leitor-tela">Ver um mês</span>
-    <select [value]="mes() ?? ''" (change)="escolherMes($event)">
-      <option value="" disabled>Mês</option>
-      @for (opcao of meses; track opcao.valor) {
-        <option [value]="opcao.valor">{{ opcao.rotulo }}</option>
-      }
-    </select>
-  </label>
-  <!-- ano inteiro: 1º de janeiro a 31 de dezembro, gráfico por mês -->
-  <label class="seletor-mes chip" [class.chip--ativo]="!!ano()">
-    <span class="somente-leitor-tela">Ver um ano</span>
-    <select [value]="ano() ?? ''" (change)="escolherAno($event)">
-      <option value="" disabled>Ano</option>
-      @for (opcao of anos; track opcao) {
-        <option [value]="opcao">{{ opcao }}</option>
-      }
-    </select>
-  </label>
+  <div class="filtros">
+    <label class="seletor-mes chip" [class.chip--ativo]="!!mes()">
+      <span class="somente-leitor-tela">Ver um mês</span>
+      <select [value]="mes() ?? ''" (change)="escolherMes($event)">
+        <option value="" disabled>Mês</option>
+        @for (opcao of meses; track opcao.valor) {
+          <option [value]="opcao.valor">{{ opcao.rotulo }}</option>
+        }
+      </select>
+    </label>
+    <label class="seletor-mes chip" [class.chip--ativo]="!!ano()">
+      <span class="somente-leitor-tela">Ver um ano</span>
+      <select [value]="ano() ?? ''" (change)="escolherAno($event)">
+        <option value="" disabled>Ano</option>
+        @for (opcao of anos; track opcao) {
+          <option [value]="opcao">{{ opcao }}</option>
+        }
+      </select>
+    </label>
+  </div>
 </div>
-  <button type="button" class="chip exportar" [disabled]="!numeros() || carregando() || exportando()" (click)="exportarPdf()">
-    <app-icone nome="documento" [tamanho]="16" [espessura]="2" />
-    {{ exportando() ? 'Gerando o PDF…' : 'Exportar PDF' }}
+<!-- 2ª linha: "Esta semana" e, à direita, o relatório em PDF -->
+<div class="linha-semana">
+  <div class="grupo-chips" role="group" aria-label="Período rápido">
+    <button type="button" class="chip" [class.chip--ativo]="semanaAtual()" [attr.aria-pressed]="semanaAtual()" (click)="alternarSemana()">
+      Esta semana
+    </button>
+  </div>
+  <button
+    type="button"
+    class="exportar-pdf"
+    [disabled]="!numeros() || carregando() || exportando()"
+    [attr.aria-busy]="exportando()"
+    [attr.aria-label]="exportando() ? 'Gerando o PDF' : 'Exportar o relatório em PDF'"
+    [title]="exportando() ? 'Gerando o PDF…' : 'Exportar PDF'"
+    (click)="exportarPdf()"
+  >
+    <svg class="exportar-pdf__icone" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 4v11" />
+      <path d="M7 10.5l5 5 5-5" />
+      <path d="M5 19.5h14" />
+    </svg>
+    <span class="exportar-pdf__texto">PDF</span>
   </button>
 </div>
 
@@ -47,6 +53,15 @@
         <span class="kpi__rotulo">Faturamento</span>
         <span class="kpi__valor">{{ real(n.faturamento) }}</span>
         <span class="kpi__nota">pedidos entregues {{ textoPeriodo() }}</span>
+        @if (comparacao(); as c) {
+          <span class="comparacao comparacao--{{ c.sentido }}"><b>{{ c.texto }}</b> {{ c.contra }}</span>
+        }
+      </div>
+      <div class="kpi kpi--ticket">
+        <span class="kpi__icone"><app-icone nome="grafico" [tamanho]="16" [espessura]="2" /></span>
+        <span class="kpi__rotulo">Ticket médio</span>
+        <span class="kpi__valor">{{ real(n.valorMedio) }}</span>
+        <span class="kpi__nota">por pedido</span>
       </div>
       <div class="kpi">
         <span class="kpi__icone"><app-icone nome="check" [tamanho]="16" [espessura]="2.4" /></span>
@@ -57,24 +72,43 @@
         }
       </div>
       <div class="kpi">
-        <span class="kpi__icone"><app-icone nome="grafico" [tamanho]="16" [espessura]="2" /></span>
-        <span class="kpi__rotulo">Ticket médio</span>
-        <span class="kpi__valor">{{ real(n.valorMedio) }}</span>
-        <span class="kpi__nota">por pedido</span>
-      </div>
-      <div class="kpi">
         <span class="kpi__icone"><app-icone nome="caixa" [tamanho]="16" [espessura]="2" /></span>
         <span class="kpi__rotulo">Em andamento agora</span>
         <span class="kpi__valor">{{ n.emAndamento }}</span>
         <span class="kpi__nota">{{ real(n.valorEmAndamento) }} a receber</span>
       </div>
-      <div class="kpi">
+      <div class="kpi kpi--sozinho">
         <span class="kpi__icone"><app-icone nome="relogio" [tamanho]="16" [espessura]="2" /></span>
         <span class="kpi__rotulo">Preparo médio</span>
         <span class="kpi__valor">{{ n.tempoMedioPreparoMinutos === null ? '—' : duracao(n.tempoMedioPreparoMinutos) }}</span>
         <span class="kpi__nota">da confirmação até pronto</span>
       </div>
     </section>
+
+    <!-- os pedidos que o assistente passou e quantos chegaram fora do horário de funcionamento -->
+    @if (n.peloAssistente > 0) {
+      <section class="cartao" aria-labelledby="titulo-assistente">
+        <header class="cartao__topo">
+          <div>
+            <h2 class="cartao__titulo" id="titulo-assistente">O assistente nos seus pedidos</h2>
+            <p class="cartao__sub">Clientes que ele atendeu e passou para você fechar {{ textoPeriodo() }}</p>
+          </div>
+        </header>
+        <div class="assistente">
+          <div class="assistente__numero">
+            <strong>{{ n.peloAssistente }}</strong>
+            <span>{{ n.peloAssistente === 1 ? 'pedido anotado' : 'pedidos anotados' }} pelo assistente</span>
+          </div>
+          <div class="assistente__numero assistente__numero--noite">
+            <strong>{{ n.foraDoHorario }}</strong>
+            <span>chegaram fora do seu horário</span>
+          </div>
+          @if (n.foraDoHorario > 0) {
+            <p class="assistente__frase">Enquanto a loja estava fechada, ele anotou {{ n.foraDoHorario === 1 ? '1 pedido' : n.foraDoHorario + ' pedidos' }}.</p>
+          }
+        </div>
+      </section>
+    }
 
     <!-- faturamento dia a dia (ou por semana em 90 dias) -->
     <section class="cartao cartao--largo" aria-labelledby="titulo-serie">
@@ -93,6 +127,9 @@
             <span class="eixo__linha" style="bottom: 50%"><span class="eixo__rotulo">{{ real(topoSerie() / 2) }}</span></span>
             <span class="eixo__linha eixo__linha--base" style="bottom: 0"></span>
           </div>
+          <!-- as barras ficam mais grossas e a série rola para o lado -->
+          <div class="serie-rolagem" #rolagemSerie>
+          <div class="serie-trilho" [style.--n]="colunas().length">
           <div class="colunas" role="list" [attr.aria-label]="'Faturamento ' + nomeDaSerie()">
             @for (coluna of colunas(); track coluna.chave) {
               <button
@@ -111,8 +148,10 @@
           </div>
           <div class="rotulos-x" aria-hidden="true">
             @for (coluna of colunas(); track coluna.chave) {
-              <span class="rotulos-x__item">{{ coluna.rotulo }}</span>
+              <span class="rotulos-x__item" [class.rotulos-x__item--hoje]="coluna.hoje">{{ coluna.rotulo }}</span>
             }
+          </div>
+          </div>
           </div>
           @if (dica(); as d) {
             @if (d.grafico === 'serie') {

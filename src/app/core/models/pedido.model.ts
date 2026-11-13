@@ -55,6 +55,12 @@ export interface NumerosPedidos {
   /** Da confirmação até "pronto"; null sem dados. */
   tempoMedioPreparoMinutos: number | null;
   cancelados: number;
+  /** O mesmo trecho do período anterior ("outubro", "a semana passada"), para a comparação no faturamento. */
+  faturamentoAnterior: number;
+  periodoAnterior: string;
+  /** Pedidos que o assistente passou prontos para fechar e, desses, quantos fora do horário de funcionamento. */
+  peloAssistente: number;
+  foraDoHorario: number;
 }
 
 /** O que o cliente recebe pelo WhatsApp numa ação do pedido (vazio = não avisa). */

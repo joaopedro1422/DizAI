@@ -1,7 +1,7 @@
 /*
  * Números da agenda: a comparação com o período anterior (no cartão azul), o cartão do assistente e o mapa de calor
- * dos horários mais procurados (dias nas colunas, horas nas linhas; a cor vai do cinza-azulado ao azul-noite e o
- * horário campeão ganha o anel amarelo).
+ * dos horários mais procurados (dias nas colunas, horas nas linhas; a cor vai do amarelo-claro ao laranja, a sensação de
+ * calor, e o horário campeão ganha o anel azul-noite).
  */
 
 /* ---------- comparação no faturamento ---------- */
@@ -115,7 +115,7 @@
   padding: 0;
   border: none;
   border-radius: 7px;
-  background: color-mix(in srgb, var(--cor-noite) calc(var(--forca) * 100%), #eef2fa);
+  background: color-mix(in oklab, #e8590c calc(var(--forca) * 100%), #ffe9a8);
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
@@ -127,13 +127,13 @@
 .calor__celula:hover,
 .calor__celula:focus-visible {
   transform: scale(1.08);
-  box-shadow: 0 4px 12px -4px rgba(19, 32, 74, 0.45);
+  box-shadow: 0 4px 12px -4px rgba(232, 89, 12, 0.5);
   outline: none;
 }
 
-/* o horário campeão: o anel amarelo */
+/* o horário campeão: o anel azul-noite */
 .calor__celula--topo {
-  box-shadow: 0 0 0 2px var(--cor-gema);
+  box-shadow: 0 0 0 2px var(--cor-noite);
 }
 
 .calor__legenda {
