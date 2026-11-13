@@ -1,0 +1,298 @@
+/*
+ * O topo do hub (preso a .hb): no celular, texto à esquerda (selo, título em 2 linhas, descrição, botões e garantias);
+ * no computador, duas colunas, com o painel "Hoje no seu negócio" à direita mostrando o sistema inteiro trabalhando.
+ * Os dois mundos vêm logo depois (hub.css).
+ */
+.hb .hb-abertura {
+  overflow: hidden;
+  padding-block: 40px 0;
+  text-align: left;
+  background:
+    radial-gradient(circle at 85% 0%, rgba(255, 200, 61, 0.14), transparent 46%),
+    radial-gradient(circle at 0% 100%, rgba(30, 58, 114, 0.9), transparent 55%),
+    var(--noite);
+}
+
+/* o pontilhado leve do fundo, sumindo para baixo */
+.hb .hb-abertura::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  top: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  transform: none;
+  background: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1.4px) 0 0 / 22px 22px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hb .hb-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+  align-items: center;
+}
+
+.hb .hb-hero__texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* selo: os três pontinhos da logo e o que o DizAI é */
+.hb .hb-selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px 6px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.hb .hb-selo__pontos {
+  display: inline-flex;
+  gap: 3px;
+  padding: 5px 7px;
+  border-radius: 999px 999px 999px 3px;
+  background: var(--gema);
+}
+
+.hb .hb-selo__pontos i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--noite);
+  animation: hb-pulo 1.3s infinite ease-in-out;
+}
+
+.hb .hb-selo__pontos i:nth-child(2) { animation-delay: 0.15s; }
+.hb .hb-selo__pontos i:nth-child(3) { animation-delay: 0.3s; }
+
+.hb .hb-titulo {
+  margin-top: 20px;
+  color: #ffffff;
+  font-size: clamp(38px, 9.4vw, 72px);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.hb .hb-desc {
+  max-width: 32em;
+  margin: 18px 0 0;
+  color: #cfd6e8;
+  font-size: 17.5px;
+  line-height: 1.55;
+}
+
+.hb .hb-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.hb .hb-provas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+  color: #dce1ef;
+  font-size: 14.5px;
+  font-weight: 600;
+}
+
+.hb .hb-provas li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.hb .hb-provas .check {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--gema);
+  color: var(--noite);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+/* ---------- o painel "Hoje no seu negócio" (só no computador) ---------- */
+.hb .hb-painel {
+  display: none;
+}
+
+.hb .hb-painel__cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #edf0f6;
+}
+
+.hb .hb-painel__cab b {
+  font-family: var(--f-titulo);
+  font-size: 17px;
+  color: var(--noite);
+}
+
+.hb .hb-painel__vivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #11795a;
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.hb .hb-painel__vivo i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1a9b71;
+  box-shadow: 0 0 0 4px rgba(26, 155, 113, 0.18);
+  animation: hb-vivo 1.8s ease-in-out infinite;
+}
+
+.hb .hb-painel__lista {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 6px 10px 10px;
+  list-style: none;
+}
+
+.hb .hb-modulo {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: 14px;
+  opacity: 0;
+  animation: hb-entra-modulo 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards calc(0.3s + var(--i) * 0.12s);
+}
+
+.hb .hb-modulo + .hb-modulo {
+  border-top: 1px solid #f1f3f8;
+}
+
+.hb .hb-modulo__icone {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #eef2fb;
+  color: var(--marinho);
+}
+
+.hb .hb-modulo__textos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hb .hb-modulo__textos b {
+  color: var(--noite);
+  font-size: 14.5px;
+}
+
+.hb .hb-modulo__textos small {
+  overflow: hidden;
+  color: #667085;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hb .hb-modulo__valor {
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #f4f6fa;
+  color: var(--noite);
+  font-family: var(--f-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.hb .hb-modulo--destaque .hb-modulo__icone {
+  background: var(--gema);
+  color: var(--noite);
+}
+
+.hb .hb-modulo--destaque .hb-modulo__valor {
+  background: var(--gema-clara);
+}
+
+@keyframes hb-pulo {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.55; }
+  30% { transform: translateY(-2px); opacity: 1; }
+}
+
+@keyframes hb-vivo {
+  50% { box-shadow: 0 0 0 7px rgba(26, 155, 113, 0.05); }
+}
+
+@keyframes hb-entra-modulo {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- computador: duas colunas e o painel ---------- */
+@media (min-width: 1001px) {
+  .hb .hb-abertura {
+    padding-top: 64px;
+  }
+
+  .hb .hb-hero {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    gap: 56px;
+  }
+
+  .hb .hb-desc {
+    font-size: 19px;
+  }
+
+  .hb .hb-painel {
+    display: block;
+    overflow: hidden;
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    transform: rotate(1.2deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .hb .hb-acoes .btn {
+    flex: 1 1 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hb .hb-modulo {
+    opacity: 1;
+    animation: none;
+  }
+
+  .hb .hb-selo__pontos i,
+  .hb .hb-painel__vivo i {
+    animation: none;
+  }
+}

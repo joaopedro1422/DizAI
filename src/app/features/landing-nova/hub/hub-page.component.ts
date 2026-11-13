@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation, signal } from '@
 import { RouterLink } from '@angular/router';
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
+import { NomeIcone } from '../../../shared/components/icone/icones';
 import { LogoComponent } from '../../../shared/components/logo/logo.component';
 import { CHAVE_TIPO_VISTO, ROTA_LANDING, TipoLanding } from '../../landing/conteudo-landing';
 import { TituloDigitandoComponent } from '../titulo-digitando.component';
@@ -19,12 +20,21 @@ import { MUNDOS_HUB, MundoHub, ONDAS_HUB } from './mundos-hub';
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   templateUrl: './hub-page.component.html',
-  styleUrls: ['../marca-base.css', './hub.css', './hub-comum.css'],
+  styleUrls: ['../marca-base.css', './hub.css', './hub-hero.css', './hub-comum.css'],
   host: { class: 'marca hb' },
 })
 export class HubPageComponent {
   /** As funções que se alternam no título ("Um assistente que" atende, agenda...); para de novo em "atende". */
   protected readonly funcoes = ['atende', 'agenda', 'anota os pedidos', 'divulga', 'vende por você'];
+  /** O painel do topo (computador): o que o DizAI fez hoje num negócio de exemplo, um módulo por linha. */
+  protected readonly modulos: { nome: string; detalhe: string; valor: string; icone: NomeIcone; destaque?: boolean }[] = [
+    { nome: 'Atendimento', detalhe: 'Respondeu a Camila em 4 segundos', valor: '38 conversas', icone: 'conversa', destaque: true },
+    { nome: 'Agenda', detalhe: 'Esmaltação em gel · amanhã às 14:00', valor: '+3 hoje', icone: 'calendario' },
+    { nome: 'Pedidos', detalhe: 'Bolo M de brigadeiro · sábado', valor: '2 a confirmar', icone: 'caixa' },
+    { nome: 'Vitrine', detalhe: 'Fotos, avaliações e o link na bio', valor: 'no ar', icone: 'imagem' },
+    { nome: 'Posts', detalhe: '4 artes com a sua marca', valor: 'prontas', icone: 'brilho' },
+    { nome: 'Campanhas', detalhe: 'Dia das Mães para 23 clientes', valor: 'R$ 1.230', icone: 'grafico' },
+  ];
   protected readonly anoAtual = new Date().getFullYear();
   protected readonly mundos = MUNDOS_HUB;
   protected readonly ondas = ONDAS_HUB;
@@ -34,6 +44,11 @@ export class HubPageComponent {
   protected readonly cenaAtual = signal<Record<TipoLanding, number>>({ produtos: 0, servicos: 0 });
   /** Na primeira volta o segundo mundo espera um pouco, para os dois não trocarem juntos. */
   protected readonly primeiraVolta = signal(true);
+
+  /** "Ver para o meu negócio": desce até os dois mundos. */
+  protected irParaMundos(): void {
+    document.getElementById('mundos')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
   /** A barrinha da cena terminou de encher: vai para a próxima. */
   protected avancar(mundo: MundoHub, evento: AnimationEvent): void {

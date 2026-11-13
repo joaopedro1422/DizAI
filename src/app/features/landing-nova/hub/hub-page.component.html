@@ -13,13 +13,40 @@
   <!-- primeira dobra: o título e os dois mundos, que descem para a faixa branca -->
   <section class="hb-abertura faixa" aria-labelledby="hub-titulo">
     <div class="miolo">
-      <span class="hb-selo"><i></i>Atendimento, vendas e marketing no seu WhatsApp</span>
-      <h1 id="hub-titulo" class="hb-titulo" aria-label="Um assistente que atende, agenda, anota os pedidos, divulga e vende por você">
-        <app-titulo-digitando [quebra]="true" inicio="Um assistente que" [frases]="funcoes" [trocas]="funcoes.length" [pausaMs]="2600" />
-      </h1>
-      <p class="hb-desc">Atendimento, agenda, pedidos, vitrine, posts e campanhas: o DizAI cuida do seu WhatsApp e do marketing do seu negócio. Escolha o seu tipo de negócio e veja como ele trabalha.</p>
+      <div class="hb-hero">
+        <div class="hb-hero__texto">
+          <span class="hb-selo"><span class="hb-selo__pontos" aria-hidden="true"><i></i><i></i><i></i></span>Assistente de IA para WhatsApp</span>
+          <h1 id="hub-titulo" class="hb-titulo" aria-label="Um assistente que atende, agenda, anota os pedidos, divulga e vende por você">
+            <app-titulo-digitando [quebra]="true" inicio="Um assistente que" [frases]="funcoes" [trocas]="funcoes.length" [pausaMs]="2600" />
+          </h1>
+          <p class="hb-desc">O DizAI atende os seus clientes na hora, organiza a agenda e os pedidos e cuida do marketing do seu negócio. Tudo no seu número de sempre.</p>
+          <div class="hb-acoes">
+            <a class="btn btn--forte" routerLink="/cadastro">Testar grátis →</a>
+            <button type="button" class="btn btn--claro" (click)="irParaMundos()">Ver para o meu negócio ↓</button>
+          </div>
+          <ul class="hb-provas">
+            <li><span class="check" aria-hidden="true">✓</span>Pronto em poucos minutos</li>
+            <li><span class="check" aria-hidden="true">✓</span>No seu número de sempre</li>
+            <li><span class="check" aria-hidden="true">✓</span>Atende 24 horas</li>
+          </ul>
+        </div>
 
-      <div class="mundos">
+        <!-- no computador: o sistema inteiro trabalhando num painel só -->
+        <div class="hb-painel" aria-hidden="true">
+          <div class="hb-painel__cab"><b>Hoje no seu negócio</b><span class="hb-painel__vivo"><i></i>ao vivo</span></div>
+          <ul class="hb-painel__lista">
+            @for (modulo of modulos; track modulo.nome; let i = $index) {
+              <li class="hb-modulo" [class.hb-modulo--destaque]="modulo.destaque" [style.--i]="i">
+                <span class="hb-modulo__icone"><app-icone [nome]="modulo.icone" [tamanho]="18" [espessura]="2" /></span>
+                <span class="hb-modulo__textos"><b>{{ modulo.nome }}</b><small>{{ modulo.detalhe }}</small></span>
+                <span class="hb-modulo__valor">{{ modulo.valor }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div class="mundos" id="mundos">
         @for (mundo of mundos; track mundo.tipo) {
           @let atual = cenaAtual()[mundo.tipo];
           <a class="mundo" [class.mundo--agenda]="mundo.tipo === 'servicos'" [routerLink]="mundo.rota">

@@ -15,6 +15,11 @@
       <h2 id="teste-titulo" class="topo__nome">{{ perfil().nomeLoja }}</h2>
       <span class="topo__status">{{ respondendo() ? 'digitando…' : 'Teste do seu assistente' }}</span>
     </div>
+    <!-- "Auto": o cliente automático do onboarding conversa sozinho, do começo ao fim -->
+    <button type="button" class="topo__recomecar topo__auto" [disabled]="respondendo() || automatico()" (click)="iniciarAuto()"
+      title="O assistente conversa com um cliente automático, do começo ao fim">
+      Auto
+    </button>
     <button type="button" class="topo__recomecar" [disabled]="respondendo() || automatico() || mensagens().length === 0" (click)="recomecar()">
       Recomeçar
     </button>

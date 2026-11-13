@@ -1,70 +1,16 @@
-/* Hub (/): a abertura azul-noite e os dois mundos com as cenas em stories. Preso a .hb (ViewEncapsulation.None). */
+/* Hub (/): os dois mundos com as cenas em stories (o topo azul-noite fica em hub-hero.css). Preso a .hb. */
 
 .hb .hb-abertura {
   position: relative;
-  padding-block: 56px 0;
-  background: var(--noite);
-  text-align: center;
-}
-
-/* brilho amarelo suave atrás do título */
-.hb .hb-abertura::before {
-  content: '';
-  position: absolute;
-  top: -120px;
-  left: 50%;
-  width: 760px;
-  height: 520px;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(255, 200, 61, 0.12), transparent);
-  transform: translateX(-50%);
-  pointer-events: none;
 }
 
 .hb .hb-abertura .miolo {
   position: relative;
 }
 
-.hb .hb-selo {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.hb .hb-selo i {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--gema);
-  box-shadow: 0 0 0 4px rgba(255, 200, 61, 0.22);
-}
-
-/* título centralizado: sem reservar a largura da frase mais longa, a palavra fica no centro e os pontinhos colados */
+/* o título que digita: sem reservar a largura da frase mais longa, os pontinhos ficam colados na palavra */
 .hb .hb-titulo .troca__reserva {
   display: none;
-}
-
-.hb .hb-titulo {
-  margin-top: 22px;
-  color: #ffffff;
-  font-size: clamp(44px, 6.6vw, 84px);
-  font-weight: 800;
-  line-height: 0.98;
-  letter-spacing: -0.045em;
-}
-
-.hb .hb-desc {
-  max-width: 34em;
-  margin: 22px auto 0;
-  color: #dce1ef;
-  font-size: 20px;
-  line-height: 1.5;
 }
 
 /* ---------- os dois mundos (descem para a faixa branca) ---------- */
@@ -416,10 +362,6 @@
 }
 
 @media (max-width: 640px) {
-  .hb .hb-desc {
-    font-size: 18px;
-  }
-
   .hb .mundos {
     transform: translateY(72px);
   }

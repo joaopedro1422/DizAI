@@ -37,7 +37,7 @@ export function roteiroDoSegmento(segmento: string | null | undefined, dados: Da
     return [
       'Olá! Quanto custa o cento de salgados?',
       `Pode ser para ${proximoDiaDaLoja(dados)}?`,
-      'OK, vou querer 50 coxinhas e 50 risoles',
+      'OK, vou querer 50 coxinhas e 50 pastéis de frango',
       'Está sim',
       `Vou retirar aí mesmo, me chamo ${dados.nome}`,
     ];

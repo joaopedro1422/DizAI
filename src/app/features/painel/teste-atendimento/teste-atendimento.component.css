@@ -94,6 +94,12 @@
   font-weight: 700;
 }
 
+.topo__auto {
+  border-color: var(--cor-gema);
+  background: var(--cor-gema);
+  color: var(--cor-noite);
+}
+
 .topo__recomecar:disabled {
   opacity: 0.45;
 }

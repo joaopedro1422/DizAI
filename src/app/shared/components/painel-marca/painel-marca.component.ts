@@ -11,7 +11,7 @@ import { LogoComponent } from '../logo/logo.component';
       <path d="M8 6H22A18 17 0 0 1 22 40H16L8 46Z" />
     </svg>
 
-    <app-logo class="logo--claro marca__logo" [tamanhoSimbolo]="34" [tamanhoTexto]="25" />
+    <app-logo class="marca__logo" variante="claro" [tamanhoSimbolo]="34" [tamanhoTexto]="25" />
 
     <h2 class="marca__titulo">{{ titulo() }}</h2>
   `,

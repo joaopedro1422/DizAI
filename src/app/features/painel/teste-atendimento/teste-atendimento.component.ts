@@ -437,6 +437,29 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
     }
   }
 
+  /**
+   * "Auto": recomeça a conversa e liga o mesmo cliente automático do primeiro teste do onboarding (lê cada resposta e
+   * responde com o cadastro real), para o lojista testar o atendimento do começo ao fim sem digitar.
+   */
+  protected async iniciarAuto(): Promise<void> {
+    if (this.respondendo() || this.automatico()) {
+      return;
+    }
+    this.automatico.set(true);
+    try {
+      if (this.mensagens().length) {
+        await this.servico.recomecar();
+        this.mensagens.set([]);
+        this.aviso.set(null);
+        this.erro.set(null);
+      }
+      this.comecarAutomatico(await this.prepararClienteAutomatico());
+    } catch (erro) {
+      this.erro.set(mensagemDoErro(erro, 'Não foi possível começar o teste automático. Tente de novo.'));
+      this.terminarAutomatico();
+    }
+  }
+
   protected async recomecar(): Promise<void> {
     if (this.respondendo() || this.automatico()) {
       return;
