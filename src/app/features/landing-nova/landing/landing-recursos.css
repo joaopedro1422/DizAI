@@ -16,7 +16,49 @@
   border: 1.5px solid var(--linha);
   border-radius: var(--raio-cartao);
   background: var(--papel);
+  box-shadow: 0 1px 2px rgba(19, 32, 74, 0.04), 0 10px 24px -18px rgba(19, 32, 74, 0.28);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* "Hora de divulgar": 3 artes pequenas em leque, a do meio na frente */
+.lv .mini-leque {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  height: 122px;
+  margin-top: 4px;
+}
+
+.lv .mini-leque__arte {
+  position: absolute;
+  bottom: 0;
+  overflow: hidden;
+  width: 84px;
+  border-radius: 8px;
+  box-shadow: 0 10px 20px -10px rgba(19, 32, 74, 0.45);
+  transform-origin: 50% 100%;
+  transition: transform 0.3s ease;
+}
+
+.lv .mini-leque__arte:nth-child(1) {
+  transform: translateX(-58px) rotate(-11deg);
+}
+
+.lv .mini-leque__arte:nth-child(2) {
+  z-index: 1;
+  transform: translateY(-4px);
+}
+
+.lv .mini-leque__arte:nth-child(3) {
+  transform: translateX(58px) rotate(11deg);
+}
+
+.lv .hora:hover .mini-leque__arte:nth-child(1) {
+  transform: translateX(-66px) rotate(-14deg);
+}
+
+.lv .hora:hover .mini-leque__arte:nth-child(3) {
+  transform: translateX(66px) rotate(14deg);
 }
 
 .lv .hora:hover {
@@ -196,7 +238,9 @@
 }
 
 .lv .rec--a { grid-area: a; }
-.lv .rec--b { grid-area: b; }
+.lv .rec--b { grid-area: b; overflow: hidden; }
+
+.lv .rec { --rec-pad: 28px; }
 .lv .rec--c { grid-area: c; }
 
 .lv .rec .etiqueta {
@@ -451,6 +495,7 @@
   }
 
   .lv .rec {
+    --rec-pad: 22px;
     padding: 22px;
   }
 

@@ -29,6 +29,7 @@ const CICLO_MS: Record<TipoLanding, number> = { produtos: 18000, servicos: 16000
           <div
             class="vt"
             [class.vt--agenda]="!!loja.agenda"
+            [class.vt--menu-minimalista]="loja.menu === 'minimalista'"
             [style.--vt-destaque]="loja.cores.destaque"
             [style.--vt-fundo]="loja.cores.fundo"
             [style.--vt-borda]="loja.cores.borda"

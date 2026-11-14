@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 
 import { ETAPAS_PEDIDO, RECURSOS_VENDAS, TABELA_VENDAS } from './conteudo-vendas';
 import { EtapasAvisoComponent } from './etapas-aviso.component';
+import { PainelPedidosLandingComponent } from './painel-pedidos-landing.component';
 
 /**
  * Recursos (o conteúdo da seção de produção, na marca nova): os destaques, o bento com a coleta do pedido, o
@@ -11,7 +12,7 @@ import { EtapasAvisoComponent } from './etapas-aviso.component';
  */
 @Component({
   selector: 'app-recursos-vendas',
-  imports: [RouterLink, EtapasAvisoComponent],
+  imports: [RouterLink, EtapasAvisoComponent, PainelPedidosLandingComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="secao faixa nevoa" id="recursos">
@@ -32,7 +33,7 @@ import { EtapasAvisoComponent } from './etapas-aviso.component';
           <article class="rec rec--a">
             <span class="etiqueta">Coleta de pedidos</span>
             <h3>O pedido chega anotado. Você apenas confirma.</h3>
-            <p>A função do assistente é responder o seu cliente nos primeiros 30 segundos de interesse e mantê-lo por perto.</p>
+            <p>A função do assistente é responder o seu cliente nos primeiros 30 segundos de interesse e mantê-lo por perto. Ele coleta as informações que você definir e te entrega o cliente pronto para você confirmar a venda.</p>
             <div class="rec__visual">
               <div class="cartao">
                 <div class="cartao__topo"><span>Ana Souza <small class="mono cartao__fone">(83) 98812-4410</small></span><span class="status status--pronto">Pronto para fechar</span></div>
@@ -51,20 +52,18 @@ import { EtapasAvisoComponent } from './etapas-aviso.component';
           <article class="rec rec--b">
             <span class="etiqueta">Gerenciador de pedidos</span>
             <h3>Cada etapa avisa o cliente com um toque.</h3>
-            <p>Confirmado, pronto, entregue: mude o status e a mensagem pronta daquela etapa sai, com o nome e o valor já preenchidos.</p>
-            <div class="rec__visual">
+            <p>Gerencie os seus pedidos de forma organizada, sem dor de cabeça e com avisos automáticos.<br />Confirmado, pronto, entregue: mude o status e a mensagem pronta daquela etapa sai, com o nome e o valor já preenchidos.</p>
+            <!-- a dinâmica dos status logo abaixo do texto; o painel no fim, ocupando o espaço que sobra -->
+            <div class="rec__visual" style="margin-top: 0">
               <div class="fila">
                 <div class="cartao cartao--destaque">
                   <span><b>Ana Souza</b><small>100 coxinhas + 50 kibes · Sáb, 15:00 · <span class="mono">R$ 135</span></small></span>
                   <span [class]="'status status--' + classeStatus()">{{ statusAna() }}</span>
                 </div>
-                <div class="cartao">
-                  <span><b>Carlos Lima</b><small>Bolo de ninho 2 kg · Sex, 18:00 · <span class="mono">R$ 160</span></small></span>
-                  <span class="status">Confirmado</span>
-                </div>
               </div>
               <app-etapas-aviso [etapas]="etapasPedido" hora="15:02" (etapaMudou)="etapaAna.set($event)" />
             </div>
+            <app-painel-pedidos-landing />
           </article>
 
           <article class="rec rec--c">

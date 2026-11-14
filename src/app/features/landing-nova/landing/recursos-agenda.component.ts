@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { RECURSOS_AGENDA, TABELA_AGENDA } from './conteudo-agendamentos';
+import { PainelAgendaLandingComponent } from './painel-agenda-landing.component';
 
 /**
  * Recursos da agenda (o conteúdo da seção de produção, na marca nova), no mesmo lugar dos Recursos de vendas: os
@@ -11,7 +12,7 @@ import { RECURSOS_AGENDA, TABELA_AGENDA } from './conteudo-agendamentos';
  */
 @Component({
   selector: 'app-recursos-agenda',
-  imports: [RouterLink],
+  imports: [RouterLink, PainelAgendaLandingComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="secao faixa nevoa" id="recursos">
@@ -128,6 +129,13 @@ import { RECURSOS_AGENDA, TABELA_AGENDA } from './conteudo-agendamentos';
                 <span class="insight insight--espaco">Sexta é o dia mais movimentado</span>
               </div>
             </div>
+          </article>
+
+          <article class="rec rec--f">
+            <span class="etiqueta">A sua agenda</span>
+            <h3>O dia inteiro numa tela só.</h3>
+            <p>Cada horário marcado pelo assistente entra sozinho na agenda, com o serviço, o valor e o WhatsApp do cliente.</p>
+            <app-painel-agenda-landing />
           </article>
         </div>
 

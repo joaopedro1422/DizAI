@@ -16,7 +16,7 @@ import { SobreFormularioComponent, SobreSalvo } from '../sobre-formulario/sobre-
   template: `
     <div class="formulario">
       <div class="tipos" role="radiogroup" aria-label="Tipo do tópico">
-        <button type="button" role="radio" class="tipo" [class.tipo--ativo]="!ehFeedbacks()" [attr.aria-checked]="!ehFeedbacks()" (click)="escolherTipo('FOTOS')">
+        <button type="button" role="radio" class="tipo" [class.tipo--ativo]="tipoAtual() === 'FOTOS'" [attr.aria-checked]="tipoAtual() === 'FOTOS'" (click)="escolherTipo('FOTOS')">
           <app-icone nome="imagem" [tamanho]="20" />
           <span class="tipo__textos"><strong>Fotos</strong><span>Seus trabalhos</span></span>
         </button>

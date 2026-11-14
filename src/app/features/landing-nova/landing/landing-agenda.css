@@ -3,11 +3,12 @@
 /* ======================= RECURSOS DA AGENDA (bento) ======================= */
 .lv .bento--agenda {
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-template-areas: 'a a b' 'c d b' 'e e e';
+  grid-template-areas: 'a a b' 'c d b' 'e e f';
 }
 
 .lv .rec--d { grid-area: d; }
 .lv .rec--e { grid-area: e; }
+.lv .rec--f { grid-area: f; overflow: hidden; }
 
 .lv .rec__conversa {
   padding: 14px;

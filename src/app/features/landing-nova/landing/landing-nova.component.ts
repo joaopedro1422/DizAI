@@ -20,6 +20,8 @@ import { ProvaLandingComponent } from './prova-landing.component';
 import { RecursosAgendaComponent } from './recursos-agenda.component';
 import { RecursosVendasComponent } from './recursos-vendas.component';
 import { VitrinePostsLandingComponent } from './vitrine-posts-landing.component';
+import { ArtePostComponent } from '../../posts/arte-post/arte-post.component';
+import { artesDaLanding } from './artes-landing';
 
 /** Liga a faixa "Somos Tech Provider da Meta": só depois que a Meta aprovar a análise do app. */
 const TECH_PROVIDER_APROVADO = false;
@@ -51,6 +53,7 @@ const CONTEUDOS: Record<TipoLanding, ConteudoLandingNova> = {
     RecursosVendasComponent,
     RecursosAgendaComponent,
     VitrinePostsLandingComponent,
+    ArtePostComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
@@ -75,6 +78,8 @@ export class LandingNovaComponent {
   protected readonly anoAtual = new Date().getFullYear();
   protected readonly emailSuporte = EMAIL_SUPORTE;
   protected readonly ondas = ONDAS_AUDIO;
+  /** O cartão "Hora de divulgar": 3 artes do leque de posts, pequenas. */
+  protected readonly artesPosts = computed(() => artesDaLanding(this.tipo() === 'servicos' ? 'servicos' : 'produtos').slice(0, 3));
 
   constructor() {
     const titulo = inject(Title);

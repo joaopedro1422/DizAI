@@ -62,7 +62,7 @@
   <section class="secao faixa" appRevelar>
     <div class="miolo">
       <div class="cabeca">
-        <span class="rotulo">Uma solução completa</span>
+        <h2 class="titulo"><span class="grifo">Uma solução completa</span></h2>
         <p class="apoio">Do atendimento inicial de qualidade à criação automática de posts para redes sociais e campanhas de marketing em 3 toques.</p>
       </div>
       <div class="grade-dia">
@@ -103,7 +103,14 @@
                   <div class="chips"><span>Saudação</span><span>Regras da loja</span><span>Pagamento</span></div>
                 }
                 @case ('posts') {
-                  <div class="chips"><span>Feed</span><span>Story</span><span>Legenda pronta</span></div>
+                  <!-- 3 artes do gerador de verdade, pequenas e em leque -->
+                  <div class="mini-leque" aria-hidden="true">
+                    @for (arte of artesPosts(); track arte.id) {
+                      <span class="mini-leque__arte">
+                        <app-arte-post [marca]="arte.marca" [conteudo]="arte.conteudo" [estilo]="arte.estilo" formato="feed" [largura]="84" />
+                      </span>
+                    }
+                  </div>
                 }
                 @case ('numeros') {
                   <div class="valor-grande">{{ item.detalhe }}</div>

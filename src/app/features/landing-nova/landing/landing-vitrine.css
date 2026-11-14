@@ -262,6 +262,37 @@
   color: #ffffff;
 }
 
+/* menu minimalista (como na vitrine de verdade): só o texto e o tracinho da cor embaixo da categoria ativa */
+.lv .vt--menu-minimalista .vt__menu {
+  gap: 16px;
+  padding: 14px 14px 4px;
+  border-bottom: 1px solid var(--vt-borda);
+}
+
+.lv .vt--menu-minimalista .vt__chip {
+  position: relative;
+  padding: 2px 0 9px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--vt-suave);
+}
+
+.lv .vt--menu-minimalista .vt__chip--ativa {
+  color: var(--vt-destaque);
+}
+
+.lv .vt--menu-minimalista .vt__chip--ativa::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--vt-destaque);
+}
+
 .lv .vt__topico {
   display: flex;
   justify-content: space-between;

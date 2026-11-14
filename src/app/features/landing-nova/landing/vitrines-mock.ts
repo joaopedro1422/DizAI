@@ -23,6 +23,8 @@ export interface LojaMock {
   avaliacoes: number;
   /** Produtos: o menu das categorias; serviços: o tópico da aba Vitrine. */
   categorias: string[];
+  /** Estilo do menu das categorias (o "Menu" de Personalizar vitrine); sem o campo = arredondado. */
+  menu?: 'minimalista';
   topico: { nome: string; fotos: number };
   fotos: FotoMock[];
   depoimentos: { texto: string; nome: string }[];
@@ -53,6 +55,7 @@ const PEDACINHO: LojaMock = {
   nota: '4,9',
   avaliacoes: 32,
   categorias: ['Frutas vermelhas', 'Chocolate', 'Red velvet'],
+  menu: 'minimalista',
   topico: { nome: 'Frutas vermelhas', fotos: 8 },
   fotos: ['01', '03', '04', '05', '06', '07'].map((n) => ({ src: `${BOLOS}/${n}.webp` })),
   depoimentos: [
