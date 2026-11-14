@@ -10,6 +10,11 @@ import { DIAS_SEMANA } from '../../../core/utils/datas-agenda';
  * a data, a entrega...) e responde com dados que existem no cadastro, então funciona com qualquer produto ou serviço.
  */
 
+/**
+ * Nos produtos, o pedido segue: escolhas -> dados de fechamento (nome, entrega/retirada, data) -> resumo completo ->
+ * confirmação -> passa para o dono. O cliente responde os dados quando o assistente pede e confirma o resumo no fim.
+ */
+
 /** Quantas mensagens o cliente manda no máximo: passou disso, a conversa fica com o lojista. */
 const LIMITE_DE_MENSAGENS = 12;
 
@@ -31,15 +36,19 @@ export interface DadosClienteAutomatico {
   roteiro?: string[];
 }
 
-/** Salgados: a conversa típica, do preço do cento à retirada, no próximo dia em que a loja pode atender. */
+/**
+ * Salgados: a conversa típica, do preço do cento à retirada, no próximo dia em que a loja pode atender. Na ordem do
+ * pedido: escolhas -> dados de fechamento (retirada, horário e nome) -> resumo completo -> confirmação.
+ */
 export function roteiroDoSegmento(segmento: string | null | undefined, dados: DadosClienteAutomatico): string[] | undefined {
   if (segmento === 'SALGADOS') {
+    const { dia, hora } = proximoDiaEHora(dados);
     return [
       'Olá! Quanto custa o cento de salgados?',
-      `Pode ser para ${proximoDiaDaLoja(dados)}?`,
+      `Pode ser para ${dia}?`,
       'OK, vou querer 50 coxinhas e 50 pastéis de frango',
+      `Vou retirar aí mesmo às ${hora}h, me chamo ${dados.nome}`,
       'Está sim',
-      `Vou retirar aí mesmo, me chamo ${dados.nome}`,
     ];
   }
   return undefined;
@@ -135,6 +144,12 @@ export class ClienteAutomatico {
       this.respondidas.add('intencao');
       return `${this.porUnidade() ? 'Quero 100 unidades' : 'Quero encomendar'} para ${this.dataDoPedido}`;
     }
+    // o resumo completo (vem depois dos dados e repete as escolhas, a data, a entrega e o nome como rótulos): só
+    // confirma, antes de olhar as opções citadas
+    const ehResumo = /resumo|\btotal\b/.test(texto);
+    if (ehResumo && this.pediu(texto, 'confirmar', /confirm|esta correto|esta certo|tudo certo|certinho|confere|posso anotar|resumo/)) {
+      return 'Isso, pode confirmar!';
+    }
     const partes: string[] = [];
     // as opções do produto que o assistente citou (pelo nome da opção ou por 2 dos valores)
     for (const atributo of this.dados.produto?.atributos ?? []) {
@@ -145,10 +160,6 @@ export class ClienteAutomatico {
     }
     if (partes.length) {
       return partes.join('\n');
-    }
-    // o resumo repete data, entrega e nome como rótulos: a confirmação vem antes de tudo
-    if (this.pediu(texto, 'confirmar', /confirm|esta correto|esta certo|tudo certo|certinho|posso anotar|resumo/)) {
-      return 'Isso, pode confirmar!';
     }
     // dados do fechamento: tudo o que o assistente pediu nesta mensagem vai junto ("nome e entrega ou retirada")
     const dados: string[] = [];
@@ -175,6 +186,9 @@ export class ClienteAutomatico {
     }
     if (this.pediu(texto, 'adicional', /adiciona|acrescentar|mais alguma/)) {
       return 'Não, só isso';
+    }
+    if (this.pediu(texto, 'confirmar', /confirm|esta correto|esta certo|tudo certo|certinho|confere|posso anotar/)) {
+      return 'Isso, pode confirmar!';
     }
     if (/\?\s*$/.test(texto) && !this.respondidas.has('sim')) {
       this.respondidas.add('sim');
@@ -261,6 +275,11 @@ export function quandoPedir(dados: DadosClienteAutomatico): string {
  * cabe na antecedência (a maior entre a do produto e a da loja, contada a partir da abertura, como no backend).
  */
 export function proximoDiaDaLoja(dados: DadosClienteAutomatico): string {
+  return proximoDiaEHora(dados).dia;
+}
+
+/** O dia ("amanhã de manhã") e a hora cheia dentro do horário em que o pedido já fica pronto (10 = "10h"). */
+export function proximoDiaEHora(dados: DadosClienteAutomatico): { dia: string; hora: number } {
   const agora = dados.agora ?? new Date();
   const antecedencia = Math.max(dados.produto?.antecedenciaMinutos ?? 0, dados.antecedenciaLojaMinutos ?? 0);
   const horarios = dados.horarioLivre ? [] : dados.horarios ?? [];
@@ -286,12 +305,15 @@ export function proximoDiaDaLoja(dados: DadosClienteAutomatico): string {
   for (const trecho of trechos) {
     const pronto = Math.max(trecho.inicio, minimo);
     if (trecho.dias >= 1 && pronto < trecho.fim) {
-      const hora = new Date(pronto).getHours();
+      // a hora cheia seguinte (10:20 -> 11h), se ainda couber no trecho aberto
+      const cheia = new Date(pronto);
+      if (cheia.getMinutes() > 0) cheia.setHours(cheia.getHours() + 1, 0, 0, 0);
+      const hora = (cheia.getTime() < trecho.fim ? cheia : new Date(pronto)).getHours();
       const parte = hora < 12 ? 'de manhã' : hora < 18 ? 'à tarde' : 'à noite';
-      return `${trecho.dias === 1 ? 'amanhã' : trecho.nome} ${parte}`;
+      return { dia: `${trecho.dias === 1 ? 'amanhã' : trecho.nome} ${parte}`, hora };
     }
   }
-  return 'a próxima semana';
+  return { dia: 'a próxima semana', hora: 10 };
 }
 
 /** Uma hora cheia aberta neste dia e depois do mínimo; as 15h quando dá. */

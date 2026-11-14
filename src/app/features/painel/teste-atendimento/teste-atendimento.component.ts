@@ -224,8 +224,10 @@ export class TesteAtendimentoComponent implements OnInit, AfterViewInit, OnDestr
 
   /** Depois de cada resposta: o "cliente" responde sozinho ou a conversa volta para o lojista. */
   private continuarAutomatico(resposta: RespostaTeste): void {
-    const ultima = [...resposta.mensagens].reverse().find((m) => m.origem !== 'CLIENTE');
-    const proxima = this.clienteAutomatico?.proxima(ultima?.texto ?? '', resposta.acao) ?? null;
+    // a resposta pode vir em mais de uma mensagem (o corte do assistente): lê todas desde a última do cliente
+    const ultimaDoCliente = resposta.mensagens.map((m) => m.origem).lastIndexOf('CLIENTE');
+    const daResposta = resposta.mensagens.slice(ultimaDoCliente + 1).filter((m) => m.origem !== 'CLIENTE');
+    const proxima = this.clienteAutomatico?.proxima(daResposta.map((m) => m.texto).join('\n'), resposta.acao) ?? null;
     if (!proxima) {
       this.terminarAutomatico();
       return;
