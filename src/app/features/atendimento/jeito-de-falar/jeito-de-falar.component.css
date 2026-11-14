@@ -101,3 +101,19 @@
   line-height: 1.45;
   white-space: pre-line;
 }
+
+/* "Emoji do cumprimento inicial": uma linha discreta, o rótulo e um campo pequeno para um emoji */
+.jeito__cumprimento {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.jeito__cumprimento-campo {
+  width: 64px;
+  min-height: 40px;
+  padding: 0 8px;
+  font-size: 20px;
+  text-align: center;
+}

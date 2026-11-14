@@ -122,6 +122,8 @@ export interface Perfil {
   emojis?: string[];
   /** false = o assistente não usa emoji. */
   usarEmojis?: boolean;
+  /** O emoji do cumprimento da primeira resposta ("Olá, boa tarde! 🎂"). "" = o primeiro da lista ou o 😊. */
+  emojiCumprimento?: string;
   saudacaoPersonalizada: string;
   instrucoesObrigatorias: string;
   modoCatalogo: ModoCatalogo;
@@ -182,6 +184,7 @@ export type ConfiguracoesAtendimento = Pick<
   | 'tomAtendimento'
   | 'emojis'
   | 'usarEmojis'
+  | 'emojiCumprimento'
 >;
 
 export type TomAtendimento = 'NEUTRO' | 'FEMININO' | 'MASCULINO';

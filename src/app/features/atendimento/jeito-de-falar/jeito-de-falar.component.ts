@@ -43,18 +43,21 @@ export class JeitoDeFalarComponent implements OnInit {
   protected readonly tom = signal<TomAtendimento>('NEUTRO');
   protected readonly emojis = signal<string[]>([]);
   protected readonly usarEmojis = signal(true);
+  protected readonly emojiCumprimento = signal('');
 
-  /** O balão de exemplo no tom escolhido, com o primeiro emoji da loja. */
+  /** O emoji que vai no cumprimento: o escolhido, senão o primeiro da loja, senão o 😊. */
+  protected readonly emojiDoCumprimento = computed(() => this.emojiCumprimento() || this.emojis()[0] || '😊');
+
+  /** O balão de exemplo: o cumprimento fixo da primeira resposta ("Olá"/"Opa") e uma resposta no tom escolhido. */
   protected readonly previa = computed(() => {
-    const emoji = this.usarEmojis() ? (this.emojis()[0] ?? '😊') : '';
-    const fim = emoji ? ` ${emoji}` : '';
+    const fim = this.usarEmojis() ? ` ${this.emojiDoCumprimento()}` : '';
     switch (this.tom()) {
       case 'FEMININO':
-        return `Oi, Camila! Fico muito feliz com o seu contato.${fim}\nTemos horário amanhã às 14:00 e às 16:30. Qual fica melhor para você?`;
+        return `Olá Camila, boa tarde!${fim}\nFico muito feliz com o seu contato. Temos horário amanhã às 14:00 e às 16:30. Qual fica melhor para você?`;
       case 'MASCULINO':
-        return `Fala, João! Obrigado pelo contato.${fim}\nTemos horário amanhã às 14:00 e às 16:30. Qual fica melhor para você?`;
+        return `Opa João, boa tarde!${fim}\nObrigado pelo contato. Temos horário amanhã às 14:00 e às 16:30. Qual fica melhor para você?`;
       default:
-        return `Olá, Camila! Que bom falar com você.${fim}\nTemos horário amanhã às 14:00 e às 16:30. Qual fica melhor para você?`;
+        return `Olá Camila, boa tarde!${fim}\nTemos horário amanhã às 14:00 e às 16:30. Qual fica melhor para você?`;
     }
   });
 
@@ -63,12 +66,14 @@ export class JeitoDeFalarComponent implements OnInit {
     this.tom.set(valores.tomAtendimento);
     this.emojis.set(valores.emojis);
     this.usarEmojis.set(valores.usarEmojis);
+    this.emojiCumprimento.set(valores.emojiCumprimento);
     // descartar/recarregar o formulário volta os valores salvos
     this.formulario().valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       const atual = this.formulario().getRawValue();
       this.tom.set(atual.tomAtendimento);
       this.emojis.set(atual.emojis);
       this.usarEmojis.set(atual.usarEmojis);
+      this.emojiCumprimento.set(atual.emojiCumprimento);
     });
   }
 
@@ -80,6 +85,12 @@ export class JeitoDeFalarComponent implements OnInit {
     this.atualizar('usarEmojis', ligado);
   }
 
+  /** Um emoji só (o que o lojista digitar ou colar); vazio volta ao padrão. */
+  protected definirEmojiCumprimento(valor: string): void {
+    const emoji = [...new Intl.Segmenter().segment(valor.trim())].map((s) => s.segment).find((s) => /\p{Extended_Pictographic}/u.test(s)) ?? '';
+    this.atualizar('emojiCumprimento', emoji);
+  }
+
   protected alternarEmoji(emoji: string): void {
     const atuais = this.emojis();
     if (atuais.includes(emoji)) {
@@ -89,7 +100,7 @@ export class JeitoDeFalarComponent implements OnInit {
     }
   }
 
-  private atualizar<K extends 'tomAtendimento' | 'emojis' | 'usarEmojis'>(campo: K, valor: ReturnType<FormularioConfiguracoes['getRawValue']>[K]): void {
+  private atualizar<K extends 'tomAtendimento' | 'emojis' | 'usarEmojis' | 'emojiCumprimento'>(campo: K, valor: ReturnType<FormularioConfiguracoes['getRawValue']>[K]): void {
     const controle = this.formulario().controls[campo];
     controle.setValue(valor as never);
     controle.markAsDirty();

@@ -50,6 +50,8 @@ export function criarFormularioConfiguracoes(fb: FormBuilder, valores: Configura
       tomAtendimento: fb.nonNullable.control<TomAtendimento>(valores.tomAtendimento ?? 'NEUTRO'),
       emojis: fb.nonNullable.control<string[]>(valores.emojis ?? []),
       usarEmojis: fb.nonNullable.control<boolean>(valores.usarEmojis ?? true),
+      /** O emoji do cumprimento inicial ("" = o primeiro da lista ou o 😊). */
+      emojiCumprimento: fb.nonNullable.control<string>(valores.emojiCumprimento ?? ''),
     },
     { validators: [linkObrigatorioNoModoExterno, linkAgendamentoNoModoExterno] },
   );

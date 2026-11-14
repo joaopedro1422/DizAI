@@ -29,6 +29,19 @@
           </button>
         }
       </div>
+
+      <label class="jeito__cumprimento">
+        <span class="jeito__detalhe">Emoji do cumprimento inicial</span>
+        <input
+          class="campo__entrada jeito__cumprimento-campo"
+          type="text"
+          maxlength="16"
+          aria-label="Emoji do cumprimento inicial"
+          [placeholder]="emojis()[0] || '😊'"
+          [value]="emojiCumprimento()"
+          (change)="definirEmojiCumprimento($any($event.target).value); $any($event.target).value = emojiCumprimento()"
+        />
+      </label>
     }
   </div>
 
