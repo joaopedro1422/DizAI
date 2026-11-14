@@ -53,9 +53,9 @@ export class JeitoDeFalarComponent implements OnInit {
     const fim = this.usarEmojis() ? ` ${this.emojiDoCumprimento()}` : '';
     switch (this.tom()) {
       case 'FEMININO':
-        return `Olá Camila, boa tarde!${fim}\nFico muito feliz com o seu contato. Temos horário amanhã às 14:00 e às 16:30. Qual fica melhor para você?`;
+        return `Olá Camila, boa tarde!${fim}\nTemos simm! Horário amanhã às 14:00 e às 16:30. Qual fica melhor para você?`;
       case 'MASCULINO':
-        return `Opa João, boa tarde!${fim}\nObrigado pelo contato. Temos horário amanhã às 14:00 e às 16:30. Qual fica melhor para você?`;
+        return `Opa João, boa tarde!${fim}\nTemos sim! Horário amanhã às 14:00 e às 16:30. Qual fica melhor para você?`;
       default:
         return `Olá Camila, boa tarde!${fim}\nTemos horário amanhã às 14:00 e às 16:30. Qual fica melhor para você?`;
     }
