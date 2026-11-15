@@ -68,7 +68,7 @@ const CLIENTES_EXEMPLO = [
           <article class="rec rec--b">
             <span class="etiqueta">Gerenciador de pedidos</span>
             <h3>Pedidos na palma da sua mão</h3>
-            <p>Gerencie os seus pedidos de forma organizada, sem dor de cabeça e com avisos automáticos.<br />Confirmado, pronto, entregue: mude o status e a mensagem definida por você sai automaticamente.</p>
+            <p>Gerencie as suas vendas de forma organizada, sem dor de cabeça e sem anotações no caderno.<br />Confirmado, pronto, entregue: mude o status e a mensagem definida por você sai automaticamente.</p>
             <!-- a dinâmica dos status logo abaixo do texto; o painel no fim, ocupando o espaço que sobra -->
             <div class="rec__visual" style="margin-top: 0">
               <div class="fila">
