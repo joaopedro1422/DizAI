@@ -302,15 +302,6 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
     { momento: 'Uma pergunta difícil', titulo: 'Não inventa: te chama', texto: 'Se não souber, avisa você no celular. Depois, ele aprende a resposta.', visual: 'chama', detalhe: '"Fazem sem lactose?"' },
     { momento: 'Você quis responder', titulo: 'Você assume quando quiser', texto: 'Respondeu pelo celular? Ele sai daquela conversa na hora.', visual: 'chave' },
     { momento: 'Do jeito da sua loja', titulo: 'Fala do seu jeito', texto: 'Saudação, regras e jeito de falar definidos por você.', visual: 'jeito' },
-    {
-      momento: 'Agenda lotada',
-      titulo: 'Respeita a sua agenda lotada',
-      texto: 'Você restringe as datas no painel, até o mês inteiro, e ele continua atendendo normalmente. Só quando o cliente pedir uma dessas datas, ele avisa que a agenda está lotada.',
-      visual: 'lotada',
-      conversa: ['Vocês fazem bolo para quarta-feira?', 'Desculpe, infelizmente nossa agenda está lotada até o dia 23/11 😔. Não conseguimos atender para quarta-feira.'],
-      detalhe: 'Lotado · 16/11 a 23/11',
-      largo: true,
-    },
   ],
   semAssistente:
     'Sem problemas, todos os recursos da plataforma podem ser utilizados sem ele. Você cadastra os pedidos manualmente para organizar as suas vendas e utiliza todo o resto normalmente.',
