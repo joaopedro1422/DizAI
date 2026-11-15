@@ -26,7 +26,7 @@ interface ItemProva {
           <span class="mit__estudo">Estudo do MIT sobre o comportamento de clientes</span>
           <h2>Responder em até <span class="grifo">5 minutos</span> deixa a chance de {{ conteudo().prova.objetivo }} <span class="grifo">21 vezes maior</span>.</h2>
           <p>E a chance de o cliente ainda estar lá para conversar é <strong>100 vezes maior</strong>. O estudo analisou mais de 15 mil contatos ao longo de 3 anos.</p>
-          <cite>Fonte: "Lead Response Management Study", Dr. James Oldroyd (MIT) e InsideSales, 2007.</cite>
+          <cite><a href="https://www.mortech.com/hs-fs/hub/25649/file-13535879-pdf/docs/mit_study.pdf" target="_blank" rel="noopener">Fonte: "Lead Response Management Study", Dr. James Oldroyd (MIT) e InsideSales, 2007 ↗</a></cite>
         </div>
 
         <div class="mit__palco">

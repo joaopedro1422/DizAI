@@ -424,6 +424,17 @@
   color: #ffffff;
 }
 
+/* a fonte abre o estudo (PDF) em outra aba */
+.lv .mit cite a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lv .mit cite a:hover {
+  color: #ffffff;
+}
+
 .lv .mit cite {
   display: block;
   margin-top: 18px;
