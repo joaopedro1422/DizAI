@@ -304,7 +304,7 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
     { momento: 'Do jeito da sua loja', titulo: 'Fala do seu jeito', texto: 'Saudação, regras e jeito de falar definidos por você.', visual: 'jeito' },
   ],
   semAssistente:
-    'Sem problemas, todos os recursos da plataforma podem ser utilizados sem ele. Você cadastra os pedidos manualmente para organizar o seu negócio.',
+    'Sem problemas, todos os recursos da plataforma podem ser utilizados sem ele. Você cadastra os pedidos manualmente para organizar as suas vendas e utiliza todo o resto normalmente.',
   vitrine: {
     texto: 'O link para a bio do Instagram e para mandar no WhatsApp. O cliente vê os seus trabalhos, as avaliações e o horário, e já faz a encomenda.',
     itens: [
