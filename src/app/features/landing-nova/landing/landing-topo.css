@@ -503,7 +503,7 @@
 
   /* um respiro entre os checks e a borda amarela embaixo do hero */
   .lv .hero {
-    padding-bottom: 44px;
+    padding-bottom: 36px;
   }
 
   /* o celular um pouco mais para a direita */
@@ -542,7 +542,7 @@
   .lv .hero__garantias {
     order: 2;
     justify-content: flex-start;
-    padding-bottom: 48px;
+    padding-bottom: 40px;
   }
 
   .lv .aviso-flutuante {
