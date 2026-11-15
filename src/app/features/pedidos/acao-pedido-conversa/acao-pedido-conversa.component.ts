@@ -12,7 +12,7 @@ import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.servic
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { AvisoClienteComponent } from '../aviso-cliente/aviso-cliente.component';
-import { SeletorProdutoComponent } from '../seletor-produto/seletor-produto.component';
+import { CarrinhoProdutosComponent, ItemCarrinho } from '../carrinho-produtos/carrinho-produtos.component';
 import { AGRADECIMENTO_PADRAO, lerValorPago } from '../textos-pedido';
 
 /** confirmar: vai para a tela Pedidos; entregar: já entra no faturamento; recusar: só devolve ao assistente. */
@@ -23,7 +23,7 @@ const TAMANHO_MAXIMO_ANEXO_BYTES = 5 * 1024 * 1024;
 
 @Component({
   selector: 'app-acao-pedido-conversa',
-  imports: [CarregandoComponent, AvisoClienteComponent, IconeComponent, UrlImagemPipe, SeletorProdutoComponent],
+  imports: [CarregandoComponent, AvisoClienteComponent, IconeComponent, UrlImagemPipe, CarrinhoProdutosComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './acao-pedido-conversa.component.html',
   styleUrl: './acao-pedido-conversa.component.css',
@@ -50,7 +50,8 @@ export class AcaoPedidoConversaComponent {
   protected readonly anexo = signal<string | null>(null);
   protected readonly enviandoAnexo = signal(false);
   /** O produto vendido (opcional): só para os "Produtos que mais vendem" dos Números. */
-  protected readonly produtoId = signal<number | null>(null);
+  /** O carrinho do pedido (só para os Números). */
+  protected readonly produtos = signal<ItemCarrinho[]>([]);
 
   protected readonly nome = computed(() => {
     const doResumo = this.conversa().resumoPedido.find((item) => item.campo.trim().toLowerCase().startsWith('nome'));
@@ -132,8 +133,9 @@ export class AcaoPedidoConversaComponent {
           valor!,
           mensagem,
           anexo,
-          this.produtoId(),
+          null,
           entregue ? null : this.pago().pago,
+          this.produtos(),
         );
         this.toastService.mostrar(this.textoSucesso(entregue, resultado.aviso));
       }

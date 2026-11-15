@@ -30,8 +30,8 @@ const BUSCA_A_PARTIR_DE = 7;
         }
         <span class="gatilho__texto">{{ produto.nome }}</span>
       } @else {
-        <span class="foto foto--vazia" aria-hidden="true"><app-icone nome="caixa" [tamanho]="16" /></span>
-        <span class="gatilho__texto">Escolha o produto</span>
+        <span class="foto foto--vazia" aria-hidden="true"><app-icone [nome]="rotuloVazio() === 'Escolha o produto' ? 'caixa' : 'mais'" [tamanho]="16" /></span>
+        <span class="gatilho__texto">{{ rotuloVazio() }}</span>
       }
       <span class="gatilho__seta" aria-hidden="true"><app-icone nome="setaBaixo" [tamanho]="16" [espessura]="2.4" /></span>
     </button>
@@ -255,6 +255,8 @@ export class SeletorProdutoComponent implements OnInit {
 
   /** O id escolhido; null = nenhum. */
   readonly valor = input<number | null>(null);
+  /** O texto do botão sem produto escolhido (no carrinho: "Adicionar produto"). */
+  readonly rotuloVazio = input('Escolha o produto');
   readonly escolher$ = output<number | null>({ alias: 'escolher' });
 
   protected readonly buscaAPartirDe = BUSCA_A_PARTIR_DE;

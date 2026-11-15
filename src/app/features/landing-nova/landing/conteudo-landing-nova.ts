@@ -56,8 +56,9 @@ export interface ItemDia {
 export interface ExemploProva {
   loja: string;
   logo: string;
-  sem: ['c' | 't', string, string][];
-  com: ['c' | 'l', string, string][];
+  /** c = cliente, l = loja, t = a etiqueta amarela de tempo ("De madrugada", "No outro dia de manhã"). */
+  sem: ['c' | 'l' | 't', string, string][];
+  com: ['c' | 'l' | 't', string, string][];
   fimSem: string;
   fimCom: string;
 }

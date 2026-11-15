@@ -103,6 +103,12 @@ export class ProvaLandingComponent {
       this.itens.set([]);
       for (const [de, texto, hora] of prova.sem) {
         await esperar(de === 't' ? 900 : 1200);
+        if (de === 'l') {
+          // a loja só responde depois ("No outro dia de manhã")
+          this.digitando.set(true);
+          await esperar(1100);
+          this.digitando.set(false);
+        }
         if (!this.ativo) return;
         this.adicionar(this.item(de, texto, hora));
       }

@@ -5,20 +5,20 @@ import { PedidoService } from '../../../core/services/pedido.service';
 import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.service';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { ClienteDoRegistro, SeletorClienteComponent } from '../../../shared/components/seletor-cliente/seletor-cliente.component';
-import { SeletorProdutoComponent } from '../seletor-produto/seletor-produto.component';
+import { CarrinhoProdutosComponent, ItemCarrinho } from '../carrinho-produtos/carrinho-produtos.component';
 
 /** Aceita "70", "70,5" ou "70.50". */
 const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
 
 @Component({
   selector: 'app-registrar-pedido',
-  imports: [CarregandoComponent, SeletorProdutoComponent, SeletorClienteComponent],
+  imports: [CarregandoComponent, CarrinhoProdutosComponent, SeletorClienteComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form class="formulario" (submit)="$event.preventDefault(); registrar()" novalidate>
       <div class="campo">
-        <span class="campo__rotulo">Produto <span class="campo__rotulo-opcional">(opcional)</span></span>
-        <app-seletor-produto [valor]="produtoId()" (escolher)="produtoId.set($event)" />
+        <span class="campo__rotulo">Produtos <span class="campo__rotulo-opcional">(opcional)</span></span>
+        <app-carrinho-produtos [itens]="produtos()" (mudou)="produtos.set($event)" />
         <span class="campo__dica">Conta nos produtos que mais vendem, nos Números.</span>
       </div>
 
@@ -127,7 +127,8 @@ export class RegistrarPedidoComponent {
   /** Escolhido da lista de Clientes ou novo (nome e WhatsApp digitados). */
   protected readonly cliente = signal<ClienteDoRegistro>({ nome: '', whatsapp: '', id: null });
   protected readonly entregue = signal(false);
-  protected readonly produtoId = signal<number | null>(null);
+  /** O carrinho do pedido (só para os Números). */
+  protected readonly produtos = signal<ItemCarrinho[]>([]);
   protected readonly salvando = signal(false);
   protected readonly tentou = signal(false);
   protected readonly erro = signal('');
@@ -147,7 +148,8 @@ export class RegistrarPedidoComponent {
         whatsapp: this.cliente().whatsapp.trim(),
         nomeCliente: this.cliente().nome.trim(),
         entregue: this.entregue(),
-        produtoId: this.produtoId(),
+        produtoId: null,
+        produtos: this.produtos(),
       });
       this.registrado.emit({ entregue: this.entregue() });
     } catch (erro) {

@@ -78,6 +78,8 @@ export class PedidoService {
     produtoId: number | null = null,
     /** Sinal já pago (só aparece na tela Pedidos); null = nada. */
     valorPago: number | null = null,
+    /** O carrinho: os produtos vendidos com a quantidade (só para os Números). */
+    produtos: { produtoId: number; quantidade: number }[] = [],
   ): Promise<ResultadoAcaoPedido> {
     const resposta = await firstValueFrom(
       this.http.post<RespostaApi>(this.url(`/da-conversa/${conversaId}?entregue=${entregue}`), {
@@ -86,6 +88,7 @@ export class PedidoService {
         anexo,
         produtoId,
         valorPago,
+        produtos,
       }),
     );
     return this.aplicar(resposta);
@@ -99,6 +102,7 @@ export class PedidoService {
     nomeCliente: string;
     entregue: boolean;
     produtoId: number | null;
+    produtos: { produtoId: number; quantidade: number }[];
   }): Promise<ResultadoAcaoPedido> {
     return this.aplicar(await firstValueFrom(this.http.post<RespostaApi>(this.url(), novo)));
   }

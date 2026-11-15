@@ -231,7 +231,7 @@
           @for (produto of maisVendidos(); track produto.nome; let i = $index) {
             <li class="barra">
               <span class="barra__topo">
-                <span class="barra__nome"><span class="barra__posicao">{{ i + 1 }}</span>{{ produto.nome }}<span class="barra__extra">{{ produto.pedidos }} {{ produto.pedidos === 1 ? 'pedido' : 'pedidos' }}</span></span>
+                <span class="barra__nome"><span class="barra__posicao">{{ i + 1 }}</span>{{ produto.nome }}<span class="barra__extra">{{ produto.quantidade ?? produto.pedidos }} {{ (produto.quantidade ?? produto.pedidos) === 1 ? 'unidade' : 'unidades' }}</span></span>
                 <span class="barra__valor">{{ real(produto.valor) }}</span>
               </span>
               <span class="barra__trilho"><span class="barra__preenchido" [style.width.%]="produto.largura"></span></span>

@@ -85,7 +85,11 @@ const TEMPO_POR_SLIDE_MS = 3800;
             </div>
           </article>
         </div>
-        <p class="tempo-total">Do cadastro ao primeiro atendimento: <b>poucos minutos.</b></p>
+        @if (conteudo().tipo === 'produtos') {
+          <p class="tempo-total">O seu negócio é cadastrado de forma simples e guiada.<br />O assistente sabe exatamente o que responder e o que coletar.</p>
+        } @else {
+          <p class="tempo-total">Do cadastro ao primeiro atendimento: <b>poucos minutos.</b></p>
+        }
       </div>
     </section>
 

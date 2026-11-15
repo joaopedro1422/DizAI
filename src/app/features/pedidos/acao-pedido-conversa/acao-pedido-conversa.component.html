@@ -13,8 +13,7 @@
   @switch (acao()) {
     @case ('confirmar') {
       <p class="acao__texto">
-        O pedido vai para a tela <strong>Pedidos</strong>. O assistente fica fora desta conversa até você marcar o
-        pedido como entregue.
+        O pedido vai para a tela <strong>Pedidos</strong>. O assistente fica fora desta conversa até ele ser entregue.
       </p>
     }
     @case ('entregar') {
@@ -29,8 +28,8 @@
 
   @if (acao() !== 'recusar') {
     <div class="campo">
-      <span class="campo__rotulo">Produto vendido <span class="campo__rotulo-opcional">(opcional)</span></span>
-      <app-seletor-produto [valor]="produtoId()" (escolher)="produtoId.set($event)" />
+      <span class="campo__rotulo">Produtos vendidos <span class="campo__rotulo-opcional">(opcional)</span></span>
+      <app-carrinho-produtos [itens]="produtos()" (mudou)="produtos.set($event)" />
       <span class="campo__dica">Utilizado apenas para análise financeira.</span>
     </div>
 
@@ -57,8 +56,6 @@
       <span class="campo__erro" role="alert">Informe o valor, por exemplo 127,50.</span>
     } @else if (erroPago()) {
       <span class="campo__erro" role="alert">Já pago: {{ erroPago() }}</span>
-    } @else {
-      <span class="campo__dica">Ajuste se combinou outro valor com o cliente.</span>
     }
     </div>
   }

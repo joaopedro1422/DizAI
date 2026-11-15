@@ -46,7 +46,8 @@ export interface NumerosPedidos {
   /** SEG..DOM: em que dia da semana mais se entrega. */
   porDiaDaSemana: { dia: string; valor: number; pedidos: number }[];
   /** O produto escolhido nos entregues (em quantos pedidos e quanto faturou), os 8 primeiros. */
-  produtosMaisVendidos?: { nome: string; pedidos: number; valor: number }[];
+  /** quantidade: as unidades vendidas (o carrinho dos pedidos). */
+  produtosMaisVendidos?: { nome: string; pedidos: number; valor: number; quantidade?: number }[];
   /** Os 5 clientes que mais gastaram no período. */
   melhoresClientes: { nome: string; pedidos: number; valor: number }[];
   clientes: number;

@@ -43,7 +43,7 @@ const MAX_TEXTO = 1000;
             <button type="button" role="radio" class="estilo" [class.estilo--ativo]="ativo" [attr.aria-checked]="ativo" (click)="estilo.set(opcao.valor)">
               <span class="estilo__previa" aria-hidden="true" [style.--vitrine-destaque]="corDaLoja()" [style.--vitrine-fonte]="fonteDaLoja()">
                 <span class="estilo__escala">
-                  <app-sobre-vitrine [sobre]="previa(opcao.valor)" [rotulo]="nome() || 'Sobre nós'" [reservarFoto]="true" />
+                  <app-sobre-vitrine [sobre]="previa(opcao.valor)" [reservarFoto]="true" />
                 </span>
               </span>
               <span class="estilo__textos">
