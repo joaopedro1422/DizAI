@@ -114,6 +114,17 @@
 
 .lv .palco-hero > * {
   position: relative;
+  flex-shrink: 0;
+}
+
+/* em cima do celular, discreto: o convite para olhar a conversa */
+.lv .palco-hero__legenda {
+  flex: none;
+  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .lv .aviso-flutuante {

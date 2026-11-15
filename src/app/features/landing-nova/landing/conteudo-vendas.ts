@@ -73,7 +73,7 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
   rotuloRecursos: 'Recursos',
   hero: {
     descricao:
-      'Uma solução completa para o seu negócio: do atendimento com IA no WhatsApp à gestão de pedidos, com análise financeira e ferramentas de marketing.',
+      'Uma solução completa para as suas vendas: do atendimento com IA no WhatsApp à gestão de pedidos, com análise financeira e ferramentas de marketing.',
     garantias: ['No seu número de sempre', 'Pronto em poucos minutos', 'Recursos com ou sem o assistente', 'Todos os tipos de negócio'],
     conversas: [
       {

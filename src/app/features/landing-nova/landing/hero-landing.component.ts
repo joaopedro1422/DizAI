@@ -46,6 +46,7 @@ const MAXIMO_NA_TELA = 8;
         </div>
 
         <div class="palco-hero">
+          <span class="palco-hero__legenda">Veja o assistente atendendo</span>
           @if (conversa(); as atual) {
           <app-celular-mock [cortado]="true" style="--celular-largura: 350px; --celular-altura: 590px">
             <div class="wpp-topo">
