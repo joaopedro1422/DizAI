@@ -6,8 +6,8 @@ import { ConteudoPost, EstiloPost, MarcaPost } from '../../posts/motor/tipos-pos
 
 /**
  * As artes do leque de posts das landings: o próprio ArtePostComponent do gerador, com estilos escolhidos à mão para
- * mostrar a variedade (foto simples, foto com cartão, só texto com o preço, foto com texto e um cartão elaborado:
- * os horários livres nos serviços e o cardápio nos produtos), com as lojas e fotos de exemplo de public/landing.
+ * mostrar a variedade (foto cheia, foto sangrada, cardápio, foto com cartão, pôster, carimbo, depoimento, duas fotos e
+ * mosaico nos produtos; agenda, só texto e foto com texto nos serviços), com as lojas e fotos de exemplo de public/landing.
  */
 export interface ArteLanding {
   id: string;
@@ -59,6 +59,7 @@ const GALERIA = '/landing/galeria';
 const LOGOS = `${GALERIA}/logos`;
 const unhas = (n: number) => `${GALERIA}/unhas/${String(n).padStart(2, '0')}.webp`;
 const bolos = (n: number) => `${GALERIA}/bolos/${String(n).padStart(2, '0')}.webp`;
+const salgados = (n: number) => `${GALERIA}/salgados/${String(n).padStart(2, '0')}.webp`;
 
 const BELLA = marca('Studio Bella', 'studio-bella', 'ROSA_ESCURO', 'METALICO', 'Dancing Script', `${LOGOS}/studio-bella.webp`);
 const LEO = marca('Barbearia do Léo', 'barbearia-do-leo', 'PRETO', 'NORMAL', 'Oswald', `${LOGOS}/barbearia-do-leo.svg`);
@@ -129,6 +130,14 @@ const PRODUTOS: ArteLanding[] = [
     estilo: estilo({ layout: 'revista', paleta: 'foto', fonteApoio: 'DM Sans' }),
   },
   {
+    // foto sangrada até as bordas, com a logo na borda
+    id: 'salgados-sangrada',
+    descricao: 'Arte de destaque do Rei dos Salgados, com a foto até as bordas',
+    marca: SALGADOS,
+    conteudo: conteudo({ tipo: 'DESTAQUE', selo: 'Para a sua festa', titulo: 'Salgados fritos na hora', apoio: 'Coxinha, risole, kibe e bolinha de queijo', chamada: 'Encomende o seu', preco: 'R$ 85 o cento', fotos: [salgados(2)] }),
+    estilo: estilo({ layout: 'sangrada', paleta: 'escura', filtro: 'quente', fonteApoio: 'Montserrat', alinhamento: 'esquerda', botao: 'quadrado', selo: 'tarja', raio: 'reto' }),
+  },
+  {
     // cartão elaborado: o cardápio com os preços
     id: 'pedacinho-cardapio',
     descricao: 'Arte de cardápio do Pedacinho do Céu, com os preços',
@@ -148,20 +157,51 @@ const PRODUTOS: ArteLanding[] = [
     estilo: estilo({ layout: 'cardapio', paleta: 'creme', decor: 'pontos', fonteApoio: 'DM Sans', fundo: 'papel' }),
   },
   {
-    // só texto, fundo liso com cartão e o preço em destaque
-    id: 'salgados-promocao',
-    descricao: 'Arte de promoção do Rei dos Salgados, só com texto e o preço',
-    marca: SALGADOS,
-    conteudo: conteudo({ tipo: 'PROMOCAO', selo: 'Neste fim de semana', titulo: 'Cento de salgados', apoio: 'Coxinha, risole, kibe e bolinha de queijo', chamada: 'Peça pelo WhatsApp', preco: 'R$ 85' }),
-    estilo: estilo({ layout: 'liso-cartao', paleta: 'escura', fonteApoio: 'Montserrat', cartao: 'recorte', botao: 'quadrado' }),
-  },
-  {
     // foto com cartão por cima
     id: 'flores-cartao',
     descricao: 'Arte de novidade do Ateliê das Flores, com a foto e um cartão',
     marca: FLORES,
     conteudo: conteudo({ tipo: 'NOVIDADE', selo: 'Entrega hoje', titulo: 'Buquê do campo', apoio: 'Pedidos até as 16h, com cartão escrito à mão', chamada: 'Encomende o seu', fotos: ['/landing/hub/flores.webp'] }),
     estilo: estilo({ layout: 'cartao', paleta: 'clara', decor: 'organico', fonteApoio: 'DM Sans', cartao: 'fosco', variante: 1 }),
+  },
+  {
+    // pôster: o título grande e a foto num círculo
+    id: 'pedacinho-poster',
+    descricao: 'Arte de Páscoa do Pedacinho do Céu, em estilo pôster',
+    marca: PEDACINHO,
+    conteudo: conteudo({ tipo: 'PROMOCAO', selo: 'Encomendas de Páscoa', titulo: 'Doces de Páscoa', apoio: 'Bolos, ovos de colher e mini tortas', chamada: 'Garanta o seu', preco: 'A partir de R$ 49,90', fotos: [bolos(3)] }),
+    estilo: estilo({ layout: 'poster', paleta: 'cor', decor: 'brilhos', fonteApoio: 'DM Sans', fundo: 'degrade', selo: 'contorno' }),
+  },
+  {
+    // carimbo: a oferta num selo redondo inclinado
+    id: 'salgados-carimbo',
+    descricao: 'Arte de promoção do Rei dos Salgados, com o carimbo da oferta',
+    marca: SALGADOS,
+    conteudo: conteudo({ tipo: 'PROMOCAO', selo: 'Combo festa', titulo: '100 salgados + 2 refrigerantes', apoio: 'Para retirar ou receber em casa', chamada: 'Peça pelo WhatsApp', preco: 'R$ 99', fotos: [salgados(4)] }),
+    estilo: estilo({ layout: 'carimbo', paleta: 'creme', decor: 'pontos', filtro: 'quente', fonteApoio: 'Montserrat', fundo: 'papel', botao: 'quadrado' }),
+  },
+  {
+    // depoimento de cliente, como citação
+    id: 'flores-citacao',
+    descricao: 'Arte de depoimento do Ateliê das Flores',
+    marca: FLORES,
+    conteudo: conteudo({
+      tipo: 'DEPOIMENTO',
+      selo: 'Quem recebeu, amou',
+      titulo: 'O que dizem os nossos clientes',
+      chamada: 'Encomende o seu buquê',
+      fotos: ['/landing/hub/flores.webp'],
+      depoimento: { texto: 'O buquê chegou no horário, lindo e perfumado. A minha mãe chorou de emoção!', nome: 'Juliana A.', estrelas: 5 },
+    }),
+    estilo: estilo({ layout: 'citacao', paleta: 'creme', decor: 'organico', fonteApoio: 'DM Sans', fundo: 'grao', variante: 1 }),
+  },
+  {
+    // duas fotos desencontradas
+    id: 'pedacinho-dupla',
+    descricao: 'Arte de destaque do Pedacinho do Céu, com duas fotos',
+    marca: PEDACINHO,
+    conteudo: conteudo({ tipo: 'DESTAQUE', selo: 'Feito sob encomenda', titulo: 'Bolos que viram lembrança', apoio: 'Do recheio à decoração, do seu jeito', chamada: 'Fale com a gente', fotos: [bolos(4), bolos(1)] }),
+    estilo: estilo({ layout: 'dupla', paleta: 'clara', decor: 'linhas', fonteApoio: 'Poppins', alinhamento: 'esquerda', selo: 'texto', botao: 'sublinhado' }),
   },
   {
     // várias fotos e texto
