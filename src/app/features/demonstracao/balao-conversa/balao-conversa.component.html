@@ -42,6 +42,8 @@
     <div class="balao" [class.balao--cliente]="mensagem.de === 'cliente'">
       @if (mensagem.de === 'dono') {
         <span class="balao__autor">{{ segmento().dono }} respondeu pelo celular</span>
+      } @else if (mensagem.de === 'automatica') {
+        <span class="balao__autor balao__autor--automatica">Mensagem automática</span>
       }
       <!-- a mesma formatação do WhatsApp: listas com "-", *negrito*, _itálico_ e ~riscado~ -->
       @for (linha of mensagem.linhas; track $index) {

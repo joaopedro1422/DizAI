@@ -14,8 +14,9 @@ export interface PassoConversa {
    * documento (PDF), imagem (cardápio em foto), link (portfólio com prévia): o que o assistente envia.
    * nota: o que o DizAI fez por trás; notificacao: o aviso no celular do dono; dia: separador de dia.
    * tela: o celular sai do WhatsApp e mostra a tela do painel (Pedidos ou Minha Agenda) por alguns segundos.
+   * automatica: a mensagem que sai sozinha pelo WhatsApp da loja (pedido pronto, agradecimento do entregue).
    */
-  de: 'cliente' | 'assistente' | 'dono' | 'documento' | 'imagem' | 'link' | 'nota' | 'notificacao' | 'dia' | 'tela';
+  de: 'cliente' | 'assistente' | 'dono' | 'automatica' | 'documento' | 'imagem' | 'link' | 'nota' | 'notificacao' | 'dia' | 'tela';
   texto?: string;
   titulo?: string;
   nome?: string;
@@ -25,8 +26,10 @@ export interface PassoConversa {
   destaque?: string;
   /** Hora da mensagem quando não segue a conversa (lembrete, agradecimento). As seguintes continuam dela. */
   hora?: string;
-  /** de: 'tela': a tela de Pedidos com este pedido (o lojista toca em "Entregue")... */
+  /** de: 'tela': a tela de Pedidos com este pedido... */
   pedido?: PedidoDemo;
+  /** ...em que o lojista toca em "Pedido pronto" ou em "Entregue" (padrão: entregue)... */
+  acao?: 'pronto' | 'entregue';
   /** ...ou a Minha Agenda no dia do horário que o assistente acabou de marcar. */
   agenda?: AgendaDemo;
 }
@@ -102,7 +105,7 @@ export const DEMONSTRACOES: Record<TipoNegocio, TipoDemonstracao> = {
         id: 'manicure', rotulo: 'Manicure', loja: 'Studio Bella Unhas', inicial: 'B', cor: '#B8457A', logo: '/landing/galeria/logos/studio-bella.webp', dono: 'Bia', artigo: 'da', inicio: '10:12',
         passos: [
           { de: 'cliente', texto: 'Oi! Quanto custa a esmaltação em gel?' },
-          { de: 'assistente', texto: 'Bom dia! Seja bem-vinda ao Studio Bella Unhas 💅 Sou a assistente virtual e vou te ajudar por aqui.' },
+          { de: 'assistente', texto: 'Olá, seja muito bem-vinda ao Studio Bella Unhas! 💅\nAtendemos de terça a sábado, das 9h às 19h, aqui no Centro.', destaque: 'Manda a sua saudação de boas-vindas' },
           { de: 'assistente', texto: 'A esmaltação em gel é *R$ 60* e leva cerca de 1h15.', destaque: 'Responde preço e duração na hora' },
           { de: 'cliente', texto: 'Tem foto de alguns trabalhos?' },
           { de: 'assistente', texto: 'Tem sim! Separei por tipo, dá uma olhada:' },
@@ -144,7 +147,7 @@ export const DEMONSTRACOES: Record<TipoNegocio, TipoDemonstracao> = {
         id: 'barbearia', rotulo: 'Barbearia', loja: 'Barbearia do Léo', inicial: 'L', cor: '#2B2B2B', logo: '/landing/galeria/logos/barbearia-do-leo.svg', dono: 'Léo', artigo: 'do', inicio: '14:02',
         passos: [
           { de: 'cliente', texto: 'Boa tarde! Vocês cortam cabelo infantil?' },
-          { de: 'assistente', texto: 'Boa tarde! Aqui é o assistente virtual da Barbearia do Léo 💈' },
+          { de: 'assistente', texto: 'Olá, seja muito bem-vindo à Barbearia do Léo! 💈\nCorte, barba e sobrancelha, de segunda a sábado.', destaque: 'Manda a sua saudação de boas-vindas' },
           { de: 'assistente', texto: 'Cortamos sim! O corte infantil (até 12 anos) é *R$ 35* e leva cerca de 30 minutos.', destaque: 'Responde preço e duração na hora' },
           { de: 'cliente', texto: 'E quais outros serviços vocês fazem?' },
           { de: 'assistente', texto: 'Fazemos:\n- Corte masculino\n- Corte infantil\n- Barba\n- Corte + barba\n- Sobrancelha\n\nQuer saber o valor de algum?' },
@@ -182,7 +185,7 @@ export const DEMONSTRACOES: Record<TipoNegocio, TipoDemonstracao> = {
         id: 'estetica', rotulo: 'Estética', loja: 'Espaço Renova', inicial: 'R', cor: '#5F7F6E', logo: '/landing/galeria/logos/espaco-renova.svg', dono: 'Carla', artigo: 'da', inicio: '22:41',
         passos: [
           { de: 'cliente', texto: 'Boa noite! Vocês fazem limpeza de pele? Minha pele é bem oleosa' },
-          { de: 'assistente', texto: 'Boa noite! Bem-vinda ao Espaço Renova ✨ Sou a assistente virtual e te respondo a qualquer hora.' },
+          { de: 'assistente', texto: 'Olá, seja muito bem-vinda ao Espaço Renova! ✨\nLimpeza de pele, massagens e tratamentos faciais, com hora marcada.', destaque: 'Manda a sua saudação de boas-vindas' },
           { de: 'assistente', texto: 'Fazemos sim! A limpeza de pele profunda é indicada para pele oleosa: *R$ 150*, com 1h30 de duração. Inclui extração, máscara calmante e protetor solar.', destaque: 'Atende às 22h, com o espaço fechado' },
           { de: 'cliente', texto: 'De quanto em quanto tempo precisa fazer?' },
           { de: 'assistente', texto: 'A Carla recomenda uma limpeza a cada 30 a 45 dias. Para acne ou manchas, ela avalia na primeira sessão se vale combinar com peeling.', destaque: 'Explica com as suas informações' },
@@ -231,89 +234,144 @@ export const DEMONSTRACOES: Record<TipoNegocio, TipoDemonstracao> = {
         id: 'doces', rotulo: 'Doces e bolos', loja: 'Pedacinho do Céu', inicial: 'P', cor: '#C2185B', logo: '/landing/galeria/logos/pedacinho-do-ceu.jpg', dono: 'Ju', artigo: 'da', inicio: '15:20',
         passos: [
           { de: 'cliente', texto: 'Oi! Vocês fazem bolo de aniversário?' },
-          { de: 'assistente', texto: 'Boa tarde! Aqui é o assistente virtual do Pedacinho do Céu 🎂' },
-          { de: 'assistente', texto: 'Fazemos sim! Te mando o nosso cardápio com os sabores e tamanhos:' },
+          { de: 'assistente', texto: 'Olá, seja muito bem-vindo(a) à Pedacinho do Céu! 🎂\nAceitamos encomendas com 3 dias de antecedência, para retirar aqui na loja.', destaque: 'Manda a sua saudação de boas-vindas' },
+          { de: 'assistente', texto: 'Fazemos sim! Te mando o nosso cardápio com os sabores e os tamanhos.' },
           { de: 'documento', nome: 'Cardápio Pedacinho do Céu.pdf', detalhe: '2 páginas · PDF', destaque: 'Envia o seu catálogo em PDF' },
-          { de: 'cliente', texto: 'Quanto fica um bolo de ninho com morango pra 30 pessoas? E 100 brigadeiros' },
-          { de: 'assistente', texto: 'Fica assim:\n- Bolo Ninho com Morango (30 fatias): R$ 180,00\n- 100 brigadeiros gourmet (R$ 1,80 cada): R$ 180,00\n\n*Total: R$ 360,00*\n\nPara quando seria?', destaque: 'Faz o orçamento com os seus preços' },
-          { de: 'cliente', texto: 'Pra sexta agora! Vocês entregam?' },
-          { de: 'assistente', texto: 'Entregamos sim, com taxa de R$ 10 a R$ 20 conforme o bairro.\nSó que bolos de festa precisam de *3 dias de antecedência*: o primeiro dia livre é sábado (26/10). Pode ser?', destaque: 'Respeita prazo e regras de entrega' },
+          { de: 'cliente', texto: 'Quanto fica um bolo de ninho com morango pra 30 pessoas?' },
+          { de: 'assistente', texto: 'O nosso bolo G, que atende bem 30 pessoas, fica por R$ 250,00.\nPara quando seria?', destaque: 'Faz o orçamento com os seus preços' },
+          { de: 'cliente', texto: 'Pra sexta agora!' },
+          { de: 'assistente', texto: 'Para sexta não conseguimos: os bolos de festa precisam de 3 dias de antecedência. O primeiro dia livre é sábado (26/10). Pode ser?', destaque: 'Respeita o seu prazo de preparo' },
           { de: 'cliente', texto: 'Pode ser sábado. Quero encomendar!' },
-          { de: 'assistente', texto: 'Ótimo! Para anotar o seu pedido, me passa:\n- Seu nome\n- Endereço de entrega\n- Horário que prefere receber\n- Forma de pagamento', destaque: 'Anota os dados que você escolheu' },
-          { de: 'cliente', texto: 'Ana Paula, Rua das Flores 120, Centro. Umas 15h. Pix' },
-          { de: 'assistente', texto: 'Anotei! Confere:\n- Bolo Ninho com Morango (30 fatias)\n- 100 brigadeiros gourmet\n- Entrega: sábado, 26/10, às 15h\n- Endereço: Rua das Flores, 120, Centro\n- Pagamento: Pix\n\nEstá tudo certo?' },
+          { de: 'assistente', texto: 'Ótimo! Para anotar o seu pedido, me passa:\n- Seu nome\n- O horário da retirada\n- A forma de pagamento', destaque: 'Coleta os dados que você escolheu' },
+          { de: 'cliente', texto: 'Ana Paula. Umas 15h. Pix' },
+          { de: 'assistente', texto: 'Resumo do pedido:\n- *Bolo G (30 pessoas)*: ninho com morango\n- *Retirada*: sábado, 26/10, às 15h\n- *Nome*: Ana Paula\n- *Pagamento*: Pix\n\n*Total*: R$ 250,00' },
+          { de: 'assistente', texto: 'Está tudo certo?' },
           { de: 'cliente', texto: 'Tudo certo!' },
-          { de: 'assistente', texto: '1 Minuto!' },
-          { de: 'notificacao', titulo: 'Pedido pronto para fechar', texto: 'Ana Paula · Bolo + 100 brigadeiros · sáb 26/10', destaque: 'Te entrega o pedido pronto para fechar' },
+          { de: 'assistente', texto: 'A Ju vai finalizar o seu pedido, 1 minuto!' },
+          { de: 'notificacao', titulo: 'Pedido pronto para fechar', texto: 'Ana Paula · Bolo G · sáb 26/10', destaque: 'Te entrega o pedido pronto para fechar' },
           { de: 'dono', texto: 'Oi, Ana! Aqui é a Ju 💕 Pedido confirmado! Já te mando a chave Pix.' },
           { de: 'dia', texto: 'Sábado, 26/10' },
           {
-            de: 'tela', destaque: 'Você organiza o pedido na tela de Pedidos',
+            de: 'tela', acao: 'pronto', destaque: 'Você marca como pronto na tela de Pedidos',
             pedido: {
               nome: 'Ana Paula', whatsapp: '(83) 98812-4410', confirmadoHa: '2 dias',
               resumo: [
-                { campo: 'Itens', valor: 'Bolo Ninho com Morango (30 fatias), 100 brigadeiros gourmet' },
-                { campo: 'Entrega', valor: 'Sábado, 26/10, às 15h' },
-                { campo: 'Endereço', valor: 'Rua das Flores, 120, Centro' },
+                { campo: 'Itens', valor: 'Bolo G (30 pessoas): ninho com morango' },
+                { campo: 'Retirada', valor: 'Sábado, 26/10, às 15h' },
                 { campo: 'Pagamento', valor: 'Pix' },
               ],
-              valor: 360,
+              valor: 250,
             },
           },
-          { de: 'dono', hora: '15:40', texto: 'Obrigado pela preferência, Ana! Esperamos que goste 💛 Qualquer coisa, é só chamar por aqui.', destaque: 'Entregue: o agradecimento vai pelo WhatsApp' },
+          { de: 'automatica', hora: '14:30', texto: 'Oi, Ana! Seu pedido está pronto ✅', destaque: 'O aviso de pronto sai sozinho' },
+          { de: 'cliente', texto: 'Oba! Estou indo 😊' },
+          {
+            de: 'tela', acao: 'entregue', destaque: 'Entregue com um toque',
+            pedido: {
+              nome: 'Ana Paula', whatsapp: '(83) 98812-4410', confirmadoHa: '2 dias',
+              resumo: [
+                { campo: 'Itens', valor: 'Bolo G (30 pessoas): ninho com morango' },
+                { campo: 'Retirada', valor: 'Sábado, 26/10, às 15h' },
+                { campo: 'Pagamento', valor: 'Pix' },
+              ],
+              valor: 250,
+            },
+          },
+          { de: 'automatica', hora: '15:12', texto: 'Obrigado pela preferência, Ana! Esperamos que goste 💛 Qualquer coisa, é só chamar por aqui.', destaque: 'E o agradecimento vai pelo WhatsApp' },
         ],
       },
       {
         id: 'salgados', rotulo: 'Salgados', loja: 'Rei dos Salgados', inicial: 'R', cor: '#E8730C', logo: '/landing/galeria/logos/rei-dos-salgados.svg', dono: 'Rosa', artigo: 'da', inicio: '08:05',
         passos: [
           { de: 'cliente', texto: 'Bom dia! Quanto fica o cento de salgado frito?' },
-          { de: 'assistente', texto: 'Bom dia! Aqui é o assistente virtual do Rei dos Salgados 🥟' },
-          { de: 'assistente', texto: 'O cento de salgados fritos é *R$ 90*. O pedido mínimo é de 50 unidades. Os sabores estão no cardápio:' },
+          { de: 'assistente', texto: 'Olá, seja muito bem-vindo(a) ao Rei dos Salgados! 🥟\nSalgados fritos na hora ou congelados, com pedido mínimo de 50 unidades.', destaque: 'Manda a sua saudação de boas-vindas' },
+          { de: 'assistente', texto: 'O cento de salgados fritos sai por R$ 90,00. Os sabores estão no cardápio:' },
           { de: 'imagem', titulo: 'Cardápio de salgados', detalhe: 'Coxinha · Risole · Kibe · Bolinha de queijo · Enroladinho', destaque: 'Envia o cardápio em imagem' },
           { de: 'cliente', texto: 'Quero 300 pra sábado, metade coxinha e o resto sortido' },
-          { de: 'assistente', texto: 'Fica assim:\n- 150 coxinhas: R$ 135,00\n- 150 sortidos (risole, kibe e bolinha de queijo): R$ 135,00\n\n*Total: R$ 270,00*\n\nVai retirar ou quer receber em casa?', destaque: 'Faz o orçamento com os seus preços' },
+          { de: 'assistente', texto: 'Os 300 salgados, com 150 coxinhas e 150 sortidos, ficam por R$ 270,00.\nVai retirar ou quer receber em casa?', destaque: 'Faz o orçamento com os seus preços' },
           { de: 'cliente', texto: 'Retirar. Dá pra levar congelado? Quero fritar na hora' },
-          { de: 'assistente', texto: 'Dá sim! O congelado sai pelo mesmo valor e vai com as instruções para fritar. 😉', destaque: 'Responde as dúvidas de sempre' },
-          { de: 'cliente', texto: 'Fechado então! Pode separar' },
-          { de: 'assistente', texto: '1 Minuto!' },
-          { de: 'notificacao', titulo: 'Cliente quer fechar um pedido', texto: '"Quero 300 pra sábado, metade coxinha…" · R$ 270', destaque: 'No modo "me chamar", te passa a conversa' },
-          { de: 'dono', texto: 'Oi! Aqui é a Rosa 😊 Separado: 300 congelados para sábado. Qual o seu nome e que horas você passa?' },
-          { de: 'nota', texto: 'A Rosa assumiu: o assistente saiu desta conversa', destaque: 'Você assume quando quiser' },
+          { de: 'assistente', texto: 'Dá sim! O congelado sai pelo mesmo valor e vai com as instruções para fritar.\nQual o seu nome e que horas você passa?', destaque: 'Responde as dúvidas de sempre' },
+          { de: 'cliente', texto: 'Carlos. Às 10h' },
+          { de: 'assistente', texto: 'Resumo do pedido:\n- *300 salgados congelados*: 150 coxinhas e 150 sortidos\n- *Retirada*: sábado, às 10h\n- *Nome*: Carlos\n\n*Total*: R$ 270,00' },
+          { de: 'assistente', texto: 'Está tudo certo?' },
+          { de: 'cliente', texto: 'Fechado!' },
+          { de: 'assistente', texto: 'A Rosa vai finalizar o seu pedido, 1 minuto!' },
+          { de: 'notificacao', titulo: 'Pedido pronto para fechar', texto: 'Carlos · 300 salgados · sáb 10h', destaque: 'Te entrega o pedido pronto para fechar' },
+          { de: 'dono', texto: 'Oi, Carlos! Aqui é a Rosa 😊 Pedido confirmado! Pode pagar na retirada.' },
+          { de: 'dia', texto: 'Sábado' },
+          {
+            de: 'tela', acao: 'pronto', destaque: 'Você marca como pronto na tela de Pedidos',
+            pedido: {
+              nome: 'Carlos Lima', whatsapp: '(83) 99654-3321', confirmadoHa: '1 dia',
+              resumo: [
+                { campo: 'Itens', valor: '300 salgados congelados: 150 coxinhas e 150 sortidos' },
+                { campo: 'Retirada', valor: 'Sábado, às 10h' },
+              ],
+              valor: 270,
+            },
+          },
+          { de: 'automatica', hora: '09:40', texto: 'Oi, Carlos! Seu pedido está pronto ✅', destaque: 'O aviso de pronto sai sozinho' },
+          { de: 'cliente', texto: 'Estou indo!' },
+          {
+            de: 'tela', acao: 'entregue', destaque: 'Entregue com um toque',
+            pedido: {
+              nome: 'Carlos Lima', whatsapp: '(83) 99654-3321', confirmadoHa: '1 dia',
+              resumo: [
+                { campo: 'Itens', valor: '300 salgados congelados: 150 coxinhas e 150 sortidos' },
+                { campo: 'Retirada', valor: 'Sábado, às 10h' },
+              ],
+              valor: 270,
+            },
+          },
+          { de: 'automatica', hora: '10:08', texto: 'Obrigado pela preferência, Carlos! Esperamos que goste 💛 Qualquer coisa, é só chamar por aqui.', destaque: 'E o agradecimento vai pelo WhatsApp' },
         ],
       },
       {
         id: 'presentes', rotulo: 'Presentes', loja: 'Ateliê das Flores', inicial: 'A', cor: '#3F7D58', logo: '/landing/galeria/logos/atelie-das-flores.svg', dono: 'Bia', artigo: 'do', inicio: '10:12',
         passos: [
           { de: 'cliente', texto: 'Oi! Vocês fazem buquê de rosas pra entregar hoje?' },
-          { de: 'assistente', texto: 'Olá! Aqui é a assistente virtual do Ateliê das Flores 💐' },
-          { de: 'assistente', texto: 'Fazemos sim! Pedidos até as 16h são entregues no mesmo dia. O buquê com 12 rosas vermelhas sai por *R$ 129,90* e o com 24 rosas por *R$ 219,90*.', destaque: 'Responde preços e prazos de entrega' },
+          { de: 'assistente', texto: 'Olá, seja muito bem-vindo(a) ao Ateliê das Flores! 💐\nBuquês, cestas e arranjos, com entrega no mesmo dia para pedidos até as 16h.', destaque: 'Manda a sua saudação de boas-vindas' },
+          { de: 'assistente', texto: 'Fazemos sim! O buquê com 12 rosas vermelhas sai por R$ 129,90 e o com 24 rosas, por R$ 219,90.', destaque: 'Responde preços e prazos de entrega' },
           { de: 'cliente', texto: 'Tem foto dos buquês?' },
           { de: 'link', url: 'dizai.app/l/atelie-das-flores', titulo: 'Ateliê das Flores · Buquês, cestas e arranjos', destaque: 'Envia o portfólio com as fotos' },
           { de: 'cliente', texto: 'Quero o de 12 rosas. Dá pra mandar um cartão junto?' },
           { de: 'assistente', texto: 'Dá sim! O cartão com a sua mensagem vai junto, sem custo. Para acompanhar, temos a caixa de Ferrero Rocher por + R$ 24,90. Quer incluir?', destaque: 'Oferece os adicionais, sem insistir' },
           { de: 'cliente', texto: 'Quero sim!' },
-          { de: 'assistente', texto: 'Para anotar o seu pedido, me passa:\n- Seu nome\n- Para quem é e o endereço de entrega\n- A mensagem do cartão\n- Forma de pagamento', destaque: 'Anota os dados que você escolheu' },
-          { de: 'cliente', texto: 'Lucas Andrade. Pra Marina, Av. Cabo Branco 1500, ap 302. "Feliz aniversário, meu amor!" Pix' },
-          { de: 'assistente', texto: 'Anotei! Confere:\n- Buquê com 12 rosas vermelhas\n- Caixa de Ferrero Rocher\n- Cartão: "Feliz aniversário, meu amor!"\n- Entrega hoje para Marina: Av. Cabo Branco, 1500, ap 302\n- Pagamento: Pix\n\n*Total: R$ 154,80*\n\nEstá tudo certo?' },
+          { de: 'assistente', texto: 'Para anotar o seu pedido, me passa:\n- Seu nome\n- Para quem é e o endereço de entrega\n- A mensagem do cartão', destaque: 'Coleta os dados que você escolheu' },
+          { de: 'cliente', texto: 'Lucas Andrade. Pra Marina, Av. Cabo Branco 1500, ap 302. "Feliz aniversário, meu amor!"' },
+          { de: 'assistente', texto: 'Resumo do pedido:\n- *Buquê com 12 rosas vermelhas*: com a caixa de Ferrero Rocher\n- *Cartão*: "Feliz aniversário, meu amor!"\n- *Entrega*: hoje, para Marina, Av. Cabo Branco, 1500, ap 302\n- *Nome*: Lucas Andrade\n\n*Total*: R$ 154,80' },
+          { de: 'assistente', texto: 'Está tudo certo?' },
           { de: 'cliente', texto: 'Tudo certo!' },
-          { de: 'assistente', texto: '1 Minuto!' },
+          { de: 'assistente', texto: 'A Bia vai finalizar o seu pedido, 1 minuto!' },
           { de: 'notificacao', titulo: 'Pedido pronto para fechar', texto: 'Lucas · Buquê 12 rosas + Ferrero · entrega hoje', destaque: 'Te entrega o pedido pronto para fechar' },
           { de: 'dono', texto: 'Oi, Lucas! Aqui é a Bia 🌹 Pedido confirmado! Já te mando a chave Pix.' },
           {
-            de: 'tela', destaque: 'Você organiza o pedido na tela de Pedidos',
+            de: 'tela', acao: 'pronto', destaque: 'Você marca como pronto na tela de Pedidos',
             pedido: {
               nome: 'Lucas Andrade', whatsapp: '(83) 99471-2280', confirmadoHa: '3 h',
               resumo: [
                 { campo: 'Itens', valor: 'Buquê com 12 rosas vermelhas, caixa de Ferrero Rocher' },
                 { campo: 'Cartão', valor: '"Feliz aniversário, meu amor!"' },
-                { campo: 'Entrega', valor: 'Hoje, para Marina' },
-                { campo: 'Endereço', valor: 'Av. Cabo Branco, 1500, ap 302' },
-                { campo: 'Pagamento', valor: 'Pix' },
+                { campo: 'Entrega', valor: 'Hoje, para Marina, Av. Cabo Branco, 1500, ap 302' },
               ],
               valor: 154.8,
             },
           },
-          { de: 'dono', hora: '14:52', texto: 'Obrigado pela preferência, Lucas! Esperamos que goste 💛 Qualquer coisa, é só chamar por aqui.', destaque: 'Entregue: o agradecimento vai pelo WhatsApp' },
+          { de: 'automatica', hora: '14:10', texto: 'Oi, Lucas! Seu pedido está pronto ✅ O buquê já está saindo para a entrega.', destaque: 'O aviso de pronto sai sozinho' },
+          { de: 'cliente', texto: 'Que ótimo, obrigado!' },
+          {
+            de: 'tela', acao: 'entregue', destaque: 'Entregue com um toque',
+            pedido: {
+              nome: 'Lucas Andrade', whatsapp: '(83) 99471-2280', confirmadoHa: '3 h',
+              resumo: [
+                { campo: 'Itens', valor: 'Buquê com 12 rosas vermelhas, caixa de Ferrero Rocher' },
+                { campo: 'Cartão', valor: '"Feliz aniversário, meu amor!"' },
+                { campo: 'Entrega', valor: 'Hoje, para Marina, Av. Cabo Branco, 1500, ap 302' },
+              ],
+              valor: 154.8,
+            },
+          },
+          { de: 'automatica', hora: '14:52', texto: 'Obrigado pela preferência, Lucas! Esperamos que goste 💛 Qualquer coisa, é só chamar por aqui.', destaque: 'E o agradecimento vai pelo WhatsApp' },
         ],
       },
     ],

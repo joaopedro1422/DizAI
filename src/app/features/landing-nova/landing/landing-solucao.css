@@ -5,6 +5,24 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+/* embaixo dos 6 cartões: um link simples para a página de demonstração */
+.lv .ver-demonstracao {
+  display: table;
+  margin: 28px auto 0;
+  padding: 8px 4px;
+  color: var(--noite);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--gema);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+.lv .ver-demonstracao:hover {
+  text-decoration-color: var(--noite);
+}
+
 .lv .sem-assistente {
   display: flex;
   flex-direction: column;

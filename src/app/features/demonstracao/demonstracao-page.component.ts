@@ -7,7 +7,7 @@ import { BalaoConversaComponent } from './balao-conversa/balao-conversa.componen
 import { MolduraTelaDemoComponent } from './telas-demo/moldura-tela-demo.component';
 import { TelaAgendaDemoComponent } from './telas-demo/tela-agenda-demo.component';
 import { TelaPedidosDemoComponent } from './telas-demo/tela-pedidos-demo.component';
-import { DEMONSTRACOES, TIPOS_NEGOCIO, TipoNegocio, destaquesDe } from './conversas-demonstracao';
+import { DEMONSTRACOES, TipoNegocio, destaquesDe } from './conversas-demonstracao';
 import { ReprodutorConversa } from './reprodutor-conversa';
 
 @Component({
@@ -29,7 +29,6 @@ export class DemonstracaoPageComponent {
   private readonly router = inject(Router);
   private readonly rolagem = viewChild<ElementRef<HTMLElement>>('rolagem');
 
-  protected readonly tipos = TIPOS_NEGOCIO;
   protected readonly demonstracoes = DEMONSTRACOES;
 
   protected readonly reprodutor = new ReprodutorConversa({ aoMostrar: () => this.rolarParaOFim() });

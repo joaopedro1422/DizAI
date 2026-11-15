@@ -116,6 +116,8 @@ function espera(item: ItemConversa): number {
     case 'assistente':
     case 'dono':
       return Math.min(DIGITACAO_MINIMA_MS + tamanho * POR_CARACTERE_MS, DIGITACAO_MAXIMA_MS);
+    case 'automatica':
+      return 1100;
     case 'dia':
       return 1700;
     default:
@@ -138,7 +140,7 @@ function prepararItens(segmento: SegmentoDemonstracao): ItemConversa[] {
       minutos += 1;
     }
     const hora = `${String(Math.floor(minutos / 60) % 24).padStart(2, '0')}:${String(minutos % 60).padStart(2, '0')}`;
-    const escrita = passo.de === 'cliente' || passo.de === 'assistente' || passo.de === 'dono';
+    const escrita = passo.de === 'cliente' || passo.de === 'assistente' || passo.de === 'dono' || passo.de === 'automatica';
     return { ...passo, hora, linhas: escrita && passo.texto ? formatarWhatsapp(passo.texto) : [] };
   });
 }

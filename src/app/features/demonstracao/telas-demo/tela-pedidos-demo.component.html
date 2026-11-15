@@ -9,7 +9,7 @@
 </header>
 
 <main class="conteudo-tela pedidos">
-  @if (fase() === 'entregue') {
+  @if (fase() === 'feito' && acao() === 'entregue') {
     <app-estado-vazio
       icone="caixa"
       titulo="Nenhum pedido em andamento"
@@ -18,8 +18,8 @@
   } @else {
     <div class="grupo-chips">
       <span class="chip chip--pequeno chip--ativo">Todos · 1</span>
-      <span class="chip chip--pequeno">Em preparo · 1</span>
-      <span class="chip chip--pequeno">Prontos · 0</span>
+      <span class="chip chip--pequeno">Em preparo · {{ estaPronto() ? 0 : 1 }}</span>
+      <span class="chip chip--pequeno">Prontos · {{ estaPronto() ? 1 : 0 }}</span>
     </div>
 
     <div class="pedidos__lista">
@@ -36,9 +36,9 @@
         </div>
 
         <div class="selos">
-          <span class="selo">
+          <span class="selo" [class.selo--pronto]="estaPronto()">
             <span class="selo__ponto"></span>
-            Em preparo
+            {{ estaPronto() ? 'Pronto' : 'Em preparo' }}
           </span>
         </div>
 
@@ -57,11 +57,13 @@
         </div>
 
         <div class="acoes">
-          <span class="btn btn--secundario">
-            <app-icone nome="sino" [tamanho]="16" />
-            Pedido pronto
-          </span>
-          <span class="btn btn--sucesso" [class.tocado]="fase() === 'toque-entregue'">
+          @if (!estaPronto()) {
+            <span class="btn btn--secundario" [class.tocado]="acao() === 'pronto' && fase() === 'toque-acao'">
+              <app-icone nome="sino" [tamanho]="16" />
+              Pedido pronto
+            </span>
+          }
+          <span class="btn btn--sucesso" [class.tocado]="acao() === 'entregue' && fase() === 'toque-acao'">
             <app-icone nome="check" [tamanho]="16" [espessura]="2.4" />
             Entregue
           </span>
@@ -79,19 +81,23 @@
     <section class="folha">
       <span class="folha__alca"></span>
       <header class="folha__cabecalho">
-        <h2 class="folha__titulo">Pedido entregue</h2>
+        <h2 class="folha__titulo">{{ acao() === 'pronto' ? 'Pedido pronto' : 'Pedido entregue' }}</h2>
         <span class="btn-icone btn-icone--suave"><app-icone nome="fechar" [tamanho]="18" [espessura]="2" /></span>
       </header>
       <div class="folha__conteudo">
         <div class="acao-demo">
         <div class="acao">
           <p class="acao__texto">
-            {{ valor() }} entram no seu faturamento, o pedido sai da lista e o assistente volta a atender {{ primeiroNome() }}.
+            @if (acao() === 'pronto') {
+              O pedido passa para "Prontos" e {{ primeiroNome() }} recebe o aviso.
+            } @else {
+              {{ valor() }} entram no seu faturamento, o pedido sai da lista e o assistente volta a atender {{ primeiroNome() }}.
+            }
           </p>
           <div class="aviso-demo">
             <label class="aviso__ligar">
               <input type="checkbox" checked tabindex="-1">
-              <span>Mandar um agradecimento pelo WhatsApp</span>
+              <span>{{ acao() === 'pronto' ? 'Avisar o cliente pelo WhatsApp' : 'Mandar um agradecimento pelo WhatsApp' }}</span>
             </label>
             <div class="aviso__corpo">
               <textarea class="campo__entrada aviso__texto" rows="4" readonly tabindex="-1" [value]="agradecimento()"></textarea>
@@ -99,7 +105,7 @@
             </div>
           </div>
           <span class="btn btn--grande btn--bloco btn--primario" [class.tocado]="fase() === 'toque-marcar'">
-            Marcar como entregue
+            {{ acao() === 'pronto' ? 'Marcar como pronto' : 'Marcar como entregue' }}
           </span>
         </div>
         </div>

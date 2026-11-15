@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { ConteudoLandingNova, ONDAS_AUDIO } from './conteudo-landing-nova';
 
@@ -8,6 +9,7 @@ import { ConteudoLandingNova, ONDAS_AUDIO } from './conteudo-landing-nova';
  */
 @Component({
   selector: 'app-solucao-landing',
+  imports: [RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="secao faixa solucao">
@@ -59,6 +61,10 @@ import { ConteudoLandingNova, ONDAS_AUDIO } from './conteudo-landing-nova';
             </article>
           }
         </div>
+
+        @if (conteudo().tipo === 'produtos') {
+          <a class="ver-demonstracao" routerLink="/demonstracao" [queryParams]="{ tipo: conteudo().tipo }">Ver demonstração completa →</a>
+        }
 
         <div class="sem-assistente">
           <h3>E se eu não quiser usar o assistente?</h3>

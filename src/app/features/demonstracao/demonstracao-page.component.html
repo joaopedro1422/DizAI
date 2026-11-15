@@ -13,31 +13,13 @@
     </span>
     <h1 class="demo__titulo">Assista o DizAI atendendo um cliente.</h1>
     <p class="demo__descricao">
-      Uma conversa como as que chegam no seu WhatsApp todo dia. Escolha o seu tipo de negócio e só assista:
+      Uma conversa como as que chegam no seu WhatsApp todo dia. Escolha o seu negócio e só assista:
       as mensagens vão chegando sozinhas.
     </p>
   </header>
 
   <div class="escolha">
-    <div class="escolha__tipos" role="radiogroup" aria-label="Tipo de negócio">
-      @for (tipo of tipos; track tipo) {
-        @let opcao = demonstracoes[tipo];
-        <button
-          type="button"
-          role="radio"
-          class="escolha__tipo"
-          [class.escolha__tipo--ativo]="reprodutor.tipo() === tipo"
-          [attr.aria-checked]="reprodutor.tipo() === tipo"
-          (click)="reprodutor.tipo() !== tipo && escolher(tipo)"
-        >
-          <span class="escolha__icone"><app-icone [nome]="opcao.icone" [tamanho]="20" [espessura]="2" /></span>
-          <span class="escolha__textos">
-            <span class="escolha__rotulo">{{ opcao.rotulo }}</span>
-            <span class="escolha__exemplos">{{ opcao.exemplos }}</span>
-          </span>
-        </button>
-      }
-    </div>
+    <!-- o tipo vem da landing (?tipo=); aqui só os negócios daquele tipo -->
     <div class="escolha__segmentos" role="radiogroup" aria-label="Segmento">
       @for (opcao of demonstracoes[reprodutor.tipo()].segmentos; track opcao.id) {
         <button
@@ -121,7 +103,7 @@
     @if (reprodutor.telaAtual(); as tela) {
       <app-moldura-tela-demo aria-hidden="true">
         @if (tela.pedido) {
-          <app-tela-pedidos-demo [pedido]="tela.pedido" />
+          <app-tela-pedidos-demo [pedido]="tela.pedido" [acao]="tela.acao ?? 'entregue'" />
         } @else if (tela.agenda) {
           <app-tela-agenda-demo [agenda]="tela.agenda" />
         }
