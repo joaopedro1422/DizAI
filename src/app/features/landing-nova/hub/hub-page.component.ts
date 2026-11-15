@@ -2,39 +2,33 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation, signal } from '@
 import { RouterLink } from '@angular/router';
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
-import { NomeIcone } from '../../../shared/components/icone/icones';
 import { LogoComponent } from '../../../shared/components/logo/logo.component';
 import { CHAVE_TIPO_VISTO, ROTA_LANDING, TipoLanding } from '../../landing/conteudo-landing';
 import { TituloDigitandoComponent } from '../titulo-digitando.component';
+import { ArtePostComponent } from '../../posts/arte-post/arte-post.component';
+import { artesDaLanding } from '../landing/artes-landing';
 import { MUNDOS_HUB, MundoHub, ONDAS_HUB } from './mundos-hub';
 
 /**
- * O hub (/) na marca nova: o título que digita no azul-noite e os dois "mundos" (Vendas e Agendamentos). Cada mundo
+ * O hub (/) na marca nova: o topo centralizado (o valor da solução inteira) e os dois "mundos" (Vendas e Agendamentos). Cada mundo
  * passa 3 cenas como stories: a barrinha de cima enche no tempo da cena (o fim da animação passa para a próxima;
- * o mouse em cima pausa). Em cada cena chegam a pergunta, o "digitando…", o resultado e o aviso. Depois, os
- * cartões do que vale para os dois e as portas. CSS em hub.css / hub-comum.css, preso a .hb (ViewEncapsulation.None).
+ * o mouse em cima pausa). Em cada cena chegam a pergunta, o "digitando…", o resultado e o aviso. Depois, o que o
+ * assistente faz, os recursos da plataforma (valem sem o assistente) e as portas. CSS preso a .hb (ViewEncapsulation.None).
  */
 @Component({
   selector: 'app-hub-page',
-  imports: [RouterLink, IconeComponent, LogoComponent, TituloDigitandoComponent],
+  imports: [RouterLink, IconeComponent, LogoComponent, TituloDigitandoComponent, ArtePostComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   templateUrl: './hub-page.component.html',
-  styleUrls: ['../marca-base.css', './hub.css', './hub-hero.css', './hub-comum.css'],
+  styleUrls: ['../marca-base.css', './hub.css', './hub-hero.css', './hub-comum.css', './hub-recursos.css'],
   host: { class: 'marca hb' },
 })
 export class HubPageComponent {
   /** As funções que se alternam no título ("Um assistente que" atende, agenda...); para de novo em "atende". */
   protected readonly funcoes = ['atende', 'agenda', 'anota os pedidos', 'divulga', 'vende por você'];
-  /** O painel do topo (computador): o que o DizAI fez hoje num negócio de exemplo, um módulo por linha. */
-  protected readonly modulos: { nome: string; detalhe: string; valor: string; icone: NomeIcone; destaque?: boolean }[] = [
-    { nome: 'Atendimento', detalhe: 'Respondeu a Camila em 4 segundos', valor: '38 conversas', icone: 'conversa', destaque: true },
-    { nome: 'Agenda', detalhe: 'Esmaltação em gel · amanhã às 14:00', valor: '+3 hoje', icone: 'calendario' },
-    { nome: 'Pedidos', detalhe: 'Bolo M de brigadeiro · sábado', valor: '2 a confirmar', icone: 'caixa' },
-    { nome: 'Vitrine', detalhe: 'Fotos, avaliações e o link na bio', valor: 'no ar', icone: 'imagem' },
-    { nome: 'Posts', detalhe: '4 artes com a sua marca', valor: 'prontas', icone: 'brilho' },
-    { nome: 'Campanhas', detalhe: 'Dia das Mães para 23 clientes', valor: 'R$ 1.230', icone: 'grafico' },
-  ];
+  /** O cartão de posts dos recursos: 3 artes do gerador de verdade, em leque. */
+  protected readonly artes = artesDaLanding('produtos').slice(0, 3);
   protected readonly anoAtual = new Date().getFullYear();
   protected readonly mundos = MUNDOS_HUB;
   protected readonly ondas = ONDAS_HUB;

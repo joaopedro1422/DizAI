@@ -13,13 +13,17 @@
   <!-- primeira dobra: o título e os dois mundos, que descem para a faixa branca -->
   <section class="hb-abertura faixa" aria-labelledby="hub-titulo">
     <div class="miolo">
+      <!-- o topo centralizado: o valor da solução inteira -->
       <div class="hb-hero">
         <div class="hb-hero__texto">
-          <span class="hb-selo"><span class="hb-selo__pontos" aria-hidden="true"><i></i><i></i><i></i></span>Assistente de IA para WhatsApp</span>
+          <span class="hb-selo"><span class="hb-selo__pontos" aria-hidden="true"><i></i><i></i><i></i></span>Atendimento, gestão e marketing no seu WhatsApp</span>
           <h1 id="hub-titulo" class="hb-titulo" aria-label="Um assistente que atende, agenda, anota os pedidos, divulga e vende por você">
             <app-titulo-digitando [quebra]="true" inicio="Um assistente que" [frases]="funcoes" [trocas]="funcoes.length" [pausaMs]="2600" />
           </h1>
-          <p class="hb-desc">O DizAI atende os seus clientes na hora, organiza a agenda e os pedidos e cuida do marketing do seu negócio. Tudo no seu número de sempre.</p>
+          <p class="hb-desc">
+            Uma solução completa para organizar o seu negócio: do atendimento com IA no WhatsApp à gestão de pedidos e
+            agendamentos, com análise financeira e ferramentas de marketing.
+          </p>
           <div class="hb-acoes">
             <a class="btn btn--forte" routerLink="/cadastro">Testar grátis →</a>
             <button type="button" class="btn btn--claro" (click)="irParaMundos()">Ver para o meu negócio ↓</button>
@@ -27,21 +31,7 @@
           <ul class="hb-provas">
             <li><span class="check" aria-hidden="true">✓</span>Pronto em poucos minutos</li>
             <li><span class="check" aria-hidden="true">✓</span>No seu número de sempre</li>
-            <li><span class="check" aria-hidden="true">✓</span>Atende 24 horas</li>
-          </ul>
-        </div>
-
-        <!-- no computador: o sistema inteiro trabalhando num painel só -->
-        <div class="hb-painel" aria-hidden="true">
-          <div class="hb-painel__cab"><b>Hoje no seu negócio</b><span class="hb-painel__vivo"><i></i>ao vivo</span></div>
-          <ul class="hb-painel__lista">
-            @for (modulo of modulos; track modulo.nome; let i = $index) {
-              <li class="hb-modulo" [class.hb-modulo--destaque]="modulo.destaque" [style.--i]="i">
-                <span class="hb-modulo__icone"><app-icone [nome]="modulo.icone" [tamanho]="18" [espessura]="2" /></span>
-                <span class="hb-modulo__textos"><b>{{ modulo.nome }}</b><small>{{ modulo.detalhe }}</small></span>
-                <span class="hb-modulo__valor">{{ modulo.valor }}</span>
-              </li>
-            }
+            <li><span class="check" aria-hidden="true">✓</span>Recursos com ou sem o assistente</li>
           </ul>
         </div>
       </div>
@@ -127,7 +117,7 @@
   <section class="secao faixa hb-comum" aria-labelledby="comum-titulo">
     <div class="miolo">
       <div class="cabeca cabeca--centro">
-        <span class="rotulo">Em qualquer negócio</span>
+        <span class="rotulo">O assistente de IA</span>
         <h2 id="comum-titulo" class="titulo">Tudo o que um bom atendente faz.<br /><span class="grifo">Sem folga, sem demora.</span></h2>
       </div>
 
@@ -146,11 +136,10 @@
         <article class="hb-item">
           <div class="hb-item__textos">
             <h3>Com a sua cara</h3>
-            <p>Você cadastra as informações do seu negócio e ele responde. Se não souber, te chama.</p>
+            <p>Você cadastra as informações do seu negócio e ele responde do seu jeito, com a sua saudação e os seus emojis.</p>
           </div>
           <div class="hb-item__visual">
-            <span class="hb-chips"><span>Preços</span><span>Pagamento</span><span>Endereço</span><span>Prazos</span></span>
-            <span class="hb-chama"><app-icone nome="sino" [tamanho]="14" [espessura]="2.2" />Não sabe? Te chama</span>
+            <span class="hb-chips"><span>Preços</span><span>Pagamento</span><span>Endereço</span><span>Prazos</span><span>Saudação</span></span>
           </div>
         </article>
 
@@ -192,13 +181,101 @@
           </div>
         </article>
 
-        <article class="hb-item hb-item--largo">
+        <article class="hb-item">
           <div class="hb-item__textos">
-            <h3>Vitrine e artes com a cara do seu negócio</h3>
-            <p>Uma página com a sua logo, as suas fotos, o horário e as avaliações para a bio do Instagram, e posts prontos com os seus preços.</p>
+            <h3>Não inventa: te chama</h3>
+            <p>Se não souber a resposta, avisa você no celular. Depois, a resposta vira pergunta frequente.</p>
+          </div>
+          <div class="hb-item__visual">
+            <span class="hb-aviso-push">
+              <span class="hb-aviso-push__icone"><app-icone nome="sino" [tamanho]="15" [espessura]="2.2" /></span>
+              <span><b>Um cliente precisa de você</b><small>"Fazem sem lactose?"</small></span>
+            </span>
+          </div>
+        </article>
+
+        <article class="hb-item">
+          <div class="hb-item__textos">
+            <h3>Contatos pessoais de fora</h3>
+            <p>Família e amigos no mesmo número? Você escolhe quem o assistente não responde.</p>
+          </div>
+          <div class="hb-item__visual">
+            <span class="hb-contato"><i>M</i><span><b>Mãe</b><small>O assistente não responde</small></span><em class="hb-contato__chave"></em></span>
+            <span class="hb-contato"><i>A</i><span><b>Ana Souza</b><small>Cliente</small></span><em class="hb-contato__chave hb-contato__chave--ligada"></em></span>
+          </div>
+        </article>
+
+        <article class="hb-item">
+          <div class="hb-item__textos">
+            <h3>Segue as suas regras</h3>
+            <p>Prazo de preparo, pedido mínimo, horário e datas lotadas: confere tudo antes de responder.</p>
+          </div>
+          <div class="hb-item__visual hb-item__visual--wpp">
+            <span class="msg msg--loja">Para sexta não conseguimos: os bolos precisam de 3 dias de antecedência. Pode ser sábado?<time>10:42</time></span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- os recursos da plataforma: valem com ou sem o assistente -->
+  <section class="secao faixa hb-recursos" aria-labelledby="recursos-titulo">
+    <div class="miolo">
+      <div class="cabeca cabeca--centro">
+        <span class="rotulo">Recursos da plataforma</span>
+        <h2 id="recursos-titulo" class="titulo">Tudo para organizar e divulgar.<br /><span class="grifo">Em um lugar só.</span></h2>
+        <p class="apoio">Pedidos, agenda, financeiro e marketing no mesmo painel, no computador ou no celular.</p>
+      </div>
+
+      <div class="hb-rec">
+        <article class="hb-rec__card hb-rec__card--gestao">
+          <div class="hb-item__textos">
+            <span class="hb-rec__etiqueta">Pedidos e agenda</span>
+            <h3>Pedidos e horários organizados</h3>
+            <p>Cada pedido do confirmado ao entregue, com o aviso ao cliente em um toque. Nos serviços, a agenda completa com vários profissionais, lembretes e agradecimentos.</p>
+          </div>
+          <div class="hb-gestao" aria-hidden="true">
+            <span class="hb-pedido">
+              <span class="hb-pedido__topo"><b>Ana Souza</b><em>Em preparo</em></span>
+              <small>Bolo M · ninho com morango · sábado, 15:00</small>
+              <span class="hb-pedido__rodape"><b class="mono">R$ 150,00</b><span class="hb-pedido__botao">✓ Pedido pronto</span></span>
+            </span>
+            <span class="hb-agenda">
+              <span class="hb-agenda__topo"><b>Hoje</b><i class="mono">3 horários</i></span>
+              <span class="hb-agenda__bloco"><small class="mono">09:00</small><span>Corte + barba<small>com Lucas</small></span></span>
+              <span class="hb-agenda__bloco hb-agenda__bloco--novo"><small class="mono">10:30</small><span>Esmaltação em gel<small>com Ana</small></span></span>
+              <span class="hb-agenda__bloco"><small class="mono">14:00</small><span>Limpeza de pele<small>com Bia</small></span></span>
+            </span>
+          </div>
+        </article>
+
+        <article class="hb-rec__card hb-rec__card--financeiro">
+          <span class="hb-rec__etiqueta hb-rec__etiqueta--clara">Financeiro</span>
+          <h3>Saiba quanto vendeu e o que mais vende</h3>
+          <div class="hb-fin" aria-hidden="true">
+            <small>Faturamento de novembro</small>
+            <b class="mono">R$ 12.480,00</b>
+            <span class="hb-fin__compara">▲ 18% em relação a outubro</span>
+            <span class="hb-fin__barras">
+              @for (altura of [42, 58, 36, 64, 52, 100, 74]; track $index) {
+                <i [style.height.%]="altura" [class.alta]="altura === 100" [style.--i]="$index"></i>
+              }
+            </span>
+            <span class="hb-fin__indicadores">
+              <span><small>Ticket médio</small><b class="mono">R$ 68,00</b></span>
+              <span><small>Pedidos</small><b class="mono">184</b></span>
+              <span><small>Relatório</small><b>PDF</b></span>
+            </span>
+          </div>
+        </article>
+
+        <article class="hb-rec__card">
+          <div class="hb-item__textos">
+            <span class="hb-rec__etiqueta">Página personalizada</span>
+            <h3>Um site com a sua cara</h3>
+            <p>Fotos, avaliações, horário e a agenda online, no link da bio.</p>
           </div>
           <div class="hb-item__visual hb-galeria">
-            <!-- o topo da vitrine no layout novo (a Pedacinho do Céu) -->
             <span class="hb-vitrine">
               <span class="hb-vitrine__capa"></span>
               <span class="hb-vitrine__cartao">
@@ -213,26 +290,44 @@
                 }
               </span>
             </span>
-            <span class="hb-post hb-post--1"><img src="/landing/galeria/bolos/03.webp" alt="" loading="lazy" /><b>Encomendas abertas</b></span>
-            <span class="hb-post hb-post--2"><img src="/landing/galeria/bolos/08.webp" alt="" loading="lazy" /><b>Novidade</b></span>
           </div>
         </article>
 
-        <article class="hb-item">
+        <article class="hb-rec__card">
           <div class="hb-item__textos">
-            <h3>Seus números, prontos</h3>
-            <p>Faturamento, dias que mais vendem e os clientes que mais voltam.</p>
+            <span class="hb-rec__etiqueta">Posts</span>
+            <h3>Artes prontas em 1 minuto</h3>
+            <p>Posts profissionais com a sua logo, as suas fotos e os seus preços.</p>
+          </div>
+          <div class="hb-leque" aria-hidden="true">
+            @for (arte of artes; track arte.id) {
+              <span class="hb-leque__arte">
+                <app-arte-post [marca]="arte.marca" [conteudo]="arte.conteudo" [estilo]="arte.estilo" formato="feed" [largura]="96" />
+              </span>
+            }
+          </div>
+        </article>
+
+        <article class="hb-rec__card">
+          <div class="hb-item__textos">
+            <span class="hb-rec__etiqueta">Campanhas</span>
+            <h3>Campanhas no WhatsApp</h3>
+            <p>Avisa das datas que mais vendem e mostra quanto cada campanha rendeu.</p>
           </div>
           <div class="hb-item__visual">
-            <span class="hb-valor mono">R$ 4.820,00</span>
-            <span class="hb-barras">
-              @for (altura of [38, 52, 46, 70, 58, 100, 32]; track $index) {
-                <i [style.height.%]="altura" [class.alta]="altura === 100" [style.--i]="$index"></i>
-              }
+            <span class="hb-aviso-push">
+              <span class="hb-aviso-push__icone hb-aviso-push__icone--gema"><app-icone nome="brilho" [tamanho]="15" [espessura]="2.2" /></span>
+              <span><b>Oportunidade</b><small>Faltam 18 dias para o Dia das Mães</small></span>
             </span>
+            <span class="hb-rendeu"><small>A campanha trouxe</small><b class="mono">R$ 1.230,00</b></span>
           </div>
         </article>
       </div>
+
+      <p class="hb-sem-assistente">
+        <app-icone nome="check" [tamanho]="16" [espessura]="2.6" />
+        Todos os recursos podem ser utilizados com o assistente desativado.
+      </p>
     </div>
   </section>
 

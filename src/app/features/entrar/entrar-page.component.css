@@ -148,3 +148,8 @@
     font-size: 32px;
   }
 }
+
+/* no celular a logo fica sobre o branco: o "AI" no amarelo forte da marca */
+.conteudo app-logo {
+  --logo-ai: var(--cor-gema-forte);
+}

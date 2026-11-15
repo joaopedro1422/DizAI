@@ -1,0 +1,413 @@
+/* Hub (/): os cartões novos do assistente (te chama, contatos pessoais) e a seção dos recursos da plataforma. */
+
+/* ---------- assistente: o aviso no celular e os contatos ---------- */
+.hb .hb-aviso-push {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--noite);
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.hb .hb-aviso-push b {
+  display: block;
+  font-size: 13.5px;
+}
+
+.hb .hb-aviso-push small {
+  opacity: 0.75;
+}
+
+.hb .hb-aviso-push__icone {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 9px;
+  background: var(--gema);
+  color: var(--noite);
+}
+
+.hb .hb-contato {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: var(--papel);
+  font-size: 13.5px;
+}
+
+.hb .hb-contato i {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--nevoa);
+  color: var(--noite);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.hb .hb-contato > span {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hb .hb-contato small {
+  color: var(--fraco);
+  font-size: 12px;
+}
+
+/* a chave: desligada no contato pessoal, ligada no cliente */
+.hb .hb-contato__chave {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  flex: none;
+  border-radius: 999px;
+  background: #c3cada;
+}
+
+.hb .hb-contato__chave::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.hb .hb-contato__chave--ligada {
+  background: var(--enviado);
+}
+
+.hb .hb-contato__chave--ligada::after {
+  left: 19px;
+}
+
+/* ---------- os recursos da plataforma ---------- */
+.hb .hb-recursos {
+  background: var(--papel);
+}
+
+.hb .hb-rec {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.hb .hb-rec__card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  padding: 26px;
+  border: 1px solid var(--linha);
+  border-radius: 26px;
+  background: var(--papel);
+  box-shadow: 0 18px 36px -30px rgba(19, 32, 74, 0.45);
+}
+
+.hb .hb-rec__etiqueta {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 4px 11px;
+  border: 1px solid var(--gema-linha);
+  border-radius: 999px;
+  background: var(--gema-clara);
+  color: var(--noite);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.hb .hb-rec__card--gestao {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  align-items: center;
+  gap: 24px;
+}
+
+.hb .hb-gestao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--nevoa);
+}
+
+.hb .hb-pedido,
+.hb .hb-agenda {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid var(--linha);
+  border-radius: 14px;
+  background: var(--papel);
+  font-size: 13.5px;
+}
+
+.hb .hb-pedido small {
+  color: var(--fraco);
+  font-size: 12.5px;
+}
+
+.hb .hb-pedido__topo,
+.hb .hb-pedido__rodape,
+.hb .hb-agenda__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hb .hb-pedido__topo em {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--gema-clara);
+  color: var(--noite);
+  font-size: 11.5px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.hb .hb-pedido__botao {
+  padding: 5px 10px;
+  border-radius: 9px 9px 9px 3px;
+  background: var(--noite);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.hb .hb-agenda__topo i {
+  color: var(--enviado);
+  font-size: 12px;
+  font-style: normal;
+}
+
+.hb .hb-agenda__bloco {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: center;
+  padding: 6px 10px;
+  border-left: 3px solid #c9d2e6;
+  border-radius: 8px;
+  background: var(--nevoa);
+}
+
+.hb .hb-agenda__bloco > span {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+.hb .hb-agenda__bloco small {
+  color: var(--fraco);
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+.hb .hb-agenda__bloco--novo {
+  border-left-color: var(--enviado);
+  background: #dcf4ea;
+}
+
+/* o financeiro: o cartão azul-noite, com o faturamento grande e as barras */
+.hb .hb-rec__card--financeiro {
+  gap: 6px;
+  border-color: var(--noite);
+  background: var(--noite);
+  color: #ffffff;
+}
+
+.hb .hb-rec__card--financeiro h3 {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.hb .hb-rec__etiqueta--clara {
+  align-self: flex-start;
+  border-color: transparent;
+  background: var(--gema);
+}
+
+.hb .hb-fin {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.hb .hb-fin > small {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 13px;
+}
+
+.hb .hb-fin > b {
+  font-size: 30px;
+  letter-spacing: -0.03em;
+}
+
+.hb .hb-fin__compara {
+  color: #7fe0b5;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.hb .hb-fin__barras {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 84px;
+  margin: 12px 0 10px;
+}
+
+.hb .hb-fin__barras i {
+  flex: 1;
+  border-radius: 5px 5px 2px 2px;
+  background: rgba(255, 255, 255, 0.18);
+  transform-origin: bottom;
+}
+
+.hb .hb-fin__barras i.alta {
+  background: var(--gema);
+}
+
+.hb .revelado .hb-fin__barras i,
+.hb .hb-fin__barras i {
+  animation: hb-rec-cresce 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.2s + var(--i, 0) * 0.07s);
+}
+
+@keyframes hb-rec-cresce {
+  from { transform: scaleY(0); }
+  to { transform: none; }
+}
+
+.hb .hb-fin__indicadores {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.hb .hb-fin__indicadores span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hb .hb-fin__indicadores small {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 11.5px;
+}
+
+.hb .hb-fin__indicadores b {
+  font-size: 15px;
+}
+
+/* os posts: 3 artes em leque */
+.hb .hb-leque {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  height: 150px;
+  margin-top: auto;
+}
+
+.hb .hb-leque__arte {
+  position: absolute;
+  bottom: 0;
+  overflow: hidden;
+  width: 96px;
+  border-radius: 9px;
+  box-shadow: 0 12px 24px -12px rgba(19, 32, 74, 0.5);
+  transform-origin: 50% 100%;
+  transition: transform 0.3s ease;
+}
+
+.hb .hb-leque__arte:nth-child(1) { transform: translateX(-66px) rotate(-11deg); }
+.hb .hb-leque__arte:nth-child(2) { z-index: 1; transform: translateY(-6px); }
+.hb .hb-leque__arte:nth-child(3) { transform: translateX(66px) rotate(11deg); }
+
+.hb .hb-rec__card:hover .hb-leque__arte:nth-child(1) { transform: translateX(-76px) rotate(-14deg); }
+.hb .hb-rec__card:hover .hb-leque__arte:nth-child(3) { transform: translateX(76px) rotate(14deg); }
+
+.hb .hb-rendeu {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--papel);
+  font-size: 13px;
+}
+
+.hb .hb-rendeu small {
+  color: var(--fraco);
+}
+
+.hb .hb-rendeu b {
+  color: var(--enviado);
+  font-size: 17px;
+}
+
+/* o fim da seção: tudo funciona sem o assistente */
+.hb .hb-sem-assistente {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: fit-content;
+  margin: 36px auto 0;
+  padding: 12px 20px;
+  border: 1px solid var(--gema-linha);
+  border-radius: 999px;
+  background: var(--gema-clara);
+  color: var(--noite);
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
+
+@media (max-width: 1000px) {
+  .hb .hb-rec {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hb .hb-rec__card--gestao {
+    grid-column: auto;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .hb .hb-sem-assistente {
+    border-radius: 18px;
+    font-size: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hb .hb-fin__barras i {
+    animation: none;
+  }
+}

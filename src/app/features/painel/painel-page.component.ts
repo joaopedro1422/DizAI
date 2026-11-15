@@ -40,7 +40,7 @@ const ESPERA_BOAS_VINDAS_MS = 1200;
 /** O onboarding acabou e o lojista foi ao teste: o tour pelos cards abre quando ele volta ao painel. */
 const CHAVE_TOUR_PENDENTE = 'dizai:tour-pendente:';
 const ESPERA_TOUR_MS = 900;
-const TOUR_SEMPRE_ABERTO = true;
+const TOUR_SEMPRE_ABERTO = false;
 const FECHAMENTO_SEMPRE_ABERTO = false;
 /** O dia cujo fechamento o lojista já viu ("AAAA-MM-DD"), por loja. */
 const CHAVE_FECHAMENTO_VISTO = 'dizai:fechamento-visto:';

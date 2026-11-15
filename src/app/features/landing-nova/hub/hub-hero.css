@@ -4,11 +4,12 @@
  * Os dois mundos vêm logo depois (hub.css).
  */
 .hb .hb-abertura {
-  overflow: hidden;
+  /* sem cortar os mundos, que descem para a faixa de baixo */
+  z-index: 1;
   padding-block: 40px 0;
   text-align: left;
   background:
-    radial-gradient(circle at 85% 0%, rgba(255, 200, 61, 0.14), transparent 46%),
+    radial-gradient(circle at 85% 0%, rgba(255, 200, 61, 0.05), transparent 46%),
     radial-gradient(circle at 0% 100%, rgba(30, 58, 114, 0.9), transparent 55%),
     var(--noite);
 }
@@ -260,10 +261,6 @@
     padding-top: 64px;
   }
 
-  .hb .hb-hero {
-    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
-    gap: 56px;
-  }
 
   .hb .hb-desc {
     font-size: 19px;
@@ -295,4 +292,21 @@
   .hb .hb-painel__vivo i {
     animation: none;
   }
+}
+
+/* o topo centralizado: selo, título, descrição, botões e garantias no meio */
+.hb .hb-hero__texto {
+  align-items: center;
+  max-width: 920px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.hb .hb-desc {
+  margin-inline: auto;
+}
+
+.hb .hb-acoes,
+.hb .hb-provas {
+  justify-content: center;
 }
