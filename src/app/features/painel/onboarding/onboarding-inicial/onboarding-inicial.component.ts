@@ -29,8 +29,14 @@ import { formatarReal } from '../../../pedidos/textos-pedido';
 import { IconeComponent } from '../../../../shared/components/icone/icone.component';
 import { NomeIcone } from '../../../../shared/components/icone/icones';
 import { EscolhaSegmentoComponent } from '../escolha-segmento.component';
+import { CORES_MARCA, buscarCorMarca } from '../../../../core/constants/cores-marca';
+import { CorMarca } from '../../../../core/models/perfil.model';
+import { ConfiguracaoVitrine } from '../../../../core/models/vitrine.model';
+import { UrlImagemPipe } from '../../../../core/imagens/url-imagem';
+import { corDaLogo } from '../../../posts/motor/cor-da-logo';
+import { arquivoDaCapa, desenharCapaDegrade } from '../../../galeria/seletor-cor-marca/capa-degrade';
 
-type IdPasso = 'segmento' | 'catalogo' | 'horario' | 'pagamento' | 'saudacao' | 'exemplo';
+type IdPasso = 'segmento' | 'catalogo' | 'horario' | 'pagamento' | 'marca' | 'saudacao' | 'exemplo';
 
 interface Passo {
   id: IdPasso;
@@ -46,7 +52,7 @@ const SEMANA_PADRAO: PeriodoAtendimento[] = (['MONDAY', 'TUESDAY', 'WEDNESDAY', 
 
 @Component({
   selector: 'app-onboarding-inicial',
-  imports: [IconeComponent, EscolhaSegmentoComponent, HorarioFuncionamentoComponent, SemanaAgendaComponent],
+  imports: [IconeComponent, EscolhaSegmentoComponent, HorarioFuncionamentoComponent, SemanaAgendaComponent, UrlImagemPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './onboarding-inicial.component.html',
   styleUrls: ['./onboarding-inicial.component.css', './onboarding-inicial-passos.css'],
@@ -67,7 +73,7 @@ export class OnboardingInicialComponent {
   protected readonly usaAgenda = computed(() => ramoUsaAgenda(this.perfil().ramo));
 
   protected readonly passos = computed<Passo[]>(() =>
-    (['segmento', 'catalogo', 'horario', 'pagamento', 'saudacao', 'exemplo'] as const).map((id) => ({ id })),
+    (['segmento', 'catalogo', 'horario', 'pagamento', 'marca', 'saudacao', 'exemplo'] as const).map((id) => ({ id })),
   );
   protected readonly indice = signal(lerPassoSalvo(this.perfil().id));
   protected readonly passo = computed(() => this.passos()[Math.min(this.indice(), this.passos().length - 1)]);
@@ -103,6 +109,16 @@ export class OnboardingInicialComponent {
   protected readonly recebimento = signal<FormaRecebimento[]>(
     (this.perfil().formasRecebimento ?? []).filter((forma) => forma !== 'ATENDIMENTO_LOCAL'),
   );
+
+  /** Passo da marca: a logo (vira a foto da vitrine) e a cor de destaque (opcional; sem escolher, a da logo). */
+  protected readonly cores = CORES_MARCA;
+  protected readonly arquivoLogo = signal<File | null>(null);
+  protected readonly previaLogo = signal<string | null>(null);
+  protected readonly logoSalva = computed(() => this.perfil().fotoPerfilUrl ?? null);
+  /** A cor da paleta mais parecida com a da logo (null = logo sem cor marcante). */
+  protected readonly corDaLogo = signal<CorMarca | null>(null);
+  protected readonly corEscolhida = signal<CorMarca | null>(null);
+  protected readonly corFinal = computed(() => this.corEscolhida() ?? this.corDaLogo());
 
   protected readonly saudacao = signal(this.perfil().saudacaoPersonalizada ?? '');
   protected readonly emojis = EMOJIS;
@@ -148,6 +164,15 @@ export class OnboardingInicialComponent {
     } finally {
       this.salvando.set(false);
     }
+  }
+
+  /** "Depois" da marca: segue sem logo e sem cor. */
+  protected pularMarca(): void {
+    this.arquivoLogo.set(null);
+    this.previaLogo.set(null);
+    this.corEscolhida.set(null);
+    this.corDaLogo.set(null);
+    this.irPara(this.indice() + 1);
   }
 
   /** "Depois" do catálogo: segue sem enviar. */
@@ -217,6 +242,10 @@ export class OnboardingInicialComponent {
         });
         return;
       }
+      case 'marca': {
+        await this.salvarMarca();
+        return;
+      }
       case 'saudacao': {
         await this.perfilService.salvarConfiguracoes({
           ...configuracoesDoPerfil(this.perfil()),
@@ -227,6 +256,68 @@ export class OnboardingInicialComponent {
       case 'exemplo':
         return;
     }
+  }
+
+  /** A logo sobe como a foto da vitrine; a cor (a escolhida ou a da logo) vira a cor de destaque e, sem capa, a capa em degradê dela. */
+  private async salvarMarca(): Promise<void> {
+    const logo = this.arquivoLogo();
+    if (logo) {
+      const [referencia] = await this.armazenamento.enviar([logo], { tipo: 'PERFIL' });
+      if (referencia) await this.perfilService.atualizarFotoPerfil(referencia);
+      this.arquivoLogo.set(null);
+    }
+    const cor = this.corFinal();
+    if (!cor) return;
+    const perfil = this.perfil();
+    let capaUrl = perfil.capaUrl ?? null;
+    if (!capaUrl) {
+      const desenho = desenharCapaDegrade(buscarCorMarca(cor).hex);
+      if (desenho) {
+        const [referencia] = await this.armazenamento.enviar([await arquivoDaCapa(desenho)], { tipo: 'CAPA' });
+        capaUrl = referencia ?? null;
+      }
+    }
+    const configuracao: ConfiguracaoVitrine = {
+      corMarca: cor,
+      fonteGaleria: perfil.fonteGaleria ?? 'Poppins',
+      corFundoGaleria: perfil.corFundoGaleria ?? cor,
+      areaCorFundoGaleria: perfil.areaCorFundoGaleria ?? 'CABECALHO',
+      estiloCor: perfil.estiloCor ?? 'NORMAL',
+      estiloMenu: perfil.estiloMenu ?? 'ARREDONDADO',
+      estiloAbas: perfil.estiloAbas ?? 'PILULA',
+      layoutFotos: perfil.layoutFotos ?? 'GRADE',
+      capaUrl,
+    };
+    await this.perfilService.atualizarConfiguracaoVitrine(configuracao);
+  }
+
+  protected async escolherLogo(evento: Event): Promise<void> {
+    const entrada = evento.target as HTMLInputElement;
+    const arquivo = entrada.files?.[0];
+    entrada.value = '';
+    if (!arquivo) return;
+    if (!/^image\/(jpeg|png|webp)$/.test(arquivo.type)) {
+      this.toast.mostrar('Envie a logo em JPG, PNG ou WEBP.');
+      return;
+    }
+    if (arquivo.size > 5 * 1024 * 1024) {
+      this.toast.mostrar('A logo pode ter até 5 MB.');
+      return;
+    }
+    const dataUrl = await new Promise<string>((resolver) => {
+      const leitor = new FileReader();
+      leitor.onload = () => resolver(String(leitor.result));
+      leitor.readAsDataURL(arquivo);
+    });
+    this.arquivoLogo.set(arquivo);
+    this.previaLogo.set(dataUrl);
+    const hex = await corDaLogo(dataUrl).catch(() => null);
+    this.corDaLogo.set(hex ? corMaisParecida(hex) : null);
+  }
+
+  /** Tocar na cor escolhida de novo volta para a da logo. */
+  protected escolherCor(cor: CorMarca): void {
+    this.corEscolhida.set(this.corEscolhida() === cor ? null : cor);
   }
 
   protected escolherArquivos(evento: Event): void {
@@ -332,6 +423,23 @@ export class OnboardingInicialComponent {
   protected primeiroNome(): string {
     return this.perfil().nomeResponsavel?.trim().split(/\s+/)[0] ?? '';
   }
+}
+
+/** A cor da paleta mais perto da cor da logo (distância simples em RGB). */
+function corMaisParecida(hex: string): CorMarca {
+  const rgb = (h: string) => [0, 2, 4].map((i) => parseInt(h.replace('#', '').slice(i, i + 2), 16));
+  const alvo = rgb(hex);
+  let melhor = CORES_MARCA[0];
+  let menor = Infinity;
+  for (const opcao of CORES_MARCA) {
+    const [r, g, b] = rgb(opcao.hex);
+    const distancia = (r - alvo[0]) ** 2 + (g - alvo[1]) ** 2 + (b - alvo[2]) ** 2;
+    if (distancia < menor) {
+      menor = distancia;
+      melhor = opcao;
+    }
+  }
+  return melhor.valor;
 }
 
 // segunda a sábado com a pausa do almoço; domingo fechado

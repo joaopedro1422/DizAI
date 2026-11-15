@@ -33,7 +33,7 @@
               A tabela de preços ou o portfólio do seu negócio, que o assistente envia na conversa quando o cliente pergunta.
               Se você não compartilha os preços dessa forma, pule esta etapa.
             } @else {
-              A imagem com os sabores ou o arquivo de menu do seu negócio.
+              A imagem com os sabores ou o arquivo de menu do seu negócio que você costuma enviar para os clientes.
               O assistente envia na conversa quando o cliente pergunta.
             }
           </p>
@@ -93,6 +93,11 @@
             <div class="cartao">
               <app-horario-funcionamento [periodos]="horarios()" (mudou)="horarios.set($event)" />
             </div>
+          } @else {
+            <p class="sempre">
+              <app-icone nome="celular" [tamanho]="18" [espessura]="2" />
+              Você fica com o celular do negócio e sempre pode confirmar pedidos coletados pelo assistente.
+            </p>
           }
           @if (tentou() && horarioInvalido()) {
             <p class="erro">{{ usaAgenda() ? 'Abra pelo menos um dia e confira os períodos destacados.' : 'Abra pelo menos um dia, com o fim depois do início.' }}</p>
@@ -130,6 +135,50 @@
           @if (tentou() && !podeAvancar()) {
             <p class="erro">Escolha pelo menos uma forma de pagamento{{ servico() ? '' : ' e uma de entrega' }}.</p>
           }
+        }
+
+        @case ('marca') {
+          <span class="opcional">Opcional</span>
+          <h2 id="onboarding-titulo" class="titulo">Envie a <span class="destaque">logo do seu negócio</span></h2>
+          <p class="descricao">
+            Ela aparece na sua vitrine e nas artes dos posts. A vitrine já ganha uma capa na cor da sua marca.
+          </p>
+          <div class="marca">
+            <label class="marca__logo">
+              <input type="file" accept="image/jpeg,image/png,image/webp" (change)="escolherLogo($event)" />
+              @if (previaLogo() ?? (logoSalva() | urlImagem); as imagem) {
+                <img [src]="imagem" alt="A logo do seu negócio" />
+              } @else {
+                <app-icone nome="imagem" [tamanho]="28" [espessura]="1.8" />
+              }
+              <span class="marca__trocar">{{ previaLogo() || logoSalva() ? 'Trocar a logo' : 'Escolher a logo' }}</span>
+            </label>
+            <div class="marca__cores">
+              <h3 class="subtitulo">Cor de destaque <small>(opcional)</small></h3>
+              <p class="marca__dica">
+                {{ corDaLogo() && !corEscolhida() ? 'Separamos a cor que combina com a sua logo. Toque em outra para trocar.' : 'Escolha a cor que representa o seu negócio.' }}
+              </p>
+              <div class="marca__grade" role="radiogroup" aria-label="Cor de destaque">
+                @for (cor of cores; track cor.valor) {
+                  <button
+                    type="button"
+                    role="radio"
+                    class="marca__cor"
+                    [style.background]="cor.hex"
+                    [class.marca__cor--ativa]="corFinal() === cor.valor"
+                    [attr.aria-checked]="corFinal() === cor.valor"
+                    [attr.aria-label]="cor.nome"
+                    [title]="cor.nome"
+                    (click)="escolherCor(cor.valor)"
+                  >
+                    @if (corFinal() === cor.valor) {
+                      <app-icone nome="check" [tamanho]="14" [espessura]="3" />
+                    }
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
         }
 
         @case ('saudacao') {
@@ -238,8 +287,8 @@
         <span></span>
       }
       <div class="rodape__acoes">
-        @if (atual.id === 'catalogo') {
-          <button type="button" class="botao-depois" (click)="pularCatalogo()" [disabled]="salvando()">Depois</button>
+        @if (atual.id === 'catalogo' || atual.id === 'marca') {
+          <button type="button" class="botao-depois" (click)="atual.id === 'catalogo' ? pularCatalogo() : pularMarca()" [disabled]="salvando()">Depois</button>
         }
         <button type="button" class="botao-proximo" (click)="avancar()" [disabled]="salvando()">
           {{ salvando() ? 'Salvando…' : atual.id === 'exemplo' ? 'Testar atendimento' : 'Próximo' }}
