@@ -228,11 +228,13 @@
       </div>
 
       <div class="hb-rec">
-        <article class="hb-rec__card hb-rec__card--gestao">
+        <!-- pedidos (quem vende) e agenda (quem agenda): cada um no seu cartão -->
+        <article class="hb-rec__card">
           <div class="hb-item__textos">
-            <span class="hb-rec__etiqueta">Pedidos e agenda</span>
-            <h3>Pedidos e horários organizados</h3>
-            <p>Cada pedido do confirmado ao entregue, com o aviso ao cliente em um toque. Nos serviços, a agenda completa com vários profissionais, lembretes e agradecimentos.</p>
+            <span class="hb-rec__etiqueta">Gestor de pedidos</span>
+            <span class="hb-rec__para">Para quem vende</span>
+            <h3>Pedidos do confirmado ao entregue</h3>
+            <p>Cada pedido organizado em uma tela, com o aviso de pronto e de entregue saindo para o cliente em um toque.</p>
           </div>
           <div class="hb-gestao" aria-hidden="true">
             <span class="hb-pedido">
@@ -240,10 +242,26 @@
               <small>Bolo M · ninho com morango · sábado, 15:00</small>
               <span class="hb-pedido__rodape"><b class="mono">R$ 150,00</b><span class="hb-pedido__botao">✓ Pedido pronto</span></span>
             </span>
+            <span class="hb-pedido">
+              <span class="hb-pedido__topo"><b>Carlos Lima</b><em class="hb-pedido__pronto">Pronto</em></span>
+              <small>100 salgados · retirada às 10:00</small>
+              <span class="hb-pedido__rodape"><b class="mono">R$ 85,00</b><span class="hb-pedido__botao hb-pedido__botao--entregue">✓ Entregue</span></span>
+            </span>
+          </div>
+        </article>
+
+        <article class="hb-rec__card">
+          <div class="hb-item__textos">
+            <span class="hb-rec__etiqueta">Agenda</span>
+            <span class="hb-rec__para">Para quem agenda</span>
+            <h3>A agenda do seu espaço</h3>
+            <p>Horários marcados pelo assistente ou por você, com vários profissionais, lembretes e agradecimentos automáticos.</p>
+          </div>
+          <div class="hb-gestao" aria-hidden="true">
             <span class="hb-agenda">
               <span class="hb-agenda__topo"><b>Hoje</b><i class="mono">3 horários</i></span>
               <span class="hb-agenda__bloco"><small class="mono">09:00</small><span>Corte + barba<small>com Lucas</small></span></span>
-              <span class="hb-agenda__bloco hb-agenda__bloco--novo"><small class="mono">10:30</small><span>Esmaltação em gel<small>com Ana</small></span></span>
+              <span class="hb-agenda__bloco hb-agenda__bloco--novo"><small class="mono">10:30</small><span>Esmaltação em gel<small>com Ana · pelo assistente</small></span></span>
               <span class="hb-agenda__bloco"><small class="mono">14:00</small><span>Limpeza de pele<small>com Bia</small></span></span>
             </span>
           </div>
@@ -273,22 +291,30 @@
           <div class="hb-item__textos">
             <span class="hb-rec__etiqueta">Página personalizada</span>
             <h3>Um site com a sua cara</h3>
-            <p>Fotos, avaliações, horário e a agenda online, no link da bio.</p>
+            <p>Para qualquer negócio: fotos, avaliações, horário e a agenda online, no link da bio.</p>
           </div>
-          <div class="hb-item__visual hb-galeria">
-            <span class="hb-vitrine">
-              <span class="hb-vitrine__capa"></span>
-              <span class="hb-vitrine__cartao">
-                <img src="/landing/galeria/logos/pedacinho-do-ceu.jpg" alt="" />
-                <b>Pedacinho do Céu</b>
-                <small>Doces e tortas personalizadas</small>
-                <span class="hb-vitrine__selos"><em class="hb-vitrine__aberta">Aberto agora</em><em><i>★</i> 4,9</em></span>
+          <!-- as vitrines de negócios diferentes, uma por vez -->
+          <div class="hb-item__visual hb-galeria hb-galeria--slide" aria-hidden="true">
+            @for (loja of vitrines; track loja.nome; let v = $index) {
+              <span class="hb-vitrine hb-vitrine--slide" [class.hb-vitrine--ativa]="v === vitrineAtual()" [style.background]="loja.fundo">
+                <span class="hb-vitrine__capa" [style.background]="loja.capa"></span>
+                <span class="hb-vitrine__cartao">
+                  <img [src]="loja.logo" alt="" />
+                  <b [style.font-family]="loja.fonte" [style.color]="loja.cor">{{ loja.nome }}</b>
+                  <small>{{ loja.descricao }}</small>
+                  <span class="hb-vitrine__selos"><em class="hb-vitrine__aberta">Aberto agora</em><em><i>★</i> {{ loja.nota }}</em></span>
+                </span>
+                <span class="hb-vitrine__fotos">
+                  @for (foto of loja.fotos; track foto) {
+                    <img [src]="foto" alt="" loading="lazy" />
+                  }
+                </span>
               </span>
-              <span class="hb-vitrine__fotos">
-                @for (n of ['01', '04', '06']; track n) {
-                  <img [src]="'/landing/galeria/bolos/' + n + '.webp'" alt="" loading="lazy" />
-                }
-              </span>
+            }
+            <span class="hb-galeria__pontos">
+              @for (loja of vitrines; track loja.nome; let v = $index) {
+                <i [class.ativo]="v === vitrineAtual()"></i>
+              }
             </span>
           </div>
         </article>

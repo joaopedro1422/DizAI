@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ViewEncapsulation, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
@@ -7,6 +7,7 @@ import { CHAVE_TIPO_VISTO, ROTA_LANDING, TipoLanding } from '../../landing/conte
 import { TituloDigitandoComponent } from '../titulo-digitando.component';
 import { ArtePostComponent } from '../../posts/arte-post/arte-post.component';
 import { artesDaLanding } from '../landing/artes-landing';
+import { semMovimento } from '../movimento';
 import { MUNDOS_HUB, MundoHub, ONDAS_HUB } from './mundos-hub';
 
 /**
@@ -29,6 +30,9 @@ export class HubPageComponent {
   protected readonly funcoes = ['atende', 'agenda', 'anota os pedidos', 'divulga', 'vende por você'];
   /** O cartão de posts dos recursos: 3 artes do gerador de verdade, em leque. */
   protected readonly artes = artesDaLanding('produtos').slice(0, 3);
+  /** A página personalizada: vitrines de negócios diferentes, trocando a cada 3,2 s. */
+  protected readonly vitrines = VITRINES;
+  protected readonly vitrineAtual = signal(0);
   protected readonly anoAtual = new Date().getFullYear();
   protected readonly mundos = MUNDOS_HUB;
   protected readonly ondas = ONDAS_HUB;
@@ -38,6 +42,12 @@ export class HubPageComponent {
   protected readonly cenaAtual = signal<Record<TipoLanding, number>>({ produtos: 0, servicos: 0 });
   /** Na primeira volta o segundo mundo espera um pouco, para os dois não trocarem juntos. */
   protected readonly primeiraVolta = signal(true);
+
+  constructor() {
+    if (semMovimento()) return;
+    const relogio = setInterval(() => this.vitrineAtual.update((n) => (n + 1) % VITRINES.length), 3200);
+    inject(DestroyRef).onDestroy(() => clearInterval(relogio));
+  }
 
   /** "Ver para o meu negócio": desce até os dois mundos. */
   protected irParaMundos(): void {
@@ -56,6 +66,17 @@ export class HubPageComponent {
     this.cenaAtual.update((atual) => ({ ...atual, [mundo.tipo]: (atual[mundo.tipo] + 1) % mundo.cenas.length }));
   }
 }
+
+const GALERIA = '/landing/galeria';
+const fotos = (pasta: string, ns: string[]) => ns.map((n) => `${GALERIA}/${pasta}/${n}.webp`);
+
+/** As vitrines do cartão "Página personalizada": a capa, a logo, a fonte e a cor de cada loja. */
+const VITRINES = [
+  { nome: 'Pedacinho do Céu', descricao: 'Doces e tortas personalizadas', logo: `${GALERIA}/logos/pedacinho-do-ceu.jpg`, capa: "url('/landing/hub/pedacinho-capa.webp') center / cover", fundo: '#fffaf3', cor: '#8a6200', fonte: "'Dancing Script', cursive", nota: '4,9', fotos: fotos('bolos', ['01', '04', '06']) },
+  { nome: 'Studio Bella', descricao: 'Unhas em gel e nail art', logo: `${GALERIA}/logos/studio-bella.webp`, capa: 'linear-gradient(135deg, #b8457a, #eaa6c6)', fundo: '#fff5f9', cor: '#b8457a', fonte: "'Dancing Script', cursive", nota: '5,0', fotos: fotos('unhas', ['01', '04', '07']) },
+  { nome: 'Barbearia do Léo', descricao: 'Corte, barba e sobrancelha', logo: `${GALERIA}/logos/barbearia-do-leo.svg`, capa: 'linear-gradient(135deg, #151515, #4d4d4d)', fundo: '#f4f4f4', cor: '#151515', fonte: "'Oswald', sans-serif", nota: '4,8', fotos: fotos('barbearia', ['01', '02', '03']) },
+  { nome: 'Rei dos Salgados', descricao: 'Salgados de festa, fritos e assados', logo: `${GALERIA}/logos/rei-dos-salgados.svg`, capa: 'linear-gradient(135deg, #e8730c, #f6b56f)', fundo: '#fff8f1', cor: '#b8520a', fonte: "'Oswald', sans-serif", nota: '4,9', fotos: fotos('salgados', ['01', '02', '03']) },
+];
 
 function lerUltimoVisto(): TipoLanding | null {
   try {

@@ -411,3 +411,67 @@
     animation: none;
   }
 }
+
+/* os cartões de pedidos e agenda: para quem é cada um */
+.hb .hb-rec__para {
+  display: block;
+  margin: -4px 0 8px;
+  color: var(--fraco);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hb .hb-rec__card .hb-gestao {
+  margin-top: auto;
+}
+
+.hb .hb-pedido__pronto {
+  background: #dcf4ea !important;
+  color: #0e6e4f !important;
+}
+
+.hb .hb-pedido__botao--entregue {
+  background: var(--enviado);
+}
+
+/* a página personalizada: as vitrines uma por vez */
+.hb .hb-galeria--slide {
+  display: grid;
+  place-items: center;
+}
+
+.hb .hb-vitrine--slide {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transform: translateX(16px) scale(0.98);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.hb .hb-vitrine--ativa {
+  opacity: 1;
+  transform: none;
+}
+
+.hb .hb-galeria__pontos {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  display: flex;
+  gap: 5px;
+  transform: translateX(-50%);
+}
+
+.hb .hb-galeria__pontos i {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--linha);
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.hb .hb-galeria__pontos i.ativo {
+  width: 16px;
+  background: var(--gema);
+}
