@@ -5,7 +5,10 @@ import type { TipoLanding } from '../../landing/conteudo-landing';
  * recebem um destes; os textos de cada tipo ficam em conteudo-vendas.ts e conteudo-agendamentos.ts.
  * Mensagens: 'c' = cliente (verde, à direita), 'l' = loja (branca), 'a' = arquivo (PDF) da loja.
  */
-export type DeMensagem = 'c' | 'l' | 'a';
+/** c = cliente, l = assistente, a = arquivo (PDF), i = catálogo em imagem ("Título|sabor · sabor|preço"), d = o dono respondendo pelo celular (com o nome dele em cima),
+ * m = mensagem automática (pronto/entregue), t = a etiqueta flutuante ("Título|detalhe"), x = o separador de dia
+ * do WhatsApp ("Sábado"), como na página de demonstração; depois dele os horários recomeçam à tarde. */
+export type DeMensagem = 'c' | 'l' | 'a' | 'i' | 'd' | 'm' | 't' | 'x';
 
 /** Uma conversa do celular do topo (um segmento embaixo do celular). */
 export interface ConversaHero {
@@ -14,6 +17,8 @@ export interface ConversaHero {
   loja: string;
   logo: string;
   aviso: [string, string];
+  /** O primeiro nome de quem responde pelo celular (mensagens 'd'). */
+  dono?: string;
   msgs: [DeMensagem, string][];
 }
 
@@ -35,9 +40,9 @@ export interface EtapaAviso {
   mensagem: string;
 }
 
-export type VisualDia = 'conversa' | 'audio' | 'arquivo' | 'chama' | 'chave' | 'jeito' | 'posts' | 'numeros' | 'campanhas';
+export type VisualDia = 'conversa' | 'audio' | 'arquivo' | 'chama' | 'chave' | 'jeito';
 
-/** Um cartão de "O que ele faz por você". `detalhe`: o arquivo, o valor ou a pergunta difícil do visual. */
+/** Um cartão de "Um funcionário, sem férias". `detalhe`: o arquivo ou a pergunta difícil do visual. */
 export interface ItemDia {
   momento: string;
   titulo: string;
@@ -45,6 +50,16 @@ export interface ItemDia {
   visual: VisualDia;
   detalhe?: string;
   conversa?: [string, string];
+}
+
+/** Um negócio da prova (MIT): a conversa sem o assistente e com ele. */
+export interface ExemploProva {
+  loja: string;
+  logo: string;
+  sem: ['c' | 't', string, string][];
+  com: ['c' | 'l', string, string][];
+  fimSem: string;
+  fimCom: string;
 }
 
 export interface ConteudoLandingNova {
@@ -66,15 +81,22 @@ export interface ConteudoLandingNova {
     com: ['c' | 'l', string, string][];
     fimSem: string;
     fimCom: string;
+    /** Vários negócios, um depois do outro (cada um: sem → com); sem a lista, vale o exemplo único acima. */
+    exemplos?: ExemploProva[];
   };
   como: { cadastro: [string, string]; atende: [string, string]; selo: string; slides: SlideComo[] };
+  /** "Um funcionário, sem férias": as habilidades do assistente de IA (6 cartões). */
   dia: ItemDia[];
+  /** A resposta de "E se eu não quiser usar o assistente?", o gancho para os Recursos. */
+  semAssistente: string;
   vitrine: {
     texto: string;
     itens: string[];
     textoPosts: string;
     diferenciais: [string, string][];
   };
+  /** A faixa azul-noite antes de "Para quem é": o rótulo, o título (a 2ª parte em amarelo) e os 6 cartões. */
+  confiancaCabeca: { rotulo: string; titulo: [string, string] };
   confianca: [string, string][];
   ramos: { titulo: string; quem: string; fotos: string[]; faz: string[] }[];
   perguntas: [string, string][];

@@ -54,10 +54,10 @@ const SERVICOS: TextosCampanhas = {
 const VENDAS: TextosCampanhas = {
   titulo: 'Ele sabe a época de vender e avisa os seus clientes.',
   texto: 'Não é só disparar mensagem: o DizAI acompanha as datas que mais vendem no seu segmento, avisa com a antecedência '
-    + 'da sua produção e monta a campanha com a sua arte e a mensagem pronta.',
+    + 'e monta a campanha com a sua arte e a mensagem pronta.',
   passos: [
-    ['Avisa na hora certa', 'A data chegando, no prazo da sua produção, e quantos clientes podem comprar.'],
-    ['O cliente recebe', 'A mensagem com a arte da sua loja. Quando ele responde, o assistente anota o pedido.'],
+    ['Avisa na hora certa', 'A data chegando e quantos clientes podem comprar.'],
+    ['O cliente recebe', 'A mensagem da campanha e a arte.'],
     ['Mostra o resultado', 'Quem respondeu, quem comprou e quanto a data rendeu.'],
   ],
   oportunidade: {
@@ -84,7 +84,7 @@ const VENDAS: TextosCampanhas = {
     funil: [['Enviadas', 54], ['Lidas', 46], ['Responderam', 16], ['Compraram', 11]],
     custo: 'Custo na Meta: R$ 16,10',
   },
-  datas: ['Páscoa', 'Dia das Mães', 'Dia dos Pais', 'Natal', 'Réveillon'],
+  datas: ['Páscoa', 'Dia das Mães', 'Dia dos Pais', 'Natal'],
 };
 
 /**

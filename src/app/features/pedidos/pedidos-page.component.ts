@@ -21,6 +21,7 @@ import { AcaoPedido, PedidoCardComponent } from './pedido-card/pedido-card.compo
 import { AGRADECIMENTO_PADRAO, AVISO_PRONTO_PADRAO, SUGESTOES_PEDIDO, VARIAVEIS_PEDIDO, preencherAviso } from './textos-pedido';
 import { EnvioAoVivoComponent, MensagemAoVivo } from './envio-ao-vivo/envio-ao-vivo.component';
 import { MensagensPedidosComponent } from './mensagens-pedidos/mensagens-pedidos.component';
+import { RestringirAgendaComponent } from './restringir-agenda/restringir-agenda.component';
 import { SECOES_DOS_PEDIDOS, SecaoPedidos, infoDaSecaoDosPedidos } from './secoes-pedidos';
 import { ID_PEDIDO_EXEMPLO, passosDoTourDosPedidos, pedidoDeExemplo } from './tour-pedidos';
 import { MenuLateralComponent } from '../../shared/components/menu-lateral/menu-lateral.component';
@@ -56,6 +57,7 @@ const TITULOS_ACAO: Record<AcaoPedido, string> = {
     AcaoPedidoComponent,
     NumerosPedidosComponent,
     MensagensPedidosComponent,
+    RestringirAgendaComponent,
     MenuLateralComponent,
     EnvioAoVivoComponent,
     DicaSobrepostaComponent,

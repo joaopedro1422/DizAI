@@ -1,0 +1,61 @@
+/* "Um funcionário, sem férias": os 6 cartões do assistente (.hora, em landing-recursos.css) e o gancho centralizado
+   "E se eu não quiser usar o assistente?", que leva aos Recursos logo abaixo. */
+
+.lv .grade-dia--tres {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.lv .sem-assistente {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 760px;
+  margin: 80px auto 0;
+  text-align: center;
+}
+
+/* os três pontinhos da marca em cima da pergunta */
+.lv .sem-assistente::before {
+  content: '';
+  width: 45px;
+  height: 8px;
+  margin-bottom: 6px;
+  background: radial-gradient(circle, var(--gema) 3.5px, transparent 4px) 0 50% / 15px 8px repeat-x;
+}
+
+.lv .sem-assistente h3 {
+  color: var(--noite);
+  font-family: var(--f-titulo);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.lv .sem-assistente p {
+  max-width: 620px;
+  color: var(--suave);
+  font-size: 19px;
+  line-height: 1.55;
+}
+
+@media (max-width: 1000px) {
+  .lv .grade-dia--tres {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .lv .grade-dia--tres {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lv .sem-assistente {
+    margin-top: 56px;
+  }
+
+  .lv .sem-assistente p {
+    font-size: 17px;
+  }
+}

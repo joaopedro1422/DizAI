@@ -1,0 +1,132 @@
+@if (carregando()) {
+  <app-carregando texto="Carregando a sua agenda…" />
+} @else if (erro()) {
+  <p class="erro" role="alert">{{ erro() }}</p>
+} @else {
+  <div class="restringir">
+    <!-- o calendário: tocar no início e depois no fim do período -->
+    <section class="calendario-card" appAlvoTour="pedidos-restringir" aria-label="Escolher o período">
+      <div class="calendario-card__topo">
+        <div>
+          <h2>Marque o período lotado</h2>
+          <p>Toque no primeiro dia e depois no último.</p>
+        </div>
+        <div class="navegar">
+          <button type="button" class="navegar__botao" aria-label="Mês anterior" [disabled]="!podeVoltar()" (click)="mudarMes(-1)">
+            <app-icone nome="voltar" [tamanho]="18" [espessura]="2.2" />
+          </button>
+          <button type="button" class="navegar__botao" aria-label="Próximo mês" (click)="mudarMes(1)">
+            <app-icone nome="avancar" [tamanho]="18" [espessura]="2.2" />
+          </button>
+        </div>
+      </div>
+
+      <div class="meses">
+        @for (mes of meses(); track mes.chave) {
+          <div class="mes">
+            <h3 class="mes__titulo">{{ mes.titulo }}</h3>
+            <div class="mes__semana" aria-hidden="true">
+              @for (letra of diasDaSemana; track $index) {
+                <span>{{ letra }}</span>
+              }
+            </div>
+            <div class="mes__dias" (mouseleave)="passando.set(null)">
+              @for (dia of mes.dias; track $index) {
+                @if (dia) {
+                  <button
+                    type="button"
+                    class="dia"
+                    [class.dia--passado]="dia.passado"
+                    [class.dia--hoje]="dia.hoje"
+                    [class.dia--lotado]="lotado(dia.iso)"
+                    [class.dia--selecionado]="selecionado(dia.iso)"
+                    [class.dia--ponta]="ponta(dia.iso)"
+                    [disabled]="dia.passado"
+                    [attr.aria-pressed]="selecionado(dia.iso)"
+                    [attr.aria-label]="dia.numero + (lotado(dia.iso) ? ', lotado' : '')"
+                    (mouseenter)="passando.set(dia.iso)"
+                    (click)="tocar(dia)"
+                  >
+                    {{ dia.numero }}
+                  </button>
+                } @else {
+                  <span></span>
+                }
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="legenda" aria-hidden="true">
+        <span><i class="legenda__lotado"></i>Lotado</span>
+        <span><i class="legenda__selecao"></i>Selecionado</span>
+        <span><i class="legenda__hoje"></i>Hoje</span>
+      </div>
+
+      <!-- atalhos: um mês inteiro em um toque -->
+      <div class="atalhos">
+        <span class="atalhos__titulo">Mês inteiro</span>
+        <div class="atalhos__lista">
+          @for (atalho of atalhosMeses(); track atalho.chave) {
+            <button type="button" class="chip chip--pequeno" [class.chip--ativo]="inicio() === atalho.inicio && fim() === atalho.fim" [disabled]="atalho.restringido" (click)="escolherMes(atalho)">
+              {{ atalho.rotulo }}
+              @if (atalho.restringido) {
+                <app-icone nome="check" [tamanho]="13" [espessura]="2.4" />
+              }
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- a seleção e o botão de salvar -->
+      <div class="acao" [class.acao--ativa]="selecao()">
+        @if (selecao(); as s) {
+          <div class="acao__textos">
+            <b>{{ s.texto }}</b>
+            <small>{{ s.dias }} {{ s.dias === 1 ? 'dia' : 'dias' }} sem novos pedidos</small>
+          </div>
+          <button type="button" class="btn btn--texto btn--pequeno" (click)="limpar()">Limpar</button>
+          <button type="button" class="btn btn--primario btn--pequeno" [disabled]="salvando()" (click)="restringir()">
+            {{ salvando() ? 'Salvando…' : 'Restringir período' }}
+          </button>
+        } @else {
+          <span class="acao__vazia">Escolha um período no calendário ou um mês inteiro.</span>
+        }
+      </div>
+    </section>
+
+    <aside class="lateral">
+      <!-- os períodos que já valem -->
+      <section class="lista-card" aria-labelledby="titulo-periodos">
+        <h2 id="titulo-periodos">Períodos restringidos</h2>
+        @for (p of lista(); track p.id) {
+          <div class="periodo">
+            <span class="periodo__icone"><app-icone nome="calendarioFolga" [tamanho]="18" [espessura]="2" /></span>
+            <span class="periodo__textos">
+              <b>{{ p.texto }}</b>
+              <small>
+                @if (p.datas !== p.texto) {
+                  <span class="mono">{{ p.datas }}</span> ·
+                }
+                {{ p.dias }} {{ p.dias === 1 ? 'dia' : 'dias' }}
+              </small>
+            </span>
+            <button type="button" class="periodo__remover" [attr.aria-label]="'Liberar ' + p.texto" (click)="liberar(p)">
+              <app-icone nome="lixeira" [tamanho]="17" [espessura]="2" />
+            </button>
+          </div>
+        } @empty {
+          <p class="lista-card__vazia">Nenhuma data restringida. A sua agenda está aberta para pedidos.</p>
+        }
+      </section>
+
+      <!-- como o assistente usa -->
+      <section class="como-card">
+        <span class="como-card__selo">Como o assistente usa</span>
+        <p>Ele continua atendendo normalmente: tira dúvidas, manda o catálogo e passa os preços. Só quando o cliente pedir uma data restringida, ele avisa:</p>
+        <span class="como-card__balao">Infelizmente não conseguimos. A nossa agenda de dezembro está lotada 😔 Pode ser para outra data?</span>
+      </section>
+    </aside>
+  </div>
+}

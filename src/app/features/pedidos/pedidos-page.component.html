@@ -121,6 +121,10 @@
       <main id="painel-numeros" class="conteudo-tela pedidos">
         <app-numeros-pedidos />
       </main>
+    } @else if (secao() === 'restringir') {
+      <main id="painel-restringir" class="conteudo-tela pedidos">
+        <app-restringir-agenda />
+      </main>
     } @else {
       <main id="painel-mensagens" class="conteudo-tela pedidos">
         <app-mensagens-pedidos [config]="configMensagens" [clienteExemplo]="exemplos().chats.cliente" />

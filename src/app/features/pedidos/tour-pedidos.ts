@@ -134,5 +134,14 @@ export function passosDoTourDosPedidos(acoes: AcoesTourPedidos): PassoTour[] {
       antes: () => acoes.irPara('mensagens'),
       esperaMs: ESPERA_PAGINA_MS,
     },
+    {
+      alvo: 'pedidos-restringir',
+      titulo: 'Agenda lotada?',
+      texto:
+        'Em Restringir agenda, marque os dias ou o mês em que você não aceita mais pedidos. O assistente continua atendendo e só avisa que a agenda está lotada quando o cliente pedir uma dessas datas.',
+      previa: [],
+      antes: () => acoes.irPara('restringir'),
+      esperaMs: ESPERA_PAGINA_MS + 400,
+    },
   ];
 }

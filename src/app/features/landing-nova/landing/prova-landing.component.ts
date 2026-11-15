@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, afterNextRender, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, afterNextRender, computed, inject, input, linkedSignal, signal } from '@angular/core';
 
 import { esperar, quandoAparecer, semMovimento } from '../movimento';
-import { ConteudoLandingNova } from './conteudo-landing-nova';
+import { ConteudoLandingNova, ExemploProva } from './conteudo-landing-nova';
 
 interface ItemProva {
   id: number;
@@ -29,12 +29,12 @@ interface ItemProva {
         </div>
 
         <div class="mit__palco">
-          <span class="mit__selo" [class.mit__selo--com]="comDizai()">{{ comDizai() ? '✓ Com o DizAI' : '✕ Sem o DizAI' }}</span>
+          <span class="mit__selo" [class.mit__selo--com]="comDizai()">{{ comDizai() ? '✓ Com o assistente DizAI' : '✕ Sem o assistente DizAI' }}</span>
           <div class="mit__janela">
             <div class="wpp-topo">
-              <img [src]="conteudo().prova.logo" alt="" />
+              <img [src]="exemplo().logo" alt="" />
               <span>
-                <b>{{ conteudo().prova.loja }}</b>
+                <b>{{ exemplo().loja }}</b>
                 <small [class.dig]="digitando()">{{ digitando() ? 'digitando…' : comDizai() ? 'online' : 'visto por último hoje' }}</small>
               </span>
             </div>
@@ -68,6 +68,9 @@ export class ProvaLandingComponent {
   protected readonly comDizai = signal(false);
   protected readonly digitando = signal(false);
   protected readonly itens = signal<ItemProva[]>([]);
+  /** Os negócios em sequência (cada um: sem → com) e o da vez. */
+  private readonly exemplos = computed<ExemploProva[]>(() => this.conteudo().prova.exemplos ?? [this.conteudo().prova]);
+  protected readonly exemplo = linkedSignal<ExemploProva>(() => this.exemplos()[0]);
 
   private ativo = true;
   private proximoId = 0;
@@ -82,7 +85,8 @@ export class ProvaLandingComponent {
     afterNextRender(() => {
       if (semMovimento()) {
         this.comDizai.set(true);
-        const prova = this.conteudo().prova;
+        const prova = this.exemplos()[0];
+        this.exemplo.set(prova);
         this.itens.set([...prova.com.map(([de, t, h]) => this.item(de, t, h)), this.item('fim', prova.fimCom)]);
         return;
       }
@@ -91,8 +95,10 @@ export class ProvaLandingComponent {
   }
 
   private async tocar(): Promise<void> {
-    const prova = this.conteudo().prova;
+    let vez = 0;
     while (this.ativo) {
+      const prova = this.exemplos()[vez++ % this.exemplos().length];
+      this.exemplo.set(prova);
       this.comDizai.set(false);
       this.itens.set([]);
       for (const [de, texto, hora] of prova.sem) {

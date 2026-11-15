@@ -119,7 +119,7 @@
 .lv .aviso-flutuante {
   position: absolute;
   left: -24px;
-  bottom: 120px;
+  bottom: 300px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -548,4 +548,76 @@
     width: 380px;
     height: 380px;
   }
+}
+
+/* a conversa do topo é longa (vai até o pedido entregue): as mensagens não encolhem, as antigas saem por cima */
+.lv .palco-hero .wpp-msgs > * {
+  flex-shrink: 0;
+}
+
+/* em cima do balão: o dono respondendo pelo celular ou a mensagem automática do status */
+.lv .msg__autor {
+  display: block;
+  margin-bottom: 2px;
+  color: #b4466a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.lv .msg__autor--auto {
+  color: var(--enviado);
+}
+
+/* o separador de dia do WhatsApp ("Sábado"), no meio da conversa */
+.lv .msg-dia {
+  align-self: center;
+  margin-block: 4px;
+  padding: 4px 12px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #54656f;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+}
+
+/* o catálogo em imagem (salgados): um cardápio desenhado dentro do balão */
+.lv .msg--imagem {
+  padding: 4px 4px 6px;
+}
+
+.lv .cardapio-img {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 190px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: linear-gradient(160deg, #e8730c, #b8520a);
+  color: #ffffff;
+  font-size: 12.5px;
+}
+
+.lv .cardapio-img b {
+  margin-bottom: 4px;
+  font-family: var(--f-titulo);
+  font-size: 15px;
+}
+
+.lv .cardapio-img i {
+  padding-bottom: 3px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.35);
+  font-style: normal;
+}
+
+.lv .cardapio-img em {
+  margin-top: 6px;
+  padding: 3px 8px;
+  align-self: flex-start;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #b8520a;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
 }

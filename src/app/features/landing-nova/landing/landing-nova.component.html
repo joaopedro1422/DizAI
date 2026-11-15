@@ -58,73 +58,8 @@
     <app-na-pratica-vendas />
   }
 
-  <!-- o que ele faz por você: um recurso por cartão -->
-  <section class="secao faixa" appRevelar>
-    <div class="miolo">
-      <div class="cabeca">
-        <h2 class="titulo"><span class="grifo">Uma solução completa</span></h2>
-        <p class="apoio">Do atendimento inicial de qualidade à criação automática de posts para redes sociais e campanhas de marketing em 3 toques.</p>
-      </div>
-      <div class="grade-dia">
-        @for (item of c.dia; track item.titulo; let i = $index) {
-          <article class="hora" [style.--i]="i">
-            <span class="hora__momento">{{ item.momento }}</span>
-            <h3>{{ item.titulo }}</h3>
-            <p>{{ item.texto }}</p>
-            <div class="hora__visual">
-              @switch (item.visual) {
-                @case ('conversa') {
-                  @if (item.conversa; as conversa) {
-                    <span class="msg msg--cliente">{{ conversa[0] }}<time>02:14</time></span>
-                    <span class="msg msg--loja">{{ conversa[1] }}<time>02:14</time></span>
-                  }
-                }
-                @case ('audio') {
-                  <div class="onda">
-                    <b></b>
-                    <span>
-                      @for (altura of ondas; track $index) {
-                        <i [style.height.%]="altura" [style.--i]="$index"></i>
-                      }
-                    </span>
-                    <small class="mono">0:40</small>
-                  </div>
-                }
-                @case ('arquivo') {
-                  <span class="msg msg--arquivo"><span class="pdf">PDF</span><span><b>{{ item.detalhe }}</b><small>enviado agora</small></span></span>
-                }
-                @case ('chama') {
-                  <div class="push"><span class="push__icone"></span><span><b>Um cliente quer falar com você</b><small>{{ item.detalhe }}</small></span></div>
-                }
-                @case ('chave') {
-                  <div class="chave"><span>Assistente nesta conversa</span><i></i></div>
-                }
-                @case ('jeito') {
-                  <div class="chips"><span>Saudação</span><span>Regras da loja</span><span>Pagamento</span></div>
-                }
-                @case ('posts') {
-                  <!-- 3 artes do gerador de verdade, pequenas e em leque -->
-                  <div class="mini-leque" aria-hidden="true">
-                    @for (arte of artesPosts(); track arte.id) {
-                      <span class="mini-leque__arte">
-                        <app-arte-post [marca]="arte.marca" [conteudo]="arte.conteudo" [estilo]="arte.estilo" formato="feed" [largura]="84" />
-                      </span>
-                    }
-                  </div>
-                }
-                @case ('numeros') {
-                  <div class="valor-grande">{{ item.detalhe }}</div>
-                }
-                @case ('campanhas') {
-                  <div class="push"><span class="push__icone"></span><span><b>Oportunidade</b><small>{{ item.detalhe }}</small></span></div>
-                }
-              }
-            </div>
-          </article>
-        }
-      </div>
-    </div>
-  </section>
+  <!-- uma solução completa: o assistente de IA e, separada, a gestão (funciona sem o assistente) -->
+  <app-solucao-landing appRevelar [conteudo]="c" />
 
   <!-- os Recursos de cada tipo, no mesmo lugar da página -->
   @if (c.tipo === 'servicos') {
@@ -138,8 +73,8 @@
   <section class="secao faixa confianca sobre-noite" appRevelar>
     <div class="miolo">
       <div class="cabeca">
-        <span class="rotulo">Você no controle</span>
-        <h2 class="titulo">O assistente trabalha. <span class="grifo">Você continua no comando.</span></h2>
+        <span class="rotulo">{{ c.confiancaCabeca.rotulo }}</span>
+        <h2 class="titulo">{{ c.confiancaCabeca.titulo[0] }} <span class="grifo">{{ c.confiancaCabeca.titulo[1] }}</span></h2>
       </div>
       <div class="grade-confianca">
         @for (item of c.confianca; track item[0]) {
@@ -212,8 +147,8 @@
   </section>
 
   <!-- o visitante pergunta o que quiser e a IA do DizAI responde -->
-  <section class="faixa nevoa pergunte-secao" appRevelar>
-    <div class="miolo">
+  <section class="faixa nevoa pergunte-secao">
+    <div class="miolo" appRevelar>
       <app-pergunte-dizai [tipo]="c.tipo" />
     </div>
   </section>

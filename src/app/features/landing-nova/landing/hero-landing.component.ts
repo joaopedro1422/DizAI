@@ -13,13 +13,15 @@ interface MensagemNaTela {
   hora: string | null;
 }
 
-/** No celular cabem 7 mensagens; as mais antigas saem por cima. */
-const MAXIMO_NA_TELA = 7;
+/** As mais antigas saem por cima. */
+const MAXIMO_NA_TELA = 8;
 
 /**
  * Topo das landings da marca nova (azul-noite): o título que digita, os botões, as garantias e o celular com a conversa
- * ao vivo. As mensagens chegam uma a uma, com o "digitando…" antes de cada resposta da loja; no fim, o aviso
- * ("Pedido anotado" / "Novo horário na agenda") e a conversa recomeça. Os segmentos embaixo trocam a loja.
+ * ao vivo. As mensagens chegam uma a uma, com o "digitando…" antes de cada resposta do assistente. Nas vendas o fluxo
+ * vai até o fim: o pedido passa para o dono (etiqueta flutuante), a confirmação dele e as mensagens automáticas de
+ * pronto e entregue, cada uma depois da sua etiqueta. Sem etiquetas (agenda), o aviso do fim aparece como antes.
+ * Os segmentos embaixo trocam a loja.
  */
 @Component({
   selector: 'app-hero-landing',
@@ -55,10 +57,32 @@ const MAXIMO_NA_TELA = 7;
             </div>
             <div class="wpp-msgs" aria-live="polite">
               @for (m of mensagens(); track m.id) {
-                @if (m.de === 'a') {
+                @if (m.de === 'x') {
+                  <span class="msg-dia msg--entra">{{ m.texto }}</span>
+                } @else if (m.de === 'i') {
+                  <!-- o catálogo enviado como imagem: um cardápio desenhado -->
+                  @let partes = m.texto.split('|');
+                  <span class="msg msg--loja msg--imagem msg--entra">
+                    <span class="cardapio-img">
+                      <b>{{ partes[0] }}</b>
+                      @for (sabor of partes[1].split(' · '); track sabor) {
+                        <i>{{ sabor }}</i>
+                      }
+                      <em>{{ partes[2] }}</em>
+                    </span>
+                    <time>{{ m.hora }}</time>
+                  </span>
+                } @else if (m.de === 'a') {
                   <span class="msg msg--arquivo msg--entra"><span class="pdf">PDF</span><span><b>{{ m.texto }}</b><small>enviado agora</small></span></span>
                 } @else {
-                  <span class="msg msg--entra" [class.msg--cliente]="m.de === 'c'" [class.msg--loja]="m.de === 'l'">{{ m.texto }}<time>{{ m.hora }}</time></span>
+                  <span class="msg msg--entra" [class.msg--cliente]="m.de === 'c'" [class.msg--loja]="m.de !== 'c'">
+                    <!-- quem escreveu: o dono pelo celular ou a mensagem automática do status -->
+                    @if (m.de === 'd') {
+                      <b class="msg__autor">{{ atual.dono }} respondeu pelo celular</b>
+                    } @else if (m.de === 'm') {
+                      <b class="msg__autor msg__autor--auto">Mensagem automática</b>
+                    }
+                    {{ m.texto }}<time>{{ m.hora }}</time></span>
                 }
               }
               @if (digitando()) {
@@ -70,7 +94,7 @@ const MAXIMO_NA_TELA = 7;
 
           <div class="aviso-flutuante" [class.visivel]="avisoVisivel()" aria-hidden="true">
             <span class="aviso-flutuante__icone">✓</span>
-            <span><b>{{ atual.aviso[0] }}</b><small>{{ atual.aviso[1] }}</small></span>
+            <span><b>{{ (aviso() ?? atual.aviso)[0] }}</b><small>{{ (aviso() ?? atual.aviso)[1] }}</small></span>
           </div>
           }
 
@@ -92,6 +116,8 @@ export class HeroLandingComponent {
   protected readonly mensagens = signal<MensagemNaTela[]>([]);
   protected readonly digitando = signal(false);
   protected readonly avisoVisivel = signal(false);
+  /** A etiqueta flutuante da vez (transferência, pronto, entregue); null = o aviso do fim da conversa. */
+  protected readonly aviso = signal<[string, string] | null>(null);
 
   /** Cada toque num segmento começa uma execução nova; a antiga para no próximo passo. */
   private execucao = 0;
@@ -113,33 +139,67 @@ export class HeroLandingComponent {
     this.mensagens.set([]);
     this.digitando.set(false);
     this.avisoVisivel.set(false);
-    const hora = (i: number) => `10:${String(14 + i).padStart(2, '0')}`;
+    this.aviso.set(null);
+    // os horários seguem a conversa; depois do separador de dia ("Sábado") recomeçam à tarde
+    const horas: (string | null)[] = [];
+    let minuto = 10 * 60 + 14;
+    for (const [de] of conversa.msgs) {
+      if (de === 'x') minuto = 14 * 60 + 40;
+      horas.push(de === 'a' || de === 'x' || de === 't' ? null : `${Math.floor(minuto / 60)}:${String(minuto % 60).padStart(2, '0')}`);
+      if (de !== 't' && de !== 'x') minuto += 1;
+    }
+    const hora = (i: number) => horas[i];
+    const etiquetas = conversa.msgs.filter(([de]) => de === 't');
 
     if (semMovimento()) {
-      this.mensagens.set(conversa.msgs.map(([de, texto], i) => this.nova(de, texto, de === 'a' ? null : hora(i))));
+      this.mensagens.set(
+        conversa.msgs.map(([de, texto], i) => ({ de, texto, hora: hora(i) })).filter(({ de }) => de !== 't')
+          .map(({ de, texto, hora: h }) => this.nova(de, texto, h)).slice(-MAXIMO_NA_TELA),
+      );
+      const ultima = etiquetas.at(-1);
+      if (ultima) this.aviso.set(this.etiqueta(ultima[1]));
       this.avisoVisivel.set(true);
       return;
     }
 
     for (let i = 0; i < conversa.msgs.length; i++) {
       const [de, texto] = conversa.msgs[i];
-      if (de !== 'c') {
+      if (de === 't') {
+        // a etiqueta flutuante troca: transferência para o dono, pedido pronto, pedido entregue
+        this.avisoVisivel.set(false);
+        await esperar(i === 0 ? 0 : 900);
+        if (!vale()) return;
+        this.aviso.set(this.etiqueta(texto));
+        this.avisoVisivel.set(true);
+        await esperar(1600);
+        if (!vale()) return;
+        continue;
+      }
+      if (de === 'm' || de === 'x') {
+        await esperar(de === 'x' ? 700 : 500);
+        if (!vale()) return;
+      } else if (de !== 'c') {
         this.digitando.set(true);
-        await esperar(de === 'a' ? 700 : 1300);
+        await esperar(de === 'a' || de === 'i' ? 700 : 1300);
         if (!vale()) return;
         this.digitando.set(false);
       } else {
         await esperar(i === 0 ? 500 : 1100);
         if (!vale()) return;
       }
-      this.mensagens.update((lista) => [...lista, this.nova(de, texto, de === 'a' ? null : hora(i))].slice(-MAXIMO_NA_TELA));
+      this.mensagens.update((lista) => [...lista, this.nova(de, texto, hora(i))].slice(-MAXIMO_NA_TELA));
     }
     await esperar(600);
     if (!vale()) return;
     this.avisoVisivel.set(true);
-    await esperar(5200);
+    await esperar(etiquetas.length ? 4000 : 5200);
     if (!vale()) return;
     void this.tocar(conversa);
+  }
+
+  private etiqueta(texto: string): [string, string] {
+    const [titulo, detalhe = ''] = texto.split('|');
+    return [titulo, detalhe];
   }
 
   private nova(de: DeMensagem, texto: string, hora: string | null): MensagemNaTela {

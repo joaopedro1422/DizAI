@@ -220,8 +220,18 @@
 }
 
 /* "Pergunte ao DizAI" entre as perguntas e o painel amarelo do fim */
+/* separada das dúvidas: espaço em cima e embaixo (a entrada ao rolar fica no conteúdo, o fundo não se move) */
 .lv .pergunte-secao {
-  padding-bottom: 72px;
+  padding-block: 0 72px;
+}
+
+.lv .perguntas {
+  padding-bottom: 36px;
+}
+
+/* o componente traz 88 px de margem da landing antiga, que vazava para fora da seção e deixava a faixa branca */
+.lv .pergunte-secao app-pergunte-dizai {
+  margin-top: 0;
 }
 
 .lv .final__painel {

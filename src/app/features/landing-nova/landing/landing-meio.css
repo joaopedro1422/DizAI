@@ -285,6 +285,7 @@
   max-width: 34ch;
   color: var(--suave);
   font-size: 19px;
+  white-space: pre-line;
 }
 
 .lv .passo .cena-inline {

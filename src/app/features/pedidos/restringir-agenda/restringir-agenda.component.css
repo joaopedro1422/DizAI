@@ -1,0 +1,406 @@
+/* Restringir agenda: o calendário grande (dois meses no computador) e, ao lado, os períodos e como o assistente usa */
+:host {
+  display: block;
+}
+
+.restringir {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  align-items: start;
+  gap: 20px;
+}
+
+.calendario-card,
+.lista-card,
+.como-card {
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: var(--raio-grande);
+  background: var(--cor-fundo);
+  box-shadow: var(--sombra-card);
+}
+
+.calendario-card {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 24px;
+}
+
+.calendario-card__topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.calendario-card h2,
+.lista-card h2 {
+  color: var(--cor-noite);
+  font-family: var(--fonte-titulo);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.calendario-card__topo p {
+  color: var(--cor-texto-suave);
+  font-size: 14.5px;
+}
+
+.navegar {
+  display: flex;
+  gap: 8px;
+}
+
+.navegar__botao {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 50%;
+  background: var(--cor-fundo);
+  color: var(--cor-noite);
+  cursor: pointer;
+}
+
+.navegar__botao:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* ---------- os meses ---------- */
+.meses {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.mes__titulo {
+  margin-bottom: 10px;
+  color: var(--cor-noite);
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.mes__semana,
+.mes__dias {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.mes__semana span {
+  padding-bottom: 6px;
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.mes__dias {
+  row-gap: 4px;
+}
+
+.dia {
+  position: relative;
+  aspect-ratio: 1;
+  max-height: 52px;
+  border: 0;
+  background: transparent;
+  color: var(--cor-texto);
+  font: inherit;
+  font-family: var(--fonte-numero);
+  font-size: 14.5px;
+  cursor: pointer;
+}
+
+.dia:hover:not(:disabled) {
+  border-radius: 12px;
+  background: var(--cor-fundo-suave);
+}
+
+.dia--passado {
+  color: var(--cor-borda-forte);
+  cursor: default;
+}
+
+.dia--hoje {
+  font-weight: 700;
+}
+
+.dia--hoje::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--cor-gema-forte);
+  transform: translateX(-50%);
+}
+
+/* lotado: listrado em rosa, como um dia fechado */
+.dia--lotado {
+  border-radius: 0;
+  background: repeating-linear-gradient(135deg, var(--cor-rosa-fundo) 0 6px, #f6d9e2 6px 8px);
+  color: var(--cor-rosa);
+  font-weight: 700;
+}
+
+.dia--selecionado {
+  border-radius: 0;
+  background: var(--cor-primaria-clara);
+  color: var(--cor-noite);
+}
+
+.dia--ponta,
+.dia--ponta:hover:not(:disabled) {
+  border-radius: 12px;
+  background: var(--cor-noite);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* ---------- legenda e atalhos ---------- */
+.legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+}
+
+.legenda span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legenda i {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.legenda__lotado {
+  background: repeating-linear-gradient(135deg, var(--cor-rosa-fundo) 0 3px, #f0c4d2 3px 5px);
+}
+
+.legenda__selecao {
+  background: var(--cor-noite);
+}
+
+.legenda__hoje {
+  border: 2px solid var(--cor-gema-forte);
+}
+
+.atalhos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cor-borda-suave);
+}
+
+.atalhos__titulo {
+  color: var(--cor-texto-secundario);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.atalhos__lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.atalhos__lista .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ---------- a seleção e o salvar ---------- */
+.acao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px dashed var(--cor-borda);
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo-tracejado);
+}
+
+.acao--ativa {
+  border: 1px solid var(--cor-gema-linha);
+  background: var(--cor-gema-clara);
+}
+
+.acao__textos {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.acao__textos b {
+  color: var(--cor-noite);
+  font-size: 16px;
+}
+
+.acao__textos small,
+.acao__vazia {
+  color: var(--cor-texto-suave);
+  font-size: 13.5px;
+}
+
+/* ---------- lateral: os períodos e como o assistente usa ---------- */
+.lateral {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lista-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+}
+
+.lista-card h2 {
+  font-size: 17px;
+}
+
+.lista-card__vazia {
+  color: var(--cor-texto-suave);
+  font-size: 14px;
+}
+
+.periodo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--raio-medio);
+  background: var(--cor-fundo-suave);
+}
+
+.periodo__icone {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 10px;
+  background: var(--cor-rosa-fundo);
+  color: var(--cor-rosa);
+}
+
+.periodo__textos {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.periodo__textos b {
+  color: var(--cor-noite);
+  font-size: 15px;
+}
+
+.periodo__textos small {
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+}
+
+.mono {
+  font-family: var(--fonte-numero);
+}
+
+.periodo__remover {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--cor-texto-suave);
+  cursor: pointer;
+}
+
+.periodo__remover:hover {
+  background: var(--cor-rosa-fundo);
+  color: var(--cor-erro);
+}
+
+.como-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+}
+
+.como-card__selo {
+  align-self: flex-start;
+  padding: 4px 10px;
+  border: 1px solid var(--cor-gema-linha);
+  border-radius: var(--raio-pilula);
+  background: var(--cor-gema-clara);
+  color: var(--cor-texto-gema);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.como-card p {
+  color: var(--cor-texto-secundario);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.como-card__balao {
+  align-self: flex-start;
+  padding: 9px 12px;
+  border-radius: 10px 10px 10px 2px;
+  background: #efe9e1;
+  color: #111b21;
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+
+.erro {
+  color: var(--cor-erro);
+}
+
+@media (max-width: 1100px) {
+  .restringir {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* celular: um mês por vez */
+@media (max-width: 720px) {
+  .calendario-card {
+    padding: 18px 14px;
+  }
+
+  .meses {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mes:nth-child(2) {
+    display: none;
+  }
+
+  .acao {
+    flex-wrap: wrap;
+  }
+
+  .acao__textos {
+    flex-basis: 100%;
+  }
+}

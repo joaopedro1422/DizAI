@@ -28,6 +28,7 @@ export type AlvoTour =
   | 'pedidos-exemplo'
   | 'pedidos-envio'
   | 'pedidos-registrar'
+  | 'pedidos-restringir'
   | 'pedidos-registrar-pc'
   | 'pedidos-mensagens';
 

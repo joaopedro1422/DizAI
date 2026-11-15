@@ -11,7 +11,7 @@ import { RevelarAoRolarDirective } from '../../landing/revelar-ao-rolar.directiv
 import { CelularMockComponent } from '../celular-mock.component';
 import { ComoFuncionaLandingComponent } from './como-funciona-landing.component';
 import { CONTEUDO_AGENDAMENTOS } from './conteudo-agendamentos';
-import { ConteudoLandingNova, ONDAS_AUDIO } from './conteudo-landing-nova';
+import { ConteudoLandingNova } from './conteudo-landing-nova';
 import { CONTEUDO_VENDAS } from './conteudo-vendas';
 import { HeroLandingComponent } from './hero-landing.component';
 import { NaPraticaAgendaComponent } from './na-pratica-agenda.component';
@@ -20,8 +20,7 @@ import { ProvaLandingComponent } from './prova-landing.component';
 import { RecursosAgendaComponent } from './recursos-agenda.component';
 import { RecursosVendasComponent } from './recursos-vendas.component';
 import { VitrinePostsLandingComponent } from './vitrine-posts-landing.component';
-import { ArtePostComponent } from '../../posts/arte-post/arte-post.component';
-import { artesDaLanding } from './artes-landing';
+import { SolucaoLandingComponent } from './solucao-landing.component';
 
 /** Liga a faixa "Somos Tech Provider da Meta": só depois que a Meta aprovar a análise do app. */
 const TECH_PROVIDER_APROVADO = false;
@@ -53,7 +52,7 @@ const CONTEUDOS: Record<TipoLanding, ConteudoLandingNova> = {
     RecursosVendasComponent,
     RecursosAgendaComponent,
     VitrinePostsLandingComponent,
-    ArtePostComponent,
+    SolucaoLandingComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
@@ -63,6 +62,8 @@ const CONTEUDOS: Record<TipoLanding, ConteudoLandingNova> = {
     './landing-topo.css',
     './landing-meio.css',
     './landing-recursos.css',
+    './landing-solucao.css',
+    './landing-gestao.css',
     './landing-vitrine.css',
     './landing-campanhas.css',
     './landing-agenda.css',
@@ -77,9 +78,6 @@ export class LandingNovaComponent {
   protected readonly techProviderAprovado = TECH_PROVIDER_APROVADO;
   protected readonly anoAtual = new Date().getFullYear();
   protected readonly emailSuporte = EMAIL_SUPORTE;
-  protected readonly ondas = ONDAS_AUDIO;
-  /** O cartão "Hora de divulgar": 3 artes do leque de posts, pequenas. */
-  protected readonly artesPosts = computed(() => artesDaLanding(this.tipo() === 'servicos' ? 'servicos' : 'produtos').slice(0, 3));
 
   constructor() {
     const titulo = inject(Title);

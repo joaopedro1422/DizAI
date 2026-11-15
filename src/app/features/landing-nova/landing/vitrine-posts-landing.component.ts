@@ -28,7 +28,7 @@ const TEMPO_POR_ARTE_MS = 3200;
         <div class="cabeca cabeca--centro">
           <span class="rotulo">Marketing</span>
           <h2 class="titulo">Uma solução completa<br /><span class="grifo">para o marketing do seu negócio.</span></h2>
-          <p class="apoio">Uma página personalizada, posts automáticos para as suas redes sociais e campanhas de marketing no WhatsApp.</p>
+          <p class="apoio">Um site profissional personalizado, posts gerados para as suas redes sociais e campanhas de envio em massa no WhatsApp.</p>
         </div>
 
         <div class="vp__bloco">

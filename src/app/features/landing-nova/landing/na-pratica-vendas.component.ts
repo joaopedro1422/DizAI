@@ -26,7 +26,7 @@ import { EtapasAvisoComponent } from './etapas-aviso.component';
     <section class="secao faixa nevoa" id="pratica">
       <div class="miolo">
         <div class="cabeca">
-          <span class="rotulo">Na prática</span>
+          <span class="rotulo">O assistente na prática</span>
           <h2 class="titulo">Do primeiro "oi"<br /><span class="grifo">ao pedido entregue.</span></h2>
         </div>
 
@@ -71,14 +71,11 @@ import { EtapasAvisoComponent } from './etapas-aviso.component';
           <span class="msg msg--arquivo"><span class="pdf">PDF</span><span><b>Cardápio de sabores.pdf</b><small>enviado agora</small></span></span>
         }
         @case ('resumo') {
-          <div class="cartao">
-            <div class="cartao__topo"><span>Resumo do pedido</span><span class="mono">R$ 160,00</span></div>
-            <div class="linha-dado"><span>Bolo M</span><span>20 pessoas</span></div>
-            <div class="linha-dado"><span>Recheio</span><span>Ninho e morango</span></div>
-            <div class="linha-dado"><span>Adicional</span><span>Crocante</span></div>
-            <div class="linha-dado"><span>Retirada</span><span>Sábado, 15:00</span></div>
-          </div>
-          <span class="cena__selo cena__selo--verde">✓ Prazo de preparo conferido</span>
+          <!-- a coleta na conversa: o cliente diz o recheio, o assistente confirma e pergunta o que falta -->
+          <span class="cena__selo">Coleta o que falta</span>
+          <span class="msg msg--cliente">Quero o bolo M com recheio de ninho e morango<time>08:43</time></span>
+          <span class="msg msg--loja">Perfeito! Ninho e morango<time>08:43</time></span>
+          <span class="msg msg--loja">Qual massa você prefere: branca ou chocolate?<time>08:43</time></span>
         }
         @case ('confirmar') {
           <div class="cartao">
@@ -143,6 +140,6 @@ export class NaPraticaVendasComponent {
   }
 
   protected ehConversa(cena: CenaPratica): boolean {
-    return cena === 'conversa' || cena === 'etapas';
+    return cena === 'conversa' || cena === 'resumo' || cena === 'etapas';
   }
 }

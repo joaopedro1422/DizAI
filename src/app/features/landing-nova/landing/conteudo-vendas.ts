@@ -18,14 +18,14 @@ export const FOTOS = {
 export type CenaPratica = 'conversa' | 'resumo' | 'confirmar' | 'etapas' | 'numeros';
 
 export const PASSOS_PRATICA: { titulo: string; texto: string; cena: CenaPratica }[] = [
-  { titulo: 'Responde o seu cliente', texto: 'Envia o seu catálogo, tira dúvidas e faz orçamentos enquanto você produz.', cena: 'conversa' },
-  { titulo: 'Coleta informações do pedido', texto: 'Confere sabores, tamanhos, adicionais e o prazo de preparo, e pergunta o que falta.', cena: 'resumo' },
+  { titulo: 'Responde o seu cliente', texto: 'Uma triagem inicial: envia o seu catálogo, tira dúvidas e faz orçamentos nos primeiros minutos. Sem dar chances para o cliente perguntar em outra loja.', cena: 'conversa' },
+  { titulo: 'Coleta informações do pedido', texto: 'Confere sabores, tamanhos, prazo de preparo e tudo que o seu tipo de produto precisar. Te entrega o atendimento resumido.', cena: 'resumo' },
   {
     titulo: 'Você confirma, do seu jeito',
-    texto: 'O assistente apenas coleta o que você definir e o pedido chega anotado. Você assume a conversa, combina o pagamento e confirma o pedido.',
+    texto: 'O assistente apenas coleta o que você definir e o pedido chega resumido. Ele não confirma pedidos e nem pede pagamentos. Você assume a conversa e finaliza do seu jeito.',
     cena: 'confirmar',
   },
-  { titulo: 'Avisa o cliente em cada etapa', texto: 'Pronto, entregue: um toque e a mensagem sai com o nome e o valor.', cena: 'etapas' },
+  { titulo: 'Avisa o cliente em cada etapa', texto: 'Um gestor de pedidos com avisos automáticos.\nPronto ou entregue: um toque e a mensagem personalizada por você é enviada.', cena: 'etapas' },
   { titulo: 'Mostra quanto você vendeu', texto: 'Faturamento, os dias que mais vendem e os clientes que mais voltam.', cena: 'numeros' },
 ];
 
@@ -44,10 +44,9 @@ export const ETAPAS_PEDIDO: EtapaAviso[] = [
 
 export const RECURSOS_VENDAS = {
   checks: [
-    'Mantém o cliente por perto enquanto você está fora.',
-    'Você confirma cada pedido e combina o pagamento',
-    'Pedidos organizados numa tela própria, do confirmado ao entregue',
-    'Ganhe uma página de portfólio',
+    'Utilize o assistente para coletar pedidos ou cadastre manualmente',
+    'Receba uma página de portfólio com a sua cara',
+    'Gestor de pedidos para organizar o seu negócio e otimizar o seu tempo',
   ],
   alem: [
     ['Coleta o que o seu produto precisa', 'Sabores, massas, quantidades etc. O assistente confere uma por uma.'],
@@ -74,8 +73,8 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
   rotuloRecursos: 'Recursos',
   hero: {
     descricao:
-      'O DizAI responde os seus clientes no WhatsApp na hora: envia o catálogo, faz o orçamento e anota o pedido. Você apenas confirma.',
-    garantias: ['No seu número de sempre', 'Pronto em poucos minutos', 'Ferramentas de marketing', 'Todos os tipos de negócio'],
+      'Uma solução completa para o seu negócio: do atendimento com IA no WhatsApp à gestão de pedidos, com análise financeira e ferramentas de marketing.',
+    garantias: ['No seu número de sempre', 'Pronto em poucos minutos', 'Recursos com ou sem o assistente', 'Todos os tipos de negócio'],
     conversas: [
       {
         chave: 'doces',
@@ -83,14 +82,29 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
         loja: 'Pedacinho do Céu',
         logo: FOTOS.logoPedacinho,
         aviso: ['Pedido anotado', 'Bolo M · sábado, 15:00'],
+        dono: 'Camila',
         msgs: [
           ['c', 'Oi! Vocês fazem bolo de aniversário?'],
-          ['l', 'Fazemos sim! Te mando o cardápio com os sabores e os tamanhos 🎂'],
+          ['l', 'Olá, Fazemos sim! 😊 Te mando o cardápio com os sabores e os tamanhos.'],
           ['a', 'Cardápio Pedacinho do Céu.pdf'],
           ['c', 'Quanto fica o de 20 pessoas?'],
           ['l', 'O bolo M serve 20 pessoas e fica R$ 150. Para qual dia seria?'],
           ['c', 'Sábado, para retirar às 15h'],
           ['l', 'Anotado! Qual recheio você prefere: ninho com morango, brigadeiro ou doce de leite?'],
+          ['c', 'Ninho com morango e massa de chocolate'],
+          ['l', 'Ótimo! Qual o seu nome?'],
+          ['c', 'Ana'],
+          ['l', 'Perfeito, Ana! A Camila vai confirmar o seu pedido.'],
+          ['t', 'Pedido para você confirmar|Bolo M · sábado, 15:00'],
+          ['d', 'Oii, Preciso de um sinal de 50% para confirmar o pedido 😊'],
+          ['c', 'Pronto, enviei o Pix!'],
+          ['d', 'Recebido! Pedido confirmado 💕'],
+          ['x', 'Sábado'],
+          ['t', 'Pedido ficou pronto|Mensagem automática'],
+          ['m', 'Boas notícias Ana, seu bolo está pronto para retirada! 🎂'],
+          ['c', 'OK, estou indo buscar'],
+          ['t', 'Pedido entregue|Mensagem automática'],
+          ['m', 'Muito obrigada pela confiança!  Boa comemoração e espero que goste 😊'],
         ],
       },
       {
@@ -99,13 +113,24 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
         loja: 'Rei dos Salgados',
         logo: `${LOGOS}/rei-dos-salgados.svg`,
         aviso: ['Pedido anotado', '100 salgados · sábado'],
+        dono: 'Rosa',
         msgs: [
           ['c', 'Quanto custa o cento de salgados?'],
-          ['l', 'O cento sai a R$ 85: coxinha, risole, bolinha de queijo e kibe. Para quando seria?'],
+          ['l', 'O cento sai a R$ 85! Te mando o nosso cardápio com os sabores:'],
+          ['i', 'Cardápio de salgados|Coxinha · Risole · Kibe · Bolinha de queijo · Enroladinho|Cento R$ 85,00'],
+          ['l', 'Para quando seria?'],
           ['c', 'Sábado de manhã. Quero 50 coxinhas e 50 risoles'],
-          ['l', 'Fica R$ 85 o cento. Vai retirar ou prefere entrega?'],
-          ['c', 'Vou retirar, me chamo Carlos'],
-          ['l', 'Anotado, Carlos! O seu pedido foi para a confirmação.'],
+          ['l', 'Combinado! Vai retirar ou prefere entrega?'],
+          ['c', 'Vou retirar às 10h, me chamo Carlos'],
+          ['l', 'Perfeito, Carlos! A Rosa vai confirmar o seu pedido.'],
+          ['t', 'Pedido para você confirmar|100 salgados · sábado'],
+          ['d', 'Oi, Carlos! Pedido confirmado. Pode pagar na retirada 😊'],
+          ['x', 'Sábado'],
+          ['t', 'Pedido ficou pronto|Mensagem automática'],
+          ['m', 'Carlos, os seus salgados estão prontos para retirada!'],
+          ['c', 'OK, estou indo buscar'],
+          ['t', 'Pedido entregue|Mensagem automática'],
+          ['m', 'Obrigado pela preferência, Carlos! Volte sempre 💛'],
         ],
       },
       {
@@ -114,12 +139,21 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
         loja: 'Ateliê das Flores',
         logo: `${LOGOS}/atelie-das-flores.svg`,
         aviso: ['Pedido anotado', 'Buquê de rosas · hoje'],
+        dono: 'Marta',
         msgs: [
           ['c', 'Vocês fazem buquê para entrega hoje?'],
           ['l', 'Fazemos! Para hoje, pedidos até as 16h. Te mando as opções 💐'],
           ['a', 'Buquês Ateliê das Flores.pdf'],
           ['c', 'Quero o de rosas vermelhas, entrega no Centro'],
           ['l', 'O buquê de 12 rosas fica R$ 120, mais R$ 10 da entrega no Centro. Para qual nome vai o cartão?'],
+          ['c', 'Para Júlia. O endereço é Rua das Acácias, 120'],
+          ['l', 'Perfeito! A Marta vai confirmar o seu pedido.'],
+          ['t', 'Pedido para você confirmar|Buquê de rosas · hoje'],
+          ['d', 'Oi! Aqui é a Marta 💐 Pedido confirmado, o buquê sai para entrega às 15h.'],
+          ['t', 'Pedido ficou pronto|Mensagem automática'],
+          ['m', 'O seu buquê está pronto e já vai sair para entrega!'],
+          ['t', 'Pedido entregue|Mensagem automática'],
+          ['m', 'Buquê entregue! Obrigada pela preferência 💐'],
         ],
       },
     ],
@@ -134,13 +168,13 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
       },
       {
         titulo: 'As mesmas perguntas, o dia inteiro',
-        texto: 'Preço, sabores, tamanhos, prazo e entrega: horas respondendo o que já está decidido.',
+        texto: 'Preço, sabores, tamanhos, prazo e entrega: horas parando de produzir para responder o que já está decidido.',
         citacao: '"Quanto fica o cento?" "Tem de ninho?" "Entrega no meu bairro?"',
       },
       {
-        titulo: 'Produzir ou responder?',
-        texto: 'Parar a produção a cada notificação atrasa as entregas. Ignorar o celular perde venda.',
-        citacao: '"Ainda dá para encomendar?" · chegou no meio da produção',
+        titulo: 'Pedidos desorganizados',
+        texto: 'Pedido anotado no caderno ou perdido entre as conversas, e minutos procurando o número de cada cliente.',
+        citacao: '"Moça, o meu pedido de sábado ficou anotado?"',
       },
     ],
   },
@@ -158,6 +192,65 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
     loja: 'Pedacinho do Céu',
     logo: FOTOS.logoPedacinho,
     objetivo: 'fechar a venda',
+    exemplos: [
+      {
+        loja: 'Rei dos Salgados',
+        logo: `${LOGOS}/rei-dos-salgados.svg`,
+        sem: [
+          ['c', 'Bom dia! Quanto fica o cento de salgados para sábado?', '09:12'],
+          ['t', '25 minutos depois', ''],
+          ['c', 'Vocês entregam?', '09:37'],
+          ['t', '1 hora depois', ''],
+          ['c', 'Oi??', '10:41'],
+        ],
+        com: [
+          ['c', 'Bom dia! Quanto fica o cento de salgados para sábado?', '09:12'],
+          ['l', 'Bom dia! O cento sai a R$ 85, com coxinha, risole, kibe e bolinha de queijo. Te mando o cardápio.', '09:12'],
+          ['c', 'Quero 100. Vocês entregam?', '09:13'],
+          ['l', 'Entregamos sim! A Rosa vai confirmar o seu pedido em instantes.', '09:13'],
+        ],
+        fimSem: 'Comprou em outra loja',
+        fimCom: 'Pedido anotado em 1 minuto',
+      },
+      {
+        loja: 'Ateliê das Flores',
+        logo: `${LOGOS}/atelie-das-flores.svg`,
+        sem: [
+          ['c', 'Oi! Vocês fazem buquê para entrega hoje?', '11:05'],
+          ['t', '30 minutos depois', ''],
+          ['c', 'É para o aniversário da minha namorada', '11:35'],
+          ['t', '45 minutos depois', ''],
+          ['c', 'Deixa, já resolvi', '12:20'],
+        ],
+        com: [
+          ['c', 'Oi! Vocês fazem buquê para entrega hoje?', '11:05'],
+          ['l', 'Fazemos! Para hoje, pedidos até as 16h. Te mando as opções de buquê 💐', '11:05'],
+          ['c', 'Quero o de 12 rosas vermelhas', '11:06'],
+          ['l', 'Ótima escolha! A Marta vai confirmar o seu pedido em instantes.', '11:06'],
+        ],
+        fimSem: 'Comprou em outra loja',
+        fimCom: 'Pedido anotado em 1 minuto',
+      },
+      {
+        loja: 'Pedacinho do Céu',
+        logo: FOTOS.logoPedacinho,
+        sem: [
+          ['c', 'Boa tarde! Vocês fazem ovo de Páscoa recheado?', '15:16'],
+          ['t', '22 minutos depois', ''],
+          ['c', 'Quanto fica o de 500 g?', '15:38'],
+          ['t', '40 minutos depois', ''],
+          ['c', '??', '16:18'],
+        ],
+        com: [
+          ['c', 'Boa tarde! Vocês fazem ovo de Páscoa recheado?', '15:16'],
+          ['l', 'Fazemos sim! O de 500 g fica R$ 89,90. Te mando o cardápio com os recheios 🐣', '15:16'],
+          ['c', 'Quero o de ninho com morango', '15:17'],
+          ['l', 'Anotado! A Camila vai confirmar o seu pedido em instantes.', '15:17'],
+        ],
+        fimSem: 'Comprou em outra loja',
+        fimCom: 'Pedido anotado em 2 minutos',
+      },
+    ],
     sem: [
       ['c', 'Boa tarde! Vocês fazem bolo de aniversário para sábado?', '15:16'],
       ['t', '22 minutos depois', ''],
@@ -206,9 +299,9 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
     { momento: 'Uma pergunta difícil', titulo: 'Não inventa: te chama', texto: 'Se não souber, avisa você no celular. Depois, ele aprende a resposta.', visual: 'chama', detalhe: '"Fazem sem lactose?"' },
     { momento: 'Você quis responder', titulo: 'Você assume quando quiser', texto: 'Respondeu pelo celular? Ele sai daquela conversa na hora.', visual: 'chave' },
     { momento: 'Do jeito da sua loja', titulo: 'Fala do seu jeito', texto: 'Saudação, regras e jeito de falar definidos por você.', visual: 'jeito' },
-    { momento: 'Hora de divulgar', titulo: 'Posts prontos para o Instagram', texto: 'Com a sua logo, as suas fotos e os seus preços.', visual: 'posts' },
-    { momento: 'Na época certa', titulo: 'Campanhas que vendem', texto: 'Avisa das datas que mais vendem, com a arte e a mensagem prontas, e mostra quanto cada uma rendeu.', visual: 'campanhas', detalhe: 'Faltam 18 dias para o Dia das Mães' },
   ],
+  semAssistente:
+    'Sem problemas, todos os recursos da plataforma podem ser utilizados sem ele. Você cadastra os pedidos manualmente para organizar o seu negócio.',
   vitrine: {
     texto: 'O link para a bio do Instagram e para mandar no WhatsApp. O cliente vê os seus trabalhos, as avaliações e o horário, e já faz a encomenda.',
     itens: [
@@ -223,13 +316,14 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
       ['Legenda pronta', 'Título, chamada e hashtags. É baixar e postar.'],
     ],
   },
+  confiancaCabeca: { rotulo: 'Por que o DizAI', titulo: ['Tudo o que o seu negócio precisa.', 'Em um lugar só.'] },
   confianca: [
-    ['O seu negócio sob controle', 'O DizAI não confirma pedidos, não pede pagamentos e nem promete entregas.'],
-    ['O pagamento continua com você', 'Ele não cobra nem recebe nada. Você combina Pix, cartão ou na entrega.'],
-    ['Assume quando quiser', 'Respondeu pelo celular? Ele sai daquela conversa na hora.'],
-    ['Não inventa respostas', 'Se não souber, responde "vou confirmar" e te chama.'],
-    ['Contatos pessoais ficam de fora', 'Você pode definir os contatos que o assistente não deve responder.'],
-    ['Liga e desliga quando quiser', 'No seu número de sempre, sem trocar de chip nem de aplicativo.'],
+    ['Atendimento 24 horas', 'Com o assistente ativado, o seu cliente recebe atendimento de qualidade em poucos segundos, a qualquer hora.'],
+    ['Pedidos organizados', 'Cada pedido detalhado na palma da sua mão, com o status de produção e acesso rápido ao cliente.'],
+    ['Gestão financeira inteligente', 'Faturamento, dias mais movimentados, produtos mais pedidos e muito mais, na palma da sua mão.'],
+    ['Posts rápidos', 'Em menos de 1 minuto você gera um post profissional para movimentar as suas redes.'],
+    ['Atração de clientes', 'Crie campanhas em massa para enviar aos seus clientes nas datas mais importantes.'],
+    ['Site profissional', 'Uma página profissional para colocar na bio do Instagram.'],
   ],
   ramos: [
     {
@@ -253,6 +347,7 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
   ],
   perguntas: [
     ['Vou perder o controle dos meus pedidos?', 'Não. O assistente faz a triagem: tira dúvidas, faz o orçamento e anota o pedido. Quem confirma, combina o pagamento e decide é sempre você.'],
+    ['Preciso usar o assistente de IA?', 'Não. Você pode desligar o assistente quando quiser e responder os clientes você mesmo. A gestão continua funcionando: a tela de pedidos, os avisos de status, os números, a vitrine, os posts e as campanhas.'],
     ['Ele recebe pagamento ou fecha a venda sozinho?', 'Não. Ele anota o pedido e te entrega o resumo com o total. Você confirma e recebe do seu jeito: Pix, cartão ou na entrega.'],
     ['Ele respeita o meu prazo de preparo e o pedido mínimo?', 'Sim. Ele confere a antecedência de cada produto, os dias e horários em que você trabalha e as regras que você escrever.'],
     ...PERGUNTAS_COMUNS,

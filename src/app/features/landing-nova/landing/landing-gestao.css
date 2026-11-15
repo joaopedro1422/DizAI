@@ -1,0 +1,464 @@
+/* Recursos de vendas, a gestão: os produtos que mais vendem (no gestor financeiro), o gestor de clientes (cartão na
+   largura toda) e os atalhos de divulgação (vitrine, posts e campanhas com "Saiba mais"). */
+
+/* ---------- gestor financeiro: produtos que mais vendem ---------- */
+.lv .mais-vendidos {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.lv .mais-vendidos__linha {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.lv .mais-vendidos__nome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.lv .mais-vendidos__nome i {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--gema-clara);
+  color: var(--noite);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.lv .mais-vendidos__barra {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--nevoa);
+}
+
+.lv .mais-vendidos__barra i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--noite);
+}
+
+.lv .mais-vendidos__linha:first-of-type .mais-vendidos__barra i {
+  background: var(--gema-forte);
+}
+
+/* ---------- gestor financeiro: cartão largo, o texto e, ao lado, o faturamento e os mais vendidos ---------- */
+.lv .rec--largo {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr);
+  align-items: center;
+  gap: 32px;
+  margin-top: 18px;
+}
+
+.lv .rec--largo__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lv .rec--financeiro__visual {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 14px;
+}
+
+/* ---------- gestor de clientes (no bento) ---------- */
+.lv .lista-clientes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lv .lista-clientes__filtros {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.lv .lista-clientes__filtros span {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--nevoa);
+  color: var(--suave);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.lv .lista-clientes__filtros .ativo {
+  background: var(--noite);
+  color: #ffffff;
+}
+
+.lv .lista-clientes__linha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--nevoa);
+}
+
+.lv .lista-clientes__linha i {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--noite);
+  color: #ffffff;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.lv .lista-clientes__linha > span {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 14.5px;
+}
+
+.lv .lista-clientes__linha small {
+  color: var(--fraco);
+  font-size: 12.5px;
+}
+
+.lv .selo-cliente {
+  flex: none;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.lv .selo-cliente--frequente {
+  border: 1px solid var(--gema-linha);
+  background: var(--gema-clara);
+  color: var(--noite);
+}
+
+.lv .selo-cliente--voltou {
+  background: #e3f5ee;
+  color: #0e6e4f;
+}
+
+.lv .selo-cliente--sumido {
+  background: #fbe9e9;
+  color: #a32f2f;
+}
+
+/* ---------- marketing: um cartão só, com a vitrine, os posts em leque e a campanha ---------- */
+.lv .rec--marketing {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.7fr);
+}
+
+.lv .marketing__mais {
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.lv .marketing__visual {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+  gap: 16px;
+}
+
+.lv .marketing__peca {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  min-width: 0;
+}
+
+.lv .marketing__peca figcaption {
+  color: var(--fraco);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+/* a vitrine de hoje em miniatura (Pedacinho do Céu): capa, o cartão da loja por cima, menu minimalista e fotos */
+.lv .vitrine-mini {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 180px;
+  overflow: hidden;
+  padding-bottom: 10px;
+  border: 1px solid #eee3d6;
+  border-radius: 16px;
+  background: #fffaf3;
+  box-shadow: 0 14px 28px -20px rgba(19, 32, 74, 0.5);
+  font-size: 9px;
+}
+
+.lv .vitrine-mini__capa {
+  width: 100%;
+  height: 58px;
+  object-fit: cover;
+}
+
+.lv .vitrine-mini__cartao {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: calc(100% - 16px);
+  margin-top: -26px;
+  padding: 0 6px 8px;
+  border: 1px solid #eee3d6;
+  border-radius: 12px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.lv .vitrine-mini__logo {
+  width: 34px;
+  height: 34px;
+  margin-top: -14px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 10px -4px rgba(0, 0, 0, 0.35);
+}
+
+.lv .vitrine-mini__cartao b {
+  color: #8a6200;
+  font-family: 'Dancing Script', cursive;
+  font-size: 15px;
+  line-height: 1.1;
+}
+
+.lv .vitrine-mini__cartao small {
+  color: #8a7666;
+  font-size: 8.5px;
+}
+
+.lv .vitrine-mini__selos {
+  display: flex;
+  gap: 3px;
+}
+
+.lv .vitrine-mini__selos i {
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: #f5ede4;
+  color: #6b5a4c;
+  font-size: 7.5px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.lv .vitrine-mini__selos i.aberto {
+  background: #e3f5ee;
+  color: #0e6e4f;
+}
+
+.lv .vitrine-mini__atendimento {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #8a7666;
+  font-size: 7.5px;
+}
+
+.lv .vitrine-mini__atendimento span {
+  display: flex;
+  gap: 1.5px;
+}
+
+.lv .vitrine-mini__atendimento span i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #8a6200;
+}
+
+.lv .vitrine-mini__menu {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0 7px;
+}
+
+.lv .vitrine-mini__menu i {
+  position: relative;
+  color: #8a7666;
+  font-family: 'Dancing Script', cursive;
+  font-size: 10px;
+  font-style: normal;
+  white-space: nowrap;
+}
+
+.lv .vitrine-mini__menu i.ativo {
+  color: #8a6200;
+  font-weight: 700;
+}
+
+.lv .vitrine-mini__menu i.ativo::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -3px;
+  left: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: #8a6200;
+}
+
+.lv .vitrine-mini__fotos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+  width: 100%;
+  padding-inline: 8px;
+}
+
+.lv .vitrine-mini__fotos img {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.lv .marketing__pontos {
+  display: none;
+}
+
+.lv .campanha-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--wpp-fundo);
+}
+
+.lv .campanha-mini .push {
+  font-size: 12px;
+}
+
+.lv .campanha-mini .msg {
+  max-width: 100%;
+  font-size: 12.5px;
+}
+
+.lv .campanha-mini__botao {
+  padding: 6px;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #027eb5;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* o destino do "Saiba mais" não fica embaixo do topo fixo */
+.lv #vitrine {
+  scroll-margin-top: 96px;
+}
+
+/* vendas: o gerenciador de pedidos à esquerda; a coleta e os clientes à direita */
+.lv .bento--vendas {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  grid-template-areas: 'b a' 'b c';
+}
+
+@media (max-width: 1000px) {
+  .lv .bento--vendas {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: none;
+  }
+
+  .lv .rec--largo {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .lv .marketing__visual {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .lv .rec--financeiro__visual {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* uma peça por vez, passando sozinha, e maiores */
+  .lv .marketing__visual {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    gap: 14px;
+  }
+
+  .lv .marketing__peca {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transform: translateX(16px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .lv .marketing__peca.ativa {
+    opacity: 1;
+    transform: none;
+  }
+
+  .lv .marketing__peca .vitrine-mini {
+    zoom: 1.35;
+  }
+
+  .lv .marketing__peca .mini-leque {
+    margin-block: 26px 12px;
+    zoom: 1.4;
+  }
+
+  .lv .marketing__peca .campanha-mini {
+    max-width: 300px;
+  }
+
+  .lv .marketing__pontos {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .lv .marketing__pontos i {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--linha);
+    transition: width 0.3s ease, background 0.3s ease;
+  }
+
+  .lv .marketing__pontos i.ativo {
+    width: 20px;
+    background: var(--gema);
+  }
+}

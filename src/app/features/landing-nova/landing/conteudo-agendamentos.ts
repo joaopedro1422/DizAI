@@ -200,9 +200,9 @@ export const CONTEUDO_AGENDAMENTOS: ConteudoLandingNova = {
     { momento: 'Uma pergunta difícil', titulo: 'Não inventa: te chama', texto: 'Se não souber, avisa você no celular. Depois, ele aprende a resposta.', visual: 'chama', detalhe: '"Vocês atendem a domicílio?"' },
     { momento: 'Você quis responder', titulo: 'Você assume quando quiser', texto: 'Respondeu pelo celular? Ele sai daquela conversa na hora.', visual: 'chave' },
     { momento: 'Do jeito do seu espaço', titulo: 'Fala do seu jeito', texto: 'Saudação, regras e jeito de falar definidos por você.', visual: 'jeito' },
-    { momento: 'Hora de divulgar', titulo: 'Posts prontos para o Instagram', texto: 'Com a sua logo, as suas fotos e os horários livres.', visual: 'posts' },
-    { momento: 'Na hora certa', titulo: 'Campanhas que enchem a agenda', texto: 'Avisa dos horários livres, de quem sumiu e das datas especiais, com a mensagem pronta.', visual: 'campanhas', detalhe: 'Amanhã você tem 5 horários livres' },
   ],
+  semAssistente:
+    'Sem problemas, todos os recursos da plataforma podem ser utilizados sem ele. Você agenda os horários manualmente para organizar o seu negócio.',
   vitrine: {
     texto: 'O link para a bio do Instagram e para mandar no WhatsApp. O cliente vê os seus trabalhos e escolhe o horário na agenda online, sem precisar te chamar.',
     itens: [
@@ -217,6 +217,7 @@ export const CONTEUDO_AGENDAMENTOS: ConteudoLandingNova = {
       ['Legenda pronta', 'Título, chamada e hashtags. É baixar e postar.'],
     ],
   },
+  confiancaCabeca: { rotulo: 'Você no controle', titulo: ['O assistente trabalha.', 'Você continua no comando.'] },
   confianca: [
     ['Você escolhe como ele marca', 'Ele marca sozinho na sua agenda ou te chama antes. Você decide.'],
     ['Só os horários livres', 'Ele oferece o que cabe na sua agenda, com a duração de cada serviço. Nada de horário em dobro.'],
@@ -247,6 +248,7 @@ export const CONTEUDO_AGENDAMENTOS: ConteudoLandingNova = {
   ],
   perguntas: [
     ['Ele marca horário sozinho?', 'Sim. Ele só oferece os horários livres da sua agenda, conta a duração de cada serviço e marca na hora. Se preferir, ele te chama em vez de marcar.'],
+    ['Preciso usar o assistente de IA?', 'Não. Você pode desligar o assistente quando quiser e responder os clientes você mesmo. A gestão continua funcionando: a agenda, os lembretes, os números, a vitrine, os posts e as campanhas.'],
     ['E se ele marcar dois clientes no mesmo horário?', 'Não marca. Antes de confirmar, o sistema confere a agenda de novo; se o horário acabou de ser ocupado, ele oferece os que ainda estão livres.'],
     ['E se o cliente faltar ou quiser remarcar?', 'Ele manda o lembrete antes do horário e pede a confirmação de presença. Para remarcar ou cancelar, o cliente fala com ele mesmo, e a vaga volta para a agenda.'],
     ['Tenho mais de um profissional. Funciona?', 'Funciona. Cada profissional tem a sua agenda e o cliente escolhe com quem, ou "qualquer um" e o assistente acha quem está livre.'],
