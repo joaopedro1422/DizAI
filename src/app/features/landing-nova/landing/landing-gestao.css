@@ -396,6 +396,11 @@
     grid-template-areas: none;
   }
 
+  /* no celular, o gerenciador de pedidos vem antes da coleta */
+  .lv .bento--vendas .rec--b {
+    order: -1;
+  }
+
   .lv .rec--largo {
     grid-template-columns: minmax(0, 1fr);
     gap: 20px;
