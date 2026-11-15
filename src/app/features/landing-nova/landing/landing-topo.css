@@ -391,6 +391,17 @@
   color: var(--gema);
 }
 
+/* embaixo do 21x: de onde vem o número */
+.lv .mit__estudo {
+  display: block;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .lv .mit__numero small {
   font-size: 0.4em;
   color: #fce7a8;

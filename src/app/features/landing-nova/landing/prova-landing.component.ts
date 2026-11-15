@@ -23,6 +23,7 @@ interface ItemProva {
       <div class="miolo">
         <div class="mit__texto">
           <div class="mit__numero">21<small>×</small></div>
+          <span class="mit__estudo">Estudo do MIT sobre o comportamento de clientes</span>
           <h2>Responder em até <span class="grifo">5 minutos</span> deixa a chance de {{ conteudo().prova.objetivo }} <span class="grifo">21 vezes maior</span>.</h2>
           <p>E a chance de o cliente ainda estar lá para conversar é <strong>100 vezes maior</strong>. O estudo analisou mais de 15 mil contatos ao longo de 3 anos.</p>
           <cite>Fonte: "Lead Response Management Study", Dr. James Oldroyd (MIT) e InsideSales, 2007.</cite>

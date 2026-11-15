@@ -40,7 +40,7 @@ export interface EtapaAviso {
   mensagem: string;
 }
 
-export type VisualDia = 'conversa' | 'audio' | 'arquivo' | 'chama' | 'chave' | 'jeito';
+export type VisualDia = 'conversa' | 'audio' | 'arquivo' | 'chama' | 'chave' | 'jeito' | 'lotada';
 
 /** Um cartão de "Um funcionário, sem férias". `detalhe`: o arquivo ou a pergunta difícil do visual. */
 export interface ItemDia {
@@ -50,6 +50,8 @@ export interface ItemDia {
   visual: VisualDia;
   detalhe?: string;
   conversa?: [string, string];
+  /** O cartão na linha toda, com o texto à esquerda e o visual à direita (o 7º, embaixo dos 6). */
+  largo?: boolean;
 }
 
 /** Um negócio da prova (MIT): a conversa sem o assistente e com ele. */

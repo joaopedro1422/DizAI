@@ -19,7 +19,7 @@ import { ConteudoLandingNova, ONDAS_AUDIO } from './conteudo-landing-nova';
 
         <div class="grade-dia grade-dia--tres">
           @for (item of conteudo().dia; track item.titulo; let i = $index) {
-            <article class="hora" [style.--i]="i">
+            <article class="hora" [class.hora--largo]="item.largo" [style.--i]="i">
               <span class="hora__momento">{{ item.momento }}</span>
               <h3>{{ item.titulo }}</h3>
               <p>{{ item.texto }}</p>
@@ -54,6 +54,37 @@ import { ConteudoLandingNova, ONDAS_AUDIO } from './conteudo-landing-nova';
                   @case ('jeito') {
                     <div class="chips"><span>Saudação</span><span>Regras da loja</span><span>Pagamento</span></div>
                   }
+                  @case ('lotada') {
+                    <!-- a tela "Restringir agenda" do painel, com o período lotado, e a conversa curta -->
+                    <div class="lotada">
+                      <div class="agenda-lotada" aria-hidden="true">
+                        <div class="agenda-lotada__topo">
+                          <b>Novembro de 2026</b>
+                          <span>Restringir agenda</span>
+                        </div>
+                        <div class="agenda-lotada__semana">
+                          @for (letra of semana; track $index) {
+                            <span>{{ letra }}</span>
+                          }
+                        </div>
+                        <div class="agenda-lotada__dias">
+                          @for (dia of novembro; track dia) {
+                            <i [class.lotado]="dia >= 16 && dia <= 23" [class.hoje]="dia === 15" [class.passado]="dia < 15">{{ dia }}</i>
+                          }
+                        </div>
+                        <div class="agenda-lotada__periodo">
+                          <span class="agenda-lotada__icone"></span>
+                          <span><b>16/11 a 23/11</b><small>8 dias sem novos pedidos</small></span>
+                        </div>
+                      </div>
+                      @if (item.conversa; as conversa) {
+                        <div class="conversa-lotada">
+                          <span class="msg msg--cliente">{{ conversa[0] }}<time>10:42</time></span>
+                          <span class="msg msg--loja">{{ conversa[1] }}<time>10:42</time></span>
+                        </div>
+                      }
+                    </div>
+                  }
                 }
               </div>
             </article>
@@ -72,4 +103,7 @@ export class SolucaoLandingComponent {
   readonly conteudo = input.required<ConteudoLandingNova>();
 
   protected readonly ondas = ONDAS_AUDIO;
+  /** O mock da "Restringir agenda": novembro de 2026 começa num domingo. */
+  protected readonly semana = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+  protected readonly novembro = Array.from({ length: 30 }, (_, i) => i + 1);
 }
