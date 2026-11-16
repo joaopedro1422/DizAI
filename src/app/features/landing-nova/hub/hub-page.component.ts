@@ -4,7 +4,6 @@ import { RouterLink } from '@angular/router';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { LogoComponent } from '../../../shared/components/logo/logo.component';
 import { CHAVE_TIPO_VISTO, ROTA_LANDING, TipoLanding } from '../../landing/conteudo-landing';
-import { TituloDigitandoComponent } from '../titulo-digitando.component';
 import { ArtePostComponent } from '../../posts/arte-post/arte-post.component';
 import { artesDaLanding } from '../landing/artes-landing';
 import { semMovimento } from '../movimento';
@@ -18,7 +17,7 @@ import { MUNDOS_HUB, MundoHub, ONDAS_HUB } from './mundos-hub';
  */
 @Component({
   selector: 'app-hub-page',
-  imports: [RouterLink, IconeComponent, LogoComponent, TituloDigitandoComponent, ArtePostComponent],
+  imports: [RouterLink, IconeComponent, LogoComponent, ArtePostComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   templateUrl: './hub-page.component.html',
@@ -26,8 +25,6 @@ import { MUNDOS_HUB, MundoHub, ONDAS_HUB } from './mundos-hub';
   host: { class: 'marca hb' },
 })
 export class HubPageComponent {
-  /** As funções que se alternam no título ("Um assistente que" atende, agenda...); para de novo em "atende". */
-  protected readonly funcoes = ['atende', 'agenda', 'anota os pedidos', 'divulga', 'vende por você'];
   /** O cartão de posts dos recursos: 3 artes do gerador de verdade, em leque. */
   protected readonly artes = artesDaLanding('produtos').slice(0, 3);
   /** A página personalizada: vitrines de negócios diferentes, trocando a cada 3,2 s. */

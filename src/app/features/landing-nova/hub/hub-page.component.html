@@ -17,11 +17,9 @@
       <div class="hb-hero">
         <div class="hb-hero__texto">
           <span class="hb-selo"><span class="hb-selo__pontos" aria-hidden="true"><i></i><i></i><i></i></span>Atendimento com IA, gestão e marketing</span>
-          <h1 id="hub-titulo" class="hb-titulo" aria-label="Um assistente que atende, agenda, anota os pedidos, divulga e vende por você">
-            <app-titulo-digitando [quebra]="true" inicio="Um assistente que" [frases]="funcoes" [trocas]="funcoes.length" [pausaMs]="2600" />
-          </h1>
+          <h1 id="hub-titulo" class="hb-titulo">O seu negócio<br /><span class="hb-titulo__destaque">na palma da mão</span></h1>
           <p class="hb-desc">
-            Uma solução completa para pequenos e médios negócios: do atendimento com IA no WhatsApp à gestão de pedidos e
+            Uma solução completa para pequenos e médios negócios: do atendimento com IA no WhatsApp à gestão de pedidos ou
             agendamentos, com análise financeira e ferramentas de marketing.
           </p>
           <div class="hb-acoes">
@@ -36,6 +34,8 @@
         </div>
       </div>
 
+      <!-- a escolha: um mundo para cada tipo de negócio -->
+      <h2 class="hb-pergunta">Qual é o seu tipo de negócio?</h2>
       <div class="mundos" id="mundos">
         @for (mundo of mundos; track mundo.tipo) {
           @let atual = cenaAtual()[mundo.tipo];

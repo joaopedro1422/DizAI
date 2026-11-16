@@ -310,3 +310,24 @@
 .hb .hb-provas {
   justify-content: center;
 }
+
+/* o título fixo: a segunda linha no amarelo da marca */
+.hb .hb-titulo__destaque {
+  color: var(--gema);
+}
+
+/* a pergunta em cima dos dois mundos */
+.hb .hb-pergunta {
+  margin-top: 72px;
+  color: #ffffff;
+  font-family: var(--f-titulo);
+  font-size: clamp(24px, 3.4vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+
+/* os mundos descem 96 px para a faixa de baixo: a margem negativa os deixa perto da pergunta */
+.hb .hb-pergunta + .mundos {
+  margin-top: -60px;
+}
