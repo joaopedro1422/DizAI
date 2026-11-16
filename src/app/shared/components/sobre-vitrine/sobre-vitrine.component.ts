@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
 import { Sobre } from '../../../core/models/galeria.model';
 import { IconeComponent } from '../icone/icone.component';
+import { ImagemSuaveDirective } from '../../directives/imagem-suave.directive';
 
 /**
  * O tópico "Sobre" na vitrine, nos 3 estilos (Clássico, Janela com selo, Capa com cartão). Também desenha as prévias
@@ -11,7 +12,7 @@ import { IconeComponent } from '../icone/icone.component';
  */
 @Component({
   selector: 'app-sobre-vitrine',
-  imports: [NgTemplateOutlet, UrlImagemPipe, IconeComponent],
+  imports: [NgTemplateOutlet, UrlImagemPipe, IconeComponent, ImagemSuaveDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ng-template #textos>
@@ -27,7 +28,7 @@ import { IconeComponent } from '../icone/icone.component';
 
     <ng-template #foto let-icone>
       @if (sobre().foto; as ref) {
-        <img class="sobre__foto" [src]="ref | urlImagem" [alt]="'Foto de ' + sobre().titulo" loading="lazy">
+        <img appImagemSuave class="sobre__foto" [src]="ref | urlImagem" [alt]="'Foto de ' + sobre().titulo" loading="lazy" decoding="async">
       } @else {
         <span class="sobre__vazia" aria-hidden="true"><app-icone nome="imagem" [tamanho]="30" /></span>
       }

@@ -603,3 +603,46 @@ textarea.campo__entrada {
     min-width: 220px;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Foto carregando (ImagemSuaveDirective, appImagemSuave): no lugar da foto, um brilho passando sobre um fundo
+   translúcido no tom da página (na vitrine, o mesmo do cartão "Informações"); a foto entra com um fade.
+   -------------------------------------------------------------------------- */
+.img-suave {
+  background-color: color-mix(in srgb, var(--vitrine-cartao, #ffffff) 50%, transparent);
+  background-image: linear-gradient(
+    100deg,
+    transparent 30%,
+    color-mix(in srgb, var(--vitrine-cartao, #ffffff) 55%, transparent) 50%,
+    transparent 70%
+  );
+  background-size: 300% 100%;
+  animation: img-suave-brilho 1.5s ease-in-out infinite;
+}
+
+.img-suave--pronta {
+  background: none;
+  animation: img-suave-entra 0.4s ease both;
+}
+
+.img-suave--falhou {
+  background-image: none;
+  animation: none;
+}
+
+@keyframes img-suave-brilho {
+  from { background-position: 100% 0; }
+  to { background-position: 0 0; }
+}
+
+@keyframes img-suave-entra {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .img-suave,
+  .img-suave--pronta {
+    animation: none;
+  }
+}

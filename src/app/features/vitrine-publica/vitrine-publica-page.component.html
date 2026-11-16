@@ -47,7 +47,7 @@
     <div class="container-topo" [class.container-topo--fundo-cabecalho]="areaFundo() === 'CABECALHO'">
       @if (capaUrl(); as capa) {
         <div class="vitrine__capa">
-          <img [src]="capa | urlImagem" alt="">
+          <img appImagemSuave [src]="capa | urlImagem" alt="" fetchpriority="high">
         </div>
       } @else {
         <div class="vitrine__capa vitrine__capa--degrade" [style.background]="capaDegrade()"></div>
@@ -57,7 +57,7 @@
           @if (fotoPerfilFalhou()) {
             <span class="loja__inicial" aria-hidden="true">{{ inicial() }}</span>
           } @else {
-            <img class="loja__foto" [src]="foto | urlImagem" [alt]="'Logo de ' + nomeLoja()" (error)="falhouFotoPerfil()">
+            <img appImagemSuave class="loja__foto" [src]="foto | urlImagem" [alt]="'Logo de ' + nomeLoja()" fetchpriority="high" (error)="falhouFotoPerfil()">
           }
         } @else {
           <span class="loja__inicial" aria-hidden="true">{{ inicial() }}</span>
@@ -153,7 +153,7 @@
       </main>
     } @else {
     <main class="albuns animacao-entrada animacao-entrada--3" [attr.data-layout]="layoutFotos()">
-      @for (album of albuns(); track album.slug) {
+      @for (album of albuns(); track album.slug; let posicaoAlbum = $index) {
         <section class="album" [id]="idSecao(album)" [attr.aria-labelledby]="idSecao(album) + '-titulo'">
           <!-- o nome do tópico em cima, à esquerda; no Sobre ele vai DENTRO da composição, como rótulo acima do
                título (aqui fica só para o leitor de tela) -->
@@ -178,7 +178,16 @@
           <div class="album__grade">
             @for (foto of fotosParaExibir(album); track foto.id; let indice = $index) {
               <button type="button" class="album__botao-foto" [attr.aria-label]="'Ampliar foto ' + (indice + 1) + ' de ' + album.nome" (click)="abrirFoto(album, indice)">
-                <img class="album__foto" [src]="foto.url | urlImagem" [alt]="foto.legenda ?? 'Foto de ' + album.nome" loading="lazy">
+                <!-- a 1ª fileira do 1º tópico carrega já, com prioridade; o resto conforme a rolagem -->
+                <img
+                  appImagemSuave
+                  class="album__foto"
+                  [src]="foto.url | urlImagem"
+                  [alt]="foto.legenda ?? 'Foto de ' + album.nome"
+                  [attr.loading]="posicaoAlbum === 0 && indice < 6 ? 'eager' : 'lazy'"
+                  [attr.fetchpriority]="posicaoAlbum === 0 && indice < 3 ? 'high' : null"
+                  decoding="async"
+                >
               </button>
             }
           </div>

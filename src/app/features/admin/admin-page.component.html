@@ -1,5 +1,15 @@
 <div class="tela-app tela-admin tela-pc">
   <app-cabecalho-pagina titulo="Gerenciamento" [subtitulo]="subtitulo()" [comDivisor]="true">
+    <!-- as fotos enviadas antes da otimização no envio: reduz e regrava no mesmo endereço (em segundo plano) -->
+    <button
+      acoesTopo
+      type="button"
+      class="btn btn--texto btn--pequeno"
+      [disabled]="otimizandoFotos()"
+      (click)="otimizarFotos()"
+    >
+      Otimizar fotos antigas
+    </button>
     <button
       acoesTopo
       type="button"

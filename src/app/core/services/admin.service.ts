@@ -51,6 +51,12 @@ export class AdminService {
     return senha;
   }
 
+  /** Reprocessa em segundo plano as fotos já enviadas (ficam mais leves, no mesmo endereço). Devolve a mensagem. */
+  async otimizarFotos(): Promise<string> {
+    const resposta = await firstValueFrom(this.http.post<{ mensagem: string }>(urlApi('/api/admin/imagens/otimizar'), null));
+    return resposta.mensagem;
+  }
+
   async descartarSolicitacao(solicitacaoId: string): Promise<void> {
     await firstValueFrom(this.http.delete<void>(urlApi(`/api/admin/solicitacoes-senha/${solicitacaoId}`)));
     this.tirarDaLista(solicitacaoId);

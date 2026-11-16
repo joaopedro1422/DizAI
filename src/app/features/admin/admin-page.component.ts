@@ -168,6 +168,19 @@ export class AdminPageComponent implements OnInit {
     void this.recarregar((evento.target as HTMLSelectElement).value);
   }
 
+  protected readonly otimizandoFotos = signal(false);
+
+  protected async otimizarFotos(): Promise<void> {
+    this.otimizandoFotos.set(true);
+    try {
+      this.toastService.mostrar(await this.adminService.otimizarFotos());
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível começar a otimização das fotos.'));
+    } finally {
+      this.otimizandoFotos.set(false);
+    }
+  }
+
   protected async recarregar(mes = this.painel()?.mes): Promise<void> {
     try {
       await this.adminService.carregar(mes);
