@@ -16,10 +16,12 @@ import { IconeComponent } from '../../../shared/components/icone/icone.component
 import { InterruptorComponent } from '../../../shared/components/interruptor/interruptor.component';
 import { ItemMenuAcoes, MenuAcoesComponent } from '../../../shared/components/menu-acoes/menu-acoes.component';
 import { AlvoTourDirective } from '../onboarding/alvo-tour.directive';
+import { RecorteLogoComponent } from '../../../shared/components/recorte-logo/recorte-logo.component';
 
 type AcaoPerfil = 'editar' | 'estatisticas' | 'senha' | 'atalho' | 'sair';
 
-const TAMANHO_MAXIMO_FOTO_BYTES = 5 * 1024 * 1024;
+/** A foto original pode ser grande (do celular): o recorte sai com 640 px antes de subir. */
+const TAMANHO_MAXIMO_FOTO_BYTES = 20 * 1024 * 1024;
 
 const ITEM_EDITAR: ItemMenuAcoes<AcaoPerfil> = { id: 'editar', rotulo: 'Editar dados da loja', icone: 'editar' };
 const ITEM_ESTATISTICAS: ItemMenuAcoes<AcaoPerfil> = { id: 'estatisticas', rotulo: 'Estatísticas', icone: 'grafico' };
@@ -30,7 +32,7 @@ const ITEM_SAIR: ItemMenuAcoes<AcaoPerfil> = { id: 'sair', rotulo: 'Sair da cont
 /** Topo do painel: saudação, identidade da loja, status do assistente e link público. */
 @Component({
   selector: 'app-resumo-loja',
-  imports: [IconeComponent, MenuAcoesComponent, AlvoTourDirective, CarregandoComponent, InterruptorComponent, UrlImagemPipe, RouterLink],
+  imports: [IconeComponent, MenuAcoesComponent, AlvoTourDirective, CarregandoComponent, InterruptorComponent, UrlImagemPipe, RouterLink, RecorteLogoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './resumo-loja.component.html',
   styleUrls: ['./resumo-loja.component.css', './conectar-whatsapp.css'],
@@ -64,6 +66,8 @@ export class ResumoLojaComponent {
   ]);
 
   protected readonly enviandoFoto = signal(false);
+  /** A imagem escolhida, aberta no recorte (null = recorte fechado). */
+  protected readonly fotoParaRecortar = signal<File | null>(null);
   /** Sem foto, a inicial aparece na cor escolhida para a página pública. */
   protected readonly corMarca = computed(() => buscarCorMarca(this.perfil().corMarca).hex);
   protected readonly brilhoTopo = computed(() =>
@@ -145,10 +149,16 @@ export class ResumoLojaComponent {
       return;
     }
     if (arquivo.size > TAMANHO_MAXIMO_FOTO_BYTES) {
-      this.toastService.mostrar('A imagem é muito grande. Use uma de até 5 MB.');
+      this.toastService.mostrar('A imagem é muito grande. Use uma de até 20 MB.');
       return;
     }
+    // antes de subir, o lojista enquadra a logo no círculo da vitrine
+    this.fotoParaRecortar.set(arquivo);
+  }
 
+  /** O recorte confirmado: envia ao armazenamento e guarda a referência no perfil. */
+  protected async enviarFotoRecortada(arquivo: File): Promise<void> {
+    this.fotoParaRecortar.set(null);
     this.enviandoFoto.set(true);
     try {
       const [referencia] = await this.armazenamentoFotos.enviar([arquivo], { tipo: 'PERFIL' });

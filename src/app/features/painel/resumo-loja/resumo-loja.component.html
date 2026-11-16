@@ -76,3 +76,7 @@
     </div>
   }
 </div>
+
+@if (fotoParaRecortar(); as arquivo) {
+  <app-recorte-logo [arquivo]="arquivo" (recortado)="enviarFotoRecortada($event)" (cancelado)="fotoParaRecortar.set(null)" />
+}

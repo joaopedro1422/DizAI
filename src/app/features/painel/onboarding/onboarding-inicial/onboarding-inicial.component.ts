@@ -35,6 +35,7 @@ import { ConfiguracaoVitrine } from '../../../../core/models/vitrine.model';
 import { UrlImagemPipe } from '../../../../core/imagens/url-imagem';
 import { corDaLogo } from '../../../posts/motor/cor-da-logo';
 import { arquivoDaCapa, desenharCapaDegrade } from '../../../galeria/seletor-cor-marca/capa-degrade';
+import { RecorteLogoComponent } from '../../../../shared/components/recorte-logo/recorte-logo.component';
 
 type IdPasso = 'segmento' | 'catalogo' | 'horario' | 'pagamento' | 'marca' | 'saudacao' | 'exemplo';
 
@@ -52,7 +53,7 @@ const SEMANA_PADRAO: PeriodoAtendimento[] = (['MONDAY', 'TUESDAY', 'WEDNESDAY', 
 
 @Component({
   selector: 'app-onboarding-inicial',
-  imports: [IconeComponent, EscolhaSegmentoComponent, HorarioFuncionamentoComponent, SemanaAgendaComponent, UrlImagemPipe],
+  imports: [IconeComponent, EscolhaSegmentoComponent, HorarioFuncionamentoComponent, SemanaAgendaComponent, UrlImagemPipe, RecorteLogoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './onboarding-inicial.component.html',
   styleUrls: ['./onboarding-inicial.component.css', './onboarding-inicial-passos.css'],
@@ -114,6 +115,8 @@ export class OnboardingInicialComponent {
   protected readonly cores = CORES_MARCA;
   protected readonly arquivoLogo = signal<File | null>(null);
   protected readonly previaLogo = signal<string | null>(null);
+  /** A imagem escolhida, aberta no recorte (null = recorte fechado). */
+  protected readonly logoParaRecortar = signal<File | null>(null);
   protected readonly logoSalva = computed(() => this.perfil().fotoPerfilUrl ?? null);
   /** A cor da paleta mais parecida com a da logo (null = logo sem cor marcante). */
   protected readonly corDaLogo = signal<CorMarca | null>(null);
@@ -301,10 +304,17 @@ export class OnboardingInicialComponent {
       this.toast.mostrar('Envie a logo em JPG, PNG ou WEBP.');
       return;
     }
-    if (arquivo.size > 5 * 1024 * 1024) {
-      this.toast.mostrar('A logo pode ter até 5 MB.');
+    if (arquivo.size > 20 * 1024 * 1024) {
+      this.toast.mostrar('A logo pode ter até 20 MB.');
       return;
     }
+    // antes de usar, o lojista enquadra a logo no círculo da vitrine
+    this.logoParaRecortar.set(arquivo);
+  }
+
+  /** O recorte confirmado: vira a prévia e a cor sugerida (sobe ao avançar o passo). */
+  protected async usarLogoRecortada(arquivo: File): Promise<void> {
+    this.logoParaRecortar.set(null);
     const dataUrl = await new Promise<string>((resolver) => {
       const leitor = new FileReader();
       leitor.onload = () => resolver(String(leitor.result));

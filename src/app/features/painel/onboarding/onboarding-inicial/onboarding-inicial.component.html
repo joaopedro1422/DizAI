@@ -297,3 +297,7 @@
     </footer>
   </section>
 </div>
+
+@if (logoParaRecortar(); as arquivo) {
+  <app-recorte-logo [arquivo]="arquivo" (recortado)="usarLogoRecortada($event)" (cancelado)="logoParaRecortar.set(null)" />
+}

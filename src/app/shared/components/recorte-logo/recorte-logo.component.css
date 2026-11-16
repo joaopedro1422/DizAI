@@ -1,0 +1,103 @@
+/* Recorte da logo: o quadro com o círculo da vitrine por cima, o zoom e os botões */
+.recorte {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(13, 20, 41, 0.62);
+  animation: recorte-entra 0.2s ease both;
+}
+
+.recorte__painel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: min(100%, 400px);
+  padding: 22px 20px 20px;
+  border-radius: var(--raio-grande, 20px);
+  background: var(--cor-fundo, #ffffff);
+  box-shadow: 0 24px 60px -20px rgba(13, 20, 41, 0.55);
+}
+
+.recorte__titulo {
+  font-family: var(--fonte-titulo, inherit);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cor-texto, #13204a);
+}
+
+.recorte__dica {
+  margin-top: -6px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--cor-texto-suave, #5b6478);
+}
+
+/* o quadro: arrastar sem rolar a página (touch-action) */
+.recorte__area {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #e9ecf2;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.recorte__area:active {
+  cursor: grabbing;
+}
+
+.recorte__imagem {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: none;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+/* fora do círculo fica escurecido; o anel branco marca a logo na vitrine */
+.recorte__mascara {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 999px rgba(13, 20, 41, 0.5);
+  outline: 2px solid rgba(255, 255, 255, 0.95);
+  outline-offset: -2px;
+  pointer-events: none;
+}
+
+.recorte__zoom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.recorte__zoom input {
+  flex: 1;
+  accent-color: var(--cor-noite, #13204a);
+}
+
+.recorte__zoom-icone {
+  width: 18px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  color: var(--cor-texto-suave, #5b6478);
+}
+
+.recorte__botoes {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 10px;
+}
+
+@keyframes recorte-entra {
+  from { opacity: 0; }
+}
