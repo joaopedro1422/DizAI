@@ -177,7 +177,7 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
       {
         titulo: 'Pedidos desorganizados',
         texto: 'Pedido anotado no caderno ou perdido entre as conversas, e minutos procurando o número de cada cliente.',
-        citacao: '"Moça, o meu pedido de sábado ficou anotado?"',
+        citacao: '"Vim buscar a minha encomenda das 10h. Não está pronta?"',
       },
     ],
   },
@@ -195,6 +195,11 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
     loja: 'Pedacinho do Céu',
     logo: FOTOS.logoPedacinho,
     objetivo: 'fechar a venda',
+    solucao: {
+      titulo: ['Atendimento com IA + gestão de pedidos', 'para pequenos e médios negócios.'],
+      descricao:
+        'Pensado para a rotina de quem vende por encomenda e nunca pôde contar com um sistema que resolva exatamente o seu problema.',
+    },
     exemplos: [
       {
         loja: 'Rei dos Salgados',
@@ -217,44 +222,6 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
         ],
         fimSem: 'Outra loja respondeu primeiro',
         fimCom: 'Pedido confirmado às 8:00',
-      },
-      {
-        loja: 'Ateliê das Flores',
-        logo: `${LOGOS}/atelie-das-flores.svg`,
-        sem: [
-          ['c', 'Oi! Vocês fazem buquê para entrega hoje?', '11:05'],
-          ['t', '30 minutos depois', ''],
-          ['c', 'É para o aniversário da minha namorada', '11:35'],
-          ['t', '45 minutos depois', ''],
-          ['c', 'Deixa, já resolvi', '12:20'],
-        ],
-        com: [
-          ['c', 'Oi! Vocês fazem buquê para entrega hoje?', '11:05'],
-          ['l', 'Fazemos! Para hoje, pedidos até as 16h. Te mando as opções de buquê 💐', '11:05'],
-          ['c', 'Quero o de 12 rosas vermelhas', '11:06'],
-          ['l', 'Ótima escolha! A Marta vai confirmar o seu pedido em instantes.', '11:06'],
-        ],
-        fimSem: 'Comprou em outra loja',
-        fimCom: 'Pedido anotado em 1 minuto',
-      },
-      {
-        loja: 'Pedacinho do Céu',
-        logo: FOTOS.logoPedacinho,
-        sem: [
-          ['c', 'Boa tarde! Vocês fazem ovo de Páscoa recheado?', '15:16'],
-          ['t', '22 minutos depois', ''],
-          ['c', 'Quanto fica o de 500 g?', '15:38'],
-          ['t', '40 minutos depois', ''],
-          ['c', '??', '16:18'],
-        ],
-        com: [
-          ['c', 'Boa tarde! Vocês fazem ovo de Páscoa recheado?', '15:16'],
-          ['l', 'Fazemos sim! O de 500 g fica R$ 89,90. Te mando o cardápio com os recheios 🐣', '15:16'],
-          ['c', 'Quero o de ninho com morango', '15:17'],
-          ['l', 'Anotado! A Camila vai confirmar o seu pedido em instantes.', '15:17'],
-        ],
-        fimSem: 'Comprou em outra loja',
-        fimCom: 'Pedido anotado em 2 minutos',
       },
     ],
     sem: [

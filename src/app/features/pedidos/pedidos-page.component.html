@@ -63,7 +63,44 @@
             titulo="Nenhum pedido em andamento"
             descricao="Quando o assistente fechar um pedido, ele aparece no Chats. Depois de confirmar com o cliente, toque em “Pedido confirmado” e ele vem para cá."
           />
-        } @else if (quadro()) {
+        } @else {
+          <!-- o dia: "Hoje", "Amanhã, 17/11", "Quarta, 18/11"; o calendário mostra quantos pedidos tem cada dia -->
+          <div class="dia-pedidos">
+            <div class="dia-pedidos__textos">
+              <h2 class="dia-pedidos__titulo">{{ tituloDoDia() }}</h2>
+              <span class="dia-pedidos__sub">{{ subtituloDoDia() }}</span>
+            </div>
+            @if (diaSelecionado() !== hoje) {
+              <button type="button" class="dia-pedidos__hoje" (click)="escolherDia(hoje)">Hoje</button>
+            }
+            <button type="button" class="dia-pedidos__calendario" aria-label="Escolher o dia no calendário" title="Escolher o dia" (click)="calendarioAberto.set(true)">
+              <app-icone nome="calendario" [tamanho]="20" [espessura]="2.2" />
+            </button>
+          </div>
+
+          @if (diaSelecionado() === hoje && atrasados().total > 0) {
+            <button type="button" class="atrasados" (click)="escolherDia(atrasados().primeiroDia!)">
+              <app-icone nome="alerta" [tamanho]="18" [espessura]="2" />
+              <span>
+                <b>{{ atrasados().total === 1 ? '1 pedido de um dia anterior' : atrasados().total + ' pedidos de dias anteriores' }}</b>
+                ainda não {{ atrasados().total === 1 ? 'foi entregue' : 'foram entregues' }}
+              </span>
+              <app-icone class="atrasados__seta" nome="avancar" [tamanho]="16" [espessura]="2" />
+            </button>
+          }
+
+          @if (pedidosDoDia().length === 0) {
+            <div class="dia-vazio">
+              <app-icone nome="caixa" [tamanho]="26" [espessura]="1.8" />
+              <b>Nenhum pedido para {{ diaSelecionado() === hoje ? 'hoje' : 'este dia' }}</b>
+              @if (proximoDiaComPedido(); as proximo) {
+                <button type="button" class="btn btn--secundario btn--pequeno" (click)="escolherDia(proximo.dia)">
+                  Próximo: {{ proximo.rotulo }} · {{ proximo.pedidos === 1 ? '1 pedido' : proximo.pedidos + ' pedidos' }}
+                  <app-icone nome="avancar" [tamanho]="16" [espessura]="2" />
+                </button>
+              }
+            </div>
+          } @else if (quadro()) {
           <!-- computador (ex.: na cozinha): um quadro com o que falta fazer e o que já está pronto, sem filtro -->
           <div class="quadro">
             <section class="quadro__coluna quadro__coluna--preparo" aria-labelledby="coluna-preparo">
@@ -115,6 +152,7 @@
               <app-estado-vazio icone="caixa" titulo="Nenhum pedido aqui" />
             }
           </div>
+          }
         }
       </main>
     } @else if (secao() === 'numeros') {
@@ -150,6 +188,12 @@
 @if (acaoAberta(); as aberta) {
   <app-bottom-sheet [titulo]="titulosAcao[aberta.acao]" (fechar)="acaoAberta.set(null)">
     <app-acao-pedido [pedido]="aberta.pedido" [acao]="aberta.acao" (concluido)="acaoAberta.set(null)" />
+  </app-bottom-sheet>
+}
+
+@if (calendarioAberto()) {
+  <app-bottom-sheet titulo="Escolha o dia" (fechar)="calendarioAberto.set(false)">
+    <app-calendario-pedidos [contagem]="contagemPorDia()" [selecionado]="diaSelecionado()" (escolher)="escolherDia($event)" />
   </app-bottom-sheet>
 }
 

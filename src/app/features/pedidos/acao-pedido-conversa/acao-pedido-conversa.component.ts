@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
 
 import { mensagemDoErro } from '../../../core/api/erro-api';
 import { Conversa } from '../../../core/models/conversa.model';
@@ -14,6 +14,8 @@ import { IconeComponent } from '../../../shared/components/icone/icone.component
 import { AvisoClienteComponent } from '../aviso-cliente/aviso-cliente.component';
 import { CarrinhoProdutosComponent, ItemCarrinho } from '../carrinho-produtos/carrinho-produtos.component';
 import { AGRADECIMENTO_PADRAO, lerValorPago } from '../textos-pedido';
+import { SeletorDataPedidoComponent } from '../seletor-data-pedido/seletor-data-pedido.component';
+import { hojeIso } from '../../../core/utils/datas-agenda';
 
 /** confirmar: vai para a tela Pedidos; entregar: já entra no faturamento; recusar: só devolve ao assistente. */
 export type AcaoPedidoConversa = 'confirmar' | 'entregar' | 'recusar';
@@ -23,7 +25,7 @@ const TAMANHO_MAXIMO_ANEXO_BYTES = 5 * 1024 * 1024;
 
 @Component({
   selector: 'app-acao-pedido-conversa',
-  imports: [CarregandoComponent, AvisoClienteComponent, IconeComponent, UrlImagemPipe, CarrinhoProdutosComponent],
+  imports: [CarregandoComponent, AvisoClienteComponent, IconeComponent, UrlImagemPipe, CarrinhoProdutosComponent, SeletorDataPedidoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './acao-pedido-conversa.component.html',
   styleUrl: './acao-pedido-conversa.component.css',
@@ -52,6 +54,16 @@ export class AcaoPedidoConversaComponent {
   /** O produto vendido (opcional): só para os "Produtos que mais vendem" dos Números. */
   /** O carrinho do pedido (só para os Números). */
   protected readonly produtos = signal<ItemCarrinho[]>([]);
+  /** Para quando é o pedido: vem com a data do resumo (o lojista confere); de um dia que já passou, fica para escolher. */
+  protected readonly paraQuando = linkedSignal<string | null>(() => {
+    const sugerida = this.conversa().dataSugerida;
+    return sugerida && sugerida >= hojeIso() ? sugerida : null;
+  });
+  /** O que a conversa disse sobre a data ("sábado, 21/11, às 10:00"), embaixo do seletor. */
+  protected readonly dataNaConversa = computed(
+    () => this.conversa().resumoPedido.find((i) => /^(data|dia|para quando|quando)/i.test(i.campo.trim()))?.valor ?? null,
+  );
+  protected readonly erroData = computed(() => this.acao() === 'confirmar' && this.tentouSalvar() && !this.paraQuando());
 
   protected readonly nome = computed(() => {
     const doResumo = this.conversa().resumoPedido.find((item) => item.campo.trim().toLowerCase().startsWith('nome'));
@@ -115,7 +127,7 @@ export class AcaoPedidoConversaComponent {
     this.tentouSalvar.set(true);
     const acao = this.acao();
     const valor = this.valor();
-    if (acao !== 'recusar' && (valor === null || this.erroPago())) {
+    if (acao !== 'recusar' && (valor === null || this.erroPago() || this.erroData())) {
       return;
     }
     this.salvando.set(true);
@@ -136,6 +148,7 @@ export class AcaoPedidoConversaComponent {
           null,
           entregue ? null : this.pago().pago,
           this.produtos(),
+          entregue ? hojeIso() : this.paraQuando(),
         );
         this.toastService.mostrar(this.textoSucesso(entregue, resultado.aviso));
       }

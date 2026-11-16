@@ -6,13 +6,15 @@ import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.servic
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { ClienteDoRegistro, SeletorClienteComponent } from '../../../shared/components/seletor-cliente/seletor-cliente.component';
 import { CarrinhoProdutosComponent, ItemCarrinho } from '../carrinho-produtos/carrinho-produtos.component';
+import { SeletorDataPedidoComponent } from '../seletor-data-pedido/seletor-data-pedido.component';
+import { hojeIso } from '../../../core/utils/datas-agenda';
 
 /** Aceita "70", "70,5" ou "70.50". */
 const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
 
 @Component({
   selector: 'app-registrar-pedido',
-  imports: [CarregandoComponent, CarrinhoProdutosComponent, SeletorClienteComponent],
+  imports: [CarregandoComponent, CarrinhoProdutosComponent, SeletorClienteComponent, SeletorDataPedidoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form class="formulario" (submit)="$event.preventDefault(); registrar()" novalidate>
@@ -55,6 +57,16 @@ const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
         <span class="campo__rotulo">Cliente <span class="campo__rotulo-opcional">(opcional)</span></span>
         <app-seletor-cliente dica="Com o número, você pode avisar o cliente quando o pedido ficar pronto." (mudou)="cliente.set($event)" />
       </div>
+
+      @if (!entregue()) {
+        <div class="campo">
+          <span class="campo__rotulo">Para quando é o pedido?</span>
+          <app-seletor-data-pedido [(valor)]="paraQuando" [erro]="tentou() && !paraQuando()" />
+          @if (tentou() && !paraQuando()) {
+            <span class="campo__erro" role="alert">Escolha o dia do pedido.</span>
+          }
+        </div>
+      }
 
       <label class="entregue">
         <input type="checkbox" [checked]="entregue()" (change)="entregue.set($any($event.target).checked)">
@@ -127,6 +139,8 @@ export class RegistrarPedidoComponent {
   /** Escolhido da lista de Clientes ou novo (nome e WhatsApp digitados). */
   protected readonly cliente = signal<ClienteDoRegistro>({ nome: '', whatsapp: '', id: null });
   protected readonly entregue = signal(false);
+  /** O dia da entrega ou retirada ("AAAA-MM-DD"); com "Já foi entregue", hoje. */
+  protected readonly paraQuando = signal<string | null>(null);
   /** O carrinho do pedido (só para os Números). */
   protected readonly produtos = signal<ItemCarrinho[]>([]);
   protected readonly salvando = signal(false);
@@ -139,7 +153,7 @@ export class RegistrarPedidoComponent {
     if (this.salvando()) return;
     this.tentou.set(true);
     this.erro.set('');
-    if (!this.itens().trim() || !this.valorValido()) return;
+    if (!this.itens().trim() || !this.valorValido() || (!this.entregue() && !this.paraQuando())) return;
     this.salvando.set(true);
     try {
       await this.pedidoService.registrarManual({
@@ -148,6 +162,7 @@ export class RegistrarPedidoComponent {
         whatsapp: this.cliente().whatsapp.trim(),
         nomeCliente: this.cliente().nome.trim(),
         entregue: this.entregue(),
+        paraQuando: this.entregue() ? hojeIso() : this.paraQuando()!,
         produtoId: null,
         produtos: this.produtos(),
       });

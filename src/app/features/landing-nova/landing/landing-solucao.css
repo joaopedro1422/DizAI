@@ -77,27 +77,3 @@
     font-size: 17px;
   }
 }
-
-/* "A solução": logo depois do problema, a marca, o título e o apoio, centralizado */
-.lv .solucao-intro {
-  background: var(--nevoa);
-  text-align: center;
-}
-
-.lv .solucao-intro .miolo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-}
-
-.lv .solucao-intro__logo {
-  margin: 4px 0 6px;
-  /* o "AI" no amarelo forte da marca (o cinza-azulado some no fundo claro) */
-  --logo-ai: var(--gema-forte);
-}
-
-.lv .solucao-intro .apoio {
-  max-width: 640px;
-}
-

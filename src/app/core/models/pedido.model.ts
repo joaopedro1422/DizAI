@@ -23,6 +23,8 @@ export interface Pedido {
   entregueEm: Date | null;
   /** Foto anexada ao confirmar (ex.: o modelo do bolo); referência no armazenamento, null = sem anexo. */
   anexo?: string | null;
+  /** Para quando é o pedido ("AAAA-MM-DD"): a tela Pedidos separa os pedidos por este dia. */
+  paraQuando?: string | null;
 }
 
 /** Se o aviso ao cliente saiu: NAO_ENVIADO quase sempre é a janela de 24 h do WhatsApp. */

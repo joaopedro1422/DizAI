@@ -80,6 +80,8 @@ export class PedidoService {
     valorPago: number | null = null,
     /** O carrinho: os produtos vendidos com a quantidade (só para os Números). */
     produtos: { produtoId: number; quantidade: number }[] = [],
+    /** Para quando é o pedido ("AAAA-MM-DD"); null = o do resumo (o back lê o item Data). */
+    paraQuando: string | null = null,
   ): Promise<ResultadoAcaoPedido> {
     const resposta = await firstValueFrom(
       this.http.post<RespostaApi>(this.url(`/da-conversa/${conversaId}?entregue=${entregue}`), {
@@ -89,6 +91,7 @@ export class PedidoService {
         produtoId,
         valorPago,
         produtos,
+        paraQuando,
       }),
     );
     return this.aplicar(resposta);
@@ -103,6 +106,8 @@ export class PedidoService {
     entregue: boolean;
     produtoId: number | null;
     produtos: { produtoId: number; quantidade: number }[];
+    /** "AAAA-MM-DD"; já entregue = hoje (o back confere). */
+    paraQuando: string;
   }): Promise<ResultadoAcaoPedido> {
     return this.aplicar(await firstValueFrom(this.http.post<RespostaApi>(this.url(), novo)));
   }

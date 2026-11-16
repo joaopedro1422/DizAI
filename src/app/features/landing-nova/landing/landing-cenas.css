@@ -1,0 +1,585 @@
+/* "A solução" (vendas, `ProvaLandingComponent` com `prova.solucao`): o texto da esquerda, as abas das cenas e as cenas
+   da gestão (`CenasGestaoComponent`): o caderno × o painel de Pedidos e a conta de cabeça × a tela de Números.
+   As telas copiam o painel no celular (pedido-card e numeros-pedidos): ao mudar essas telas, atualize aqui. */
+
+/* ---------- o texto da esquerda ---------- */
+.lv .solucao-mit__rotulo {
+  display: block;
+  color: var(--gema);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.lv .solucao-mit__logo {
+  margin: 16px 0 4px;
+}
+
+.lv .mit--solucao h2 {
+  margin: 14px 0;
+  font-size: clamp(30px, 3.5vw, 44px);
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+}
+
+.lv .mit--solucao h2 .grifo {
+  color: var(--gema);
+}
+
+.lv .mit--solucao p {
+  max-width: 44ch;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* ---------- as abas embaixo da janela ---------- */
+.lv .mit__cenas {
+  display: flex;
+  gap: 22px;
+}
+
+.lv .mit__cenas span {
+  position: relative;
+  padding-bottom: 8px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+.lv .mit__cenas span::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--gema);
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+}
+
+.lv .mit__cenas span.ativa {
+  color: #ffffff;
+}
+
+.lv .mit__cenas span.ativa::after {
+  transform: none;
+}
+
+/* ---------- a janela com uma cena (no lugar da conversa) ---------- */
+.lv .mit__janela--tela {
+  position: relative;
+  background: var(--cor-fundo-suave);
+  color: var(--cor-texto);
+}
+
+.lv app-cenas-gestao {
+  display: contents;
+}
+
+.lv .cg-fim {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 14px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  background: #fbe3e3;
+  color: var(--alerta);
+  font-size: 13.5px;
+  font-weight: 700;
+  font-family: var(--f-texto);
+  white-space: nowrap;
+  box-shadow: 0 10px 24px -10px rgba(19, 32, 74, 0.5);
+  --x: -50%;
+  transform: translateX(-50%);
+  animation: lv-cg-sobe 0.45s ease 4.4s both;
+}
+
+.lv .cg-fim--com {
+  background: #d8f3e8;
+  color: #0e6e4f;
+  animation-delay: 6.4s;
+}
+
+/* ---------- sem o DizAI: o caderno ---------- */
+.lv .cg-caderno {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 26px 22px 0 52px;
+  background:
+    linear-gradient(90deg, transparent 38px, #f0a3a3 38px, #f0a3a3 40px, transparent 40px),
+    repeating-linear-gradient(#fbf7ec 0 33px, #c9d6ea 33px 34px);
+  color: #24356b;
+  font-family: 'Caveat', cursive;
+}
+
+.lv .cg-caderno__titulo {
+  margin-bottom: 6px;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 34px;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+.lv .cg-caderno__linha {
+  font-size: 24px;
+  line-height: 34px;
+  white-space: nowrap;
+  animation: lv-cg-escreve 0.5s ease both;
+  animation-delay: calc(0.2s + var(--i, 0) * 0.35s);
+}
+
+.lv .cg-caderno__linha s {
+  color: #a1462f;
+  text-decoration-thickness: 2px;
+}
+
+.lv .cg-caderno__total {
+  color: var(--alerta);
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.lv .cg-postit {
+  position: absolute;
+  top: 196px;
+  right: 16px;
+  width: 132px;
+  padding: 12px 10px;
+  background: #ffe680;
+  box-shadow: 0 10px 18px -8px rgba(0, 0, 0, 0.35);
+  color: #5a4300;
+  font-size: 22px;
+  line-height: 1.05;
+  transform: rotate(5deg);
+  animation: lv-cg-cola 0.4s ease 2s both;
+}
+
+/* a busca no WhatsApp que não acha a cliente */
+.lv .cg-busca {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 66px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 18px 34px -14px rgba(19, 32, 74, 0.45);
+  color: var(--cor-texto);
+  font-family: var(--f-texto);
+  animation: lv-cg-sobe 0.45s ease 3s both;
+}
+
+.lv .cg-busca__campo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--cor-fundo-suave);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.lv .cg-busca small {
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+  text-align: center;
+}
+
+.lv .cg-busca__tempo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--alerta);
+  font-family: var(--f-mono);
+  font-size: 13px;
+  font-weight: 700;
+  animation: lv-cg-escreve 0.4s ease 3.7s both;
+}
+
+/* o financeiro de cabeça: as contas e as dúvidas */
+.lv .cg-duvidas {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 66px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: var(--f-texto);
+}
+
+.lv .cg-duvida {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 14px 14px 14px 4px;
+  background: #ffffff;
+  box-shadow: 0 12px 26px -14px rgba(19, 32, 74, 0.5);
+  color: var(--cor-texto);
+  font-size: 14.5px;
+  font-weight: 700;
+  animation: lv-cg-sobe 0.4s ease both;
+  animation-delay: calc(2.3s + var(--i, 0) * 0.45s);
+}
+
+.lv .cg-duvida i {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: none;
+  border-radius: 50%;
+  background: #fbe3e3;
+  color: var(--alerta);
+  font-style: normal;
+  font-weight: 800;
+}
+
+/* ---------- com o DizAI: a tela do painel ---------- */
+.lv .cg-tela {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  font-family: var(--fonte-base, var(--f-texto));
+}
+
+.lv .cg-topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+  height: 54px;
+  padding: 0 16px;
+  background: var(--fundo-marca);
+  color: #ffffff;
+}
+
+.lv .cg-topo b {
+  flex: 1;
+  font-family: var(--f-titulo);
+  font-size: 18px;
+}
+
+.lv .cg-topo__mais {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--cor-gema);
+  color: var(--cor-noite);
+}
+
+.lv .cg-tela__corpo {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.lv .cg-rolagem {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+}
+
+.lv .cg-rolagem--pedidos,
+.lv .cg-rolagem--numeros {
+  padding-bottom: 72px;
+}
+
+.lv .cg-rolagem--numeros {
+  animation: lv-cg-rola-numeros 9s ease-in-out 1s both;
+}
+
+.lv .cg-secao {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+}
+
+.lv .cg-secao span {
+  padding: 1px 9px;
+  border-radius: 999px;
+  background: var(--cor-primaria-clara);
+  color: var(--cor-primaria);
+  font-family: var(--f-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+/* o card do pedido (cópia do pedido-card no celular) */
+.lv .cg-pedido {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.09), 0 1px 3px rgba(15, 23, 42, 0.06);
+  animation: lv-cg-sobe 0.45s ease both;
+  animation-delay: calc(0.15s + var(--i, 0) * 0.14s);
+}
+
+.lv .cg-pedido__topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--cor-texto-suave);
+}
+
+.lv .cg-pedido__topo > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lv .cg-pedido__topo b {
+  color: var(--cor-texto);
+  font-size: 16px;
+}
+
+.lv .cg-pedido__topo small {
+  font-size: 12px;
+}
+
+.lv .cg-selos {
+  display: grid;
+  justify-items: start;
+}
+
+.lv .cg-selo {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--cor-ambar-fundo);
+  color: #7a4c00;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.lv .cg-selo i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.lv .cg-selo--pronto {
+  background: #e3f2ea;
+  color: #1e6b45;
+}
+
+.lv .cg-selo--sai {
+  animation: lv-cg-some 0.3s ease 2.5s both;
+}
+
+.lv .cg-selo--entra {
+  animation: lv-cg-cola 0.35s ease 2.55s both;
+}
+
+.lv .cg-resumo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--cor-fundo-suave);
+}
+
+.lv .cg-resumo div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.lv .cg-resumo dt {
+  flex: none;
+  color: var(--cor-texto-suave);
+}
+
+.lv .cg-resumo dd {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+}
+
+.lv .cg-pedido__rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--cor-primaria);
+}
+
+.lv .cg-pedido__rodape b {
+  color: var(--cor-texto);
+  font-family: var(--fonte-numero);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.lv .cg-acoes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.lv .cg-acoes--uma {
+  grid-template-columns: 1fr;
+}
+
+.lv .cg-botao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--cor-primaria);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lv .cg-botao--ok {
+  border-color: var(--cor-sucesso);
+  background: var(--cor-sucesso);
+  color: #ffffff;
+}
+
+.lv .cg-botao--toque {
+  animation: lv-cg-toque 0.6s ease 2.1s both;
+}
+
+/* o aviso que sai para o cliente quando o pedido fica pronto */
+.lv .cg-aviso {
+  position: absolute;
+  z-index: 2;
+  top: 10px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--cor-noite);
+  color: #ffffff;
+  box-shadow: 0 16px 30px -14px rgba(0, 0, 0, 0.6);
+  animation: lv-cg-desce 3s ease 2.8s both;
+}
+
+.lv .cg-aviso > span:last-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 13.5px;
+}
+
+.lv .cg-aviso small {
+  overflow: hidden;
+  color: #c3cbda;
+  font-size: 12.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lv .cg-aviso__icone {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 9px;
+  background: #25d366;
+}
+
+@keyframes lv-cg-sobe {
+  from { opacity: 0; transform: translate(var(--x, 0), 12px); }
+  to { opacity: 1; transform: translate(var(--x, 0), 0); }
+}
+
+@keyframes lv-cg-escreve {
+  from { opacity: 0; clip-path: inset(0 100% 0 0); }
+  to { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+
+@keyframes lv-cg-cola {
+  from { opacity: 0; scale: 1.25; }
+  to { opacity: 1; scale: 1; }
+}
+
+@keyframes lv-cg-some {
+  to { opacity: 0; }
+}
+
+@keyframes lv-cg-toque {
+  50% { background: var(--cor-primaria-clara); box-shadow: 0 0 0 5px rgba(255, 200, 61, 0.55); scale: 0.96; }
+}
+
+@keyframes lv-cg-desce {
+  0% { opacity: 0; transform: translateY(-14px); }
+  10%, 85% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-14px); }
+}
+
+@keyframes lv-cg-rola-pedidos {
+  to { transform: translateY(-250px); }
+}
+
+@keyframes lv-cg-rola-numeros {
+  0%, 18% { transform: none; }
+  40%, 55% { transform: translateY(-330px); }
+  80%, 100% { transform: translateY(var(--rola-fim, -780px)); }
+}
+
+@keyframes lv-cg-cresce {
+  from { scale: 1 0; }
+  to { scale: 1 1; }
+}
+
+@keyframes lv-cg-largura {
+  from { scale: 0 1; }
+  to { scale: 1 1; }
+}
+
+@media (max-width: 1000px) {
+  .lv .mit--solucao .miolo {
+    gap: 36px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lv .mit__janela--tela *,
+  .lv .mit__janela--tela {
+    animation: none !important;
+  }
+}
+
+/* no computador a janela fica mais alta: as telas do painel mostram mais */
+@media (min-width: 1001px) {
+  .lv .mit--solucao .mit__janela {
+    height: 540px;
+  }
+}

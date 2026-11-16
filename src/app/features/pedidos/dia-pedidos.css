@@ -1,0 +1,109 @@
+/* O dia na tela Pedidos: "Hoje" / "Amanhã, 17/11" à esquerda e o botão do calendário à direita (o mesmo da agenda
+   no computador), o aviso dos pedidos atrasados e o dia sem pedidos. */
+.dia-pedidos {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dia-pedidos__textos {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dia-pedidos__titulo {
+  font-family: var(--fonte-titulo);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.dia-pedidos__sub {
+  color: var(--cor-texto-suave);
+  font-size: 13.5px;
+}
+
+.dia-pedidos__hoje {
+  flex: none;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 12px;
+  background: var(--cor-fundo);
+  color: var(--cor-primaria);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.dia-pedidos__calendario {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 12px;
+  background: var(--cor-fundo);
+  color: var(--cor-primaria);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.dia-pedidos__calendario:hover,
+.dia-pedidos__hoje:hover {
+  border-color: var(--cor-primaria);
+  background: var(--cor-primaria-clara);
+}
+
+/* hoje: pedidos de dias que já passaram e ainda estão em andamento */
+.atrasados {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #f3c9c5;
+  border-radius: 14px;
+  background: #fdf0ef;
+  color: #9b2c22;
+  font-size: 14px;
+  text-align: left;
+}
+
+.atrasados > span {
+  flex: 1;
+}
+
+.atrasados__seta {
+  flex: none;
+}
+
+.dia-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 36px 16px;
+  border: 1.5px dashed var(--cor-borda);
+  border-radius: var(--raio-grande);
+  color: var(--cor-texto-suave);
+  text-align: center;
+}
+
+.dia-vazio b {
+  color: var(--cor-texto);
+  font-size: 15.5px;
+}
+
+.dia-vazio .btn {
+  gap: 6px;
+}
+
+@media (min-width: 1024px) {
+  .dia-pedidos__titulo {
+    font-size: 26px;
+  }
+}

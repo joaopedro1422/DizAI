@@ -26,6 +26,16 @@
     }
   }
 
+  @if (acao() === 'confirmar') {
+    <div class="campo">
+      <span class="campo__rotulo">Para quando é o pedido?</span>
+      <app-seletor-data-pedido [(valor)]="paraQuando" [doResumo]="dataNaConversa()" [erro]="erroData()" />
+      @if (erroData()) {
+        <span class="campo__erro" role="alert">Escolha o dia do pedido: é por ele que o pedido aparece na tela Pedidos.</span>
+      }
+    </div>
+  }
+
   @if (acao() !== 'recusar') {
     <div class="campo">
       <span class="campo__rotulo">Produtos vendidos <span class="campo__rotulo-opcional">(opcional)</span></span>

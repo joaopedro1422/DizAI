@@ -1,0 +1,243 @@
+/* "A solução" (vendas), cena dos pedidos COM o DizAI: a barra do dia ("Hoje" + o calendário, cópia da tela Pedidos),
+   o toque no calendário, o modal com o número de pedidos de cada dia e a troca para sábado. Linha do tempo (s):
+   2,1 toque em "Pedido pronto" → 2,8 aviso → 4 rola → 6 toque no calendário → 6,3 modal → 7,6 toque no 21 →
+   8,7 sábado na tela → 10 etiqueta do fim. */
+
+.lv .cg-dia {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  padding: 12px 14px 4px;
+}
+
+.lv .cg-dia__textos {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.lv .cg-dia__troca {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.lv .cg-dia__troca b {
+  font-family: var(--fonte-titulo, var(--f-titulo));
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.lv .cg-dia__troca small {
+  color: var(--cor-texto-suave);
+  font-size: 12.5px;
+}
+
+.lv .cg-dia__troca--sai {
+  animation: lv-cg-some 0.25s ease 8.7s forwards;
+}
+
+.lv .cg-dia__troca--entra {
+  animation: lv-cg-aparece 0.35s ease 8.8s both;
+}
+
+.lv .cg-dia__calendario {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--cor-primaria);
+  animation: lv-cg-toque 0.6s ease 5.9s both;
+}
+
+/* a lista de hoje some e entra a de sábado */
+.lv .cg-rolagem--pedidos {
+  animation: lv-cg-rola-pedidos 1.6s cubic-bezier(0.45, 0, 0.25, 1) 4s both, lv-cg-some 0.3s ease 8.7s forwards;
+}
+
+.lv .cg-rolagem--sabado {
+  position: absolute;
+  inset: 0;
+  gap: 10px;
+  padding: 10px 14px;
+  animation: lv-cg-aparece 0.3s ease 8.75s both;
+}
+
+.lv .cg-mini {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--cor-borda);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, 0.08);
+  animation: lv-cg-sobe 0.4s ease both;
+  animation-delay: calc(8.85s + var(--i, 0) * 0.1s);
+}
+
+.lv .cg-mini > span:first-child {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.lv .cg-mini b {
+  font-size: 14.5px;
+}
+
+.lv .cg-mini small {
+  overflow: hidden;
+  color: var(--cor-texto-suave);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lv .cg-mini__direita {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.lv .cg-mini__direita em {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 800;
+}
+
+.lv .cg-mini .cg-selo {
+  padding: 2px 8px;
+  font-size: 11px;
+}
+
+/* o modal: o fundo escurece e o cartão sobe; fica aberto até o toque no 21 */
+.lv .cg-folha {
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: lv-cg-escurece 2.6s ease 6.3s both;
+}
+
+.lv .cg-folha__cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  padding: 10px 16px 18px;
+  border-radius: 22px 22px 0 0;
+  background: #ffffff;
+  animation: lv-cg-folha 2.6s cubic-bezier(0.22, 1, 0.36, 1) 6.3s both;
+}
+
+.lv .cg-folha__alca {
+  align-self: center;
+  width: 38px;
+  height: 4px;
+  margin-bottom: 6px;
+  border-radius: 4px;
+  background: var(--cor-borda);
+}
+
+.lv .cg-folha__titulo {
+  font-size: 16px;
+}
+
+.lv .cg-folha__mes {
+  margin-bottom: 6px;
+  color: var(--cor-texto-suave);
+  font-size: 13px;
+}
+
+.lv .cg-cal {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.lv .cg-cal__letra {
+  color: var(--cor-texto-suave);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.lv .cg-cal__dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 40px;
+  border: 1.5px solid transparent;
+  border-radius: 11px;
+  background: var(--cor-fundo-suave);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.lv .cg-cal__dia--com {
+  background: var(--cor-primaria-clara);
+}
+
+.lv .cg-cal__dia i {
+  min-width: 17px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--cor-gema);
+  color: var(--cor-noite);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.lv .cg-cal__dia--hoje {
+  border-color: var(--cor-primaria);
+}
+
+.lv .cg-cal__dia--escolhe {
+  animation: lv-cg-escolhe 0.5s ease 7.6s both;
+}
+
+/* a etiqueta do fim, depois da troca de dia */
+.lv .cg-dia ~ .cg-fim {
+  animation-delay: 10s;
+}
+
+@keyframes lv-cg-aparece {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes lv-cg-escurece {
+  0%, 100% { background: rgba(10, 18, 48, 0); }
+  12%, 85% { background: rgba(10, 18, 48, 0.45); }
+}
+
+@keyframes lv-cg-folha {
+  0% { transform: translateY(100%); }
+  14%, 84% { transform: none; }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes lv-cg-escolhe {
+  0% { scale: 1; }
+  45% { scale: 0.9; box-shadow: 0 0 0 5px rgba(255, 200, 61, 0.6); }
+  100% { scale: 1; border-color: var(--cor-noite); background: var(--cor-noite); color: #ffffff; }
+}

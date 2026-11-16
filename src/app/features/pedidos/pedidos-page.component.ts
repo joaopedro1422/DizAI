@@ -24,6 +24,9 @@ import { MensagensPedidosComponent } from './mensagens-pedidos/mensagens-pedidos
 import { RestringirAgendaComponent } from './restringir-agenda/restringir-agenda.component';
 import { SECOES_DOS_PEDIDOS, SecaoPedidos, infoDaSecaoDosPedidos } from './secoes-pedidos';
 import { ID_PEDIDO_EXEMPLO, passosDoTourDosPedidos, pedidoDeExemplo } from './tour-pedidos';
+import { CalendarioPedidosComponent } from './calendario-pedidos/calendario-pedidos.component';
+import { contarPorDia, diaDoPedido, diaPorExtensoLongo, horaDoPedido, rotuloDoDia } from './dias-pedidos';
+import { hojeIso } from '../../core/utils/datas-agenda';
 import { MenuLateralComponent } from '../../shared/components/menu-lateral/menu-lateral.component';
 import { DicaSobrepostaComponent } from '../../shared/components/dica-sobreposta/dica-sobreposta.component';
 import { AlvoTourDirective } from '../painel/onboarding/alvo-tour.directive';
@@ -64,12 +67,13 @@ const TITULOS_ACAO: Record<AcaoPedido, string> = {
     OnboardingTourComponent,
     AlvoTourDirective,
     NgTemplateOutlet,
+    CalendarioPedidosComponent,
   ],
   // o tour dos pedidos guarda os próprios alvos (menu, pedido de exemplo, mensagem enviada)
   providers: [OnboardingTourService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './pedidos-page.component.html',
-  styleUrls: ['../../shared/estilos-tela-com-menu.css', './pedidos-page.component.css'],
+  styleUrls: ['../../shared/estilos-tela-com-menu.css', './pedidos-page.component.css', './dia-pedidos.css'],
 })
 export class PedidosPageComponent implements OnInit {
   private readonly pedidoService = inject(PedidoService);
@@ -107,8 +111,42 @@ export class PedidosPageComponent implements OnInit {
     const exemplo = this.exemplo();
     return exemplo ? [exemplo, ...this.pedidos()] : this.pedidos();
   });
-  protected readonly emPreparoNaTela = computed(() => this.pedidosNaTela().filter((pedido) => pedido.status !== 'PRONTO'));
-  protected readonly prontosNaTela = computed(() => this.pedidosNaTela().filter((pedido) => pedido.status === 'PRONTO'));
+
+  // ---------------------------------------------------------------- o dia: a tela mostra os pedidos de um dia
+  protected readonly hoje = hojeIso();
+  protected readonly diaSelecionado = signal(this.hoje);
+  protected readonly calendarioAberto = signal(false);
+  protected readonly contagemPorDia = computed(() => contarPorDia(this.pedidosNaTela()));
+  /** Os pedidos do dia escolhido, pela hora escrita no resumo (sem hora, no fim). */
+  protected readonly pedidosDoDia = computed(() =>
+    this.pedidosNaTela()
+      .filter((pedido) => diaDoPedido(pedido) === this.diaSelecionado())
+      .sort((a, b) => horaDoPedido(a) - horaDoPedido(b)),
+  );
+  protected readonly tituloDoDia = computed(() => rotuloDoDia(this.diaSelecionado(), this.hoje));
+  protected readonly subtituloDoDia = computed(() => {
+    const total = this.pedidosDoDia().length;
+    const quantos = total === 0 ? 'nenhum pedido' : total === 1 ? '1 pedido' : `${total} pedidos`;
+    return `${diaPorExtensoLongo(this.diaSelecionado())} · ${quantos}`;
+  });
+  /** Hoje: os pedidos de dias que já passaram e ainda não foram entregues (o dia mais antigo primeiro). */
+  protected readonly atrasados = computed(() => {
+    const dias = [...this.contagemPorDia().entries()].filter(([dia]) => dia < this.hoje).sort(([a], [b]) => a.localeCompare(b));
+    return { total: dias.reduce((soma, [, n]) => soma + n, 0), primeiroDia: dias[0]?.[0] ?? null };
+  });
+  /** Dia sem pedido: o próximo dia que tem, para um atalho. */
+  protected readonly proximoDiaComPedido = computed(() => {
+    const dia = [...this.contagemPorDia().keys()].filter((d) => d > this.diaSelecionado()).sort()[0];
+    return dia ? { dia, rotulo: rotuloDoDia(dia, this.hoje), pedidos: this.contagemPorDia().get(dia)! } : null;
+  });
+
+  protected escolherDia(dia: string): void {
+    this.diaSelecionado.set(dia);
+    this.calendarioAberto.set(false);
+  }
+
+  protected readonly emPreparoNaTela = computed(() => this.pedidosDoDia().filter((pedido) => pedido.status !== 'PRONTO'));
+  protected readonly prontosNaTela = computed(() => this.pedidosDoDia().filter((pedido) => pedido.status === 'PRONTO'));
 
   protected readonly filtro = signal<FiltroPedidos>('todos');
   protected readonly pedidosFiltrados = computed(() => {
@@ -118,7 +156,7 @@ export class PedidosPageComponent implements OnInit {
       case 'prontos':
         return this.prontosNaTela();
       default:
-        return this.pedidosNaTela();
+        return this.pedidosDoDia();
     }
   });
 
@@ -213,6 +251,8 @@ export class PedidosPageComponent implements OnInit {
           if (!this.exemplo()) {
             this.envioAoVivo.set([]);
             this.exemplo.set(pedidoDeExemplo(this.exemplos()));
+            // o pedido de exemplo é de hoje
+            this.diaSelecionado.set(this.hoje);
           }
         },
         esconderEnvio: () => this.envioAoVivo.set([]),

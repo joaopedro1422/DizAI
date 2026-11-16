@@ -50,20 +50,6 @@
     </div>
   </section>
 
-  <!-- a solução: a ponte entre o problema e o resto da página (só vendas, por enquanto) -->
-  @if (c.tipo === 'produtos') {
-    <section class="secao faixa solucao-intro" appRevelar>
-      <div class="miolo">
-        <span class="rotulo">A solução</span>
-        <app-logo class="solucao-intro__logo" [tamanhoSimbolo]="52" [tamanhoTexto]="38" />
-        <h2 class="titulo">Atendimento com IA e gestão de pedidos<br /><span class="grifo">para pequenos e médios negócios.</span></h2>
-        <p class="apoio">
-          Pensado para a rotina de quem vende por encomenda. O atendimento e os pedidos, juntos no mesmo lugar.
-        </p>
-      </div>
-    </section>
-  }
-
   <app-prova-landing appRevelar [conteudo]="c" />
   <app-como-funciona-landing appRevelar [conteudo]="c" />
   @if (c.tipo === 'servicos') {

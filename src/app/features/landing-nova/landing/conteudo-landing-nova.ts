@@ -84,6 +84,11 @@ export interface ConteudoLandingNova {
     fimCom: string;
     /** Vários negócios, um depois do outro (cada um: sem → com); sem a lista, vale o exemplo único acima. */
     exemplos?: ExemploProva[];
+    /**
+     * Com este campo a seção vira "A solução" (no lugar do estudo do MIT): o título (a 2ª parte em amarelo), a
+     * descrição e, depois da conversa, as cenas dos pedidos e do financeiro (sem → com o DizAI).
+     */
+    solucao?: { titulo: [string, string]; descricao: string };
   };
   como: { cadastro: [string, string]; atende: [string, string]; selo: string; slides: SlideComo[] };
   /** "Um funcionário, sem férias": as habilidades do assistente de IA (6 cartões). */

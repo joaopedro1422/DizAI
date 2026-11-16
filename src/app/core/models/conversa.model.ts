@@ -39,4 +39,6 @@ export interface Conversa {
    * em "Aguardando você", mas o assistente continua nela (o status não muda).
    */
   modeloParaAnalisar: boolean;
+  /** A data do pedido lida do resumo ("AAAA-MM-DD"), para já vir escolhida no "Pedido confirmado"; null = não achou. */
+  dataSugerida?: string | null;
 }
