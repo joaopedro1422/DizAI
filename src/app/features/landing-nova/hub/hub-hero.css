@@ -311,9 +311,9 @@
   justify-content: center;
 }
 
-/* o título fixo: a segunda linha no amarelo da marca */
+/* o título fixo: a segunda linha no amarelo-claro (o mesmo do título que digitava) */
 .hb .hb-titulo__destaque {
-  color: var(--gema);
+  color: var(--ai-claro);
 }
 
 /* a pergunta em cima dos dois mundos */
