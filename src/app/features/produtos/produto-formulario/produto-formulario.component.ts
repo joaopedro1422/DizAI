@@ -339,8 +339,9 @@ export class ProdutoFormularioComponent implements OnInit {
               .map((f) => ({ quantidadeMinima: Number(f.quantidade), preco: Number(f.preco.trim().replace(',', '.')) }))
               .sort((a, b) => a.quantidadeMinima - b.quantidadeMinima),
       produtoAVenda: this.ehProdutoAVenda(),
-      // só o produto à venda tem foto neste formulário; nos outros a foto atual é preservada pela tela
-      ...(this.ehProdutoAVenda() ? { fotoUrl: this.foto() } : {}),
+      // nos ramos de serviço (serviço e produto à venda) a foto é deste formulário; nos de produtos a foto atual é
+      // preservada pela tela
+      ...(this.ramoServico() ? { fotoUrl: this.foto() } : {}),
       atributos: valores.atributos
         .map((atributo) => ({
           nome: atributo.nome.trim(),

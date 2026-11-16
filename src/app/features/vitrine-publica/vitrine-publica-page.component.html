@@ -144,7 +144,7 @@
     @if (mostrandoAgenda()) {
       <!-- sem a classe de animação: o transform dela prenderia o botão fixo de enviar dentro do bloco -->
       <main>
-        <app-agenda-publica [slug]="slug()" [numeroWhatsapp]="numeroWhatsapp()" />
+        <app-agenda-publica [slug]="slug()" [numeroWhatsapp]="numeroWhatsapp()" [estilo]="estiloAgenda()" />
       </main>
     } @else if (mostrandoOrcamento()) {
       <!-- sem a classe de animação: o transform dela prenderia o botão fixo de enviar dentro do bloco -->

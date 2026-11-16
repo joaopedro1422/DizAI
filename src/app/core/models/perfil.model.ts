@@ -1,7 +1,7 @@
 import type { SegmentoNegocio } from '../constants/segmentos/tipos-segmento';
 
 import { PeriodoAtendimento } from './agenda.model';
-import { AreaCorFundoVitrine, CorFundoVitrine, EstiloAbas, EstiloCor, EstiloMenu, FonteVitrine, LayoutFotos } from './vitrine.model';
+import { AreaCorFundoVitrine, CorFundoVitrine, EstiloAbas, EstiloAgenda, EstiloCor, EstiloMenu, FonteVitrine, LayoutFotos } from './vitrine.model';
 
 export type RamoNegocio =
   | 'SERVICOS_PRESENCIAIS'
@@ -94,6 +94,8 @@ export interface Perfil {
   /** Menu de categorias da vitrine (null = arredondado). */
   estiloMenu?: EstiloMenu | null;
   estiloAbas?: EstiloAbas | null;
+  /** Página de agendamento (null = cartões). */
+  estiloAgenda?: EstiloAgenda | null;
   layoutFotos?: LayoutFotos | null;
   capaUrl?: string | null;
   ramo: RamoNegocio;

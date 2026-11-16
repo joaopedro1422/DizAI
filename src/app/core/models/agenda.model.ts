@@ -216,6 +216,8 @@ export interface ServicoAgenda {
   descricao?: string | null;
   preco?: number | null;
   precoAPartirDe?: boolean;
+  /** A foto do serviço (opcional; miniatura no cartão). */
+  fotoUrl?: string | null;
 }
 
 /** GET /public/lojas/{slug}/agenda */

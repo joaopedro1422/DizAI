@@ -103,6 +103,51 @@
         }
       </div>
     </div>
+
+    <div class="campo">
+      <span class="campo__titulo" id="titulo-agenda">Página de agendamento</span>
+      <div class="agenda-estilos" role="radiogroup" aria-labelledby="titulo-agenda">
+        @for (estilo of estilosAgenda; track estilo.valor) {
+          @let marcado = estilo.valor === agendaAtual();
+          <button
+            type="button"
+            role="radio"
+            class="menu-opcao"
+            [class.menu-opcao--marcada]="marcado"
+            [attr.aria-checked]="marcado"
+            (click)="agendaAtual.set(estilo.valor)"
+          >
+            <!-- o passo "Serviço" de cada estilo, com a fonte, a cor e o fundo escolhidos -->
+            <span
+              class="agenda-previa"
+              [attr.data-agenda]="estilo.valor"
+              [style.--previa-destaque]="pintura(hexAtual())"
+              [style.--previa-cor]="hexAtual()"
+              [style.--previa-fundo]="fundoEscolhido().cor ?? '#ffffff'"
+              aria-hidden="true"
+            >
+              @if (estilo.valor === 'COM_IMAGEM') {
+                <span class="agenda-previa__titulo" [style.font-family]="fonteCss()"><i>01</i> Serviço <s></s></span>
+                @for (servico of [1, 2]; track servico) {
+                  <span class="agenda-previa__servico" [class.agenda-previa__servico--marcado]="servico === 1">
+                    <span class="agenda-previa__foto"></span>
+                    <span class="agenda-previa__linhas"><b></b><em></em><em class="curta"></em></span>
+                  </span>
+                }
+              } @else {
+                <span class="agenda-previa__cartao">
+                  <span class="agenda-previa__titulo agenda-previa__titulo--numero" [style.font-family]="fonteCss()"><i>1</i> Serviço</span>
+                  @for (servico of [1, 2]; track servico) {
+                    <span class="agenda-previa__item" [class.agenda-previa__item--marcado]="servico === 1"><b></b><em></em></span>
+                  }
+                </span>
+              }
+            </span>
+            <span class="menu-opcao__nome">{{ estilo.nome }}</span>
+          </button>
+        }
+      </div>
+    </div>
   }
 
   <div class="campo">

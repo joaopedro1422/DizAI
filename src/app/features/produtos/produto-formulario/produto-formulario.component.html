@@ -6,10 +6,17 @@
     </p>
   }
 
-  @if (ehProdutoAVenda()) {
+  <!-- produto à venda: foto obrigatória; serviço: opcional, quadrada (a miniatura do cartão na página de agendamento) -->
+  @if (ramoServico()) {
     <div class="campo">
-      <span class="campo__rotulo">Foto do produto</span>
-      <label class="foto-produto" [class.foto-produto--erro]="!!erroFoto()" [attr.aria-busy]="enviandoFoto()">
+      <span class="campo__rotulo">
+        Foto do {{ ehProdutoAVenda() ? 'produto' : conteudo().termoItem }}
+        @if (!ehProdutoAVenda()) {
+          <span class="campo__rotulo-opcional">(opcional)</span>
+        }
+      </span>
+      <div class="foto-linha">
+      <label class="foto-produto" [class.foto-produto--quadrada]="!ehProdutoAVenda()" [class.foto-produto--erro]="!!erroFoto()" [attr.aria-busy]="enviandoFoto()">
         <input class="somente-leitor-tela" type="file" accept="image/jpeg,image/png,image/webp" [disabled]="enviandoFoto()" (change)="escolherFoto($event)">
         @if (enviandoFoto()) {
           <app-carregando modo="inline" [tamanho]="22" />
@@ -21,10 +28,16 @@
           <span class="foto-produto__texto">Adicionar foto</span>
         }
       </label>
+      @if (foto() && !ehProdutoAVenda() && !enviandoFoto()) {
+        <button type="button" class="btn btn--texto btn--pequeno foto-remover" (click)="foto.set(null)">Remover foto</button>
+      }
+      </div>
       @if (erroFoto()) {
         <span class="campo__erro" role="alert">{{ erroFoto() }}</span>
-      } @else {
+      } @else if (ehProdutoAVenda()) {
         <span class="campo__dica">Aparece para o cliente na página de agendamento ("Também temos").</span>
+      } @else {
+        <span class="campo__dica">Aparece no cartão do serviço na sua página de agendamento.</span>
       }
     </div>
   }

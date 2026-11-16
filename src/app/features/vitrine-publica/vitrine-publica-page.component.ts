@@ -350,6 +350,7 @@ export class VitrinePublicaPageComponent implements OnInit {
   protected readonly menuMinimalista = computed(() => this.loja()?.estiloMenu === 'MINIMALISTA');
   /** Abas Vitrine | Agendar horário: pílula (o padrão), sublinhado ou contorno (abas-vitrine.css). */
   protected readonly estiloAbas = computed(() => this.loja()?.estiloAbas ?? 'PILULA');
+  protected readonly estiloAgenda = computed(() => this.loja()?.estiloAgenda ?? 'CARTOES');
 
   /** A categoria tocada fica marcada no menu (null = a primeira). */
   protected readonly albumAtivo = signal<string | null>(null);

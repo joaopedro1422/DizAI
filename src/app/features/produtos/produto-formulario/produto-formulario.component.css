@@ -256,3 +256,19 @@
   font-weight: 700;
   text-align: center;
 }
+
+/* serviço: a foto quadrada (a miniatura do cartão na página de agendamento) e o "Remover foto" ao lado */
+.foto-linha {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.foto-produto--quadrada {
+  width: 112px;
+  aspect-ratio: 1;
+}
+
+.foto-remover {
+  color: var(--cor-erro, #c0362c);
+}

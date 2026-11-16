@@ -63,6 +63,8 @@ export type EstiloCor = 'NORMAL' | 'METALICO' | 'DEGRADE' | 'VIDRO';
 export type EstiloMenu = 'ARREDONDADO' | 'MINIMALISTA';
 /** Abas da página pública, Vitrine | Agendar horário (null no perfil = PILULA). */
 export type EstiloAbas = 'PILULA' | 'SUBLINHADO' | 'CONTORNO';
+/** Visual da página de agendamento (null no perfil = CARTOES); o fluxo é o mesmo nos dois. */
+export type EstiloAgenda = 'CARTOES' | 'COM_IMAGEM';
 /** Como as fotos de cada tópico aparecem na vitrine (null no perfil = GRADE). */
 export type LayoutFotos = 'GRADE' | 'MOSAICO' | 'DESTAQUE' | 'CARROSSEL';
 
@@ -74,6 +76,7 @@ export interface ConfiguracaoVitrine {
   estiloCor: EstiloCor;
   estiloMenu: EstiloMenu;
   estiloAbas: EstiloAbas;
+  estiloAgenda: EstiloAgenda;
   layoutFotos: LayoutFotos;
   capaUrl: string | null;
 }

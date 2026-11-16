@@ -1,0 +1,128 @@
+/* "Página de agendamento" em Personalizar vitrine: o passo "Serviço" desenhado em cada estilo */
+.agenda-estilos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.agenda-previa {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-height: 112px;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--previa-fundo);
+  color: #2a1c22;
+  text-align: left;
+}
+
+.agenda-previa__titulo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 2px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.agenda-previa__titulo i {
+  color: var(--previa-cor);
+  font-size: 11px;
+}
+
+.agenda-previa__titulo s {
+  flex: 1;
+  height: 1px;
+  background: color-mix(in srgb, var(--previa-cor) 22%, transparent);
+}
+
+/* as linhas cinza no lugar do texto */
+.agenda-previa b,
+.agenda-previa em {
+  display: block;
+  height: 5px;
+  border-radius: 3px;
+  background: #d9d2cf;
+}
+
+.agenda-previa b {
+  width: 70%;
+  height: 6px;
+  background: #8f8580;
+}
+
+.agenda-previa em {
+  width: 92%;
+}
+
+.agenda-previa em.curta {
+  width: 55%;
+}
+
+/* Cartões: o passo inteiro dentro do cartão branco */
+.agenda-previa__cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px;
+  border: 1px solid #ece6e3;
+  border-radius: 9px;
+  background: #ffffff;
+}
+
+.agenda-previa__titulo--numero i {
+  display: grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--previa-destaque);
+  color: #ffffff;
+  font-size: 8px;
+  font-style: normal;
+}
+
+.agenda-previa__item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px 7px;
+  border: 1px solid #ece6e3;
+  border-radius: 7px;
+}
+
+.agenda-previa__item--marcado {
+  border-color: var(--previa-cor);
+  background: color-mix(in srgb, var(--previa-cor) 7%, #ffffff);
+}
+
+/* Com imagem: os serviços em cartões com a miniatura, direto na página */
+.agenda-previa__servico {
+  display: flex;
+  gap: 6px;
+  padding: 5px;
+  border: 1px solid #ece6e3;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.agenda-previa__servico--marcado {
+  border-color: var(--previa-cor);
+}
+
+.agenda-previa__foto {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--previa-cor) 22%, #f3ece9);
+}
+
+.agenda-previa__linhas {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}

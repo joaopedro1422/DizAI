@@ -285,6 +285,7 @@ export class OnboardingInicialComponent {
       estiloCor: perfil.estiloCor ?? 'NORMAL',
       estiloMenu: perfil.estiloMenu ?? 'ARREDONDADO',
       estiloAbas: perfil.estiloAbas ?? 'PILULA',
+      estiloAgenda: perfil.estiloAgenda ?? 'CARTOES',
       layoutFotos: perfil.layoutFotos ?? 'GRADE',
       capaUrl,
     };

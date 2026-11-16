@@ -6,11 +6,24 @@
     <button type="button" class="botao-contorno" (click)="recarregar()">Tentar de novo</button>
   </div>
 } @else {
+  <ng-template #titulo let-numero let-feito="feito" let-texto="texto" let-curto="curto">
+    @if (comImagem()) {
+      <span class="passo__indice">{{ numero < 10 ? '0' + numero : numero }}</span>
+      <span class="passo__texto">{{ curto }}</span>
+      <span class="passo__linha" aria-hidden="true"></span>
+      @if (feito) {
+        <span class="passo__feito" aria-hidden="true"><app-icone nome="check" [tamanho]="12" [espessura]="3.2" /></span>
+      }
+    } @else {
+      <span class="passo__numero" [class.passo__numero--feito]="feito">@if (feito) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {{{ numero }}}</span>
+      {{ texto }}
+    }
+  </ng-template>
+
   <div class="agenda">
     <section class="passo" aria-labelledby="passo-servico">
       <h2 class="passo__titulo" id="passo-servico">
-        <span class="passo__numero" [class.passo__numero--feito]="escolhidos().length > 0">@if (escolhidos().length > 0) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {1}</span>
-        Escolha o serviço
+        <ng-container [ngTemplateOutlet]="titulo" [ngTemplateOutletContext]="{ $implicit: 1, feito: escolhidos().length > 0, texto: 'Escolha o serviço', curto: 'Serviço' }" />
       </h2>
       @for (categoria of categorias(); track categoria.nome) {
         <div class="categoria">
@@ -20,17 +33,29 @@
           <div class="servicos">
             @for (servico of categoria.servicos; track servico.id) {
               @let escolhido = escolhidos().includes(servico.id);
-              <button
-                type="button"
-                class="servico"
-                [class.servico--escolhido]="escolhido"
-                [attr.aria-pressed]="escolhido"
-                (click)="alternarServico(servico)"
-              >
+              @let aberta = escolhido || descricoesAbertas().includes(servico.id);
+              <!-- o botão invisível cobre o cartão (escolher); o "ver mais" fica por cima dele -->
+              <div class="servico" [class.servico--escolhido]="escolhido" [class.servico--com-foto]="!!servico.fotoUrl">
+                <button
+                  type="button"
+                  class="servico__tocar"
+                  [attr.aria-pressed]="escolhido"
+                  [attr.aria-label]="servico.nome + ', ' + precoServico(servico) + ', ' + duracao(servico.duracaoMinutos)"
+                  (click)="alternarServico(servico)"
+                ></button>
+                @if (servico.fotoUrl) {
+                  <img class="servico__foto" [src]="servico.fotoUrl | urlImagem" alt="" loading="lazy" decoding="async">
+                }
                 <span class="servico__corpo">
                   <span class="servico__nome">{{ servico.nome }}</span>
                   @if (servico.descricao) {
-                    <span class="servico__descricao">{{ servico.descricao }}</span>
+                    <span class="servico__descricao" [class.servico__descricao--aberta]="aberta" appTextoCortado #corte="textoCortado">{{ servico.descricao }}</span>
+                    <!-- só quando falta texto de verdade; aberto pelo "ver mais", continua para o "ver menos" -->
+                    @if (!escolhido && (corte.cortado() || descricoesAbertas().includes(servico.id))) {
+                      <button type="button" class="servico__mais" [attr.aria-expanded]="aberta" (click)="alternarDescricao(servico.id)">
+                        {{ aberta ? 'ver menos' : 'ver mais' }}
+                      </button>
+                    }
                   }
                   <span class="servico__meta">
                     <span class="servico__preco" [class.servico__preco--consulta]="servico.preco == null">{{ precoServico(servico) }}</span>
@@ -44,7 +69,7 @@
                 <span class="servico__marca" aria-hidden="true">
                   <app-icone [nome]="escolhido ? 'check' : 'mais'" [tamanho]="15" [espessura]="2.6" />
                 </span>
-              </button>
+              </div>
             }
           </div>
         </div>
@@ -59,8 +84,7 @@
     @if (escolhidos().length > 0 && comProfissionais()) {
       <section class="passo passo--entrada" aria-labelledby="passo-profissional">
         <h2 class="passo__titulo" id="passo-profissional">
-          <span class="passo__numero" [class.passo__numero--feito]="profissionalEscolhido() !== null">@if (profissionalEscolhido() !== null) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {2}</span>
-          Com quem?
+          <ng-container [ngTemplateOutlet]="titulo" [ngTemplateOutletContext]="{ $implicit: 2, feito: profissionalEscolhido() !== null, texto: 'Com quem?', curto: 'Com quem' }" />
         </h2>
         <div class="pessoas" role="radiogroup" aria-labelledby="passo-profissional">
           @for (profissional of profissionais(); track profissional.id) {
@@ -99,8 +123,7 @@
     @if (podeVerDias()) {
       <section class="passo passo--entrada" aria-labelledby="passo-dia">
         <h2 class="passo__titulo" id="passo-dia">
-          <span class="passo__numero" [class.passo__numero--feito]="!!diaSelecionado()">@if (!!diaSelecionado()) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {{{ 2 + passoExtra() }}}</span>
-          Escolha o dia
+          <ng-container [ngTemplateOutlet]="titulo" [ngTemplateOutletContext]="{ $implicit: 2 + passoExtra(), feito: !!diaSelecionado(), texto: 'Escolha o dia', curto: 'Dia' }" />
         </h2>
         @if (carregandoHorarios() && dias().length === 0) {
           <app-carregando modo="inline" [tamanho]="22" />
@@ -121,8 +144,7 @@
     @if (podeVerDias() && diaSelecionado() && (turnos().length > 0 || diaLotadoComLista())) {
       <section class="passo passo--entrada" aria-labelledby="passo-hora">
         <h2 class="passo__titulo" id="passo-hora">
-          <span class="passo__numero" [class.passo__numero--feito]="!!horaSelecionada()">@if (!!horaSelecionada()) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {{{ 3 + passoExtra() }}}</span>
-          Escolha o horário
+          <ng-container [ngTemplateOutlet]="titulo" [ngTemplateOutletContext]="{ $implicit: 3 + passoExtra(), feito: !!horaSelecionada(), texto: 'Escolha o horário', curto: 'Horário' }" />
         </h2>
         @for (turno of turnos(); track turno.nome) {
           <div class="turno">
@@ -172,8 +194,7 @@
     @if (horaSelecionada()) {
       <section class="passo passo--entrada" aria-labelledby="passo-nome">
         <h2 class="passo__titulo" id="passo-nome">
-          <span class="passo__numero" [class.passo__numero--feito]="nome().trim().length > 0">@if (nome().trim().length > 0) {<app-icone nome="check" [tamanho]="13" [espessura]="3.2" />} @else {{{ 4 + passoExtra() }}}</span>
-          Seu nome
+          <ng-container [ngTemplateOutlet]="titulo" [ngTemplateOutletContext]="{ $implicit: 4 + passoExtra(), feito: nome().trim().length > 0, texto: 'Seu nome', curto: 'Seu nome' }" />
         </h2>
         <input
           class="campo-nome"

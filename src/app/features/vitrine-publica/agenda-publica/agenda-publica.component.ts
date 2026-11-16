@@ -1,7 +1,10 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, signal } from '@angular/core';
 
 import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
 import { AgendaPublica, DiaHorarios, ProdutoAgendaPublica, ServicoAgenda } from '../../../core/models/agenda.model';
+import { EstiloAgenda } from '../../../core/models/vitrine.model';
+import { TextoCortadoDirective } from '../../../shared/directives/texto-cortado.directive';
 import { LojaPublicaService } from '../../../core/services/loja-publica.service';
 import { alternarItem } from '../../../core/utils/colecao.utils';
 import { diaPorExtenso, formatarDuracao } from '../../../core/utils/datas-agenda';
@@ -28,14 +31,20 @@ const TURNOS = [
 
 @Component({
   selector: 'app-agenda-publica',
-  imports: [IconeComponent, CarregandoComponent, FaixaDiasComponent, UrlImagemPipe],
+  imports: [IconeComponent, CarregandoComponent, FaixaDiasComponent, UrlImagemPipe, NgTemplateOutlet, TextoCortadoDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './agenda-publica.component.html',
-  styleUrls: ['./agenda-publica.component.css', './lista-espera-publica.css'],
+  styleUrls: ['./agenda-publica.component.css', './lista-espera-publica.css', './servico-cartao.css', './agenda-com-imagem.css'],
+  host: { '[attr.data-estilo]': "estilo() ?? 'CARTOES'" },
 })
 export class AgendaPublicaComponent implements OnInit {
   readonly slug = input.required<string>();
   readonly numeroWhatsapp = input.required<string>();
+  /** Visual da página (Personalizar vitrine → "Página de agendamento"); null = cartões. O fluxo é o mesmo. */
+  readonly estilo = input<EstiloAgenda | null | undefined>(null);
+  protected readonly comImagem = computed(() => this.estilo() === 'COM_IMAGEM');
+  /** Serviços com a descrição aberta pelo "ver mais" (o escolhido já mostra o texto inteiro). */
+  protected readonly descricoesAbertas = signal<number[]>([]);
 
   private readonly lojaPublicaService = inject(LojaPublicaService);
 
@@ -209,6 +218,10 @@ export class AgendaPublicaComponent implements OnInit {
 
   protected duracao(minutos: number): string {
     return formatarDuracao(minutos);
+  }
+
+  protected alternarDescricao(id: number): void {
+    this.descricoesAbertas.update((abertas) => (abertas.includes(id) ? abertas.filter((a) => a !== id) : [...abertas, id]));
   }
 
   protected alternarServico(servico: ServicoAgenda): void {

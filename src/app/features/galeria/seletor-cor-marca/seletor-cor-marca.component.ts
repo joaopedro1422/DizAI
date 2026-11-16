@@ -9,6 +9,7 @@ import {
   CorFundoVitrine,
   EstiloCor,
   EstiloAbas,
+  EstiloAgenda,
   EstiloMenu,
   LayoutFotos,
   FONTES_VITRINE,
@@ -33,7 +34,7 @@ const TAMANHO_MAXIMO_CAPA_BYTES = 5 * 1024 * 1024;
   imports: [IconeComponent, UrlImagemPipe, SeletorFundoComponent, SeletorEstiloCorComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './seletor-cor-marca.component.html',
-  styleUrls: ['./seletor-cor-marca.component.css', './layout-fotos.css', './abas-previa.css'],
+  styleUrls: ['./seletor-cor-marca.component.css', './layout-fotos.css', './abas-previa.css', './agenda-previa.css'],
 })
 export class SeletorCorMarcaComponent {
   private readonly perfilService = inject(PerfilService);
@@ -65,6 +66,12 @@ export class SeletorCorMarcaComponent {
     { valor: 'PILULA', nome: 'Pílula' },
     { valor: 'SUBLINHADO', nome: 'Sublinhado' },
     { valor: 'CONTORNO', nome: 'Contorno' },
+  ];
+  /** Página de agendamento: Cartões (o de sempre) ou Com imagem; só nas lojas com agenda, como as abas. */
+  protected readonly agendaAtual = signal<EstiloAgenda>(this.perfilService.perfil().estiloAgenda ?? 'CARTOES');
+  protected readonly estilosAgenda: { valor: EstiloAgenda; nome: string }[] = [
+    { valor: 'CARTOES', nome: 'Cartões' },
+    { valor: 'COM_IMAGEM', nome: 'Com imagem' },
   ];
   protected readonly temAbas = computed(() => ramoUsaAgenda(this.perfilService.perfil().ramo));
   /** Como as fotos de cada tópico aparecem na vitrine. */
@@ -189,6 +196,7 @@ export class SeletorCorMarcaComponent {
         estiloCor: this.estiloAtual(),
         estiloMenu: this.menuAtual(),
         estiloAbas: this.abasAtual(),
+        estiloAgenda: this.agendaAtual(),
         layoutFotos: this.layoutAtual(),
         capaUrl,
       };

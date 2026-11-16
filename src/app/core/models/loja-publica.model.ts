@@ -1,6 +1,6 @@
 import { Sobre } from './galeria.model';
 import { CorMarca } from './perfil.model';
-import { AreaCorFundoVitrine, CorFundoVitrine, EstiloAbas, EstiloCor, EstiloMenu, FonteVitrine, LayoutFotos } from './vitrine.model';
+import { AreaCorFundoVitrine, CorFundoVitrine, EstiloAbas, EstiloAgenda, EstiloCor, EstiloMenu, FonteVitrine, LayoutFotos } from './vitrine.model';
 
 /** Tópico na página pública: `fotos` traz as primeiras; "Ver todas" busca o resto. */
 export interface AlbumPublico {
@@ -45,6 +45,8 @@ export interface LojaPublica {
   /** Menu de categorias da vitrine (null = arredondado). */
   estiloMenu?: EstiloMenu | null;
   estiloAbas?: EstiloAbas | null;
+  /** Página de agendamento (null = cartões). */
+  estiloAgenda?: EstiloAgenda | null;
   layoutFotos?: LayoutFotos | null;
   capaUrl?: string | null;
   /** Número normalizado (só dígitos, com 55). */
