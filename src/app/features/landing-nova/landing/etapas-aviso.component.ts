@@ -39,7 +39,7 @@ type Fase = 'digitando' | 'mensagem' | 'enviada';
       }
     </ol>
     <div class="etapas-aviso__conversa" aria-live="polite">
-      <small class="etapas-aviso__rotulo">Mensagem automática · {{ atual().nome }}</small>
+      <small class="etapas-aviso__rotulo">{{ atual().rotulo ?? 'Mensagem automática' }} · {{ atual().nome }}</small>
       @if (fase() === 'digitando') {
         <span class="msg msg--digitando" aria-label="enviando"><i></i><i></i><i></i></span>
       } @else {

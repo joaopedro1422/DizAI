@@ -21,7 +21,7 @@ const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
       <div class="campo">
         <span class="campo__rotulo">Produtos <span class="campo__rotulo-opcional">(opcional)</span></span>
         <app-carrinho-produtos [itens]="produtos()" (mudou)="produtos.set($event)" />
-        <span class="campo__dica">Conta nos produtos que mais vendem, nos Números.</span>
+        <span class="campo__dica">Informe o produto ou apenas descreva abaixo.</span>
       </div>
 
       <div class="campo">
@@ -48,8 +48,6 @@ const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
         </span>
         @if (tentou() && !valorValido()) {
           <span class="campo__erro" role="alert">Informe o valor, por exemplo 150 ou 150,50.</span>
-        } @else {
-          <span class="campo__dica">É este valor que entra nos números dos pedidos.</span>
         }
       </div>
 

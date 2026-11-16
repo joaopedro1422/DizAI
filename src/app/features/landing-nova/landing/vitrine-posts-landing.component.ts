@@ -41,7 +41,13 @@ const TEMPO_POR_ARTE_MS = 3200;
                 <li><span class="check">✓</span><span>{{ item }}</span></li>
               }
             </ul>
-            <a class="btn btn--forte" [routerLink]="c.rota + '/vitrine'">Como funciona →</a>
+            <div class="vp__botoes">
+              <a class="btn btn--forte" [routerLink]="c.rota + '/vitrine'">Como funciona →</a>
+              <!-- a vitrine de verdade de uma confeitaria (só nas vendas) -->
+              @if (c.tipo === 'produtos') {
+                <a class="btn btn--linha" href="/l/pedacinho-do-ceu" target="_blank" rel="noopener">Ver exemplo →</a>
+              }
+            </div>
           </div>
           <div class="vp__visual"><app-vitrine-mock [variante]="c.tipo" /></div>
         </div>

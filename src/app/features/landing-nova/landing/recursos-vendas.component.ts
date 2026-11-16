@@ -5,7 +5,8 @@ import { ArtePostComponent } from '../../posts/arte-post/arte-post.component';
 import { artesDaLanding } from './artes-landing';
 import { ETAPAS_PEDIDO, FOTOS, RECURSOS_VENDAS, TABELA_VENDAS } from './conteudo-vendas';
 import { EtapasAvisoComponent } from './etapas-aviso.component';
-import { PainelPedidosLandingComponent } from './painel-pedidos-landing.component';
+import { semMovimento } from '../movimento';
+import { IconeComponent } from '../../../shared/components/icone/icone.component';
 
 /**
  * Recursos (o conteúdo da seção de produção, na marca nova): os destaques, o bento com a coleta do pedido, o
@@ -26,9 +27,67 @@ const CLIENTES_EXEMPLO = [
   { iniciais: 'CL', nome: 'Carlos Lima', info: 'Último pedido há 52 dias', selo: 'Sumido', tom: 'sumido' },
 ];
 
+/** A semana do Gestor de pedidos (uma confeitaria): os pedidos de cada dia, até 4 na tela. */
+interface PedidoDaSemana {
+  nome: string;
+  bolo: string;
+  /** Recheio, massa e adicionais. */
+  detalhe: string;
+  status: 'pronto' | 'preparo';
+  valor: string;
+  /** O pedido tem a foto do modelo anexada. */
+  foto: boolean;
+}
+
+interface DiaSemanaPedidos {
+  semana: string;
+  numero: number;
+  rotulo: string;
+  pedidos: number;
+  lista: PedidoDaSemana[];
+}
+
+const p = (valor: string, nome: string, bolo: string, detalhe: string, foto = false, status: PedidoDaSemana['status'] = 'preparo'): PedidoDaSemana =>
+  ({ valor, nome, bolo, detalhe, foto, status });
+
+const SEMANA_PEDIDOS: DiaSemanaPedidos[] = [
+  { semana: 'seg', numero: 16, rotulo: 'Hoje, 16/11', pedidos: 4, lista: [
+    p('R$ 180,00', 'Paula', 'Bolo Festivo | 12-16 fatias', 'Ninho com morango · massa branca · + Nutella', true, 'pronto'),
+    p('R$ 95,00', 'Júlia', 'Bolo Vulcão | 8 fatias', 'Brigadeiro · massa de chocolate · calda extra'),
+    p('R$ 250,00', 'Renata', 'Bolo Festivo | 20-25 fatias', 'Doce de leite com ameixa · massa branca', true),
+    p('R$ 160,00', 'Lucas', 'Naked Cake | 15 fatias', 'Frutas vermelhas · massa baunilha · + Flores comestíveis'),
+  ] },
+  { semana: 'ter', numero: 17, rotulo: 'Amanhã, 17/11', pedidos: 1, lista: [
+    p('R$ 160,00', 'Rita', 'Naked Cake | 15 fatias', 'Frutas vermelhas · massa baunilha', true),
+  ] },
+  { semana: 'qua', numero: 18, rotulo: 'Quarta, 18/11', pedidos: 4, lista: [
+    p('R$ 190,00', 'Marcos', 'Bolo Festivo | 12-16 fatias', 'Prestígio · massa de chocolate · + Morangos', true),
+    p('R$ 120,00', 'Bia', 'Bolo de Pote | 10 un.', 'Ninho com Nutella e brigadeiro'),
+    p('R$ 95,00', 'Carol', 'Bolo Vulcão | 8 fatias', 'Ninho com Nutella · massa de chocolate'),
+    p('R$ 320,00', 'João', 'Bolo Festivo | 30 fatias', 'Quatro leites · massa branca · + Topo personalizado', true),
+  ] },
+  { semana: 'qui', numero: 19, rotulo: 'Quinta, 19/11', pedidos: 0, lista: [] },
+  { semana: 'sex', numero: 20, rotulo: 'Sexta, 20/11', pedidos: 2, lista: [
+    p('R$ 90,00', 'Lia', 'Bolo Vulcão | 8 fatias', 'Ninho · massa branca'),
+    p('R$ 170,00', 'Davi', 'Bolo Festivo | 12-16 fatias', 'Brigadeiro · massa de chocolate', true),
+  ] },
+  { semana: 'sáb', numero: 21, rotulo: 'Sábado, 21/11', pedidos: 5, lista: [
+    p('R$ 260,00', 'Carla', 'Bolo Festivo | 20-25 fatias', 'Ninho com morango · massa branca · + Topo personalizado', true),
+    p('R$ 150,00', 'Marina', 'Naked Cake | 15 fatias', 'Doce de leite · massa de nozes'),
+    p('R$ 195,00', 'Pedro', 'Bolo Festivo | 12-16 fatias', 'Brigadeiro branco · massa mista · + Nutella', true),
+    p('R$ 140,00', 'Sofia', 'Bolo de Pote | 12 un.', 'Brigadeiro e ninho com morango'),
+  ] },
+  { semana: 'dom', numero: 22, rotulo: 'Domingo, 22/11', pedidos: 2, lista: [
+    p('R$ 95,00', 'Ana', 'Bolo Vulcão | 8 fatias', 'Ninho com Nutella · massa de chocolate'),
+    p('R$ 170,00', 'Tiago', 'Bolo Festivo | 12-16 fatias', 'Abacaxi com coco · massa branca', true),
+  ] },
+];
+/** Os dias que ganham o destaque, em volta: hoje, quarta e sábado. */
+const DESTAQUES = [0, 2, 5];
+
 @Component({
   selector: 'app-recursos-vendas',
-  imports: [RouterLink, EtapasAvisoComponent, PainelPedidosLandingComponent, ArtePostComponent],
+  imports: [RouterLink, EtapasAvisoComponent, ArtePostComponent, IconeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="secao faixa nevoa" id="recursos">
@@ -49,7 +108,7 @@ const CLIENTES_EXEMPLO = [
           <article class="rec rec--a">
             <span class="etiqueta">Coleta de pedidos - Apenas com assistente</span>
             <h3>O pedido chega anotado. Você apenas confirma.</h3>
-            <p>A função do assistente é manter o seu cliente por perto. Ele envia o seu catálogo de produtos, coleta as informações que você definir e te entrega pronto para você confirmar a venda.</p>
+            <p>A função do assistente é manter o seu cliente por perto. Ele coleta as informações que você definir e te entrega pronto para você confirmar a venda.</p>
             <div class="rec__visual">
               <div class="cartao">
                 <div class="cartao__topo"><span>Ana Souza <small class="mono cartao__fone">(83) 98812-4410</small></span><span class="status status--pronto">Pronto para fechar</span></div>
@@ -68,18 +127,55 @@ const CLIENTES_EXEMPLO = [
           <article class="rec rec--b">
             <span class="etiqueta">Gestor de pedidos</span>
             <h3>Pedidos na palma da sua mão</h3>
-            <p>Gerencie as suas vendas de forma organizada, sem dor de cabeça e sem anotações no caderno.<br />Os pedidos são divididos por dia de entrega para organizar a sua rotina.<br />Confirmado, pronto, entregue: mude o status e a mensagem definida por você sai automaticamente.</p>
-            <!-- a dinâmica dos status logo abaixo do texto; o painel no fim, ocupando o espaço que sobra -->
+            <p>Gerencie as suas vendas de forma organizada, sem dor de cabeça e sem anotações no caderno.<br /><b>Os pedidos são divididos por dia de entrega</b> para organizar a sua rotina.</p>
+            <!-- os pedidos por dia, em miniatura: a semana com quantos pedidos tem cada dia e os do dia em destaque
+                 (o destaque passa por hoje, quarta e sábado; as linhas trocam com um fade) -->
+            <div class="semana-pedidos" aria-hidden="true">
+              <div class="semana-pedidos__dias">
+                @for (dia of semanaPedidos; track dia.numero) {
+                  <span class="sp-dia" [class.sp-dia--ativo]="dia.numero === diaAtivo().numero" [class.sp-dia--vazio]="!dia.pedidos">
+                    <small>{{ dia.semana }}</small>
+                    <b>{{ dia.numero }}</b>
+                    <i class="mono">{{ dia.pedidos || '' }}</i>
+                  </span>
+                }
+              </div>
+              @for (dia of [diaAtivo()]; track dia.numero) {
+                <div class="sp-lista">
+                  <span class="sp-lista__titulo"><b>{{ dia.rotulo }}</b><small>{{ dia.pedidos }} pedidos</small></span>
+                  @for (pedido of dia.lista.slice(0, 3); track pedido.nome; let i = $index) {
+                    <span class="sp-pedido" [style.--i]="i">
+                      <span class="sp-pedido__linha">
+                        <span><b>{{ pedido.nome }}</b> · {{ pedido.bolo }}</span>
+                        <i [class]="'sp-status sp-status--' + pedido.status">{{ pedido.status === 'pronto' ? 'Pronto' : 'Em preparo' }}</i>
+                      </span>
+                      <small>{{ pedido.detalhe }}</small>
+                      <span class="sp-pedido__rodape">
+                        <b class="mono">{{ pedido.valor }}</b>
+                        @if (pedido.foto) {
+                          <span class="sp-anexo"><app-icone nome="clipe" [tamanho]="13" [espessura]="2" />Foto do modelo</span>
+                        }
+                      </span>
+                    </span>
+                  }
+                  @if (dia.pedidos > 3) {
+                    <small class="sp-mais">+ {{ dia.pedidos - 3 }} {{ dia.pedidos - 3 === 1 ? 'pedido' : 'pedidos' }} neste dia</small>
+                  }
+                </div>
+              }
+            </div>
+            <div class="rec-status">
+            <p><b>Confirmado, pronto, entregue:</b> mude o status e a mensagem definida por você sai automaticamente.</p>
             <div class="rec__visual" style="margin-top: 0">
               <div class="fila">
                 <div class="cartao cartao--destaque">
-                  <span><b>Ana Souza</b><small>100 coxinhas + 50 kibes · Sáb, 15:00 · <span class="mono">R$ 135</span></small></span>
+                  <span><b>Ana Souza</b><small>Bolo Festivo | 12-16 fatias · Sáb, 15:00 · <span class="mono">R$ 135,00</span></small></span>
                   <span [class]="'status status--' + classeStatus()">{{ statusAna() }}</span>
                 </div>
               </div>
               <app-etapas-aviso [etapas]="etapasPedido" hora="15:02" (etapaMudou)="etapaAna.set($event)" />
             </div>
-            <app-painel-pedidos-landing />
+            </div>
           </article>
 
           <article class="rec rec--c rec--clientes">
@@ -232,9 +328,15 @@ export class RecursosVendasComponent {
   protected readonly pecaAtiva = signal(0);
   protected pausado = false;
 
+  protected readonly semanaPedidos = SEMANA_PEDIDOS;
+  /** O dia em destaque na semana do Gestor de pedidos (passa pelos dias de DESTAQUES a cada 3,5 s). */
+  private readonly destaque = signal(0);
+  protected readonly diaAtivo = computed(() => SEMANA_PEDIDOS[DESTAQUES[this.destaque()]]);
+
   constructor() {
     const relogio = setInterval(() => {
       if (!this.pausado) this.pecaAtiva.update((n) => (n + 1) % 3);
+      if (!semMovimento()) this.destaque.update((n) => (n + 1) % DESTAQUES.length);
     }, 3500);
     inject(DestroyRef).onDestroy(() => clearInterval(relogio));
   }

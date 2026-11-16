@@ -54,16 +54,19 @@ export class AcaoPedidoConversaComponent {
   /** O produto vendido (opcional): só para os "Produtos que mais vendem" dos Números. */
   /** O carrinho do pedido (só para os Números). */
   protected readonly produtos = signal<ItemCarrinho[]>([]);
-  /** Para quando é o pedido: vem com a data do resumo (o lojista confere); de um dia que já passou, fica para escolher. */
-  protected readonly paraQuando = linkedSignal<string | null>(() => {
+  /** A data que o assistente coletou na conversa (de hoje em diante); com ela, o seletor de dia não aparece. */
+  protected readonly dataDaConversa = computed(() => {
     const sugerida = this.conversa().dataSugerida;
     return sugerida && sugerida >= hojeIso() ? sugerida : null;
   });
+  /** Para quando é o pedido: a da conversa ou, sem ela, a que o lojista escolher. */
+  protected readonly paraQuando = linkedSignal<string | null>(() => this.dataDaConversa());
   /** O que a conversa disse sobre a data ("sábado, 21/11, às 10:00"), embaixo do seletor. */
   protected readonly dataNaConversa = computed(
     () => this.conversa().resumoPedido.find((i) => /^(data|dia|para quando|quando)/i.test(i.campo.trim()))?.valor ?? null,
   );
-  protected readonly erroData = computed(() => this.acao() === 'confirmar' && this.tentouSalvar() && !this.paraQuando());
+  protected readonly pedirData = computed(() => this.acao() === 'confirmar' && !this.dataDaConversa());
+  protected readonly erroData = computed(() => this.pedirData() && this.tentouSalvar() && !this.paraQuando());
 
   protected readonly nome = computed(() => {
     const doResumo = this.conversa().resumoPedido.find((item) => item.campo.trim().toLowerCase().startsWith('nome'));

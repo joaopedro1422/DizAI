@@ -467,3 +467,232 @@
     background: var(--gema);
   }
 }
+
+/* ---------- Gestor de pedidos: a semana com quantos pedidos tem cada dia e os pedidos do dia em destaque ---------- */
+.lv .semana-pedidos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 6px 0 4px;
+  padding: 14px;
+  border: 1px solid var(--linha);
+  border-radius: 18px;
+  background: var(--papel);
+  box-shadow: 0 12px 26px -18px rgba(19, 32, 74, 0.45);
+}
+
+.lv .semana-pedidos__dias {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.lv .sp-dia {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 7px 0 6px;
+  border-radius: 12px;
+  background: var(--nevoa);
+  color: var(--tinta);
+  transition: background-color 0.45s ease, color 0.45s ease;
+}
+
+.lv .sp-dia small {
+  color: var(--fraco);
+  font-size: 11px;
+  font-weight: 600;
+  transition: color 0.45s ease;
+}
+
+.lv .sp-dia b {
+  font-size: 15px;
+  line-height: 1.1;
+}
+
+/* o número de pedidos do dia: a bolinha amarela (dia sem pedido: o espaço fica, vazio) */
+.lv .sp-dia i {
+  min-width: 18px;
+  min-height: 16px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--gema);
+  color: var(--noite);
+  font-size: 10.5px;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 16px;
+  text-align: center;
+}
+
+.lv .sp-dia--vazio {
+  opacity: 0.55;
+}
+
+.lv .sp-dia--vazio i {
+  background: none;
+}
+
+.lv .sp-dia--ativo {
+  background: var(--noite);
+  color: #ffffff;
+}
+
+.lv .sp-dia--ativo small {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* os pedidos do dia: entram com um fade a cada troca */
+.lv .sp-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lv .sp-lista__titulo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 14px;
+  animation: lv-sp-entra 0.45s ease both;
+}
+
+.lv .sp-lista__titulo small {
+  color: var(--fraco);
+  font-size: 12.5px;
+}
+
+.lv .sp-pedido {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--nevoa);
+  font-size: 13.5px;
+  animation: lv-sp-entra 0.45s ease both;
+  animation-delay: calc(0.08s + var(--i, 0) * 0.08s);
+}
+
+.lv .sp-pedido__linha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lv .sp-pedido__linha > span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* a 2ª linha: recheio, massa e adicionais, alinhada à esquerda com o nome e o valor */
+.lv .sp-pedido > small {
+  overflow: hidden;
+  color: var(--fraco);
+  font-size: 12.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* a 3ª linha: o valor à esquerda e a foto do modelo à direita */
+.lv .sp-pedido__rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.lv .sp-pedido__rodape b {
+  color: var(--tinta);
+  font-size: 13.5px;
+}
+
+/* a foto do modelo anexada ao pedido: o clipe e o texto sublinhado, como na tela Pedidos */
+.lv .sp-anexo {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  color: var(--marinho);
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.lv .sp-mais {
+  color: var(--fraco);
+  font-size: 12.5px;
+  text-align: center;
+  animation: lv-sp-entra 0.45s ease 0.35s both;
+}
+
+.lv .sp-status {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #fff1db;
+  color: #7a4c00;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.lv .sp-status--pronto {
+  background: #e3f2ea;
+  color: #1e6b45;
+}
+
+/* "Confirmado, pronto, entregue": o texto colado na demonstração dos status */
+.lv .rec-status {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: 14px;
+}
+
+.lv .rec--b > p b {
+  color: var(--tinta);
+}
+
+.lv .rec-status p b {
+  color: var(--tinta);
+}
+
+@keyframes lv-sp-entra {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* celular estreito: o status vira só a bolinha da cor (o item do pedido não corta) */
+@media (max-width: 420px) {
+  .lv .sp-status {
+    width: 9px;
+    height: 9px;
+    padding: 0;
+    overflow: hidden;
+    background: #e9a23b;
+    font-size: 0;
+  }
+
+  .lv .sp-status--pronto {
+    background: #2f9e6b;
+  }
+
+  .lv .sp-pedido > small {
+    padding-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lv .sp-lista__titulo,
+  .lv .sp-pedido {
+    animation: none;
+  }
+}

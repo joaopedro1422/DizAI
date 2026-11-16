@@ -26,7 +26,8 @@
     }
   }
 
-  @if (acao() === 'confirmar') {
+  <!-- só quando a data não veio na conversa (a coleta não pediu ou o cliente não disse) -->
+  @if (pedirData()) {
     <div class="campo">
       <span class="campo__rotulo">Para quando é o pedido?</span>
       <app-seletor-data-pedido [(valor)]="paraQuando" [doResumo]="dataNaConversa()" [erro]="erroData()" />

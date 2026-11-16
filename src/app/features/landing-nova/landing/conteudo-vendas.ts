@@ -39,17 +39,17 @@ export const ETAPAS_PRATICA: EtapaAviso[] = [
 ];
 
 export const ETAPAS_PEDIDO: EtapaAviso[] = [
-  { nome: 'Confirmado', mensagem: 'Oi, Ana! Seu pedido foi confirmado 😊 Fica pronto sábado às 15h.' },
-  { nome: 'Pronto', mensagem: 'Ana, seu pedido está pronto para retirada! Total: R$ 135,00' },
-  { nome: 'Entregue', mensagem: 'Obrigada pela preferência, Ana! Volte sempre 💛' },
+  { nome: 'Confirmado', rotulo: 'Você pelo celular', mensagem: 'Recebi o pagamento! Pedido confirmado ✅' },
+  { nome: 'Pronto', mensagem: 'Oii, ótima notícia 😍\nSeu pedido está pronto para retirada' },
+  { nome: 'Entregue', mensagem: 'Agradeço pela preferência, Ana! Espero que goste ❤️' },
 ];
 
 export const RECURSOS_VENDAS = {
   checks: [
-    'Utilize o assistente para coletar pedidos ou cadastre manualmente',
     'Nada de pedidos anotados em caderno ou minutos procurando o número de cada cliente',
-    'Receba uma página de portfólio personalizada',
+    'Utilize o assistente para coletar pedidos ou cadastre manualmente',
     'Dashboard financeiro e ferramentas exclusivas para aumentar vendas',
+    'Receba uma página de portfólio personalizada',
   ],
   alem: [
     ['Coleta o que o seu produto precisa', 'Sabores, massas, quantidades etc. O assistente confere uma por uma.'],

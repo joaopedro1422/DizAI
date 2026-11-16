@@ -38,6 +38,8 @@ export interface SlideComo {
 export interface EtapaAviso {
   nome: string;
   mensagem: string;
+  /** Quem manda, em cima da mensagem ("Você pelo celular"); sem ele, "Mensagem automática". */
+  rotulo?: string;
 }
 
 export type VisualDia = 'conversa' | 'audio' | 'arquivo' | 'chama' | 'chave' | 'jeito';

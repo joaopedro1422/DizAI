@@ -25,6 +25,13 @@
   gap: 16px;
 }
 
+/* "Como funciona →" e, nas vendas, "Ver exemplo →" lado a lado */
+.lv .vp__botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .lv .vp__texto h3 {
   font-size: clamp(28px, 3vw, 38px);
   font-weight: 700;

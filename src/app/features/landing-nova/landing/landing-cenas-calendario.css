@@ -241,3 +241,13 @@
   45% { scale: 0.9; box-shadow: 0 0 0 5px rgba(255, 200, 61, 0.6); }
   100% { scale: 1; border-color: var(--cor-noite); background: var(--cor-noite); color: #ffffff; }
 }
+
+/* no card do Gestor de pedidos, sem o "✓✓ Enviada pelo WhatsApp" (poupa espaço; no "Na prática" ele continua) */
+.lv .rec--b .etapas-aviso__enviada {
+  display: none;
+}
+
+/* as mensagens automáticas podem ter quebra de linha ("Oiii, temos uma ótima notícia!\nSeu pedido…") */
+.lv app-etapas-aviso .msg--loja {
+  white-space: pre-line;
+}
