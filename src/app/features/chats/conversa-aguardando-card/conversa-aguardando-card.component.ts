@@ -5,6 +5,7 @@ import { Conversa } from '../../../core/models/conversa.model';
 import { ramoDeServico } from '../../../core/models/perfil.model';
 import { PerfilService } from '../../../core/services/perfil.service';
 import { gerarLinkWhatsapp } from '../../../core/utils/texto.utils';
+import { resumoComDiaDaSemana } from '../../../core/utils/dia-da-semana-resumo';
 import { AvatarComponent } from '../../../shared/components/avatar/avatar.component';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
 import { IconeComponent } from '../../../shared/components/icone/icone.component';
@@ -35,6 +36,8 @@ export class ConversaAguardandoCardComponent {
     ramoDeServico(this.perfil().ramo) ? 'Resumo do atendimento' : 'Resumo do pedido',
   );
 
+  /** O resumo com o dia da semana na data ("18/11" vira "Quarta, 18/11"). */
+  protected readonly resumo = computed(() => resumoComDiaDaSemana(this.conversa().resumoPedido));
   protected readonly nomeExibicao = computed(() => this.conversa().nomeCliente || this.conversa().whatsapp);
   protected readonly mostrarTelefone = computed(() => !!this.conversa().nomeCliente);
   protected readonly linkWhatsapp = computed(() => gerarLinkWhatsapp(this.conversa().whatsapp));

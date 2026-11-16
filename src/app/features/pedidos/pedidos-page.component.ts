@@ -125,9 +125,7 @@ export class PedidosPageComponent implements OnInit {
   );
   protected readonly tituloDoDia = computed(() => rotuloDoDia(this.diaSelecionado(), this.hoje));
   protected readonly subtituloDoDia = computed(() => {
-    const total = this.pedidosDoDia().length;
-    const quantos = total === 0 ? 'nenhum pedido' : total === 1 ? '1 pedido' : `${total} pedidos`;
-    return `${diaPorExtensoLongo(this.diaSelecionado())} · ${quantos}`;
+    return diaPorExtensoLongo(this.diaSelecionado());
   });
   /** Hoje: os pedidos de dias que já passaram e ainda não foram entregues (o dia mais antigo primeiro). */
   protected readonly atrasados = computed(() => {

@@ -114,11 +114,12 @@
 }
 
 /* Informações (horário, pagamento, entrega): uma lista em um cartão, cada linha com o ícone */
+/* o cartão translúcido: a cor de fundo da página aparece por baixo (mesmo tom, um pouco mais claro) */
 .informacoes__lista {
   overflow: hidden;
-  border: 1px solid var(--vitrine-borda);
+  border: 1px solid color-mix(in srgb, var(--vitrine-borda) 70%, transparent);
   border-radius: 18px;
-  background: var(--vitrine-cartao, #ffffff);
+  background: color-mix(in srgb, var(--vitrine-cartao, #ffffff) 55%, transparent);
 }
 
 .informacao {

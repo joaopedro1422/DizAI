@@ -7,6 +7,7 @@ import { CarregandoComponent } from '../../../shared/components/carregando/carre
 import { ClienteDoRegistro, SeletorClienteComponent } from '../../../shared/components/seletor-cliente/seletor-cliente.component';
 import { CarrinhoProdutosComponent, ItemCarrinho } from '../carrinho-produtos/carrinho-produtos.component';
 import { SeletorDataPedidoComponent } from '../seletor-data-pedido/seletor-data-pedido.component';
+import { AnexoPedidoComponent } from '../anexo-pedido/anexo-pedido.component';
 import { hojeIso } from '../../../core/utils/datas-agenda';
 
 /** Aceita "70", "70,5" ou "70.50". */
@@ -14,7 +15,7 @@ const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
 
 @Component({
   selector: 'app-registrar-pedido',
-  imports: [CarregandoComponent, CarrinhoProdutosComponent, SeletorClienteComponent, SeletorDataPedidoComponent],
+  imports: [CarregandoComponent, CarrinhoProdutosComponent, SeletorClienteComponent, SeletorDataPedidoComponent, AnexoPedidoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form class="formulario" (submit)="$event.preventDefault(); registrar()" novalidate>
@@ -52,6 +53,12 @@ const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
       </div>
 
       <div class="campo">
+        <span class="campo__rotulo">Foto do modelo <span class="campo__rotulo-opcional">(opcional)</span></span>
+        <app-anexo-pedido [(anexo)]="anexo" [(enviando)]="enviandoAnexo" />
+        <span class="campo__dica">Ex.: {{ conteudo().anexoPedido }}. Ela fica no pedido, na tela Pedidos.</span>
+      </div>
+
+      <div class="campo">
         <span class="campo__rotulo">Cliente <span class="campo__rotulo-opcional">(opcional)</span></span>
         <app-seletor-cliente dica="Com o número, você pode avisar o cliente quando o pedido ficar pronto." (mudou)="cliente.set($event)" />
       </div>
@@ -78,7 +85,7 @@ const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
         <span class="campo__erro" role="alert">{{ erro() }}</span>
       }
 
-      <button type="submit" class="btn btn--primario btn--grande btn--bloco" [disabled]="salvando()" [attr.aria-busy]="salvando()">
+      <button type="submit" class="btn btn--primario btn--grande btn--bloco" [disabled]="salvando() || enviandoAnexo()" [attr.aria-busy]="salvando()">
         @if (salvando()) {
           <app-carregando modo="inline" variante="claro" [tamanho]="20" />
           Registrando…
@@ -139,6 +146,9 @@ export class RegistrarPedidoComponent {
   protected readonly entregue = signal(false);
   /** O dia da entrega ou retirada ("AAAA-MM-DD"); com "Já foi entregue", hoje. */
   protected readonly paraQuando = signal<string | null>(null);
+  /** A foto do modelo (já enviada ao armazenamento: aqui fica a referência). */
+  protected readonly anexo = signal<string | null>(null);
+  protected readonly enviandoAnexo = signal(false);
   /** O carrinho do pedido (só para os Números). */
   protected readonly produtos = signal<ItemCarrinho[]>([]);
   protected readonly salvando = signal(false);
@@ -148,7 +158,7 @@ export class RegistrarPedidoComponent {
   protected readonly valorValido = computed(() => PADRAO_VALOR.test(this.valor().trim()));
 
   protected async registrar(): Promise<void> {
-    if (this.salvando()) return;
+    if (this.salvando() || this.enviandoAnexo()) return;
     this.tentou.set(true);
     this.erro.set('');
     if (!this.itens().trim() || !this.valorValido() || (!this.entregue() && !this.paraQuando())) return;
@@ -161,6 +171,7 @@ export class RegistrarPedidoComponent {
         nomeCliente: this.cliente().nome.trim(),
         entregue: this.entregue(),
         paraQuando: this.entregue() ? hojeIso() : this.paraQuando()!,
+        anexo: this.anexo(),
         produtoId: null,
         produtos: this.produtos(),
       });

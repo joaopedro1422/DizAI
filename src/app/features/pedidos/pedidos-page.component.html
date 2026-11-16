@@ -135,7 +135,7 @@
         } @else {
           <div class="grupo-chips" role="radiogroup" aria-label="Filtrar pedidos">
             <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="filtro() === 'todos'" [attr.aria-checked]="filtro() === 'todos'" (click)="filtro.set('todos')">
-              Todos · {{ pedidosNaTela().length }}
+              Pedidos · {{ pedidosDoDia().length }}
             </button>
             <button type="button" role="radio" class="chip chip--pequeno" [class.chip--ativo]="filtro() === 'preparo'" [attr.aria-checked]="filtro() === 'preparo'" (click)="filtro.set('preparo')">
               Em preparo · {{ emPreparoNaTela().length }}

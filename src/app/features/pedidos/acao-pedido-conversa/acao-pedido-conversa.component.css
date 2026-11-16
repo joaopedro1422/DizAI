@@ -35,54 +35,6 @@
 }
 
 /* Foto do modelo: botão tracejado para anexar e, depois, a miniatura com o X para tirar */
-.anexar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 48px;
-  border: 1px dashed var(--cor-borda-forte);
-  border-radius: var(--raio-medio);
-  background: var(--cor-fundo-tracejado);
-  color: var(--cor-primaria);
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.anexar:focus-within {
-  outline: 2px solid var(--cor-primaria);
-  outline-offset: 2px;
-}
-
-.anexar--enviando {
-  color: var(--cor-texto-suave);
-  cursor: progress;
-}
-
-.anexo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 8px 8px 8px;
-  border: 1px solid var(--cor-borda);
-  border-radius: var(--raio-medio);
-}
-
-.anexo__foto {
-  flex: none;
-  width: 56px;
-  height: 56px;
-  border-radius: 10px;
-  object-fit: cover;
-}
-
-.anexo__texto {
-  flex: 1;
-  font-size: 14px;
-  font-weight: 600;
-}
-
 /* Valor do pedido à esquerda e "Já pago" (sinal) à direita */
 .valores {
   display: grid;

@@ -3,29 +3,27 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, linkedSign
 import { mensagemDoErro } from '../../../core/api/erro-api';
 import { Conversa } from '../../../core/models/conversa.model';
 import { SituacaoAviso, primeiroNome, totalDoResumo } from '../../../core/models/pedido.model';
-import { UrlImagemPipe } from '../../../core/imagens/url-imagem';
-import { ArmazenamentoFotosService } from '../../../core/services/armazenamento-fotos.service';
 import { ConversaService } from '../../../core/services/conversa.service';
 import { PedidoService } from '../../../core/services/pedido.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { ConteudoRamoService } from '../../../core/services/conteudo-ramo.service';
 import { CarregandoComponent } from '../../../shared/components/carregando/carregando.component';
-import { IconeComponent } from '../../../shared/components/icone/icone.component';
 import { AvisoClienteComponent } from '../aviso-cliente/aviso-cliente.component';
 import { CarrinhoProdutosComponent, ItemCarrinho } from '../carrinho-produtos/carrinho-produtos.component';
 import { AGRADECIMENTO_PADRAO, lerValorPago } from '../textos-pedido';
+import { AnexoPedidoComponent } from '../anexo-pedido/anexo-pedido.component';
 import { SeletorDataPedidoComponent } from '../seletor-data-pedido/seletor-data-pedido.component';
 import { hojeIso } from '../../../core/utils/datas-agenda';
+import { resumoComDiaDaSemana } from '../../../core/utils/dia-da-semana-resumo';
 
 /** confirmar: vai para a tela Pedidos; entregar: já entra no faturamento; recusar: só devolve ao assistente. */
 export type AcaoPedidoConversa = 'confirmar' | 'entregar' | 'recusar';
 
 const PADRAO_VALOR = /^\d{1,7}([.,]\d{1,2})?$/;
-const TAMANHO_MAXIMO_ANEXO_BYTES = 5 * 1024 * 1024;
 
 @Component({
   selector: 'app-acao-pedido-conversa',
-  imports: [CarregandoComponent, AvisoClienteComponent, IconeComponent, UrlImagemPipe, CarrinhoProdutosComponent, SeletorDataPedidoComponent],
+  imports: [CarregandoComponent, AvisoClienteComponent, CarrinhoProdutosComponent, AnexoPedidoComponent, SeletorDataPedidoComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './acao-pedido-conversa.component.html',
   styleUrl: './acao-pedido-conversa.component.css',
@@ -40,7 +38,6 @@ export class AcaoPedidoConversaComponent {
   private readonly pedidoService = inject(PedidoService);
   private readonly conversaService = inject(ConversaService);
   private readonly toastService = inject(ToastService);
-  private readonly armazenamento = inject(ArmazenamentoFotosService);
 
   protected readonly agradecimentoPadrao = AGRADECIMENTO_PADRAO;
   protected readonly salvando = signal(false);
@@ -54,6 +51,8 @@ export class AcaoPedidoConversaComponent {
   /** O produto vendido (opcional): só para os "Produtos que mais vendem" dos Números. */
   /** O carrinho do pedido (só para os Números). */
   protected readonly produtos = signal<ItemCarrinho[]>([]);
+  /** O resumo com o dia da semana na data. */
+  protected readonly resumo = computed(() => resumoComDiaDaSemana(this.conversa().resumoPedido));
   /** A data que o assistente coletou na conversa (de hoje em diante); com ela, o seletor de dia não aparece. */
   protected readonly dataDaConversa = computed(() => {
     const sugerida = this.conversa().dataSugerida;
@@ -91,33 +90,6 @@ export class AcaoPedidoConversaComponent {
   protected readonly pagoTexto = signal('');
   private readonly pago = computed(() => lerValorPago(this.pagoTexto(), this.valor()));
   protected readonly erroPago = computed(() => (this.acao() === 'confirmar' ? this.pago().erro : ''));
-
-  /** Envia a imagem escolhida na hora: no "Confirmar pedido" só vai a referência. */
-  protected async aoEscolherAnexo(evento: Event): Promise<void> {
-    const campo = evento.target as HTMLInputElement;
-    const arquivo = campo.files?.[0];
-    campo.value = ''; // permite escolher o mesmo arquivo de novo
-    if (!arquivo) {
-      return;
-    }
-    if (!arquivo.type.startsWith('image/')) {
-      this.toastService.mostrar('Escolha um arquivo de imagem (JPG, PNG ou WEBP).');
-      return;
-    }
-    if (arquivo.size > TAMANHO_MAXIMO_ANEXO_BYTES) {
-      this.toastService.mostrar('A imagem é muito grande. Use uma de até 5 MB.');
-      return;
-    }
-    this.enviandoAnexo.set(true);
-    try {
-      const [referencia] = await this.armazenamento.enviar([arquivo], { tipo: 'PEDIDOS' });
-      this.anexo.set(referencia);
-    } catch (erro) {
-      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível enviar a imagem. Tente de novo.'));
-    } finally {
-      this.enviandoAnexo.set(false);
-    }
-  }
 
   protected digitarValor(evento: Event): void {
     this.valorDigitado.set((evento.target as HTMLInputElement).value);

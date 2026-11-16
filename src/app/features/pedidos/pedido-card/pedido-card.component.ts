@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { resumoComDiaDaSemana } from '../../../core/utils/dia-da-semana-resumo';
 
 import { Pedido } from '../../../core/models/pedido.model';
 import { gerarLinkWhatsapp } from '../../../core/utils/texto.utils';
@@ -40,9 +41,11 @@ export class PedidoCardComponent {
   );
   /** O nome já está no topo e o valor no rodapé: o resto do resumo é o pedido em si. */
   protected readonly itens = computed(() =>
-    this.pedido().resumo.filter((item) => {
-      const campo = item.campo.trim().toLowerCase();
-      return !campo.startsWith('nome') && !campo.startsWith('total');
-    }),
+    resumoComDiaDaSemana(
+      this.pedido().resumo.filter((item) => {
+        const campo = item.campo.trim().toLowerCase();
+        return !campo.startsWith('nome') && !campo.startsWith('total');
+      }),
+    ),
   );
 }

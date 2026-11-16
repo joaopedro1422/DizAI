@@ -1,7 +1,7 @@
 <div class="acao">
   @if (conversa().resumoPedido.length > 0) {
     <dl class="resumo caixa-suave">
-      @for (item of conversa().resumoPedido; track $index) {
+      @for (item of resumo(); track $index) {
         <div class="resumo__item">
           <dt class="resumo__campo">{{ item.campo }}</dt>
           <dd class="resumo__valor">{{ item.valor }}</dd>
@@ -74,27 +74,8 @@
   @if (acao() === 'confirmar') {
     <div class="campo">
       <span class="campo__rotulo">Foto do modelo <span class="campo__rotulo-opcional">(opcional)</span></span>
-      @if (anexo(); as referencia) {
-        <div class="anexo">
-          <img class="anexo__foto" [src]="referencia | urlImagem" alt="Foto anexada ao pedido" />
-          <span class="anexo__texto">Imagem anexada</span>
-          <button type="button" class="btn-icone btn-icone--sem-borda" aria-label="Remover a imagem" (click)="anexo.set(null)">
-            <app-icone nome="fechar" [tamanho]="18" />
-          </button>
-        </div>
-      } @else {
-        <label class="anexar" [class.anexar--enviando]="enviandoAnexo()">
-          @if (enviandoAnexo()) {
-            <app-carregando modo="inline" [tamanho]="18" />
-            Enviando a imagem…
-          } @else {
-            <app-icone nome="clipe" [tamanho]="18" [espessura]="2" />
-            Anexar imagem
-          }
-          <input class="somente-leitor-tela" type="file" accept="image/*" [disabled]="enviandoAnexo()" (change)="aoEscolherAnexo($event)">
-        </label>
-        <span class="campo__dica">Ex.: {{ conteudo().anexoPedido }}. Ela fica no pedido, na tela Pedidos.</span>
-      }
+      <app-anexo-pedido [(anexo)]="anexo" [(enviando)]="enviandoAnexo" />
+      <span class="campo__dica">Ex.: {{ conteudo().anexoPedido }}. Ela fica no pedido, na tela Pedidos.</span>
     </div>
   }
 

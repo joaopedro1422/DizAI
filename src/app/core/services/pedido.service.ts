@@ -108,6 +108,8 @@ export class PedidoService {
     produtos: { produtoId: number; quantidade: number }[];
     /** "AAAA-MM-DD"; já entregue = hoje (o back confere). */
     paraQuando: string;
+    /** A foto do modelo (referência já enviada); null = sem foto. */
+    anexo: string | null;
   }): Promise<ResultadoAcaoPedido> {
     return this.aplicar(await firstValueFrom(this.http.post<RespostaApi>(this.url(), novo)));
   }
