@@ -113,11 +113,6 @@ export class VitrinePublicaPageComponent implements OnInit {
     () => this.semanaDaLoja().length > 0 || this.horarioLivre() || !!this.pagamento() || !!this.recebimento(),
   );
 
-  /** Selo de avaliações do cartão, com todos os feedbacks publicados (null sem nenhum). */
-  protected readonly seloAvaliacoes = computed(() => {
-    const feedbacks = this.albuns().flatMap((a) => (a.tipo === 'FEEDBACKS' ? (a.feedbacks ?? []) : []));
-    return feedbacks.length ? resumoDeFeedbacks(feedbacks.map((f) => f.estrelas)) : null;
-  });
   protected readonly linkWhatsapp = computed(() => gerarLinkWhatsapp(this.loja()?.numeroWhatsapp ?? ''));
   protected readonly fonteSelecionada = computed<FonteVitrine>(
     () => this.loja()?.fonteGaleria ?? 'Poppins',
@@ -377,13 +372,6 @@ export class VitrinePublicaPageComponent implements OnInit {
   }
 
   protected readonly fonteCss = computed(() => fonteComFamilia(this.fonteSelecionada()));
-}
-
-/** "4,9 · 32 avaliações" */
-function resumoDeFeedbacks(estrelas: number[]): string {
-  const media = estrelas.reduce((soma, e) => soma + e, 0) / estrelas.length;
-  const nota = media.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-  return `${nota} · ${estrelas.length} ${estrelas.length === 1 ? 'avaliação' : 'avaliações'}`;
 }
 
 /** ["Pix", "Dinheiro", "Cartão"] -> "Pix, Dinheiro e Cartão"; vazio = "". */

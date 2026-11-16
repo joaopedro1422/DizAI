@@ -70,10 +70,6 @@
   background: #d14b3d;
 }
 
-.loja__estrela {
-  color: #e2a400;
-}
-
 /* "Atendimento 24 horas": o balão com os pontinhos de "digitando" na cor da loja */
 .loja__atendimento {
   display: inline-flex;

@@ -27,7 +27,7 @@ export interface Album {
 }
 
 /** Layout do tópico "Sobre": foto em cima (CLASSICO), foto em arco com o selo (JANELA) ou foto cheia com cartão (CAPA). */
-export type EstiloSobre = 'CLASSICO' | 'JANELA' | 'CAPA';
+export type EstiloSobre = 'CLASSICO' | 'JANELA' | 'CAPA' | 'DELICADO';
 
 /** O conteúdo do "Sobre". Extras por estilo: assinatura (CLASSICO), desde (JANELA) e até 2 destaques (CAPA). */
 export interface Sobre {

@@ -35,6 +35,37 @@ import { IconeComponent } from '../icone/icone.component';
 
     <div class="sobre">
       @switch (sobre().estilo) {
+        @case ('DELICADO') {
+          <!-- moldura fina deslocada da foto, o rótulo entre traços, um losango de divisor e o fecho discreto -->
+          <div class="delicado" [class.delicado--sem-foto]="!comFoto()">
+            @if (comFoto()) {
+              <div class="delicado__moldura">
+                <div class="delicado__foto"><ng-container [ngTemplateOutlet]="foto" /></div>
+              </div>
+            }
+            <div class="delicado__textos">
+              @if (rotulo()) {
+                <span class="delicado__rotulo">{{ rotulo() }}</span>
+              }
+              <h2 class="delicado__titulo" [id]="idTitulo()">{{ sobre().titulo }}</h2>
+              <span class="delicado__divisor" aria-hidden="true"><i></i></span>
+              <p class="sobre__texto delicado__texto">{{ sobre().texto }}</p>
+              @if (sobre().assinatura || sobre().desde) {
+                <span class="delicado__fecho">
+                  @if (sobre().assinatura) {
+                    <span class="delicado__assinatura">{{ sobre().assinatura }}</span>
+                  }
+                  @if (sobre().assinatura && sobre().desde) {
+                    <i aria-hidden="true"></i>
+                  }
+                  @if (sobre().desde) {
+                    <span class="delicado__desde">desde {{ sobre().desde }}</span>
+                  }
+                </span>
+              }
+            </div>
+          </div>
+        }
         @case ('JANELA') {
           <div class="janela" [class.janela--sem-foto]="!comFoto()">
             @if (comFoto()) {
@@ -88,7 +119,7 @@ import { IconeComponent } from '../icone/icone.component';
       }
     </div>
   `,
-  styleUrl: './sobre-vitrine.component.css',
+  styleUrls: ['./sobre-vitrine.component.css', './sobre-delicado.css'],
 })
 export class SobreVitrineComponent {
   readonly sobre = input.required<Sobre>();

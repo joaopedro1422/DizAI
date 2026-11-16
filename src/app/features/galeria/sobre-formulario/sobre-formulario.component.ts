@@ -21,6 +21,7 @@ const ESTILOS: { valor: EstiloSobre; nome: string; descricao: string }[] = [
   { valor: 'CLASSICO', nome: 'Clássico', descricao: 'Foto em cima e assinatura' },
   { valor: 'JANELA', nome: 'Janela com selo', descricao: 'Foto em arco e o ano' },
   { valor: 'CAPA', nome: 'Capa com cartão', descricao: 'Foto cheia e destaques' },
+  { valor: 'DELICADO', nome: 'Delicado', descricao: 'Moldura fina e assinatura' },
 ];
 
 const MAX_TEXTO = 1000;
@@ -118,6 +119,19 @@ const MAX_TEXTO = 1000;
           <div class="campo">
             <label for="sobre-desde" class="campo__rotulo">Desde (o ano do selo) <span class="campo__rotulo-opcional">(opcional)</span></label>
             <input id="sobre-desde" class="campo__entrada campo-ano" type="text" inputmode="numeric" maxlength="4" placeholder="2019" [value]="desde()" (input)="desde.set($any($event.target).value)">
+            @if (tentou() && anoInvalido()) {
+              <span class="campo__erro" role="alert">Informe o ano com 4 números, por exemplo 2019.</span>
+            }
+          </div>
+        }
+        @case ('DELICADO') {
+          <div class="campo">
+            <label for="sobre-assinatura-d" class="campo__rotulo">Assinatura <span class="campo__rotulo-opcional">(opcional)</span></label>
+            <input id="sobre-assinatura-d" class="campo__entrada" type="text" maxlength="60" placeholder="Ex.: Camila Rocha" [value]="assinatura()" (input)="assinatura.set($any($event.target).value)">
+          </div>
+          <div class="campo">
+            <label for="sobre-desde-d" class="campo__rotulo">Desde <span class="campo__rotulo-opcional">(opcional)</span></label>
+            <input id="sobre-desde-d" class="campo__entrada campo-ano" type="text" inputmode="numeric" maxlength="4" placeholder="2019" [value]="desde()" (input)="desde.set($any($event.target).value)">
             @if (tentou() && anoInvalido()) {
               <span class="campo__erro" role="alert">Informe o ano com 4 números, por exemplo 2019.</span>
             }
