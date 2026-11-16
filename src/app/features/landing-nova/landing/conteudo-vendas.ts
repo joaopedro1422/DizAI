@@ -47,8 +47,9 @@ export const ETAPAS_PEDIDO: EtapaAviso[] = [
 export const RECURSOS_VENDAS = {
   checks: [
     'Utilize o assistente para coletar pedidos ou cadastre manualmente',
-    'Receba uma página de portfólio com a sua cara',
-    'Gestor de pedidos para organizar o seu negócio e otimizar o seu tempo',
+    'Nada de pedidos anotados em caderno ou minutos procurando o número de cada cliente',
+    'Receba uma página de portfólio personalizada',
+    'Dashboard financeiro e ferramentas exclusivas para aumentar vendas',
   ],
   alem: [
     ['Coleta o que o seu produto precisa', 'Sabores, massas, quantidades etc. O assistente confere uma por uma.'],
