@@ -205,10 +205,17 @@ src/app
 
 ## O painel
 
-O painel do lojista, no computador: a agenda do dia com vários profissionais lado a lado, os horários livres e os
-agendamentos marcados pelo assistente (com a presença confirmada).
+O painel do lojista, no computador.
+
+**Agenda:** o dia com vários profissionais lado a lado, os horários livres e os agendamentos marcados pelo assistente
+(com a presença confirmada).
 
 <img src="docs/readme/painel-agenda.png" alt="Tela de agendamentos do painel com três profissionais" />
+
+**Pedidos:** os pedidos do dia de entrega, do preparo à entrega, com o resumo que o assistente coletou na conversa
+(itens, escolhas, data e a foto do modelo).
+
+<img src="docs/readme/painel-pedidos.png" alt="Tela de pedidos do painel com pedidos em preparo e prontos" />
 
 ---
 
