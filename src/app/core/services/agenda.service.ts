@@ -127,6 +127,14 @@ export class AgendaService {
     this.agendamentos.update((lista) => lista.map((a) => (a.id === agendamentoId ? atualizado : a)));
   }
 
+  /** "Confirmar presença" no detalhe do agendamento: o lojista confirma por conta própria. */
+  async confirmarPresenca(agendamentoId: string): Promise<void> {
+    const atualizado = await firstValueFrom(
+      this.http.patch<Agendamento>(this.url(`/agendamentos/${agendamentoId}/presenca`), null),
+    );
+    this.agendamentos.update((lista) => lista.map((a) => (a.id === agendamentoId ? atualizado : a)));
+  }
+
   /** "Registrar venda": produtos vendidos no balcão (entram só na parte Produtos dos Números). */
   registrarVenda(itens: ItemNovaVenda[]): Promise<VendaProduto> {
     return firstValueFrom(this.http.post<VendaProduto>(this.url('/vendas'), { itens }));

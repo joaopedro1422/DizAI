@@ -21,6 +21,10 @@ export class DetalheAgendamentoComponent {
 
   readonly editarValor = output<void>();
   readonly cancelar = output<void>();
+  /** "Confirmar presença" manual (o cliente avisou que vem por ligação, pessoalmente...). */
+  readonly confirmarPresenca = output<void>();
+  /** Enquanto a confirmação vai ao servidor. */
+  readonly confirmando = input(false);
 
   protected readonly linkWhatsapp = computed(() => gerarLinkWhatsapp(this.agendamento().whatsapp));
   protected readonly duracao = computed(() => formatarDuracao(this.agendamento().duracaoMinutos));

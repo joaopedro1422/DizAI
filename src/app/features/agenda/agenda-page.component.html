@@ -439,6 +439,8 @@
       [variosProfissionais]="variosProfissionais()"
       (editarValor)="editarValorDoAberto(agendamento)"
       (cancelar)="cancelarOAberto(agendamento)"
+      [confirmando]="confirmandoPresenca()"
+      (confirmarPresenca)="confirmarPresencaDoAberto(agendamento)"
     />
   </app-bottom-sheet>
 }

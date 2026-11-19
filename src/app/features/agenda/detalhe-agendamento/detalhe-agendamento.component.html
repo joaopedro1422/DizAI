@@ -81,6 +81,15 @@
   }
 
   @if (dados.status !== 'CANCELADO') {
-    <button type="button" class="btn btn--secundario btn--bloco" (click)="cancelar.emit()">Cancelar horário</button>
+    <div class="acoes">
+      <!-- o cliente avisou por fora (ligação, pessoalmente): vale como a confirmação pelo lembrete -->
+      @if (!dados.presencaConfirmada) {
+        <button type="button" class="btn btn--primario btn--bloco" [disabled]="confirmando()" [attr.aria-busy]="confirmando()" (click)="confirmarPresenca.emit()">
+          <app-icone nome="check" [tamanho]="18" [espessura]="2.6" />
+          {{ confirmando() ? 'Confirmando…' : 'Confirmar presença' }}
+        </button>
+      }
+      <button type="button" class="btn btn--secundario btn--bloco" (click)="cancelar.emit()">Cancelar horário</button>
+    </div>
   }
 </div>

@@ -518,6 +518,22 @@ export class AgendaPageComponent implements OnInit {
     this.abrirValor(agendamento);
   }
 
+  protected readonly confirmandoPresenca = signal(false);
+
+  /** "Confirmar presença" no detalhe: o modal continua aberto e ganha o selo "Presença confirmada". */
+  protected async confirmarPresencaDoAberto(agendamento: Agendamento): Promise<void> {
+    if (this.confirmandoPresenca()) return;
+    this.confirmandoPresenca.set(true);
+    try {
+      await this.agendaService.confirmarPresenca(agendamento.id);
+      this.toastService.mostrar(`Presença de ${agendamento.nomeCliente} confirmada`);
+    } catch (erro) {
+      this.toastService.mostrar(mensagemDoErro(erro, 'Não foi possível confirmar a presença. Tente de novo.'));
+    } finally {
+      this.confirmandoPresenca.set(false);
+    }
+  }
+
   protected cancelarOAberto(agendamento: Agendamento): void {
     this.agendamentoAbertoId.set(null);
     this.paraCancelar.set(agendamento);
