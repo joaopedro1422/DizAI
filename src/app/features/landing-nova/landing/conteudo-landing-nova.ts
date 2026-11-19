@@ -73,7 +73,11 @@ export interface ConteudoLandingNova {
   /** "Recursos" ou "Recursos da agenda" (topo e seção). */
   rotuloRecursos: string;
   hero: { descricao: string; garantias: string[]; conversas: ConversaHero[] };
-  dores: { titulo: [string, string]; itens: { titulo: string; texto: string; citacao: string }[] };
+  /** caderno: no lugar do balão da citação, o caderno de encomendas bagunçado (linhas; "riscado" aparece riscado antes). */
+  dores: {
+    titulo: [string, string];
+    itens: { titulo: string; texto: string; citacao: string; caderno?: { texto: string; riscado?: string }[] }[];
+  };
   bloqueio: { contador: string; avisos: { nome: string; cor: string; texto: string; quando: string }[] };
   prova: {
     loja: string;

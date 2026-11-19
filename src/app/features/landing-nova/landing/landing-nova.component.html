@@ -28,7 +28,22 @@
               <div>
                 <h3>{{ dor.titulo }}</h3>
                 <p>{{ dor.texto }}</p>
-                <span class="dor__citacao">{{ dor.citacao }}</span>
+                @if (dor.caderno; as linhas) {
+                  <!-- o caderno de encomendas bagunçado (o mesmo da "A solução", em 3 linhas) -->
+                  <div class="dor__caderno" role="img" [attr.aria-label]="'Caderno de encomendas: ' + dor.citacao">
+                    @for (linha of linhas; track $index) {
+                      <span class="dor__caderno-linha">
+                        @if (linha.riscado) {
+                          <s>{{ linha.riscado }}</s>
+                        }
+                        {{ linha.texto }}
+                      </span>
+                    }
+                    <span class="dor__postit" aria-hidden="true">Número da Júlia???</span>
+                  </div>
+                } @else {
+                  <span class="dor__citacao">{{ dor.citacao }}</span>
+                }
               </div>
             </div>
           }

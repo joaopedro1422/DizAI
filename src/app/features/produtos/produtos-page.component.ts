@@ -25,6 +25,7 @@ import { ProdutoCardComponent } from './produto-card/produto-card.component';
 import { ProdutoFormularioComponent } from './produto-formulario/produto-formulario.component';
 import { TipoVideoCadastro, VideoCadastroComponent } from './video-cadastro/video-cadastro.component';
 import { GuiaCadastroComponent } from './guia-cadastro/guia-cadastro.component';
+import { SuporteCadastroComponent } from './suporte-cadastro/suporte-cadastro.component';
 
 const TODAS_AS_CATEGORIAS = 'Todos';
 
@@ -32,6 +33,7 @@ const TODAS_AS_CATEGORIAS = 'Todos';
 @Component({
   selector: 'app-produtos-page',
   imports: [
+    SuporteCadastroComponent,
     GuiaCadastroComponent,
     DicaSobrepostaComponent,
     BotaoVideoComponent,

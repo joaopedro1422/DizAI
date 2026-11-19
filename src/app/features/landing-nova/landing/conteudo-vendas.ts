@@ -178,6 +178,11 @@ export const CONTEUDO_VENDAS: ConteudoLandingNova = {
         titulo: 'Pedidos desorganizados',
         texto: 'Pedido anotado no caderno ou perdido entre as conversas, e minutos procurando o número de cada cliente.',
         citacao: '"Vim buscar a minha encomenda das 10h. Não está pronta?"',
+        caderno: [
+          { texto: 'Paula: 100 salg. sáb 10h' },
+          { riscado: '150', texto: '200 salg. Carlos, entrega?' },
+          { texto: 'Júlia: bolo ninho, dom??' },
+        ],
       },
     ],
   },
