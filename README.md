@@ -12,8 +12,6 @@ e marcar horários sozinho, 24 horas por dia.
 
 ![Angular](https://img.shields.io/badge/Angular-19-DD0031?logo=angular&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white)
-![RxJS](https://img.shields.io/badge/RxJS-7.8-B7178C?logo=reactivex&logoColor=white)
-![PWA](https://img.shields.io/badge/PWA-Web%20Push-5A0FC8?logo=pwa&logoColor=white)
 ![Java](https://img.shields.io/badge/Java-21-ED8B00?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4-6DB33F?logo=springboot&logoColor=white)
 ![Spring AI](https://img.shields.io/badge/Spring%20AI-OpenAI-412991?logo=openai&logoColor=white)
@@ -44,10 +42,13 @@ O pequeno negócio brasileiro vende pelo WhatsApp. E passa o dia respondendo as 
 *"quanto custa?"*, *"tem para amanhã?"*, *"quais sabores?"*, *"tem horário sexta?"*. Quem está com a mão
 ocupada (a manicure atendendo, a confeiteira no forno) perde cliente, principalmente à noite e no fim de semana.
 
-O **DizAI** é um SaaS que resolve isso com um assistente de IA treinado **com os dados do próprio negócio**
+O **DizAI** é uma plataforma que resolve isso com um assistente de IA treinado **com os dados do próprio negócio**
 (produtos, serviços, regras, horários, galeria de fotos) e que conversa no WhatsApp com a voz da loja. Ele não
 "inventa": o que depende de regra de negócio (prazos, horários livres, confirmações) é calculado por código,
 e a IA só conduz a conversa.
+
+A estratégia de montagem do prompt foi pensada e validada por mim durante meses, com foco em naturalidade das respostas, confiabilidade, mesclagem entre Interpretação da IA + ações por código
+e redução de custos do uso da IA.
 
 Essa divisão também é o que torna o produto viável para um pequeno negócio: como a IA não precisa calcular datas,
 horários nem disponibilidade, ela roda com um **modelo leve e nível de raciocínio baixo**, e o prompt é montado para
