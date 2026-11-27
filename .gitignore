@@ -43,3 +43,5 @@ Thumbs.db
 
 # notas internas do projeto para o Claude Code (não publicar)
 CLAUDE.md
+
+.claude/
